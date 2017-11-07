@@ -1,0 +1,47 @@
+<div class="sidebar" data-color="blue" data-image="../assets/img/sidebar-1.jpg">
+  <div class="logo">
+    <a routerLinkActive="active" routerLink="http://www.younic.cl" class="simple-text">
+      Adminer
+    </a>
+  </div>
+  <div class="sidebar-wrapper">
+    <ul class="nav">
+      <li routerLinkActive="active">
+        <a routerLink="/usuario/dashboard/">
+          <i class="material-icons">dashboard</i>
+          <p>Dashboard</p>
+        </a>
+      </li>
+      <li routerLinkActive="active">
+        <a routerLink="/usuario/perfil/">
+          <i class="material-icons">person</i>
+          <p>Mi Perfil</p>
+        </a>
+      </li>
+      <li routerLinkActive="active">
+        <a routerLink="/usuario/tickets/">
+          <i class="material-icons">inbox</i>
+          <p>Bandeja de Tickets</p>
+        </a>
+      </li>
+      <li routerLinkActive="active">
+        <a routerLink="/usuario/mecanicos/">
+          <i class="material-icons">people</i>
+          <p>Mecánicos</p>
+        </a>
+      </li>
+      <li routerLinkActive="active">
+        <a routerLink="/usuario/faenas/">
+          <i class="material-icons">location_on</i>
+          <p>Faenas</p>
+        </a>
+      </li>
+      <li routerLinkActive="active">
+        <a routerLink="/usuario/logout/" (click)="logOut()">
+          <i class="material-icons">cancel</i>
+          <p>Cerrar sesión</p>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
