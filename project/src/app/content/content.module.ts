@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import {MatToolbarModule} from '@angular/material';
+import {MatSidenavModule} from '@angular/material';
 
 import { DashboardComponent } from './dashboard.component/dashboard.component';
 import { TicketsComponent } from './tickets.component/tickets.component';
 import { LayoutComponent } from './layout.component/layout.component';
-import {SidebarComponent} from './sidebar.component/sidebar.component';
 import {NavigationModule} from '../navigation/navigation.module';
 
 export const ROUTES: Routes = [
@@ -31,11 +31,12 @@ export const ROUTES: Routes = [
 @NgModule({
   imports: [
     CommonModule,
+    MatSidenavModule,
     NavigationModule,
     RouterModule.forRoot(ROUTES),
     MatToolbarModule
   ],
-  declarations: [ DashboardComponent, TicketsComponent, LayoutComponent, SidebarComponent ],
+  declarations: [ DashboardComponent, TicketsComponent, LayoutComponent ],
   bootstrap:[  ]
 })
 export class ContentModule { }
