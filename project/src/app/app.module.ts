@@ -19,6 +19,7 @@ import {LayoutComponent} from './content/layout.component/layout.component';
 import {AuthService} from './access/_shared/auth.service';
 import {DatetimeService} from "./commons/datatime.service/datetime.service";
 import {HttpModule} from "@angular/http";
+import {TimerObservable} from "rxjs/observable/TimerObservable";
 
 
 export const ROUTES: Routes = [

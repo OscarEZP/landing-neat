@@ -1,4 +1,4 @@
 <mat-toolbar color="primary">
   <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true" (click)="sidenav.open()">menu</mat-icon>
-  <span>MOC - {{ currentDate | date: 'dd-MMM-yyyy' }}</span>
+    <span>MOC - <span *ngIf="display">{{ currentDateLong | date: 'dd-MMM-yyyy' }}</span></span>
 </mat-toolbar>
