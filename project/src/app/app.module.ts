@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
 
 // Modules
 import { AccessModule } from './access/access.module';
@@ -42,6 +42,7 @@ export const ROUTES: Routes = [
   declarations: [ AppComponent ],
   imports : [
     BrowserModule,
+    BrowserAnimationsModule,
     AccessModule,
     ContentModule,
     NavigationModule,

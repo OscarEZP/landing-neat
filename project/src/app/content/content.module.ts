@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import {MatToolbarModule} from '@angular/material';
 import {MatSidenavModule} from '@angular/material';
+import {NavigationModule} from '../navigation/navigation.module';
 
 import { DashboardComponent } from './dashboard.component/dashboard.component';
 import { TicketsComponent } from './tickets.component/tickets.component';
 import { LayoutComponent } from './layout.component/layout.component';
-import {NavigationModule} from '../navigation/navigation.module';
+import {SidenavComponent} from "../navigation/sidenav.component/sidenav.component";
 
 export const ROUTES: Routes = [
   {
@@ -20,10 +21,7 @@ export const ROUTES: Routes = [
         pathMatch: 'full'
       },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'perfil', component: DashboardComponent },
-      { path: 'tickets', component: DashboardComponent },
-      { path: 'mecanicos', component: DashboardComponent },
-      { path: 'faenas', component: DashboardComponent },
+      { path: 'operation', component: DashboardComponent },
     ]
   },
 ];
@@ -36,7 +34,7 @@ export const ROUTES: Routes = [
     RouterModule.forRoot(ROUTES),
     MatToolbarModule
   ],
-  declarations: [ DashboardComponent, TicketsComponent, LayoutComponent ],
+  declarations: [ DashboardComponent, TicketsComponent, LayoutComponent, SidenavComponent ],
   bootstrap:[  ]
 })
 export class ContentModule { }
