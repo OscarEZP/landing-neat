@@ -16,6 +16,7 @@ import { AuthService } from './access/_shared/auth.service';
 import {LoginComponent} from './access/login.component/login.component';
 import {DashboardComponent} from './content/dashboard.component/dashboard.component';
 import {LayoutComponent} from './content/layout.component/layout.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 export const ROUTES: Routes = [
   {
@@ -42,6 +43,7 @@ export const ROUTES: Routes = [
   declarations: [ AppComponent ],
   imports : [
     BrowserModule,
+      BrowserAnimationsModule,
     AccessModule,
     ContentModule,
     NavigationModule,

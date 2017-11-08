@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, Output, ViewEncapsulation} from '@angular/core';
 
 @Component({
-  selector: 'lsl-sidenav',
-  templateUrl: './sidenav.component.html',
-  styleUrls: ['./sidenav.component.css']
+    selector: 'lsl-sidenav',
+    templateUrl: './sidenav.component.html',
+    styleUrls: ['./sidenav.component.css'],
+    encapsulation: ViewEncapsulation.None,
+    preserveWhitespaces: false,
 })
-export class SidenavComponent implements OnInit {
 
-  constructor() { }
+export class SidenavComponent {
 
-  ngOnInit() {
-  }
+    @Output() sidenavToggle: EventEmitter <SidenavComponent> = new EventEmitter();
+    onClose: any;
+
+    constructor() {
+    }
+
 
 }

@@ -1,15 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {SidenavComponent} from '../sidenav.component/sidenav.component';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
-  selector: 'lsl-toolbar',
-  templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.css']
+    selector: 'lsl-toolbar',
+    templateUrl: './toolbar.component.html',
+    styleUrls: ['./toolbar.component.css']
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent implements AfterViewInit {
+    @ViewChild('mySidenav')
+    sidenav: SidenavComponent;
 
-  constructor() { }
+    susbscription: Subscription;
 
-  ngOnInit() {
-  }
+    ngAfterViewInit(): void {
+        this.susbscription = this.sidenav.onClose.subscribe(() =>
+            console.log('Closed event from observable'));
+    }
+
+    onClose(): void {
+        console.log('Closed event from template');
+    }
 
 }
