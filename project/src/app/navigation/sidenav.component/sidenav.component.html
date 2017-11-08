@@ -1,16 +1,14 @@
 <mat-sidenav id="nav-drawer" #sidenav mode="side" opened="true">
-  <button mat-mini-fab class="example-fab" (click)="sidenav.toggle()">
-    <mat-icon>add</mat-icon>
-  </button>
-  <div class="example-scrolling-content">
-    <header>
-      <img src="" alt="">
-      <p></p>
-      <p></p>
-    </header>
-    <nav>
-      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-      <a routerLink="/operations" routerLinkActive="active">Operations Module</a>
-    </nav>
-  </div>
+    <div class="example-scrolling-content">
+        <header>
+            <img src="" alt="">
+            <p [innerHtml]="username"></p>
+            <p [innerHtml]="mail"></p>
+        </header>
+        <nav>
+
+            <a *ngFor="let menu of arrMenu" routerLink="menu.link" routerLinkActive="active">{{menu.label}}</a>
+
+        </nav>
+    </div>
 </mat-sidenav>

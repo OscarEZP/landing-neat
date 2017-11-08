@@ -1,4 +1,21 @@
-#nav-drawer{
+@import "../../../assets/style/baseTheme/colorStyle";
 
-    width: 200px;
+#nav-drawer {
+
+  width: 400px;
+  a {
+    color: $typography2;
+    display: block;
+  }
+
+  header {
+
+    height: 100px;
+    background-color: $background1;
+    p {
+      color: $white;
+      font-weight: bold;
+    }
+
+  }
 }
