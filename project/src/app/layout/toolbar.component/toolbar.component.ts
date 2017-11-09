@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {SidenavService} from '../_services/sidenav.service'
 
 @Component({
   selector: 'lsl-toolbar',
@@ -7,9 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ToolbarComponent implements OnInit {
 
-  constructor() { }
+  constructor(private sidenavService: SidenavService) {
+
+  }
 
   ngOnInit() {
+  }
+
+  toggleSidenav(){
+    this.sidenavService.toggleSidenav().then(()=>{
+      console.log('toggle sidenav!');
+    });
   }
 
 }

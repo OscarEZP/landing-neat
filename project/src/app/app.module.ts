@@ -6,16 +6,16 @@ import { Routes, RouterModule } from '@angular/router';
 // Modules
 import { AccessModule } from './access/access.module';
 import {ContentModule} from './content/content.module';
-import {NavigationModule} from './navigation/navigation.module';
+import {LayoutModule} from './layout/layout.module';
 
 // Components
 import { AppComponent } from './app.component';
 
 // Services
-import { AuthService } from './access/_shared/auth.service';
+import { AuthService } from './access/_services/auth.service';
 import {LoginComponent} from './access/login.component/login.component';
 import {DashboardComponent} from './content/dashboard.component/dashboard.component';
-import {LayoutComponent} from './content/layout.component/layout.component';
+import {LayoutComponent} from './layout/layout.component/layout.component';
 
 export const ROUTES: Routes = [
   {
@@ -45,7 +45,7 @@ export const ROUTES: Routes = [
     BrowserAnimationsModule,
     AccessModule,
     ContentModule,
-    NavigationModule,
+    LayoutModule,
     RouterModule.forRoot(ROUTES)
   ],
   providers: [ AuthService ],
