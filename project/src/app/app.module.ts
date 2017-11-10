@@ -1,7 +1,8 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
+import {HttpModule} from "@angular/http";
 
 // Modules
 import {AuthModule} from './auth/auth.module';
@@ -14,25 +15,29 @@ import {AppComponent} from './app.component';
 // Services
 import {AuthService} from './auth/_services/auth.service';
 import {AuthGuardService} from "./auth/_services/authGuard.service";
+import {DatetimeService} from "./commons/datatime.service/datetime.service";
 
 // Config
 import {ROUTES} from "../config/routing";
 
 @NgModule({
-  declarations: [ AppComponent ],
+  declarations: [
+      AppComponent
+  ],
   imports : [
     BrowserModule,
     BrowserAnimationsModule,
+      HttpModule,
     AuthModule,
     ContentModule,
     LayoutModule,
     RouterModule.forRoot(ROUTES)
   ],
   providers: [
-    AuthService,
-    AuthGuardService
+      AuthService,
+      AuthGuardService,
+      DatetimeService
   ],
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
