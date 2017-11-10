@@ -1,24 +1,39 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './access/login.component/login.component';
-import { DashboardComponent } from './content/dashboard.component/dashboard.component';
-import { LayoutComponent } from './layout/layout.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {LoginComponent} from './auth/login.component/login.component';
+import {DashboardComponent} from './content/dashboard.component/dashboard.component';
+import {LayoutComponent} from './layout/layout.component';
+import {AuthGuardService} from "./auth/_services/authGuard.service";
 
-const ROUTES: Routes = [
+export const ROUTES: Routes = [
     {
-        path: 'usuario',
+        path: '',
         component: LayoutComponent,
         children: [
             {
-                path: 'dashboard',
-                component: DashboardComponent
+                path: '',
+                redirectTo: 'dashboard',
+                pathMatch: 'full',
             },
-        ]
+            {
+                path: 'dashboard',
+                component: DashboardComponent,
+                canActivate: [AuthGuardService]
+            },
+            {
+                path: 'operations',
+                redirectTo: 'operations/contingencies',
+                pathMatch: 'full',
+            },
+            {
+                path: 'operations/contingencies',
+                component: DashboardComponent,
+                canActivate: [AuthGuardService]
+            }
+        ],
+        canActivate: [AuthGuardService]
     },
-    {
-        path: 'login',
-        component: LoginComponent
-    },
+    { path: 'login', component: LoginComponent },
     {
         path: '',
         redirectTo: '/login',

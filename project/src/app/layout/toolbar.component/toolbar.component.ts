@@ -8,7 +8,7 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
     selector: 'lsl-toolbar',
     templateUrl: './toolbar.component.html',
-    styleUrls: ['./toolbar.component.css']
+    styleUrls: ['./toolbar.component.scss']
 })
 export class ToolbarComponent implements OnInit, OnDestroy {
 
@@ -31,7 +31,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        TimerObservable.create(0, this.interval)
+        /*TimerObservable.create(0, this.interval)
             .takeWhile(() => this.alive)
             .subscribe(() => {
                 this.datetimeService.getTime()
@@ -43,7 +43,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                             this.display = true;
                         }
                     });
-            });
+            });*/
     }
 
     ngOnDestroy() {

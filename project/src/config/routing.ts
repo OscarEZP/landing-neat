@@ -1,6 +1,6 @@
 import {Routes} from '@angular/router';
 
-import {LayoutComponent} from "../app/layout/layout.component/layout.component";
+import {LayoutComponent} from "../app/layout/layout.component";
 import {DashboardComponent} from "../app/content/dashboard.component/dashboard.component";
 import {LoginComponent} from "../app/auth/login.component/login.component";
 
