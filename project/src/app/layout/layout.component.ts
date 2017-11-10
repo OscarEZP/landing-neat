@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatSidenav} from '@angular/material';
-import {SidenavService} from "../_services/sidenav.service";
+import {SidenavService} from "./_services/sidenav.service";
 
 @Component({
   selector: 'lsl-layout',
