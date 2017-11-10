@@ -8,7 +8,6 @@ import {NavigationModule} from '../navigation/navigation.module';
 import { DashboardComponent } from './dashboard.component/dashboard.component';
 import { TicketsComponent } from './tickets.component/tickets.component';
 import { LayoutComponent } from './layout.component/layout.component';
-import {SidenavComponent} from "../navigation/sidenav.component/sidenav.component";
 
 export const ROUTES: Routes = [
   {
@@ -34,7 +33,7 @@ export const ROUTES: Routes = [
     RouterModule.forRoot(ROUTES),
     MatToolbarModule
   ],
-  declarations: [ DashboardComponent, TicketsComponent, LayoutComponent, SidenavComponent ],
+  declarations: [ DashboardComponent, TicketsComponent, LayoutComponent],
   bootstrap:[  ]
 })
 export class ContentModule { }

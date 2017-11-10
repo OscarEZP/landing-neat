@@ -3,7 +3,7 @@
     <mat-card-header>
         <mat-card-title>Sign in</mat-card-title>
     </mat-card-header>
-    <form>
+    <form  (submit)="logIn()">
         <mat-card-content>
             <mat-form-field class="mat-form-field">
                 <input matInput placeholder="Username" type="text" required>
