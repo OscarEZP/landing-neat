@@ -4,7 +4,7 @@ import {MatSidenavModule} from '@angular/material';
 import {MatToolbarModule} from '@angular/material';
 
 import {ToolbarComponent} from './toolbar.component/toolbar.component';
-// import { SidenavComponent } from './sidenav.component/sidenav.component';
+import {SidenavComponent} from './sidenav.component/sidenav.component';
 
 @NgModule({
   imports: [
@@ -14,11 +14,11 @@ import {ToolbarComponent} from './toolbar.component/toolbar.component';
   ],
   exports: [
     ToolbarComponent,
-    // SidenavComponent
+    SidenavComponent
   ],
   declarations: [
     ToolbarComponent,
-    // SidenavComponent
+    SidenavComponent
   ],
 })
 export class NavigationModule { }
