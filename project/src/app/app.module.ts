@@ -1,7 +1,7 @@
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { HttpModule } from "@angular/http";
 
 // Modules
 import { AccessModule } from './access/access.module';
@@ -14,19 +14,29 @@ import { AppComponent } from './app.component';
 
 // Services
 import { AuthService } from './access/_services/auth.service';
+import { DatetimeService } from "./commons/datatime.service/datetime.service";
+
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AccessModule,
-    ContentModule,
-    LayoutModule,
-    AppRoutingModule
-  ],
-  providers: [AuthService],
-  schemas: [],
-  bootstrap: [AppComponent]
+
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        HttpModule,
+        AccessModule,
+        ContentModule,
+        LayoutModule,
+        AppRoutingModule
+    ],
+    declarations: [
+        AppComponent
+    ],
+    providers: [
+        AuthService, DatetimeService
+    ],
+    schemas: [
+
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
