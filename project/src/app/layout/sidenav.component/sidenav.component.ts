@@ -18,16 +18,24 @@ export class SidenavComponent implements OnInit {
         this.mail = "ignacio.pardo@gmail.com";
         this.arrMenu = [
                         {
-                            "label" :"Dashboard",
-                            "link":"",
+                            "label":"Dashboard",
+                            "link":"/dashboard/",
                             "icon":"assessment"
                         },
                         {
                             "label":"Operations Module",
-                            "link":"",
+                            "link":"/operations/",
                             "icon":"build"
                         }
                         ];
+
+    }
+
+    logOut(){
+
+    }
+
+    navigateTo(page:String){
 
     }
 

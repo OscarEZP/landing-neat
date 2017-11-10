@@ -14,6 +14,7 @@ export class LayoutComponent implements OnInit {
   }
 
   ngOnInit() {
+
     this.sidenavService.setSidenav(this.sidenav);
   }
 

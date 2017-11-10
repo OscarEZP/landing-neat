@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
 
   logIn(){
     this.authService.logIn();
-    this.router.navigate(['/usuario/dashboard/']);
+    this.router.navigate([this.authService.getRedirectUrl()]);
   }
 
 }

@@ -5,7 +5,7 @@
         <p [innerHtml]="mail"></p>
     </header>
     <nav>
-        <a *ngFor="let menu of arrMenu" routerLink="menu.link" routerLinkActive="active">
+        <a *ngFor="let menu of arrMenu" routerLink="{{menu.link}}" routerLinkActive="active">
             <i class="material-icons" [innerHtml]="menu.icon"></i>
             <span [innerHtml]="menu.label"></span>
         </a>
