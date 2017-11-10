@@ -1,10 +1,16 @@
-<mat-sidenav #sidenav mode="side" opened="true">
-    <button mat-mini-fab class="example-fab" (click)="sidenav.toggle()">
-        <mat-icon>add</mat-icon>
-    </button>
+<mat-sidenav id="nav-drawer" #sidenav mode="side" opened="true">
     <div class="example-scrolling-content">
-        Lorem ipsum dolor sit amet, pede a libero aenean phasellus, lectus metus sint ut risus,
-        fusce vel in pellentesque. Nisl rutrum etiam morbi consectetuer tempor magna, aenean nullam
-        nunc id, neque vivamus interdum sociis
+        <header>
+            <i class="material-icons">account_circle</i>
+            <h1 [innerHtml]="username"></h1>
+            <p [innerHtml]="mail"></p>
+        </header>
+        <nav>
+            <a *ngFor="let menu of arrMenu" routerLink="menu.link" routerLinkActive="active">
+                <i class="material-icons" [innerHtml]="menu.icon"></i>
+                <span [innerHtml]="menu.label"></span>
+            </a>
+        </nav>
+        <hr>
     </div>
 </mat-sidenav>

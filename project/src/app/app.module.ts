@@ -1,13 +1,12 @@
 import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-
 
 // Modules
 import {AccessModule} from './access/access.module';
 import {ContentModule} from './content/content.module';
 import {NavigationModule} from './navigation/navigation.module';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 // Components
 import {AppComponent} from './app.component';
@@ -19,7 +18,6 @@ import {LayoutComponent} from './content/layout.component/layout.component';
 import {AuthService} from './access/_shared/auth.service';
 import {DatetimeService} from "./commons/datatime.service/datetime.service";
 import {HttpModule} from "@angular/http";
-import {TimerObservable} from "rxjs/observable/TimerObservable";
 
 
 export const ROUTES: Routes = [
@@ -58,5 +56,4 @@ export const ROUTES: Routes = [
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule { }
