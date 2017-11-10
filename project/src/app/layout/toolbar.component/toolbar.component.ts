@@ -1,7 +1,8 @@
-import {OnDestroy, OnInit, Component} from '@angular/core';
-import {DatetimeService} from "../../commons/datatime.service/datetime.service";
-import {ActualTimeModel} from "../../commons/datatime.service/actual-time-model";
-import {TimerObservable} from "rxjs/observable/TimerObservable";
+import { Component, OnInit, OnDestroy} from '@angular/core';
+import { SidenavService } from '../_services/sidenav.service'
+import { DatetimeService } from "../../commons/datatime.service/datetime.service";
+import { ActualTimeModel } from "../../commons/datatime.service/actual-time-model";
+import { TimerObservable } from "rxjs/observable/TimerObservable";
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -18,7 +19,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     public currentDateLong: number;
     public currentDateString: string;
 
-    constructor(private datetimeService:DatetimeService) {
+    constructor(
+        private datetimeService: DatetimeService,
+        private sidenavService: SidenavService
+    ) {
         this.display = false;
         this.alive = true;
         this.interval = 500000;
@@ -35,7 +39,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                         this.data = data;
                         this.currentDateLong = this.data.currentTimeLong;
                         this.currentDateString = this.data.currentTime;
-                        if(!this.display){
+                        if (!this.display) {
                             this.display = true;
                         }
                     });
@@ -44,6 +48,12 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.alive = false;
+    }
+
+    toggleSidenav() {
+        this.sidenavService.toggleSidenav().then(() => {
+            console.log('toggle sidenav!');
+        });
     }
 
 }

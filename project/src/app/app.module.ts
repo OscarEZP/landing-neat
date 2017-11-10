@@ -1,59 +1,42 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpModule } from "@angular/http";
 
 // Modules
-import {AccessModule} from './access/access.module';
-import {ContentModule} from './content/content.module';
-import {NavigationModule} from './navigation/navigation.module';
+import { AccessModule } from './access/access.module';
+import { ContentModule } from './content/content.module';
+import { LayoutModule } from './layout/layout.module';
+import { AppRoutingModule } from './app-routing.module';
 
 // Components
-import {AppComponent} from './app.component';
-import {LoginComponent} from './access/login.component/login.component';
-import {DashboardComponent} from './content/dashboard.component/dashboard.component';
-import {LayoutComponent} from './content/layout.component/layout.component';
+import { AppComponent } from './app.component';
 
 // Services
-import {AuthService} from './access/_shared/auth.service';
-import {DatetimeService} from "./commons/datatime.service/datetime.service";
-import {HttpModule} from "@angular/http";
+import { AuthService } from './access/_services/auth.service';
+import { DatetimeService } from "./commons/datatime.service/datetime.service";
 
-
-export const ROUTES: Routes = [
-    {
-        path: 'usuario',
-        component: LayoutComponent,
-        children: [
-            {path: 'dashboard', component: DashboardComponent},
-        ]
-    },
-    {path: 'login', component: LoginComponent},
-    {
-        path: '',
-        redirectTo: '/login',
-        pathMatch: 'full'
-    },
-    {
-        path: '**',
-        redirectTo: '/login',
-        pathMatch: 'full'
-    }
-];
 
 @NgModule({
-    declarations: [AppComponent],
+
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
+        HttpModule,
         AccessModule,
         ContentModule,
-        HttpModule,
-        NavigationModule,
-        RouterModule.forRoot(ROUTES)
+        LayoutModule,
+        AppRoutingModule
     ],
-    providers: [AuthService, DatetimeService],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    declarations: [
+        AppComponent
+    ],
+    providers: [
+        AuthService, DatetimeService
+    ],
+    schemas: [
+
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

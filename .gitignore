@@ -1,8 +1,9 @@
+project/node_modules
 *.iml
 ?/
 \.idea/
 .DS_Store
 .settings
-project/node_modules/
 .idea/watcherTasks.xml
+
 
