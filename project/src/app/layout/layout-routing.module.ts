@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LayoutComponent } from "./layout.component";
 import { DashboardComponent } from "../content/dashboard.component/dashboard.component";
+import {OperationsComponent} from "../content/operations/operations.component";
 @NgModule({
     imports: [
         RouterModule.forRoot([
@@ -19,8 +20,8 @@ import { DashboardComponent } from "../content/dashboard.component/dashboard.com
                         component: DashboardComponent
                     },
                     {
-                        path: 'operation',
-                        component: DashboardComponent
+                        path: 'operations',
+                        component: OperationsComponent
                     }
                 ]
             }

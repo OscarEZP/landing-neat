@@ -33,12 +33,11 @@ import { DataService } from "./commons/data.service/data.service";
         AppComponent
     ],
     providers: [
-        AuthService, DatetimeService
+        AuthService, DatetimeService, DataService
     ],
     schemas: [
 
     ],
-    providers: [AuthService, DatetimeService, DataService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

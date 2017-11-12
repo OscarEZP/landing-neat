@@ -2,12 +2,12 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {ContingenceListComponent} from "./contingenceList.component/contingenceList.component";
 
 @Component({
-    selector: 'lsl-contingences',
-    templateUrl: './contingences.component.html',
-    styleUrls: ['./contingences.component.css']
+    selector: 'lsl-operations',
+    templateUrl: './operations.component.html',
+    styleUrls: ['./operations.component.css']
 })
 
-export class ContingencesComponent implements OnInit {
+export class OperationsComponent implements OnInit {
 
     private itemsCount: number;
 

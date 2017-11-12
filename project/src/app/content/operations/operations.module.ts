@@ -1,31 +1,20 @@
 import {NgModule} from "@angular/core";
 import {CommonsModule} from "../../commons/commons.module";
-import {
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatIconModule,
-    MatListModule,
-    MatProgressBarModule,
-    MatTabsModule
-} from "@angular/material";
-import {ContingencesComponent} from "./contingences.component";
 import {ContingenceListComponent} from './contingenceList.component/contingenceList.component';
 import {BrowserModule} from "@angular/platform-browser";
-import {ObjNgForPipe} from "../../commons/objNgForPipe.pipe";
-import {CountdownComponent} from "../../commons/countdown.component/countdown.component";
+import {OperationsComponent} from "./operations.component";
+import {SharedModule} from "../../shared/shared.module";
 
 @NgModule({
     imports: [
         BrowserModule,
         CommonsModule,
-        MatTabsModule,
-        MatListModule,
-        MatProgressBarModule,
-        MatIconModule,
-        MatButtonModule,
-        MatButtonToggleModule
+        SharedModule
     ],
-    declarations: [ ContingencesComponent, ContingenceListComponent, ObjNgForPipe, CountdownComponent ]
+    declarations: [
+        OperationsComponent,
+        ContingenceListComponent
+    ]
 })
 
-export class ContingencesModule {}
+export class OperationsModule {}

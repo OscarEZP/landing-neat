@@ -1,4 +1,3 @@
-Hora UTC: {{ utcTime | date: 'dd-MMM-yyyy HH:mm' }}
 <mat-list *ngIf="contingenceList?.length > 0">
     <mat-list-item *ngFor="let contingence of contingenceList">
         <div class="list-item">{{ contingence.tail }} {{ contingence.fleet }}</div>
