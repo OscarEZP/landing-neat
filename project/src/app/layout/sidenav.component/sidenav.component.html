@@ -1,0 +1,14 @@
+<div id="nav-drawer">
+    <header>
+        <i class="material-icons">account_circle</i>
+        <h1 [innerHtml]="username"></h1>
+        <p [innerHtml]="mail"></p>
+    </header>
+    <nav>
+        <a *ngFor="let menu of arrMenu" routerLink="menu.link" routerLinkActive="active">
+            <i class="material-icons" [innerHtml]="menu.icon"></i>
+            <span [innerHtml]="menu.label"></span>
+        </a>
+    </nav>
+    <hr>
+</div>

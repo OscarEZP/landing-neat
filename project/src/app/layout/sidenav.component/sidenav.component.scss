@@ -1,0 +1,57 @@
+@import "../../../assets/style/baseTheme/colorStyle";
+
+$nav-drawer-width: 489px;
+
+
+#nav-drawer {
+
+  width: $nav-drawer-width;
+  a {
+    color: $typography-normal;
+    display: block;
+    padding: 10px 0;
+  }
+
+  header {
+
+    height: 210px;
+    background-color: $background1;
+    padding: 20px 30px;
+
+    p {
+      color: $white;
+      margin: 5px 0;
+      font-size: 17px;
+    }
+
+    h1{
+      font-size: 22px;
+      color: $white;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .material-icons{
+      color: $white;
+      font-size: 115px;
+      margin: 30px 0 0 -10px;
+    }
+
+  }
+
+  nav{
+
+    padding: 20px 15px 10px;
+
+    .material-icons{
+      font-size: 18px;
+      float: left;
+      padding: 2px 15px;
+      color: $typography-dark;
+    }
+  }
+
+  hr{
+    border-color: rgba(0,0,0,0.10);
+  }
+}

@@ -24,7 +24,11 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     public currentDateString: string;
     private time: Date;
 
-    constructor(private datetimeService:DatetimeService, private messageData: DataService, private clockService: ClockService) {
+    constructor(
+        private datetimeService:DatetimeService,
+        private messageData: DataService, private clockService: ClockService
+        private sidenavService: SidenavService
+    ) {
         this.display = false;
         this.alive = true;
         this.interval = 60000;
@@ -62,6 +66,12 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     newMessage() {
         this.messageData.changeNumberMessage(this.currentDateLong);
+    }
+
+    toggleSidenav() {
+        this.sidenavService.toggleSidenav().then(() => {
+            console.log('toggle sidenav!');
+        });
     }
 
 }
