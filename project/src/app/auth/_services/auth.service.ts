@@ -12,7 +12,7 @@ export class AuthService {
   constructor(){
     this.isLoggedIn = this.getIsLoggedIn();
     this.redirectUrl = '/';
-    this.loginUrl = '/login/';
+    this.loginUrl = '/login';
   }
 
   logIn() {
@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   getIsLoggedIn(){
-    return sessionStorage.getItem('currentUser') ? true : false
+    return localStorage.getItem('currentUser') ? true : false
   }
 
   getRedirectUrl(): string {

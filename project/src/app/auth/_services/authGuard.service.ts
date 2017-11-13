@@ -13,20 +13,14 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
         if (this.authService.getIsLoggedIn()) {
             return true;
         }
-        // this.authService.setRedirectUrl(url);
-        this.router.navigate([ this.authService.getLoginUrl() ]);
+        this.authService.setRedirectUrl(url);
+        this.router.navigate([ this.authService.getRedirectUrl() ]);
         return false;
     }
 
     canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        let url: string = state.url;
-        console.log('Url2:'+ url);
-        if (this.authService.getIsLoggedIn()) {
-            return true;
-        }
-        // this.authService.setRedirectUrl(url);
-        this.router.navigate([ this.authService.getLoginUrl() ]);
-        return false;
+        // Auth for childs
+        return true;
     }
 
 } 

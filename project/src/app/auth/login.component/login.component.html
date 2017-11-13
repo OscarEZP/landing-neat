@@ -3,7 +3,7 @@
     <mat-card-header>
         <mat-card-title>Sign in</mat-card-title>
     </mat-card-header>
-    <form  (submit)="logIn()">
+    <form #f="ngForm" (submit)="logIn(f)">
         <mat-card-content>
             <mat-form-field class="mat-form-field">
                 <input matInput placeholder="Username" type="text" required>

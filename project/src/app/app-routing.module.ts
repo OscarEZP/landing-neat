@@ -24,6 +24,7 @@ const ROUTES: Routes = [
                 path: 'operations',
                 redirectTo: 'operations/contingencies',
                 pathMatch: 'full',
+                canActivate: [AuthGuardService]
             },
             {
                 path: 'operations/contingencies',
@@ -35,9 +36,9 @@ const ROUTES: Routes = [
     },
     { path: 'login', component: LoginComponent },
     {
-        path: '',
-        redirectTo: '/login',
-        pathMatch: 'full'
+        path: 'logout',
+        component: LoginComponent,
+        data: { logout: true }
     },
     {
         path: '**',

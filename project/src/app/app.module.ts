@@ -13,8 +13,6 @@ import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from './app.component';
 
 // Services
-import {AuthService} from './auth/_services/auth.service';
-import {AuthGuardService} from "./auth/_services/authGuard.service";
 import {DatetimeService} from "./commons/datatime.service/datetime.service";
 import {DataService} from "./commons/data.service/data.service";
 
@@ -33,8 +31,6 @@ import {DataService} from "./commons/data.service/data.service";
         AppComponent
     ],
     providers: [
-        AuthService,
-        AuthGuardService,
         DatetimeService,
         DataService
     ],

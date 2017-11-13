@@ -6,7 +6,7 @@ import 'rxjs/add/operator/takeWhile';
 import {DataService} from "../../commons/data.service/data.service";
 import {Subscription} from "rxjs/Subscription";
 import {ClockService} from "../../commons/clock.service/clock.service";
-import { SidenavService } from '../_services/sidenav.service'
+import {SidenavService} from '../_services/sidenav.service'
 
 @Component({
     selector: 'lsl-toolbar',
