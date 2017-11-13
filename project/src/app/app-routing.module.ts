@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './access/login.component/login.component';
-import { DashboardComponent } from './content/dashboard.component/dashboard.component';
-import { LayoutComponent } from './layout/layout.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {LoginComponent} from './access/login.component/login.component';
+import {DashboardComponent} from './content/dashboard.component/dashboard.component';
+import {LayoutComponent} from './layout/layout.component';
 
 const ROUTES: Routes = [
     {
@@ -12,7 +12,7 @@ const ROUTES: Routes = [
             {
                 path: 'dashboard',
                 component: DashboardComponent
-            },
+            }
         ]
     },
     {
