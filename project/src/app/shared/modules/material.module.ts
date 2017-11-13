@@ -25,7 +25,7 @@ import {FlexLayoutModule} from "@angular/flex-layout";
         MatListModule,
         MatProgressBarModule,
         MatIconModule,
-        MatInputModule
+        MatInputModule,
         FlexLayoutModule
 
     ],

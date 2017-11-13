@@ -8,7 +8,8 @@ import {Component, OnInit} from '@angular/core';
 export class SidenavComponent implements OnInit {
     private username: String;
     private mail: String;
-    private arrMenu: {label:String,link:String,icon:String}[];
+    private arrMenu: { label: String, link: String, icon: String }[];
+    private arrFooterMenu: { label: String, link: String, icon: String }[];
 
     constructor() {
     }
@@ -17,25 +18,33 @@ export class SidenavComponent implements OnInit {
         this.username = "Ignacio Pardo";
         this.mail = "ignacio.pardo@gmail.com";
         this.arrMenu = [
-                        {
-                            "label":"Dashboard",
-                            "link":"/dashboard/",
-                            "icon":"assessment"
-                        },
-                        {
-                            "label":"Operations Module",
-                            "link":"/operations/",
-                            "icon":"build"
-                        }
-                        ];
+            {
+                "label": "Dashboard",
+                "link": "/dashboard/",
+                "icon": "assessment"
+            },
+            {
+                "label": "Operations Module",
+                "link": "/operations/",
+                "icon": "build"
+            },
+        ];
+
+        this.arrFooterMenu = [
+            {
+                "label": "Log Out",
+                "link": "/logout",
+                "icon": "power_settings_new"
+            }
+        ];
 
     }
 
-    logOut(){
+    logOut() {
 
     }
 
-    navigateTo(page:String){
+    navigateTo(page: String) {
 
     }
 

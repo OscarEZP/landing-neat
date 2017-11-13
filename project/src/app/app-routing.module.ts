@@ -12,7 +12,7 @@ const ROUTES: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: 'dashboard',
+                redirectTo: '/dashboard',
                 pathMatch: 'full',
             },
             {
@@ -22,7 +22,7 @@ const ROUTES: Routes = [
             },
             {
                 path: 'operations',
-                redirectTo: 'operations/contingencies',
+                redirectTo: '/operations/contingencies',
                 pathMatch: 'full',
                 canActivate: [AuthGuardService]
             },
@@ -34,7 +34,10 @@ const ROUTES: Routes = [
         ],
         canActivate: [AuthGuardService]
     },
-    { path: 'login', component: LoginComponent },
+    {
+        path: 'login',
+        component: LoginComponent
+    },
     {
         path: 'logout',
         component: LoginComponent,
