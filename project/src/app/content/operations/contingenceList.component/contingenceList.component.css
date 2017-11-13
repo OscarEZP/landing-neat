@@ -1,0 +1,15 @@
+mat-list-item .list-item {
+    min-width: 20px;
+    font-size: 12px;
+    padding: 2px 5px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+mat-list-item .list-item-description {
+    width: 32%;
+}
+
+mat-list-item .list-item-progress {
+    width: 16%;
+}

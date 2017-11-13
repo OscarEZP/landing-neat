@@ -5,7 +5,7 @@ import {DashboardComponent} from './content/dashboard.component/dashboard.compon
 import {LayoutComponent} from './layout/layout.component';
 import {AuthGuardService} from "./auth/_services/authGuard.service";
 
-export const ROUTES: Routes = [
+const ROUTES: Routes = [
     {
         path: '',
         component: LayoutComponent,

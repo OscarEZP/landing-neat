@@ -16,25 +16,31 @@ import {AppComponent} from './app.component';
 import {AuthService} from './auth/_services/auth.service';
 import {AuthGuardService} from "./auth/_services/authGuard.service";
 import {DatetimeService} from "./commons/datatime.service/datetime.service";
+import {DataService} from "./commons/data.service/data.service";
 
 @NgModule({
-  declarations: [
-      AppComponent
-  ],
-  imports : [
-      BrowserModule,
-      BrowserAnimationsModule,
-      HttpModule,
-      AuthModule,
-      ContentModule,
-      LayoutModule,
-      AppRoutingModule
-  ],
-  providers: [
-      AuthService,
-      AuthGuardService,
-      DatetimeService
-  ],
-  bootstrap: [ AppComponent ]
+
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        HttpModule,
+        AuthModule,
+        ContentModule,
+        LayoutModule,
+        AppRoutingModule
+    ],
+    declarations: [
+        AppComponent
+    ],
+    providers: [
+        AuthService,
+        AuthGuardService,
+        DatetimeService,
+        DataService
+    ],
+    schemas: [
+
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
