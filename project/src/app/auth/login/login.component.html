@@ -1,13 +1,13 @@
 <div fxLayout="row" fxLayoutAlign="center center" fxFill>
     <mat-card id="login">
 
-        <mat-card-header>
-            <mat-card-title>Sign in</mat-card-title>
-        </mat-card-header>
-        <form (submit)="logIn()">
-            <mat-card-content>
-                <mat-form-field class="mat-form-field">
-                    <input matInput placeholder="Username" type="text" required>
+    <mat-card-header>
+        <mat-card-title>Sign in</mat-card-title>
+    </mat-card-header>
+    <form #f="ngForm" (submit)="logIn(f)">
+        <mat-card-content>
+            <mat-form-field class="mat-form-field">
+                <input matInput placeholder="Username" type="text" required>
 
                 </mat-form-field>
                 <mat-form-field class="mat-form-field">

@@ -41,7 +41,6 @@ import {FlexLayoutModule} from "@angular/flex-layout";
         MatProgressBarModule,
         MatIconModule,
         FlexLayoutModule
-
     ],
 
 })

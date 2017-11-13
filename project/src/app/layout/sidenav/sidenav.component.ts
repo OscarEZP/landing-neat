@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
     selector: 'lsl-sidenav',
@@ -9,6 +9,7 @@ export class SidenavComponent implements OnInit {
     private username: String;
     private mail: String;
     private arrMenu: { label: String, link: String, icon: String }[];
+    private arrFooterMenu: { label: String, link: String, icon: String }[];
 
     constructor() {
     }
@@ -19,15 +20,31 @@ export class SidenavComponent implements OnInit {
         this.arrMenu = [
             {
                 "label": "Dashboard",
-                "link": "",
+                "link": "/dashboard/",
                 "icon": "assessment"
             },
             {
                 "label": "Operations Module",
-                "link": "",
+                "link": "/operations/",
                 "icon": "build"
+            },
+        ];
+
+        this.arrFooterMenu = [
+            {
+                "label": "Log Out",
+                "link": "/logout",
+                "icon": "power_settings_new"
             }
         ];
+
+    }
+
+    logOut() {
+
+    }
+
+    navigateTo(page: String) {
 
     }
 

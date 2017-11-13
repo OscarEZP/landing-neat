@@ -1,4 +1,6 @@
 <mat-toolbar color="primary">
-  <mat-icon (click)="toggleSidenav()" class="mat-icon material-icons" role="img" aria-hidden="true">menu</mat-icon>
+  <button mat-icon-button>
+    <mat-icon (click)="toggleSidenav()" class="mat-icon material-icons" role="img" aria-hidden="true">menu</mat-icon>
+  </button>
     <span>MOC <span *ngIf="display">{{ currentDateString | date: 'dd-MMM-yyyy'}} | {{ time | date: 'HH:mm:ss' }} UTC</span></span>
 </mat-toolbar>
