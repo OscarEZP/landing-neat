@@ -35,9 +35,10 @@ export class LoginComponent implements OnInit {
         });
     }
 
-  logIn(form:NgForm){
-    this.authService.logIn();
-    this.router.navigate([this.authService.getRedirectUrl()]);
-  }
+    logIn(form:NgForm){
+        // use form for validation
+        this.authService.logIn();
+        this.router.navigate([this.authService.getRedirectUrl()]);
+    }
 
 }
