@@ -17,12 +17,12 @@ export class AuthService {
 
   logIn() {
     this.isLoggedIn = true;
-    sessionStorage.setItem('currentUser', 'admin');
+    localStorage.setItem('currentUser', 'admin');
   }
 
   logOut(){
     this.isLoggedIn = false;
-    sessionStorage.removeItem('currentUser');
+    localStorage.removeItem('currentUser');
   }
 
   getIsLoggedIn(){
