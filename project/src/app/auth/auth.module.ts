@@ -6,7 +6,7 @@ import {FormsModule} from "@angular/forms";
 import {AuthService} from "./_services/auth.service";
 import {AuthGuardService} from "./_services/authGuard.service";
 
-import {LoginComponent} from './login.component/login.component';
+import {LoginComponent} from './login/login.component';
 
 @NgModule({
     imports: [

@@ -3,9 +3,9 @@ import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
 import {SharedModule} from '../shared/shared.module';
 
-import {ToolbarComponent} from './toolbar.component/toolbar.component';
+import {ToolbarComponent} from './toolbar/toolbar.component';
 import {LayoutComponent} from "./layout.component";
-import {SidenavComponent} from './sidenav.component/sidenav.component';
+import {SidenavComponent} from './sidenav/sidenav.component';
 
 import {SidenavService} from "./_services/sidenav.service";
 
