@@ -1,0 +1,20 @@
+<mat-list *ngIf="contingenceList?.length > 0">
+    <mat-list-item *ngFor="let contingence of contingenceList">
+        <div class="list-item">{{ contingence.tail }} {{ contingence.fleet }}</div>
+        <div class="list-item">{{ contingence.operator }}</div>
+        <div class="list-item">{{ contingence.flight }}</div>
+        <div class="list-item">{{ contingence.from }} {{ contingence.to }}</div>
+        <div class="list-item list-item-description">{{ (contingence.description.length > 150) ? (contingence.description | slice:0:150) + '...' : contingence.description }}</div>
+        <div class="list-item">{{ contingence.status }}</div>
+        <div class="list-item">{{ contingence.type }}</div>
+        <div class="list-item">{{ contingence.safetyEvent }}</div>
+        <div class="list-item list-item-progress"><mat-progress-bar mode="determinate" value="{{ getTimeAverage(contingence.creationDateLong, contingence.duration) }}"></mat-progress-bar></div>
+        <div class="list-item"><mat-icon>timer</mat-icon> <lsl-countdown [creationTime]="contingence.creationDateLong" [duration]="contingence.duration"></lsl-countdown></div>
+        <div class="list-item"><mat-icon>account_circle</mat-icon> {{ contingence.responsible }}</div>
+        <div class="list-item">
+            <button mat-icon-button>
+                <mat-icon aria-label="options">more_vert</mat-icon>
+            </button>
+        </div>
+    </mat-list-item>
+</mat-list>

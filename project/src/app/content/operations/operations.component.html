@@ -1,0 +1,12 @@
+<span>{{ itemsCount }} Alerts at this moment on Contingency</span>
+<mat-tab-group>
+    <mat-tab label="CONTINGENCY">
+        <lsl-contingence-list (messageEvent)="receiveMessage($event)"></lsl-contingence-list>
+    </mat-tab>
+    <mat-tab label="AOG">
+        <p>AOG Content</p>
+    </mat-tab>
+    <mat-tab label="PIT STOP">
+        <p>Pit Stop Content</p>
+    </mat-tab>
+</mat-tab-group>

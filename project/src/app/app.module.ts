@@ -15,6 +15,7 @@ import { AppComponent } from './app.component';
 // Services
 import { AuthService } from './access/_services/auth.service';
 import { DatetimeService } from "./commons/datatime.service/datetime.service";
+import { DataService } from "./commons/data.service/data.service";
 
 
 @NgModule({
@@ -32,11 +33,13 @@ import { DatetimeService } from "./commons/datatime.service/datetime.service";
         AppComponent
     ],
     providers: [
-        AuthService, DatetimeService
+        AuthService, DatetimeService, DataService
     ],
     schemas: [
 
     ],
     bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+    constructor() {}
+}
