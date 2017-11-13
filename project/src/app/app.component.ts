@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { AuthService } from './access/_services/auth.service';
+import { AuthService } from './auth/_services/auth.service';
 
 @Component({
   selector: 'lsl-root',

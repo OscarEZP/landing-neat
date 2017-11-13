@@ -5,8 +5,11 @@ import {
     MatButtonModule,
     MatCardModule,
     MatTabsModule,
-    MatInputModule,
-    MatFormFieldModule, MatListModule, MatProgressBarModule, MatIconModule
+    MatFormFieldModule,
+    MatListModule,
+    MatProgressBarModule,
+    MatIconModule,
+    MatInputModule
 
 } from '@angular/material';
 import {FlexLayoutModule} from "@angular/flex-layout";
@@ -38,7 +41,6 @@ import {FlexLayoutModule} from "@angular/flex-layout";
         MatIconModule,
         MatInputModule,
         FlexLayoutModule
-
     ],
 
 })
