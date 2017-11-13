@@ -1,23 +1,22 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {DashboardComponent} from './dashboard.component/dashboard.component';
-import {OperationsComponent} from "./operations/operations.component";
-import {ContingenceListComponent} from "./operations/contingenceList.component/contingenceList.component";
-import {CountdownComponent} from "../commons/countdown.component/countdown.component";
-import {ObjNgForPipe} from "../commons/objNgForPipe.pipe";
-import {SharedModule} from "../shared/shared.module";
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { DashboardComponent } from './dashboard.component/dashboard.component';
+import { ObjNgForPipe } from "../commons/objNgForPipe.pipe";
+import { SharedModule } from "../shared/shared.module";
+import { OperationsModule } from './operations/operations.module'
 
 @NgModule({
     imports: [
         CommonModule,
-        SharedModule
+        SharedModule,
+        OperationsModule
     ],
     declarations: [
         DashboardComponent,
-        OperationsComponent,
-        ContingenceListComponent,
-        ObjNgForPipe,
-        CountdownComponent
+        ObjNgForPipe
+    ],
+    exports: [
+        OperationsModule
     ],
     bootstrap: []
 })

@@ -5,7 +5,8 @@ import { AuthService } from '../_services/auth.service';
 @Component({
     selector: 'lsl-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+    styleUrls: ['./login.component.scss'],
+    
 })
 export class LoginComponent implements OnInit {
 

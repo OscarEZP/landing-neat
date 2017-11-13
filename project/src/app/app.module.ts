@@ -33,7 +33,8 @@ import { DataService } from "./commons/data.service/data.service";
         AppComponent
     ],
     providers: [
-        AuthService, DatetimeService, DataService
+        DatetimeService, 
+        DataService
     ],
     schemas: [
 
@@ -41,5 +42,5 @@ import { DataService } from "./commons/data.service/data.service";
     bootstrap: [AppComponent]
 })
 export class AppModule {
-    constructor() {}
+    constructor() { }
 }
