@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 import {AuthService} from '../_services/auth.service';
 import {ErrorStateMatcher} from '@angular/material/core';
-import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 
 @Component({
     selector: 'lsl-login',
@@ -20,17 +20,22 @@ export class LoginComponent implements OnInit {
 
     matcher = new MyErrorStateMatcher();
 
-
     user: string;
     password: string;
     registerView: boolean;
     routeData: any;
 
-    constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) {
+    loginForm: FormGroup;
+
+    constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, fb: FormBuilder) {
         this.authService = authService;
         this.user = '';
         this.password = '';
         this.registerView = false;
+        this.loginForm = fb.group({
+            'usernameFormControl': [null, Validators.required],
+            'passwordFormControl': [null, Validators.required]
+        })
     }
 
     ngOnInit() {
@@ -45,9 +50,10 @@ export class LoginComponent implements OnInit {
     }
 
     logIn(form: NgForm) {
-        // use form for validation
-        this.authService.logIn();
-        this.router.navigate([this.authService.getRedirectUrl()]);
+        if(form.valid) {
+            this.authService.logIn();
+            this.router.navigate([this.authService.getRedirectUrl()]);
+        }
     }
 
 }
