@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import {Http, Response} from "@angular/http";
-import "rxjs/add/operator/map";
-import {ActualTimeModel} from "./actual-time-model";
-import {Observable} from "rxjs/Observable";
+import {Http, Response} from '@angular/http';
+import 'rxjs/add/operator/map';
+import {ActualTimeModel} from './actual-time-model';
+import {Observable} from 'rxjs/Observable';
 
 
 @Injectable()
 export class DatetimeService {
-    private url = "http://localhost:9001/api/security/currentdatetime";
+    private url = 'http://localhost:9001/api/security/currentdatetime';
 
   constructor(private http: Http) {
   }

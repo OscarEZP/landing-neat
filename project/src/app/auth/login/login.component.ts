@@ -28,8 +28,8 @@ export class LoginComponent implements OnInit {
 
     constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) {
         this.authService = authService;
-        this.user = "";
-        this.password = "";
+        this.user = '';
+        this.password = '';
         this.registerView = false;
     }
 

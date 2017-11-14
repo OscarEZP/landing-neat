@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ContingenceListComponent} from "./contingenceList.component/contingenceList.component";
+import {ContingenceListComponent} from './contingenceList.component/contingenceList.component';
 
 @Component({
     selector: 'lsl-operations',

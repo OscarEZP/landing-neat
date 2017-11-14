@@ -12,7 +12,7 @@ import {
     MatIconModule
 
 } from '@angular/material';
-import {FlexLayoutModule} from "@angular/flex-layout";
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 @NgModule({
     imports: [

@@ -4,10 +4,10 @@ import {RouterModule} from '@angular/router';
 import {SharedModule} from '../shared/shared.module';
 
 import {ToolbarComponent} from './toolbar/toolbar.component';
-import {LayoutComponent} from "./layout.component";
+import {LayoutComponent} from './layout.component';
 import {SidenavComponent} from './sidenav/sidenav.component';
 
-import {SidenavService} from "./_services/sidenav.service";
+import {SidenavService} from './_services/sidenav.service';
 
 @NgModule({
   imports: [

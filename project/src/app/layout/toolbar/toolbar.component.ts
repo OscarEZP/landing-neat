@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DatetimeService } from "../../commons/datatime.service/datetime.service";
-import { ActualTimeModel } from "../../commons/datatime.service/actual-time-model";
-import { TimerObservable } from "rxjs/observable/TimerObservable";
+import { DatetimeService } from '../../commons/datatime.service/datetime.service';
+import { ActualTimeModel } from '../../commons/datatime.service/actual-time-model';
+import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
-import { DataService } from "../../commons/data.service/data.service";
-import { Subscription } from "rxjs/Subscription";
-import { ClockService } from "../../commons/clock.service/clock.service";
+import { DataService } from '../../commons/data.service/data.service';
+import { Subscription } from 'rxjs/Subscription';
+import { ClockService } from '../../commons/clock.service/clock.service';
 import { SidenavService } from '../_services/sidenav.service';
 
 
@@ -36,7 +36,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         this.alive = true;
         this.interval = 60000;
         this.currentDateLong = 0;
-        this.currentDateString = "";
+        this.currentDateString = '';
     }
 
     ngOnInit() {
