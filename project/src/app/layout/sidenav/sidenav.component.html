@@ -11,10 +11,12 @@
         </a>
     </nav>
     <hr>
-    <nav>
-        <a *ngFor="let menu of arrFooterMenu" routerLink="{{menu.link}}" routerLinkActive="active">
-            <i class="material-icons" [innerHtml]="menu.icon"></i>
-            <span [innerHtml]="menu.label"></span>
-        </a>
-    </nav>
+    <footer>
+        <nav>
+            <a *ngFor="let menu of arrFooterMenu" routerLink="{{menu.link}}" routerLinkActive="active">
+                <i class="material-icons" [innerHtml]="menu.icon"></i>
+                <span [innerHtml]="menu.label"></span>
+            </a>
+        </nav>
+    </footer>
 </div>

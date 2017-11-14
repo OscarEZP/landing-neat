@@ -2,7 +2,6 @@
 
 $nav-drawer-width: 489px;
 
-
 #nav-drawer {
 
   width: $nav-drawer-width;
@@ -56,5 +55,17 @@ $nav-drawer-width: 489px;
 
   hr{
     border-color: rgba(0, 0, 0, .1);
+  }
+
+  footer {
+    nav {
+      padding-top: 10px;
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      box-sizing: border-box;
+      background-color: rgba(236, 239, 241, 0.45);
+      border: solid 1px rgba(151, 151, 151, 0);
+    }
   }
 }
