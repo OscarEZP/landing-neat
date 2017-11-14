@@ -1,7 +1,7 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {Http, Response} from "@angular/http";
-import {DataService} from "../../../commons/data.service/data.service";
-import {Subscription} from "rxjs/Subscription";
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Http, Response } from "@angular/http";
+import { DataService } from "../../../commons/data.service/data.service";
+import { Subscription } from "rxjs/Subscription";
 
 @Component({
     selector: 'lsl-contingence-list',
@@ -40,10 +40,10 @@ export class ContingenceListComponent implements OnInit, OnDestroy {
     getTimeAverage(creationDate: any, duration: any) {
         const actualTime = this.utcTime;
         let average: number;
-        let valueNumber =  (creationDate + duration) - actualTime;
+        let valueNumber = (creationDate + duration) - actualTime;
 
-        if(valueNumber > 0) {
-            average = 100 - Math.round(((valueNumber * 100) / duration ));
+        if (valueNumber > 0) {
+            average = 100 - Math.round(((valueNumber * 100) / duration));
         } else {
             average = 100;
         }

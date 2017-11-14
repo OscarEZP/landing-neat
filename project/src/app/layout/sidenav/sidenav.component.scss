@@ -15,7 +15,7 @@ $nav-drawer-width: 489px;
   header {
 
     height: 210px;
-    background-color: $background1;
+    background-color: $blue;
     padding: 20px 30px;
 
     p {
@@ -40,13 +40,16 @@ $nav-drawer-width: 489px;
   }
 
   nav{
-
     padding: 20px 15px 10px;
+
+    a{
+      font-size: 18px;
+    }
 
     .material-icons{
       font-size: 18px;
       float: left;
-      padding: 2px 15px;
+      padding: 1px 15px;
       color: $typography-dark;
     }
   }
