@@ -33,8 +33,8 @@ export class LoginComponent implements OnInit {
         this.password = '';
         this.registerView = false;
         this.loginForm = fb.group({
-            'usernameFormControl': [null, Validators.required],
-            'passwordFormControl': [null, Validators.required]
+            'usernameFormControl': this.usernameFormControl,
+            'passwordFormControl': this.passwordFormControl
         })
     }
 

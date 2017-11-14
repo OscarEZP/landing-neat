@@ -4,7 +4,7 @@
         <mat-card-header>
             <mat-card-title class="mat-card-title">Find Account</mat-card-title>
         </mat-card-header>
-        <form #f="ngForm" (submit)="findAccount(f)" ngNativeValidate>
+        <form [formGroup]="findAccountForm" (submit)="findAccount(findAccountForm)">
             <mat-card-content class="mat-card-content">
                 <div>
                     Please enter your username
