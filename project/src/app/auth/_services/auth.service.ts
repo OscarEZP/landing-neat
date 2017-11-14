@@ -11,7 +11,7 @@ export class AuthService {
 
   constructor(){
     this.isLoggedIn = this.getIsLoggedIn();
-    this.redirectUrl = '/';
+    this.redirectUrl = '/dashboard';
     this.loginUrl = '/login';
   }
 

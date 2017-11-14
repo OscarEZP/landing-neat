@@ -3,8 +3,9 @@ import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './auth/login/login.component';
 import {DashboardComponent} from './content/dashboard/dashboard.component';
 import {LayoutComponent} from './layout/layout.component';
-import {AuthGuardService} from './auth/_services/authGuard.service';
-import {FindAccountComponent} from './auth/find-account/find-account.component';
+import {AuthGuardService} from "./auth/_services/authGuard.service";
+import {FindAccountComponent} from "./auth/find-account/find-account.component";
+import {OperationsComponent} from "./content/operations/operations.component";
 
 const ROUTES: Routes = [
     {
@@ -23,13 +24,7 @@ const ROUTES: Routes = [
             },
             {
                 path: 'operations',
-                redirectTo: '/operations/contingencies',
-                pathMatch: 'full',
-                canActivate: [AuthGuardService]
-            },
-            {
-                path: 'operations/contingencies',
-                component: DashboardComponent,
+                component: OperationsComponent,
                 canActivate: [AuthGuardService]
             }
         ],
