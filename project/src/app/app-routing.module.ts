@@ -4,6 +4,7 @@ import {LoginComponent} from './auth/login/login.component';
 import {DashboardComponent} from './content/dashboard/dashboard.component';
 import {LayoutComponent} from './layout/layout.component';
 import {AuthGuardService} from "./auth/_services/authGuard.service";
+import {FindAccountComponent} from "./auth/find-account/find-account.component";
 
 const ROUTES: Routes = [
     {
@@ -41,7 +42,11 @@ const ROUTES: Routes = [
     {
         path: 'logout',
         component: LoginComponent,
-        data: { logout: true }
+        data: {logout: true}
+    },
+    {
+        path: 'findAccount',
+        component: FindAccountComponent
     },
     {
         path: '**',
@@ -58,9 +63,8 @@ const ROUTES: Routes = [
     exports: [
         RouterModule
     ],
-    providers: [
-
-    ]
+    providers: []
 })
 
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

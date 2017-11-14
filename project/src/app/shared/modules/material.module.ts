@@ -45,4 +45,5 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 
 })
 
-export class MaterialModule { }
+export class MaterialModule {
+}
