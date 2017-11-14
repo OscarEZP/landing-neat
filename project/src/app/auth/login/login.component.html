@@ -4,11 +4,11 @@
         <mat-card-header>
             <mat-card-title>Sign in</mat-card-title>
         </mat-card-header>
-        <form #f="ngForm" (submit)="logIn(f)">
+        <form [formGroup]="loginForm" (submit)="logIn(loginForm)">
             <mat-card-content>
                 <mat-form-field class="mat-form-field">
                     <input matInput placeholder="Username" type="text"
-                           [formControl]="usernameFormControl"
+                           [formControl]="loginForm.controls['usernameFormControl']"
                            [errorStateMatcher]="matcher">
                     <mat-error *ngIf="usernameFormControl.hasError('required')">
                         Please enter your username
@@ -16,7 +16,7 @@
                 </mat-form-field>
                 <mat-form-field class="mat-form-field">
                     <input matInput placeholder="Password" [type]="hide ? 'password' : 'text'"
-                           [formControl]="passwordFormControl"
+                           [formControl]="loginForm.controls['passwordFormControl']"
                            [errorStateMatcher]="matcher">
                     <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
                     <mat-error *ngIf="passwordFormControl.hasError('required')">
