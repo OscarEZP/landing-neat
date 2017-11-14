@@ -34,8 +34,8 @@ export class LoginComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.routeData = this.route.data.subscribe(v => {
-            if (v.logout && this.authService.getIsLoggedIn()) {
+        this.routeData = this.route.data.subscribe(data => {
+            if (data.logout && this.authService.getIsLoggedIn()) {
                 this.authService.logOut();
                 this.router.navigate([this.authService.getLoginUrl()]);
             } else if (this.authService.getIsLoggedIn()) {

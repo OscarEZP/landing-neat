@@ -72,9 +72,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     }
 
     toggleSidenav() {
-        this.sidenavService.toggleSidenav().then(() => {
-            console.log('toggle sidenav!');
-        });
+        this.sidenavService.toggleSidenav().then();
     }
 
 }
