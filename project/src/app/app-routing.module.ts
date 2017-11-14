@@ -6,6 +6,7 @@ import {LayoutComponent} from './layout/layout.component';
 import {AuthGuardService} from "./auth/_services/authGuard.service";
 import {FindAccountComponent} from "./auth/find-account/find-account.component";
 import {OperationsComponent} from "./content/operations/operations.component";
+import {ChangePasswordComponent} from "./auth/change-password/change-password.component";
 
 const ROUTES: Routes = [
     {
@@ -42,6 +43,10 @@ const ROUTES: Routes = [
     {
         path: 'findAccount',
         component: FindAccountComponent
+    },
+    {
+        path: 'changePassword',
+        component: ChangePasswordComponent
     },
     {
         path: '**',
