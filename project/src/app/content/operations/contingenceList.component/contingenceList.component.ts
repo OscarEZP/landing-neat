@@ -6,7 +6,7 @@ import {Subscription} from "rxjs/Subscription";
 @Component({
     selector: 'lsl-contingence-list',
     templateUrl: './contingenceList.component.html',
-    styleUrls: ['./contingenceList.component.css']
+    styleUrls: ['./contingenceList.component.scss']
 })
 
 export class ContingenceListComponent implements OnInit, OnDestroy {
@@ -37,7 +37,7 @@ export class ContingenceListComponent implements OnInit, OnDestroy {
         })
     }
 
-    getTimeAverage(creationDate: number, duration: number) {
+    getTimeAverage(creationDate: any, duration: any) {
         const actualTime = this.utcTime;
         let average: number;
         let valueNumber =  (creationDate + duration) - actualTime;
@@ -58,5 +58,4 @@ export class ContingenceListComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this._messageSubscriptions.unsubscribe();
     }
-
 }

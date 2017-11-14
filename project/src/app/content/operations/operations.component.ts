@@ -4,7 +4,7 @@ import {ContingenceListComponent} from "./contingenceList.component/contingenceL
 @Component({
     selector: 'lsl-operations',
     templateUrl: './operations.component.html',
-    styleUrls: ['./operations.component.css']
+    styleUrls: ['./operations.component.scss']
 })
 
 export class OperationsComponent implements OnInit {
