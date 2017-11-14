@@ -1,0 +1,28 @@
+<div fxLayout="row" fxLayoutAlign="center center" fxFill>
+    <mat-card id="find-account">
+
+        <mat-card-header>
+            <mat-card-title class="mat-card-title">Find Account</mat-card-title>
+        </mat-card-header>
+        <form #f="ngForm" (submit)="findAccount(f)" ngNativeValidate>
+            <mat-card-content class="mat-card-content">
+                <div>
+                    Please enter your username
+                </div>
+                <mat-form-field class="mat-form-field">
+                    <input matInput placeholder="Username" type="text"
+                           [formControl]="usernameFormControl"
+                           [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="usernameFormControl.hasError('required')">
+                        Please enter your username
+                    </mat-error>
+                </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions class="mat-card-actions">
+                <button mat-button class="button-cancel" routerLink="/login">CANCEL</button>
+                <button mat-raised-button class="button-submit">SUBMIT</button>
+            </mat-card-actions>
+        </form>
+
+    </mat-card>
+</div>
