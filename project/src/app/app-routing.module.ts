@@ -3,8 +3,8 @@ import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './auth/login/login.component';
 import {DashboardComponent} from './content/dashboard/dashboard.component';
 import {LayoutComponent} from './layout/layout.component';
-import {AuthGuardService} from "./auth/_services/authGuard.service";
-import {FindAccountComponent} from "./auth/find-account/find-account.component";
+import {AuthGuardService} from './auth/_services/authGuard.service';
+import {FindAccountComponent} from './auth/find-account/find-account.component';
 
 const ROUTES: Routes = [
     {

@@ -3,14 +3,14 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy}
 @Component({
     selector: 'lsl-countdown',
     templateUrl: './countdown.component.html',
-    styleUrls: ['./countdown.component.css'],
+    styleUrls: ['./countdown.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CountdownComponent implements OnDestroy {
 
     private _creationTime: number;
     private _duration: number;
-    private _timing: number = 1000;
+    private _timing = 1000;
     private _interval;
 
     @Input()
@@ -32,7 +32,7 @@ export class CountdownComponent implements OnDestroy {
     }
 
     @Input()
-    public format: string = '{hh}:{mm}:{ss}';
+    public format = '{hh}:{mm}:{ss}';
 
     public get delta() {
         let currentDate = new Date();
@@ -49,9 +49,9 @@ export class CountdownComponent implements OnDestroy {
         delta -= minutes * 60;
         seconds = delta % 60;
 
-        hours = hours.toString().length == 1 ? '0' + hours : hours;
-        minutes = minutes.toString().length == 1 ? '0' + minutes : minutes;
-        seconds = seconds.toString().length == 1 ? '0' + seconds : seconds;
+        hours = hours.toString().length === 1 ? '0' + hours : hours;
+        minutes = minutes.toString().length === 1 ? '0' + minutes : minutes;
+        seconds = seconds.toString().length === 1 ? '0' + seconds : seconds;
 
         creationTime = creationTime.replace('{hh}', hours);
         creationTime = creationTime.replace('{mm}', minutes);

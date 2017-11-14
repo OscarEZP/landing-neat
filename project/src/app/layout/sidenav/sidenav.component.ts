@@ -15,26 +15,26 @@ export class SidenavComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.username = "Ignacio Pardo";
-        this.mail = "ignacio.pardo@gmail.com";
+        this.username = 'Ignacio Pardo';
+        this.mail = 'ignacio.pardo@gmail.com';
         this.arrMenu = [
             {
-                "label": "Dashboard",
-                "link": "/dashboard/",
-                "icon": "assessment"
+                'label': 'Dashboard',
+                'link': '/dashboard/',
+                'icon': 'assessment'
             },
             {
-                "label": "Operations Module",
-                "link": "/operations/",
-                "icon": "build"
+                'label': 'Operations Module',
+                'link': '/operations/',
+                'icon': 'build'
             },
         ];
 
         this.arrFooterMenu = [
             {
-                "label": "Log Out",
-                "link": "/logout",
-                "icon": "power_settings_new"
+                'label': 'Log Out',
+                'link': '/logout',
+                'icon': 'power_settings_new'
             }
         ];
 

@@ -1,18 +1,18 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { Http, Response } from "@angular/http";
-import { DataService } from "../../../commons/data.service/data.service";
-import { Subscription } from "rxjs/Subscription";
+import { Http, Response } from '@angular/http';
+import { DataService } from '../../../commons/data.service/data.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'lsl-contingence-list',
     templateUrl: './contingenceList.component.html',
-    styleUrls: ['./contingenceList.component.css']
+    styleUrls: ['./contingenceList.component.scss']
 })
 
 export class ContingenceListComponent implements OnInit, OnDestroy {
 
     private _messageSubscriptions: Subscription;
-    private apiUrl: string = "http://localhost:9002/api/contingences?userName=a&idToken=a";
+    private apiUrl = 'http://localhost:9002/api/contingences?userName=a&idToken=a';
     private contingenceList: any = {};
     private utcTime: number;
 
@@ -37,7 +37,7 @@ export class ContingenceListComponent implements OnInit, OnDestroy {
         })
     }
 
-    getTimeAverage(creationDate: number, duration: number) {
+    getTimeAverage(creationDate: any, duration: any) {
         const actualTime = this.utcTime;
         let average: number;
         let valueNumber = (creationDate + duration) - actualTime;
@@ -58,5 +58,4 @@ export class ContingenceListComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this._messageSubscriptions.unsubscribe();
     }
-
 }
