@@ -1,9 +1,12 @@
-import {NgModule} from "@angular/core";
-import {CommonsModule} from "../../commons/commons.module";
-import {ContingenceListComponent} from './contingenceList.component/contingenceList.component';
-import {BrowserModule} from "@angular/platform-browser";
-import {OperationsComponent} from "./operations.component";
-import {SharedModule} from "../../shared/shared.module";
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { CommonsModule } from "../../commons/commons.module";
+import { SharedModule } from "../../shared/shared.module";
+
+import { OperationsComponent } from "./operations.component";
+import { ContingenceListComponent } from './contingenceList.component/contingenceList.component';
+import { ContingenceFormComponent } from './contingence-form/contingence-form.component';
+
 
 @NgModule({
     imports: [
@@ -13,8 +16,13 @@ import {SharedModule} from "../../shared/shared.module";
     ],
     declarations: [
         OperationsComponent,
-        ContingenceListComponent
+        ContingenceListComponent,
+        ContingenceFormComponent
+    ],
+    exports: [
+        ContingenceListComponent,
+        ContingenceFormComponent
     ]
 })
 
-export class OperationsModule {}
+export class OperationsModule { }

@@ -1,12 +1,13 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {DatetimeService} from "../../commons/datatime.service/datetime.service";
-import {ActualTimeModel} from "../../commons/datatime.service/actual-time-model";
-import {TimerObservable} from "rxjs/observable/TimerObservable";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DatetimeService } from "../../commons/datatime.service/datetime.service";
+import { ActualTimeModel } from "../../commons/datatime.service/actual-time-model";
+import { TimerObservable } from "rxjs/observable/TimerObservable";
 import 'rxjs/add/operator/takeWhile';
-import {DataService} from "../../commons/data.service/data.service";
-import {Subscription} from "rxjs/Subscription";
-import {ClockService} from "../../commons/clock.service/clock.service";
-import {SidenavService} from '../_services/sidenav.service'
+import { DataService } from "../../commons/data.service/data.service";
+import { Subscription } from "rxjs/Subscription";
+import { ClockService } from "../../commons/clock.service/clock.service";
+import { SidenavService } from '../_services/sidenav.service';
+
 
 @Component({
     selector: 'lsl-toolbar',
@@ -26,7 +27,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     private time: Date;
 
     constructor(
-        private datetimeService:DatetimeService,
+        private datetimeService: DatetimeService,
         private messageData: DataService,
         private clockService: ClockService,
         private sidenavService: SidenavService
@@ -52,7 +53,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                         this.currentDateString = this.data.currentTime;
                         this.newMessage();
                         this.clockService.setClock(this.currentDateLong);
-                        if(!this.display){
+                        if (!this.display) {
                             this.display = true;
                         }
                     });
