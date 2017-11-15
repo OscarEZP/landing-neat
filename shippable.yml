@@ -66,6 +66,6 @@ integrations:
 #     on_failure: always
 
   hub:
-    - integrationName: ms-ec2-container-registry
-      type: ecr
+    - integrationName: moc-AWS-integration
+      type: amazonKeys
       region: us-east-1
