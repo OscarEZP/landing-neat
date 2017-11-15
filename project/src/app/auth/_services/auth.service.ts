@@ -42,5 +42,8 @@ export class AuthService {
   findAccount(){
 
   }
+  changePassword(){
+
+  }
 
 }
