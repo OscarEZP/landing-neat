@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
     selector: 'lsl-sidenav',
@@ -11,8 +11,9 @@ export class SidenavComponent implements OnInit {
     private arrMenu: { label: String, link: String, icon: String }[];
     private arrFooterMenu: { label: String, link: String, icon: String }[];
 
-    constructor() {
-    }
+    constructor(
+       
+    ) { }
 
     ngOnInit() {
         this.username = "Ignacio Pardo";

@@ -7,7 +7,8 @@ import { DataService } from "../../commons/data.service/data.service";
 import { Subscription } from "rxjs/Subscription";
 import { ClockService } from "../../commons/clock.service/clock.service";
 import { SidenavService } from '../_services/sidenav.service';
-
+import { DialogService } from '../../content/_services/dialog.service';
+import { ContingenceFormComponent } from '../../content/operations/contingence-form/contingence-form.component';
 
 @Component({
     selector: 'lsl-toolbar',
@@ -30,13 +31,18 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private datetimeService: DatetimeService,
         private messageData: DataService,
         private clockService: ClockService,
-        private sidenavService: SidenavService
+        private sidenavService: SidenavService,
+        private dialogService: DialogService
     ) {
         this.display = false;
         this.alive = true;
         this.interval = 60000;
         this.currentDateLong = 0;
         this.currentDateString = "";
+    }
+
+    openDialog() {
+        this.dialogService.openDialog(ContingenceFormComponent);
     }
 
     ngOnInit() {

@@ -1,0 +1,28 @@
+@mixin border-padd-top(){
+    border-top: 0.6px solid #c5c5c5;
+    padding-top: 25px;
+}
+@mixin border-right(){
+    border-right: 1px solid #c5c5c5;
+}
+@mixin padding-left(){
+    padding-left: 33px;
+}
+
+.full-width{
+    width: 100%;
+}
+
+.operation-container{
+    @include border-padd-top();
+    @include border-right();
+}
+.safety-container{
+    @include border-padd-top();
+    @include border-right();
+    @include padding-left();
+}
+.maintenance-container{
+    @include border-padd-top();
+    @include padding-left();
+}

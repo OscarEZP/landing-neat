@@ -9,7 +9,15 @@ import {
     MatInputModule,
     MatListModule, 
     MatProgressBarModule, 
-    MatIconModule
+    MatIconModule,
+    MatDialogModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+    
+
 
 } from '@angular/material';
 import {FlexLayoutModule} from "@angular/flex-layout";
@@ -26,6 +34,12 @@ import {FlexLayoutModule} from "@angular/flex-layout";
         MatListModule,
         MatProgressBarModule,
         MatIconModule,
+        MatDialogModule,
+        MatCheckboxModule,
+        MatRadioModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
         FlexLayoutModule
 
     ],
@@ -40,6 +54,12 @@ import {FlexLayoutModule} from "@angular/flex-layout";
         MatListModule,
         MatProgressBarModule,
         MatIconModule,
+        MatDialogModule,
+        MatCheckboxModule,
+        MatRadioModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
         FlexLayoutModule
     ],
 

@@ -8,6 +8,7 @@ import {LayoutComponent} from "./layout.component";
 import {SidenavComponent} from './sidenav/sidenav.component';
 
 import {SidenavService} from "./_services/sidenav.service";
+import { DialogService } from '../content/_services/dialog.service';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import {SidenavService} from "./_services/sidenav.service";
     SidenavComponent
   ],
   providers: [
-    SidenavService
+    SidenavService,
+    DialogService
   ]
 })
 export class LayoutModule { }
