@@ -11,10 +11,10 @@ export class LayoutComponent implements OnInit {
   @ViewChild('sidenav') public sidenav:MatSidenav;
 
   constructor(private sidenavService:SidenavService) {
+    this.sidenavService = sidenavService;
   }
 
   ngOnInit() {
-
     this.sidenavService.setSidenav(this.sidenav);
   }
 

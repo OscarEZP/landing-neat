@@ -5,16 +5,18 @@
         <p [innerHtml]="mail"></p>
     </header>
     <nav>
-        <a *ngFor="let menu of arrMenu" routerLink="{{menu.link}}" routerLinkActive="active">
+        <a *ngFor="let menu of arrMenu" routerLink="{{menu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
             <i class="material-icons" [innerHtml]="menu.icon"></i>
             <span [innerHtml]="menu.label"></span>
         </a>
     </nav>
     <hr>
-    <nav>
-        <a *ngFor="let menu of arrFooterMenu" routerLink="{{menu.link}}" routerLinkActive="active">
-            <i class="material-icons" [innerHtml]="menu.icon"></i>
-            <span [innerHtml]="menu.label"></span>
-        </a>
-    </nav>
+    <footer>
+        <nav>
+            <a *ngFor="let menu of arrFooterMenu" routerLink="{{menu.link}}" routerLinkActive="active">
+                <i class="material-icons" [innerHtml]="menu.icon"></i>
+                <span [innerHtml]="menu.label"></span>
+            </a>
+        </nav>
+    </footer>
 </div>

@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {SidenavService} from '../_services/sidenav.service';
 
 @Component({
     selector: 'lsl-sidenav',
@@ -11,7 +12,7 @@ export class SidenavComponent implements OnInit {
     private arrMenu: { label: String, link: String, icon: String }[];
     private arrFooterMenu: { label: String, link: String, icon: String }[];
 
-    constructor() {
+    constructor(private sidenavService: SidenavService) {
     }
 
     ngOnInit() {
@@ -40,12 +41,8 @@ export class SidenavComponent implements OnInit {
 
     }
 
-    logOut() {
-
-    }
-
-    navigateTo(page: String) {
-
+    toggleSidenav() {
+        this.sidenavService.closeSidenav().then(() => {});
     }
 
 }
