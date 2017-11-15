@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {User} from "../_models/user.model";
+import {User} from '../_models/user.model';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +11,7 @@ export class AuthService {
 
   constructor(){
     this.isLoggedIn = this.getIsLoggedIn();
-    this.redirectUrl = '/';
+    this.redirectUrl = '/dashboard';
     this.loginUrl = '/login';
   }
 
@@ -37,6 +37,13 @@ export class AuthService {
   }
   getLoginUrl(): string {
     return this.loginUrl;
+  }
+
+  findAccount(){
+
+  }
+  changePassword(){
+
   }
 
 }

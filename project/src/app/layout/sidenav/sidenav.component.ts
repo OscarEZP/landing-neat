@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { SidenavService } from '../_services/sidenav.service';
+
 
 @Component({
     selector: 'lsl-sidenav',
@@ -12,41 +14,39 @@ export class SidenavComponent implements OnInit {
     private arrFooterMenu: { label: String, link: String, icon: String }[];
 
     constructor(
-       
-    ) { }
+        private sidenavService: SidenavService
+    )
+    { }
+
 
     ngOnInit() {
-        this.username = "Ignacio Pardo";
-        this.mail = "ignacio.pardo@gmail.com";
+        this.username = 'Ignacio Pardo';
+        this.mail = 'ignacio.pardo@gmail.com';
         this.arrMenu = [
             {
-                "label": "Dashboard",
-                "link": "/dashboard/",
-                "icon": "assessment"
+                'label': 'Dashboard',
+                'link': '/dashboard/',
+                'icon': 'assessment'
             },
             {
-                "label": "Operations Module",
-                "link": "/operations/",
-                "icon": "build"
+                'label': 'Operations Module',
+                'link': '/operations/',
+                'icon': 'build'
             },
         ];
 
         this.arrFooterMenu = [
             {
-                "label": "Log Out",
-                "link": "/logout",
-                "icon": "power_settings_new"
+                'label': 'Log Out',
+                'link': '/logout',
+                'icon': 'power_settings_new'
             }
         ];
 
     }
 
-    logOut() {
-
-    }
-
-    navigateTo(page: String) {
-
+    toggleSidenav() {
+        this.sidenavService.closeSidenav().then(() => { });
     }
 
 }

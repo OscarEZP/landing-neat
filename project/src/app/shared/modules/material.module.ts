@@ -20,7 +20,7 @@ import {
 
 
 } from '@angular/material';
-import {FlexLayoutModule} from "@angular/flex-layout";
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 @NgModule({
     imports: [
@@ -65,4 +65,5 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 
 })
 
-export class MaterialModule { }
+export class MaterialModule {
+}

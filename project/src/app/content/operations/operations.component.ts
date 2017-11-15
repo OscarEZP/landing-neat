@@ -1,10 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ContingenceListComponent} from "./contingenceList.component/contingenceList.component";
+import {ContingenceListComponent} from './contingenceList.component/contingenceList.component';
 
 @Component({
     selector: 'lsl-operations',
     templateUrl: './operations.component.html',
-    styleUrls: ['./operations.component.css']
+    styleUrls: ['./operations.component.scss']
 })
 
 export class OperationsComponent implements OnInit {

@@ -21,3 +21,4 @@ export class ContingenceFormComponent implements OnInit {
         this.dialogRef.close();
     }
 }
+

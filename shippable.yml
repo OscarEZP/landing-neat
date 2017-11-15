@@ -1,0 +1,71 @@
+#####
+# CI needs access to mx-header repository. Ensure shippable deployment key is registered with the project
+# We use a stock image from shippable to avoid pulling a custom build image from ECR every time.
+####
+
+language: node_js
+
+node_js:
+  - 7.4.0
+
+env:
+  global:
+    - IMAGE_NAME=moc/moc-web
+    - IMAGE_REPO_URL=693532776274.dkr.ecr.us-east-1.amazonaws.com/moc/moc-web
+
+branches:
+  only:
+    - develop
+#    - master
+
+cache: true
+
+cache_dir_list:
+  - $SHIPPABLE_BUILD_DIR/node_modules
+
+build:
+  #commands in this section run inside your CI container. In addition, any commands such as ls, in this section can be used to skip default processing for CI.
+  ci:
+    # Shippable code coverage folder
+    #- mkdir -p $SHIPPABLE_CODE_COVERAGE_DIR
+    # Since caching is enabled, cleanup git leftovers
+    - git clean -f -x
+
+    # install NPM depedencies
+    - shippable_retry npm install --quiet
+
+    #Run the build
+    - cd $SHIPPABLE_BUILD_DIR
+    - npm run build
+
+    #Run the test
+    - npm run test
+    - mv shippable/codecoverage/*/coverage.xml shippable/codecoverage
+
+  on_success:
+    # If the branch is develop, create a new production docker image with just the build artifacts, tag it and push it to the ms-web repository
+    - >
+      if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ]; then
+        docker build -f $SHIPPABLE_BUILD_DIR/docker/Dockerfile  -t $IMAGE_NAME $SHIPPABLE_BUILD_DIR
+        docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:latest
+        docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
+        docker push $IMAGE_REPO_URL:latest
+        docker push $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
+      fi
+
+integrations:
+  notifications:
+    - integrationName: lp-slack-integration
+      type: slack
+      recipients:
+        - "#moc-staging"
+      branches:
+        only:
+          - develop
+#     on_success: change
+#     on_failure: always
+
+  hub:
+    - integrationName: moc-AWS-integration
+      type: amazonKeys
+      region: us-east-1

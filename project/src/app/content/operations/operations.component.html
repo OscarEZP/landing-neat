@@ -1,12 +1,12 @@
-<span>{{ itemsCount }} Alerts at this moment on Contingency</span>
-<mat-tab-group>
-    <mat-tab label="CONTINGENCY">
-        <lsl-contingence-list (messageEvent)="receiveMessage($event)"></lsl-contingence-list>
-    </mat-tab>
-    <mat-tab label="AOG">
-        <p>AOG Content</p>
-    </mat-tab>
-    <mat-tab label="PIT STOP">
-        <p>Pit Stop Content</p>
-    </mat-tab>
-</mat-tab-group>
+<div id="post-header-container">
+    <div id="item-counter-container"><strong>{{ itemsCount }} Alerts</strong> at this moment on Contingency</div>
+
+    <mat-tab-group id="post-header-tab">
+        <mat-tab class="mat-tab-item" label="AOG / CONTINGENCY">
+            <lsl-contingence-list (messageEvent)="receiveMessage($event)"></lsl-contingence-list>
+        </mat-tab>
+        <mat-tab class="mat-tab-item" label="PIT STOP">
+            <p>Pit Stop Content</p>
+        </mat-tab>
+    </mat-tab-group>
+</div>
