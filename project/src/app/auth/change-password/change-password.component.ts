@@ -25,7 +25,7 @@ export class ChangePasswordComponent implements OnInit {
         this.changePasswordForm = fb.group({
             'verificationCodeFormControl': this.verificationCodeFormControl,
             'passwordFormControl': this.passwordFormControl,
-            'confirmPasswordFromControl': this.confirmPasswordFormControl
+            'confirmPasswordFormControl': this.confirmPasswordFormControl
         })
     }
 
