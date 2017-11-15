@@ -7,7 +7,8 @@ import {AuthService} from './_services/auth.service';
 import {AuthGuardService} from './_services/authGuard.service';
 import {LoginComponent} from './login/login.component';
 import {FindAccountComponent} from './find-account/find-account.component';
-import { ChangePasswordComponent } from './change-password/change-password.component';
+import {ChangePasswordComponent} from './change-password/change-password.component';
+import {HttpModule}    from '@angular/http';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
         SharedModule,
         FormsModule,
         ReactiveFormsModule,
-        RouterModule
+        RouterModule,
+        HttpModule,
     ],
     declarations: [LoginComponent, FindAccountComponent, ChangePasswordComponent],
     providers: [

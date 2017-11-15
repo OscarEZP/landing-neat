@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
 
     matcher = new MyErrorStateMatcher();
 
-    user: string;
+    username: string;
     password: string;
     registerView: boolean;
     routeData: any;
@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
 
     constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, fb: FormBuilder) {
         this.authService = authService;
-        this.user = '';
+        this.username = '';
         this.password = '';
         this.registerView = false;
         this.loginForm = fb.group({
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.routeData = this.route.data.subscribe((data: {logout: string}) => {
+        this.routeData = this.route.data.subscribe((data: { logout: string }) => {
             if (data.logout && this.authService.getIsLoggedIn()) {
                 this.authService.logOut();
                 this.router.navigate([this.authService.getLoginUrl()]);
@@ -50,9 +50,14 @@ export class LoginComponent implements OnInit {
     }
 
     logIn(form: NgForm) {
-        if(form.valid) {
-            this.authService.logIn();
-            this.router.navigate([this.authService.getRedirectUrl()]);
+        if (form.valid) {
+            this.authService.logIn(this.username, this.password).then(value => {
+                localStorage.setItem('currentUser',  JSON.stringify(value));
+                this.router.navigate([this.authService.getRedirectUrl()]);
+            }).catch(reason => {
+                console.error(reason.toString());
+            });
+
         }
     }
 

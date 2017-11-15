@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {AuthService} from '../_services/auth.service';
+
 @Component({
     selector: 'lsl-find-account',
     templateUrl: './find-account.component.html',
@@ -15,7 +16,9 @@ export class FindAccountComponent implements OnInit {
     matcher = new MyErrorStateMatcher();
     findAccountForm: FormGroup;
 
-    constructor(private authService: AuthService,fb: FormBuilder) {
+    username: string;
+
+    constructor(private authService: AuthService, fb: FormBuilder) {
         this.authService = authService;
         this.findAccountForm = fb.group({
             'usernameFormControl': this.usernameFormControl
@@ -26,8 +29,8 @@ export class FindAccountComponent implements OnInit {
     }
 
     findAccount(form: NgForm) {
-        if(form.valid) {
-            this.authService.findAccount()
+        if (form.valid) {
+            //   this.authService.findAccount("millanes1@gmail.com");
         }
     }
 }

@@ -9,7 +9,8 @@
                 <mat-form-field class="mat-form-field">
                     <input matInput placeholder="Username" type="text"
                            [formControl]="loginForm.controls['usernameFormControl']"
-                           [errorStateMatcher]="matcher">
+                           [errorStateMatcher]="matcher" id="usernameId"
+                           [(ngModel)]="username">
                     <mat-error *ngIf="usernameFormControl.hasError('required')">
                         Please enter your username
                     </mat-error>
@@ -17,7 +18,8 @@
                 <mat-form-field class="mat-form-field">
                     <input matInput placeholder="Password" [type]="hide ? 'text' : 'password'"
                            [formControl]="loginForm.controls['passwordFormControl']"
-                           [errorStateMatcher]="matcher">
+                           [errorStateMatcher]="matcher" id="passwordId"
+                           [(ngModel)]="password">
                     <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
                     <mat-error *ngIf="passwordFormControl.hasError('required')">
                         Please enter your password
