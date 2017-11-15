@@ -54,14 +54,14 @@ build:
       fi
 
 integrations:
-  notifications:
-    - integrationName: lp-slack-integration
-      type: slack
-      recipients:
-        - "#moc-staging"
-      branches:
-        only:
-          - develop
+#  notifications:
+#    - integrationName: lp-slack-integration
+#      type: slack
+#      recipients:
+#        - "#moc-staging"
+#      branches:
+#        only:
+#          - develop
 #     on_success: change
 #     on_failure: always
 
