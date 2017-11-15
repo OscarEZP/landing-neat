@@ -1,15 +1,18 @@
 import {Injectable} from '@angular/core';
 import {User} from '../_models/user.model';
+import {Observable} from 'rxjs';
+import {Http} from '@angular/http';
 
 @Injectable()
 export class AuthService {
 
-  private isLoggedIn:boolean;
-  private redirectUrl:string;
-  private loginUrl:string;
-  private user:User;
+  private isLoggedIn: boolean;
+  private redirectUrl: string;
+  private loginUrl: string;
+  private user: User;
+  private clock: Observable<Date>;
 
-  constructor(){
+  constructor(private http:Http){
     this.isLoggedIn = this.getIsLoggedIn();
     this.redirectUrl = '/dashboard';
     this.loginUrl = '/login';
@@ -39,9 +42,13 @@ export class AuthService {
     return this.loginUrl;
   }
 
-  findAccount(){
-
+  findAccount(username: String){
+    console.log(username);
+    this.http.post('https://api.github.com/users/seeschweiler', {'user': username}).subscribe(data => {
+      console.log(data);
+    });
   }
+
   changePassword(){
 
   }

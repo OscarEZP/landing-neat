@@ -19,15 +19,15 @@ export class FindAccountComponent implements OnInit {
         this.authService = authService;
         this.findAccountForm = fb.group({
             'usernameFormControl': this.usernameFormControl
-        })
+        });
     }
 
     ngOnInit() {
     }
 
     findAccount(form: NgForm) {
-        if(form.valid) {
-            this.authService.findAccount()
+        if (form.valid) {
+            this.authService.findAccount(form.value.usernameFormControl);
         }
     }
 }
