@@ -13,8 +13,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 // Services
-import { DatetimeService } from './commons/datatime.service/datetime.service';
-import { DataService } from './commons/data.service/data.service';
+import { DatetimeService } from './shared/_services/datetime.service';
+import { DataService } from './shared/_services/data.service';
 
 @NgModule({
 

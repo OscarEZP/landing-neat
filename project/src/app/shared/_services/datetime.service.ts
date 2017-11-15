@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Http, Response} from '@angular/http';
 import 'rxjs/add/operator/map';
-import {ActualTimeModel} from './actual-time-model';
+import {ActualTimeModel} from '../_models/actual-time-model';
 import {Observable} from 'rxjs/Observable';
 
 

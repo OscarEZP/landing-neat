@@ -7,11 +7,11 @@ import * as constants from '../../constants';
 @Injectable()
 export class AuthService {
 
-    private isLoggedIn: boolean;
-    private redirectUrl: string;
-    private loginUrl: string;
-    private user: User;
-    private headers: Headers;
+  private isLoggedIn:boolean;
+  private redirectUrl:string;
+  private loginUrl:string;
+  private user:User;
+  private headers: Headers;
 
     constructor(private http: Http) {
         this.headers = new Headers({'Content-Type': 'application/json'});
