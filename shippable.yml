@@ -47,18 +47,18 @@ build:
     # INTEGRATION TASK PACKAGE IMAGE
     - >
       if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ]; then
-        npm run ng build
+#        npm run ng build
         docker build -f $SHIPPABLE_BUILD_DIR/docker/Dockerfile  -t $IMAGE_NAME $SHIPPABLE_BUILD_DIR
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:latest
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
         docker push $IMAGE_REPO_URL:latest
         docker push $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
 
-        if [ "$BRANCH" == "master" ]; then
-          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-production.env
-        elif [ "$BRANCH" == "develop" ]; then
-          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-staging.env
-        fi
+#        if [ "$BRANCH" == "master" ]; then
+#         echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-production.env
+#        elif [ "$BRANCH" == "develop" ]; then
+#          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-staging.env
+#        fi
       fi
 
 #   # If the branch is develop, create a new production docker image with just the build artifacts, tag it and push it to the ms-web repository
