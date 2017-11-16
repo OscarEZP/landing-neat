@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {SidenavService} from '../_services/sidenav.service';
-import {AuthService} from "../../auth/_services/auth.service";
 
 @Component({
     selector: 'lsl-sidenav',

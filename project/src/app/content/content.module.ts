@@ -18,7 +18,10 @@ import { OperationsModule } from './operations/operations.module'
     exports: [
         OperationsModule
     ],
+    providers: [
+        
+    ],
     bootstrap: []
 })
-export class ContentModule {
-}
+
+export class ContentModule {}

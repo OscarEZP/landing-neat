@@ -5,5 +5,5 @@ project/node_modules
 .DS_Store
 .settings
 .idea/watcherTasks.xml
-
+.npm
 

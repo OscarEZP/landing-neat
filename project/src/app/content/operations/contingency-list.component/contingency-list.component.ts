@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { Http, Response } from '@angular/http';
 import { DataService } from '../../../shared/_services/data.service';
 import { Subscription } from 'rxjs/Subscription';
+import { environment } from "../../../../../environments/environment";
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -12,7 +13,7 @@ import { Subscription } from 'rxjs/Subscription';
 export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private _messageSubscriptions: Subscription;
-    private apiUrl = 'http://localhost:9002/api/contingences?userName=a&idToken=a';
+    private apiUrl = environment.apiUrl + '/api/contingences?userName=a&idToken=a';
     private contingenceList: any = {};
     private utcTime: number;
 

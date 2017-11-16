@@ -21,7 +21,7 @@ branches:
 cache: true
 
 cache_dir_list:
-  - $SHIPPABLE_BUILD_DIR/node_modules
+  - $SHIPPABLE_BUILD_DIR/project/node_modules
 
 build:
   #commands in this section run inside your CI container. In addition, any commands such as ls, in this section can be used to skip default processing for CI.
@@ -32,26 +32,47 @@ build:
     - git clean -f -x
 
     # install NPM depedencies
+    - cd $SHIPPABLE_BUILD_DIR/project
     - shippable_retry npm install --quiet
 
     #Run the build
-    - cd $SHIPPABLE_BUILD_DIR
-    - npm run build
+    - cd $SHIPPABLE_BUILD_DIR/project
+    - npm run ng build
 
     #Run the test
-    - npm run test
-    - mv shippable/codecoverage/*/coverage.xml shippable/codecoverage
+    #- npm run ng test
+    #- mv shippable/codecoverage/*/coverage.xml shippable/codecoverage
 
   on_success:
-    # If the branch is develop, create a new production docker image with just the build artifacts, tag it and push it to the ms-web repository
+    # INTEGRATION TASK PACKAGE IMAGE
     - >
       if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ]; then
+	npm run ng build
         docker build -f $SHIPPABLE_BUILD_DIR/docker/Dockerfile  -t $IMAGE_NAME $SHIPPABLE_BUILD_DIR
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:latest
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
         docker push $IMAGE_REPO_URL:latest
         docker push $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
       fi
+
+#   # If the branch is develop, create a new production docker image with just the build artifacts, tag it and push it to the ms-web repository
+#    - >
+#      if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ]; then
+#        npm run ng build
+#        docker build -f $SHIPPABLE_BUILD_DIR/docker/Dockerfile  -t $IMAGE_NAME $SHIPPABLE_BUILD_DIR/project
+#        docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:latest
+#        docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
+#        docker push $IMAGE_REPO_URL:latest
+#        docker push $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
+#
+#        if [ "$BRANCH" == "master" ]; then
+#          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-production.env
+#        elif [ "$BRANCH" == "develop" ]; then
+#          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-test.env
+#          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-staging.env
+#          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-test-integration.env
+#        fi
+#      fi
 
 integrations:
 #  notifications:

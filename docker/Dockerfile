@@ -3,6 +3,7 @@
 FROM nginx:1.10-alpine
 MAINTAINER Mxi Technologies
 
+
 ENV DIST_DIR dist
 ENV WEB_DIR /usr/share/nginx/html
 ENV HOME /usr/share/nginx
@@ -13,6 +14,3 @@ WORKDIR  $WEB_DIR
 
 #Copy the build artifacts in the static web folder
 COPY $DIST_DIR $WEB_DIR
-
-#Added custom nginx config file to make Angular HTML5 routing work
-COPY $NGINX_CONFIG $NGINX_DIR
