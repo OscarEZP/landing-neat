@@ -75,10 +75,17 @@ export class AuthService {
     }
 
     changePassword(username: string, password: string, confirmationCode: string) {
-        console.log(username);
-        console.log(password);
-        console.group(confirmationCode);
-        console.log(constants.API_POST_CHANGE_PASSWORD);
+        this.user = new User();
+        this.user.userName = username;
+        this.user.newPassword = password;
+        this.user.confirmationCode = confirmationCode;
+        console.info(this.user);
+
+        return this.http
+            .post(constants.API_POST_CHANGE_PASSWORD, JSON.stringify(this.user), this.headers)
+            .toPromise()
+            .then(this.extractData).catch(this.handleError);
+
     }
 
 
@@ -87,7 +94,7 @@ export class AuthService {
         return Promise.reject(error.message || error);
     }
 
-    private extractData(res: Response) {
+    private  extractData(res: Response) {
         let body = res.json();
         return body || {};
     }

@@ -15,6 +15,7 @@ export class User {
     public refreshToken:string;
     public password: string;
     public newPassword: string;
+    public confirmationCode:string;
 
     constructor() {
     }

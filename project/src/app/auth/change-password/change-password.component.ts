@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {AuthService} from '../_services/auth.service';
@@ -26,9 +27,9 @@ export class ChangePasswordComponent implements OnInit {
     confirmPassword: string;
     verificationCode: string;
 
-    constructor(private authService: AuthService, fb: FormBuilder) {
+    constructor(private authService: AuthService, private router: Router, fb: FormBuilder) {
         this.authService = authService;
-        this.username = 'millanes1@gmail.com';
+        this.username = '';
         this.password = '';
         this.verificationCode = '';
         this.changePasswordForm = fb.group({
@@ -43,8 +44,16 @@ export class ChangePasswordComponent implements OnInit {
 
     changePassword(form: NgForm) {
         if (form.valid) {
-
-            this.authService.changePassword(this.username, this.password, this.verificationCode);
+            if (this.password === this.confirmPassword) {
+                this.authService.changePassword(this.username, this.password, this.verificationCode).then(value => {
+                    console.info(value);
+                    this.router.navigate([this.authService.getRedirectUrl()]);
+                }).catch(reason => {
+                    console.error(reason.toString());
+                });
+            }else{
+                console.error("password distintas")
+            }
         }
     }
 }

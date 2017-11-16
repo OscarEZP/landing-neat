@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {AuthService} from '../_services/auth.service';
@@ -19,7 +19,7 @@ export class FindAccountComponent implements OnInit {
 
     username: string;
 
-    constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, fb: FormBuilder) {
+    constructor(private authService: AuthService, private router: Router, fb: FormBuilder) {
         this.authService = authService;
         this.findAccountForm = fb.group({
             'usernameFormControl': this.usernameFormControl
