@@ -36,11 +36,12 @@ build:
 
     #Run the build
     - cd $SHIPPABLE_BUILD_DIR/project
+    - npm install -g @angular/cli
     - npm run ng build
 
     #Run the test
     #- npm run ng test
-    - mv shippable/codecoverage/*/coverage.xml shippable/codecoverage
+    #- mv shippable/codecoverage/*/coverage.xml shippable/codecoverage
 
   on_success:
     # If the branch is develop, create a new production docker image with just the build artifacts, tag it and push it to the ms-web repository
