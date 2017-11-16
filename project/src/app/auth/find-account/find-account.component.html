@@ -12,7 +12,8 @@
                 <mat-form-field class="mat-form-field">
                     <input matInput placeholder="Username" type="text"
                            [formControl]="findAccountForm.controls['usernameFormControl']"
-                           [errorStateMatcher]="matcher">
+                           [errorStateMatcher]="matcher"
+                           [(ngModel)]="username" id="usernameId">
                     <mat-error *ngIf="usernameFormControl.hasError('required')">
                         Please enter your username
                     </mat-error>

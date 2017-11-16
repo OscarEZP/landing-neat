@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {AuthService} from '../_services/auth.service';
@@ -18,7 +19,7 @@ export class FindAccountComponent implements OnInit {
 
     username: string;
 
-    constructor(private authService: AuthService, fb: FormBuilder) {
+    constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, fb: FormBuilder) {
         this.authService = authService;
         this.findAccountForm = fb.group({
             'usernameFormControl': this.usernameFormControl
@@ -30,7 +31,13 @@ export class FindAccountComponent implements OnInit {
 
     findAccount(form: NgForm) {
         if (form.valid) {
-            //   this.authService.findAccount("millanes1@gmail.com");
+            this.authService.findAccount(this.username).then(value => {
+                console.info(value);
+                this.router.navigate([this.authService.getRedirectUrlChangePassword()]);
+            }).catch(reason => {
+                console.error(reason.toString());
+            });
+
         }
     }
 }

@@ -1,23 +1,25 @@
 import {Injectable} from '@angular/core';
 import {User} from '../_models/user.model';
-import {Http,Response} from '@angular/http'
+import {Http, Response} from '@angular/http'
 import 'rxjs/add/operator/toPromise';
 import * as constants from '../../constants';
 
 @Injectable()
 export class AuthService {
 
-  private isLoggedIn:boolean;
-  private redirectUrl:string;
-  private loginUrl:string;
-  private user:User;
-  private headers: Headers;
+    private isLoggedIn: boolean;
+    private redirectUrl: string;
+    private redirectUrlChangePassword: string;
+    private loginUrl: string;
+    private user: User;
+    private headers: Headers;
 
     constructor(private http: Http) {
         this.headers = new Headers({'Content-Type': 'application/json'});
 
         this.isLoggedIn = this.getIsLoggedIn();
         this.redirectUrl = '/dashboard';
+        this.redirectUrlChangePassword = '/changePassword';
         this.loginUrl = '/login';
         this.user = new User();
 
@@ -58,9 +60,14 @@ export class AuthService {
         return this.loginUrl;
     }
 
+    getRedirectUrlChangePassword(): string {
+        return this.redirectUrlChangePassword;
+    }
+
     findAccount(username: string): Promise<string> {
         this.user = new User();
         this.user.userName = username;
+        console.info(this.user);
         return this.http
             .post(constants.API_POST_FIND_ACCOUNT, JSON.stringify(this.user), this.headers)
             .toPromise()
