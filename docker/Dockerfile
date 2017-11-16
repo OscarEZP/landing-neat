@@ -1,4 +1,4 @@
-#Production dockerfile that uses nginx to serve the ms-web static web server.
+#Production dockerfile that uses nginx to serve the web static web server.
 
 FROM nginx:1.10-alpine
 MAINTAINER Mxi Technologies
@@ -14,3 +14,6 @@ WORKDIR  $WEB_DIR
 
 #Copy the build artifacts in the static web folder
 COPY $DIST_DIR $WEB_DIR
+
+#Added custom nginx config file to make Angular HTML5 routing work
+COPY $NGINX_CONFIG $NGINX_DIR
