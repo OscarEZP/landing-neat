@@ -32,16 +32,18 @@ elif [[ $OPTION = "2" ]] ;then
   cd ../../
 elif [[ $OPTION = "3" ]] ;then
   clear
-  echo "Running PRODUCTION... soon"
-  cd env/prod/
-  docker-compose run --service-ports --rm web
-  cd ../../
+  echo "Running PRODUCTION..."
+  #cd env/prod/
+  #docker-compose run --service-ports --rm web
+  #cd ../../
+  docker run -it -u $UID -v $(pwd):$(pwd) -p 4200:4200 --rm $PROJECT_NAME-dev /bin/bash -c 'cd project && npm install --quiet && npm run ng serve'
 elif [[ $OPTION = "4" ]] ;then
   clear
   echo "Building IMAGE..."
-  cd env
-  docker-compose build
-  cd ..
+  #cd env
+  #docker-compose build
+  #cd ..
+  docker build -f docker/Dockerfile -t $PROJECT_NAME-prod --build-arg ACTION=build .
 elif [[ $OPTION = "5" ]] ;then
   clear
   echo "Running CONTAINER..."
