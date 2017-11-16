@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {SidenavService} from '../_services/sidenav.service';
+import {AuthService} from "../../auth/_services/auth.service";
 
 @Component({
     selector: 'lsl-sidenav',
@@ -7,17 +8,21 @@ import {SidenavService} from '../_services/sidenav.service';
     styleUrls: ['./sidenav.component.scss']
 })
 export class SidenavComponent implements OnInit {
-    private username: String;
-    private mail: String;
+    private name: string;
+    private username: string
+    private email: string;
     private arrMenu: { label: String, link: String, icon: String }[];
     private arrFooterMenu: { label: String, link: String, icon: String }[];
 
-    constructor(private sidenavService: SidenavService) {
+    constructor(private sidenavService: SidenavService, private authService: AuthService) {
+        this.authService=authService;
+        this.username = authService.getCurrentUser().userName;
+        this.name = authService.getCurrentUser().firstName + " " + this.authService.getCurrentUser().lastName;
+        this.email= authService.getCurrentUser().email;
     }
 
     ngOnInit() {
-        this.username = 'Ignacio Pardo';
-        this.mail = 'ignacio.pardo@gmail.com';
+
         this.arrMenu = [
             {
                 'label': 'Dashboard',
@@ -42,7 +47,8 @@ export class SidenavComponent implements OnInit {
     }
 
     toggleSidenav() {
-        this.sidenavService.closeSidenav().then(() => {});
+        this.sidenavService.closeSidenav().then(() => {
+        });
     }
 
 }

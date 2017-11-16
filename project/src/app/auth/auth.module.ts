@@ -4,10 +4,11 @@ import {SharedModule} from '../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {AuthService} from './_services/auth.service';
+import {RecoverPasswordService} from './_services/recoverPassword.service';
 import {AuthGuardService} from './_services/authGuard.service';
 import {LoginComponent} from './login/login.component';
 import {FindAccountComponent} from './find-account/find-account.component';
-import {ChangePasswordComponent} from './change-password/change-password.component';
+import {RecoverPasswordComponent} from './recover-password/recover-password.component';
 import {HttpModule}    from '@angular/http';
 
 
@@ -20,10 +21,11 @@ import {HttpModule}    from '@angular/http';
         RouterModule,
         HttpModule,
     ],
-    declarations: [LoginComponent, FindAccountComponent, ChangePasswordComponent],
+    declarations: [LoginComponent, FindAccountComponent, RecoverPasswordComponent],
     providers: [
         AuthService,
-        AuthGuardService
+        AuthGuardService,
+        RecoverPasswordService
     ]
 })
 export class AuthModule {

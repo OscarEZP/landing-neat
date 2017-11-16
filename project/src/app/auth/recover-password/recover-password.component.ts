@@ -2,14 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
-import {AuthService} from '../_services/auth.service';
+import {RecoverPasswordService} from '../_services/recoverPassword.service';
 
 @Component({
     selector: 'lsl-change-password',
-    templateUrl: './change-password.component.html',
-    styleUrls: ['./change-password.component.scss']
+    templateUrl: './recover-password.component.html',
+    styleUrls: ['./recover-password.component.scss']
 })
-export class ChangePasswordComponent implements OnInit {
+export class RecoverPasswordComponent implements OnInit {
     verificationCodeFormControl = new FormControl('', [
         Validators.required
     ]);
@@ -20,23 +20,19 @@ export class ChangePasswordComponent implements OnInit {
         Validators.required
     ]);
     matcher = new MyErrorStateMatcher();
-    changePasswordForm: FormGroup;
+    recoverPasswordForm: FormGroup;
+    destination: string;
 
-    username: string;
-    password: string;
-    confirmPassword: string;
-    verificationCode: string;
 
-    constructor(private authService: AuthService, private router: Router, fb: FormBuilder) {
-        this.authService = authService;
-        this.username = '';
-        this.password = '';
-        this.verificationCode = '';
-        this.changePasswordForm = fb.group({
+    constructor(private recoverPasswordService: RecoverPasswordService, private router: Router, fb: FormBuilder) {
+        this.recoverPasswordService = recoverPasswordService;
+        this.destination = recoverPasswordService.getData().destination;
+        this.recoverPasswordForm = fb.group({
             'verificationCodeFormControl': this.verificationCodeFormControl,
             'passwordFormControl': this.passwordFormControl,
             'confirmPasswordFormControl': this.confirmPasswordFormControl
         })
+
     }
 
     ngOnInit() {
@@ -44,15 +40,15 @@ export class ChangePasswordComponent implements OnInit {
 
     changePassword(form: NgForm) {
         if (form.valid) {
-            if (this.password === this.confirmPassword) {
-                this.authService.changePassword(this.username, this.password, this.verificationCode).then(value => {
-                    console.info(value);
-                    this.router.navigate([this.authService.getRedirectUrl()]);
+            const data: { username: string, password: string, confirmPassword: string, verificationCode: string } = this.recoverPasswordService.getData();
+            if (data.password === data.confirmPassword) {
+                this.recoverPasswordService.changePassword(data.username, data.password, data.verificationCode).then(value => {
+                    this.router.navigate([this.recoverPasswordService.getRedirectUrl()]);
                 }).catch(reason => {
                     console.error(reason.toString());
                 });
-            }else{
-                console.error("password distintas")
+            } else {
+                console.error("error password")
             }
         }
     }

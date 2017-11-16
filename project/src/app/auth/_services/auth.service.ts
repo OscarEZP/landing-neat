@@ -9,19 +9,18 @@ export class AuthService {
 
     private isLoggedIn: boolean;
     private redirectUrl: string;
-    private redirectUrlChangePassword: string;
     private loginUrl: string;
     private user: User;
     private headers: Headers;
+    private data: { username: string, password: string };
 
     constructor(private http: Http) {
         this.headers = new Headers({'Content-Type': 'application/json'});
-
         this.isLoggedIn = this.getIsLoggedIn();
         this.redirectUrl = '/dashboard';
-        this.redirectUrlChangePassword = '/changePassword';
         this.loginUrl = '/login';
         this.user = new User();
+        this.data = {username: '', password: ''};
 
 
     }
@@ -35,13 +34,18 @@ export class AuthService {
         return this.http
             .post(constants.API_POST_LOGIN, JSON.stringify(this.user), this.headers)
             .toPromise()
-            .then(this.extractData).catch(this.handleError);
+            .then(value => {
+                this.user = value.json();
+                localStorage.setItem('currentUser', this.user.userName);
+                this.extractData(value);
+            }).catch(this.handleError);
 
     }
 
     logOut() {
         this.isLoggedIn = false;
         localStorage.removeItem('currentUser');
+        this.user = new User();
     }
 
     getIsLoggedIn() {
@@ -52,49 +56,23 @@ export class AuthService {
         return this.redirectUrl;
     }
 
-    setRedirectUrl(url: string): void {
-        this.redirectUrl = url;
-    }
-
     getLoginUrl(): string {
         return this.loginUrl;
     }
 
-    getRedirectUrlChangePassword(): string {
-        return this.redirectUrlChangePassword;
+    getCurrentUser(): User {
+        return this.user;
     }
 
-    findAccount(username: string): Promise<string> {
-        this.user = new User();
-        this.user.userName = username;
-        console.info(this.user);
-        return this.http
-            .post(constants.API_POST_FIND_ACCOUNT, JSON.stringify(this.user), this.headers)
-            .toPromise()
-            .then(this.extractData).catch(this.handleError);
+    getData() {
+        return this.data;
     }
-
-    changePassword(username: string, password: string, confirmationCode: string) {
-        this.user = new User();
-        this.user.userName = username;
-        this.user.newPassword = password;
-        this.user.confirmationCode = confirmationCode;
-        console.info(this.user);
-
-        return this.http
-            .post(constants.API_POST_CHANGE_PASSWORD, JSON.stringify(this.user), this.headers)
-            .toPromise()
-            .then(this.extractData).catch(this.handleError);
-
-    }
-
-
     private handleError(error: any): Promise<any> {
         console.error('An error occurred', error);
         return Promise.reject(error.message || error);
     }
 
-    private  extractData(res: Response) {
+    private extractData(res: Response) {
         let body = res.json();
         return body || {};
     }
