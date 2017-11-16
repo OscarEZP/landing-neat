@@ -39,7 +39,7 @@ build:
     - npm run ng build
 
     #Run the test
-    - #npm run ng test
+    #- npm run ng test
     - mv shippable/codecoverage/*/coverage.xml shippable/codecoverage
 
   on_success:
