@@ -47,6 +47,7 @@ build:
     # INTEGRATION TASK PACKAGE IMAGE
     - >
       if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ]; then
+	npm run ng build
         docker build -f $SHIPPABLE_BUILD_DIR/docker/Dockerfile  -t $IMAGE_NAME $SHIPPABLE_BUILD_DIR
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:latest
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
