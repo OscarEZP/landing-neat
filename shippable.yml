@@ -44,14 +44,20 @@ build:
     #- mv shippable/codecoverage/*/coverage.xml shippable/codecoverage
 
   on_success:
-    # INTEGRATION TASK PACKAGE IMAGE
+    # WEB IMAGE
     - >
-      if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ]; then
+      if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ] && [ "$IS_PULL_REQUEST" == "false" ]; then
         docker build -f $SHIPPABLE_BUILD_DIR/docker/Dockerfile  -t $IMAGE_NAME $SHIPPABLE_BUILD_DIR
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:latest
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
         docker push $IMAGE_REPO_URL:latest
         docker push $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
+
+        if [ "$BRANCH" == "master" ]; then
+          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-production.env
+        elif [ "$BRANCH" == "develop" ]; then
+          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-staging.env
+        fi
       fi
 
 integrations:
