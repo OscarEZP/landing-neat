@@ -19,8 +19,9 @@ export class FindAccountComponent implements OnInit {
 
 
     constructor(private recoverPasswordService: RecoverPasswordService, private router: Router, fb: FormBuilder) {
-        this.recoverPasswordService = this.recoverPasswordService;
+        this.recoverPasswordService = recoverPasswordService;
         this.recoverPasswordService.reset();
+
         this.findAccountForm = fb.group({
             'usernameFormControl': this.usernameFormControl
         })
@@ -31,10 +32,9 @@ export class FindAccountComponent implements OnInit {
 
     findAccount(form: NgForm) {
         if (form.valid) {
-            const username: string = this.recoverPasswordService.getUsername();
-            this.recoverPasswordService.findAccount(username).then(value => {
-                this.recoverPasswordService.getData().destination=value;
+            this.recoverPasswordService.findAccount(this.usernameFormControl.value).then(value => {
                 this.router.navigate([this.recoverPasswordService.getRecoverUrl()]);
+
             }).catch(reason => {
                 console.error(reason.toString());
             });

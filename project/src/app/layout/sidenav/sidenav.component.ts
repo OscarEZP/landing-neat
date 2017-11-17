@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {SidenavService} from '../_services/sidenav.service';
+import {AuthService} from "../../auth/_services/auth.service";
 
 @Component({
     selector: 'lsl-sidenav',
@@ -7,17 +8,18 @@ import {SidenavService} from '../_services/sidenav.service';
     styleUrls: ['./sidenav.component.scss']
 })
 export class SidenavComponent implements OnInit {
-    private name: string;
-    private username: string
-    private email: string;
-    private arrMenu: { label: String, link: String, icon: String }[];
-    private arrFooterMenu: { label: String, link: String, icon: String }[];
+
+    private user: { username: string, name: string, email: string };
+    private arrMenu: { label: string, link: string, icon: string }[];
+    private arrFooterMenu: { label: string, link: string, icon: string }[];
 
     constructor(private sidenavService: SidenavService, private authService: AuthService) {
-        this.authService=authService;
-        this.username = authService.getCurrentUser().userName;
-        this.name = authService.getCurrentUser().firstName + " " + this.authService.getCurrentUser().lastName;
-        this.email= authService.getCurrentUser().email;
+        this.authService = authService;
+        this.user = {username: '', name: '', email: ''};
+        this.user.username=this.authService.getCurrentUser().userName;
+        this.user.email = authService.getCurrentUser().email;
+        this.user.name = authService.getCurrentUser().firstName + " " + this.authService.getCurrentUser().lastName;
+
     }
 
     ngOnInit() {

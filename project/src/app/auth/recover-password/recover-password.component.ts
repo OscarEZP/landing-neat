@@ -23,19 +23,20 @@ export class RecoverPasswordComponent implements OnInit {
     recoverPasswordForm: FormGroup;
     destination: string;
 
-
     constructor(private recoverPasswordService: RecoverPasswordService, private router: Router, fb: FormBuilder) {
         this.recoverPasswordService = recoverPasswordService;
-        this.destination = recoverPasswordService.getData().destination;
+        this.destination = '';
         this.recoverPasswordForm = fb.group({
             'verificationCodeFormControl': this.verificationCodeFormControl,
             'passwordFormControl': this.passwordFormControl,
             'confirmPasswordFormControl': this.confirmPasswordFormControl
         })
 
+
     }
 
     ngOnInit() {
+        this.destination = this.recoverPasswordService.getData().destination;
     }
 
     changePassword(form: NgForm) {
@@ -43,14 +44,18 @@ export class RecoverPasswordComponent implements OnInit {
             const data: { username: string, password: string, confirmPassword: string, verificationCode: string } = this.recoverPasswordService.getData();
             if (data.password === data.confirmPassword) {
                 this.recoverPasswordService.changePassword(data.username, data.password, data.verificationCode).then(value => {
-                    this.router.navigate([this.recoverPasswordService.getRedirectUrl()]);
+                        this.router.navigate([this.recoverPasswordService.getRedirectUrl()]);
                 }).catch(reason => {
                     console.error(reason.toString());
                 });
             } else {
-                console.error("error password")
+                console.error("password not same")
             }
         }
+    }
+
+    resend(username: string) {
+        this.recoverPasswordService.findAccount(username);
     }
 }
 

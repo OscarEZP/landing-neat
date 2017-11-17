@@ -1,6 +1,6 @@
 export class User {
 
-    public userId: string; //sub
+    public userId: string;
     public userName: string;
     public givenName: string;
     public firstName: string;
@@ -10,12 +10,12 @@ export class User {
     public principalGroup: string;
     public status: string;
     public sessionToken: string;
-    public idToken:string;
+    public idToken: string;
     public accessToken: string;
-    public refreshToken:string;
+    public refreshToken: string;
     public password: string;
     public newPassword: string;
-    public confirmationCode:string;
+    public confirmationCode: string;
 
     constructor() {
     }

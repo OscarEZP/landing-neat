@@ -19,7 +19,7 @@ import {HttpModule}    from '@angular/http';
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
-        HttpModule,
+        HttpModule
     ],
     declarations: [LoginComponent, FindAccountComponent, RecoverPasswordComponent],
     providers: [

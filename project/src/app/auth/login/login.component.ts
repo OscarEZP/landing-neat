@@ -4,6 +4,7 @@ import {AuthService} from '../_services/auth.service';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 
+
 @Component({
     selector: 'lsl-login',
     templateUrl: './login.component.html',
@@ -49,6 +50,7 @@ export class LoginComponent implements OnInit {
         if (form.valid) {
             const data = this.authService.getData();
             this.authService.logIn(data.username, data.password).then(value => {
+                localStorage.setItem('currentUser', value.userName);
                 this.router.navigate([this.authService.getRedirectUrl()]);
             }).catch(reason => {
                 console.error(reason.toString());

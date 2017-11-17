@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {User} from '../_models/user.model';
-import {Http, Response} from '@angular/http'
+import {Http} from '@angular/http'
 import 'rxjs/add/operator/toPromise';
 import * as constants from '../../constants';
 
@@ -36,9 +36,11 @@ export class AuthService {
             .toPromise()
             .then(value => {
                 this.user = value.json();
-                localStorage.setItem('currentUser', this.user.userName);
-                this.extractData(value);
-            }).catch(this.handleError);
+                return Promise.resolve(this.user);
+
+            }).catch(reason => {
+                return Promise.reject(reason.message || reason);
+            });
 
     }
 
@@ -61,19 +63,13 @@ export class AuthService {
     }
 
     getCurrentUser(): User {
+        this.user.firstName = constants.DUMMY_FIRST_NAME;
+        this.user.lastName = constants.DUMMY_LAST_NAME;
         return this.user;
     }
 
     getData() {
         return this.data;
     }
-    private handleError(error: any): Promise<any> {
-        console.error('An error occurred', error);
-        return Promise.reject(error.message || error);
-    }
 
-    private extractData(res: Response) {
-        let body = res.json();
-        return body || {};
-    }
 }

@@ -6,30 +6,30 @@ import {AuthService} from '../auth/_services/auth.service'
 import {ToolbarComponent} from './toolbar/toolbar.component';
 import {LayoutComponent} from './layout.component';
 import {SidenavComponent} from './sidenav/sidenav.component';
-
-import { SidenavService } from "./_services/sidenav.service";
-import { DialogService } from '../content/_services/dialog.service';
+import {SidenavService} from './_services/sidenav.service';
+import {DialogService} from '../content/_services/dialog.service';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    SharedModule,
-    RouterModule
-  ],
-  exports: [
-    ToolbarComponent,
-    SidenavComponent
-  ],
-  declarations: [
-    ToolbarComponent,
-    LayoutComponent,
-    SidenavComponent
-  ],
-  providers: [
-    SidenavService,
-    DialogService,
-      AuthService
+    imports: [
+        CommonModule,
+        SharedModule,
+        RouterModule
+    ],
+    exports: [
+        ToolbarComponent,
+        SidenavComponent
+    ],
+    declarations: [
+        ToolbarComponent,
+        LayoutComponent,
+        SidenavComponent
+    ],
+    providers: [
+        SidenavService,
+        DialogService,
+        AuthService
     ]
 })
-export class LayoutModule { }
+export class LayoutModule {
+}
