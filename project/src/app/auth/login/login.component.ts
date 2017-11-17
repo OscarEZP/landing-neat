@@ -3,8 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '../_services/auth.service';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
-import {MessageService} from "../../shared/_services/message.service";
-import {StorageService} from "../../shared/_services/storage.service";
+import {MessageService} from '../../shared/_services/message.service';
+import {StorageService} from '../../shared/_services/storage.service';
 
 
 @Component({
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
 
     loginForm: FormGroup;
 
-    constructor(private authService: AuthService,private storageService:StorageService,private router: Router, private route: ActivatedRoute, private fb: FormBuilder, private  messageService: MessageService) {
+    constructor(private authService: AuthService, private storageService: StorageService, private router: Router, private route: ActivatedRoute, private fb: FormBuilder, private  messageService: MessageService) {
         this.registerView = false;
     }
 
@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
         this.loginForm = this.fb.group({
             'usernameFormControl': this.usernameFormControl,
             'passwordFormControl': this.passwordFormControl
-        })
+        });
         this.routeData = this.route.data.subscribe((data: { logout: string }) => {
 
             if (data.logout && this.authService.getIsLoggedIn()) {
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
         if (form.valid) {
             const data = this.authService.getData();
             this.authService.logIn(data.username, data.password).then(value => {
-                this.storageService.addCurrentUser(value)
+                this.storageService.addCurrentUser(value);
                 this.router.navigate([this.authService.getRedirectUrl()]);
             }).catch(reason => {
                 this.messageService.openSnackBar(reason);
@@ -60,7 +60,6 @@ export class LoginComponent implements OnInit {
 
         }
     }
-
 
 }
 

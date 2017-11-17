@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
 import {SharedModule} from '../shared/shared.module';
-import {AuthService} from '../auth/_services/auth.service'
 import {ToolbarComponent} from './toolbar/toolbar.component';
 import {LayoutComponent} from './layout.component';
 import {SidenavComponent} from './sidenav/sidenav.component';
@@ -29,7 +28,6 @@ import {StorageService} from "../shared/_services/storage.service";
     providers: [
         SidenavService,
         DialogService,
-        AuthService,
         StorageService
     ]
 })

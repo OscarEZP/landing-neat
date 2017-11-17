@@ -3,8 +3,8 @@ import {User} from '../_models/user.model';
 import {Http} from '@angular/http'
 import 'rxjs/add/operator/toPromise';
 import * as constants from '../../constants';
-import {StatusError} from "../_models/statusError.model";
-import {StorageService} from "../../shared/_services/storage.service";
+import {StatusError} from '../_models/statusError.model';
+import {StorageService} from '../../shared/_services/storage.service';
 
 @Injectable()
 export class AuthService {

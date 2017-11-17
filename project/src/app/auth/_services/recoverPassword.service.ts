@@ -11,11 +11,11 @@ export class RecoverPasswordService {
     private redirectUrl: string;
     private recoverUrl: string;
     private headers: Headers;
-    private data: { username: string, password: string, confirmPassword: string, verificationCode: string, destination: string };
+    private data: {password: string, confirmPassword: string, verificationCode: string, destination: string };
 
     constructor(private http: Http) {
         this.headers = new Headers({'Content-Type': 'application/json'});
-        this.redirectUrl = '/dashboard';
+        this.redirectUrl = '/login';
         this.recoverUrl = '/recoverPassword';
         this.reset();
 
@@ -30,7 +30,7 @@ export class RecoverPasswordService {
     }
 
     reset() {
-        this.data = {username: '', password: '', confirmPassword: '', verificationCode: '', destination: ''};
+        this.data = {password: '', confirmPassword: '', verificationCode: '', destination: ''};
     }
 
     getData() {
@@ -46,7 +46,6 @@ export class RecoverPasswordService {
             .then(
                 value => {
                     this.data = value.json();
-                    this.data.username = username;
                     return Promise.resolve(this.data.destination);
                 }
             ).catch(reason => {
@@ -73,7 +72,6 @@ export class RecoverPasswordService {
                 let error: StatusError = reason.json();
                 return Promise.reject(error.message);
             });
-
     }
 
 }

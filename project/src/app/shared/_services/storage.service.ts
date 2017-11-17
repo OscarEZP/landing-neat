@@ -5,42 +5,41 @@ import * as constants from '../../constants';
 @Injectable()
 export class StorageService {
     private static RECOVER_ACCOUNT: string = 'recoverAccount';
-    private static RECOVER_DESTINATION:string='recoverDestination';
+    private static RECOVER_DESTINATION: string = 'recoverDestination';
     private static CURRENT_USER: string = 'currentUser';
-    private static CURRENT_USER: string = 'currentUser';
+
     constructor() {
     }
 
 
-    private removeLocalStorage(key: string) {
+    private static removeLocalStorage(key: string) {
         localStorage.removeItem(key);
 
     }
 
-    private addLocalStorage(key: string, item: string) {
-
+    private static addLocalStorage(key: string, item: string) {
         localStorage.setItem(key, item);
     }
 
-    private removeSessionStorage(key: string) {
+    private static removeSessionStorage(key: string) {
         sessionStorage.removeItem(key);
 
     }
 
-    private addSessionStorage(key: string, item: string) {
+    private static addSessionStorage(key: string, item: string) {
         sessionStorage.setItem(key, item);
     }
 
-    private getSessionStorage(key: string) {
-        sessionStorage.getItem(key);
+    private static getSessionStorage(key: string): string {
+        return sessionStorage.getItem(key);
     }
 
     public addCurrentUser(user: User) {
-        this.addLocalStorage(StorageService.CURRENT_USER, JSON.stringify(user));
+        StorageService.addLocalStorage(StorageService.CURRENT_USER, JSON.stringify(user));
     }
 
     public removeCurrentUser() {
-        this.removeLocalStorage(StorageService.CURRENT_USER);;
+        StorageService.removeLocalStorage(StorageService.CURRENT_USER);
     }
 
     public hasCurrentUser(): boolean {
@@ -49,34 +48,29 @@ export class StorageService {
     }
 
     public getCurrentUser(): User {
-
-        let user: User = JSON.parse(localStorage.getItem(StorageService.CURRENT_USER))
+        let user: User = JSON.parse(localStorage.getItem(StorageService.CURRENT_USER));
         user.firstName = constants.DUMMY_FIRST_NAME;
         user.lastName = constants.DUMMY_LAST_NAME;
-
         return user;
     }
 
-    addRecoverAccount(username: string) {
-        this.addSessionStorage(StorageService.RECOVER_ACCOUNT, username);
+    public addRecoverPassword(username: string, destination: string) {
+       StorageService.addSessionStorage(StorageService.RECOVER_ACCOUNT, username);
+       StorageService.addSessionStorage(StorageService.RECOVER_DESTINATION, destination);
     }
 
-    getRecoverAccount():String {
-       return this.getSessionStorage(StorageService.RECOVER_ACCOUNT);
+    public getRecoverAccount(): string {
+        return StorageService.getSessionStorage(StorageService.RECOVER_ACCOUNT);
     }
 
-    addRecoverDestination(destination: string) {
-        this.addSessionStorage(StorageService.RECOVER_DESTINATION, destination);
-    }
-
-    getRecoverDestination():String {
-        return this.getSessionStorage(StorageService.RECOVER_DESTINATION);
+    public getRecoverDestination(): string {
+        return StorageService.getSessionStorage(StorageService.RECOVER_DESTINATION);
     }
 
 
-    removeRecoverPassword() {
-        this.removeSessionStorage(StorageService.RECOVER_ACCOUNT);
-        this.removeSessionStorage(StorageService.RECOVER_DESTINATION);
+    public removeRecoverPassword() {
+        StorageService.removeSessionStorage(StorageService.RECOVER_ACCOUNT);
+        StorageService.removeSessionStorage(StorageService.RECOVER_DESTINATION);
     }
 
 }

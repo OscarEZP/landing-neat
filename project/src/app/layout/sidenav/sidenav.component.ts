@@ -47,8 +47,7 @@ export class SidenavComponent implements OnInit {
     }
 
     toggleSidenav() {
-        this.sidenavService.closeSidenav().then(() => {
-        });
+        this.sidenavService.closeSidenav().then(() => {});
     }
 
 }
