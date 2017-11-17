@@ -32,11 +32,11 @@ build:
     - git clean -f -x
 
     # install NPM depedencies
-#    - cd $SHIPPABLE_BUILD_DIR/project
+    - cd $SHIPPABLE_BUILD_DIR/project
     - shippable_retry npm install --quiet
 
     #Run the build
-    - cd $SHIPPABLE_BUILD_DIR
+    - cd $SHIPPABLE_BUILD_DIR/project
     - npm run ng build
 
     #Run the test
