@@ -11,7 +11,7 @@ import {FindAccountComponent} from './find-account/find-account.component';
 import {RecoverPasswordComponent} from './recover-password/recover-password.component';
 import {HttpModule}    from '@angular/http';
 import {MessageService} from "../shared/_services/message.service";
-
+import {StorageService} from "../shared/_services/storage.service";
 
 @NgModule({
     imports: [
@@ -27,7 +27,8 @@ import {MessageService} from "../shared/_services/message.service";
         AuthService,
         AuthGuardService,
         RecoverPasswordService,
-        MessageService
+        MessageService,
+        StorageService
     ]
 })
 export class AuthModule {

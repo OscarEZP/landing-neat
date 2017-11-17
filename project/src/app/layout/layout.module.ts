@@ -8,6 +8,7 @@ import {LayoutComponent} from './layout.component';
 import {SidenavComponent} from './sidenav/sidenav.component';
 import {SidenavService} from './_services/sidenav.service';
 import {DialogService} from '../content/_services/dialog.service';
+import {StorageService} from "../shared/_services/storage.service";
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import {DialogService} from '../content/_services/dialog.service';
     providers: [
         SidenavService,
         DialogService,
-        AuthService
+        AuthService,
+        StorageService
     ]
 })
 export class LayoutModule {
