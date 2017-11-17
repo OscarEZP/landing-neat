@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DatetimeService } from '../../commons/datatime.service/datetime.service';
-import { ActualTimeModel } from '../../commons/datatime.service/actual-time-model';
+import { DatetimeService } from '../../shared/_services/datetime.service';
+import { ActualTimeModel } from '../../shared/_models/actual-time-model';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
-import { DataService } from '../../commons/data.service/data.service';
+import { DataService } from '../../shared/_services/data.service';
 import { Subscription } from 'rxjs/Subscription';
-import { ClockService } from '../../commons/clock.service/clock.service';
+import { ClockService } from '../../shared/_services/clock.service';
 import { SidenavService } from '../_services/sidenav.service';
 import { DialogService } from '../../content/_services/dialog.service';
 import { ContingenceFormComponent } from '../../content/operations/contingence-form/contingence-form.component';
