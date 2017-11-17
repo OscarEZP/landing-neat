@@ -20,7 +20,7 @@ export class AuthService {
         this.redirectUrl = '/dashboard';
         this.loginUrl = '/login';
         this.user = new User();
-        this.data = {username: '', password: ''};
+        this.reset();
 
 
     }
@@ -70,6 +70,10 @@ export class AuthService {
 
     getData() {
         return this.data;
+    }
+
+    reset() {
+        this.data = {username: '', password: ''};
     }
 
 }
