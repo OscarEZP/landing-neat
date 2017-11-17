@@ -10,6 +10,7 @@ import {LoginComponent} from './login/login.component';
 import {FindAccountComponent} from './find-account/find-account.component';
 import {RecoverPasswordComponent} from './recover-password/recover-password.component';
 import {HttpModule}    from '@angular/http';
+import {MessageService} from "../shared/_services/message.service";
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import {HttpModule}    from '@angular/http';
     providers: [
         AuthService,
         AuthGuardService,
-        RecoverPasswordService
+        RecoverPasswordService,
+        MessageService
     ]
 })
 export class AuthModule {

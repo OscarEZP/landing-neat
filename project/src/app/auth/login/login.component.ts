@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '../_services/auth.service';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+import {MessageService} from "../../shared/_services/message.service";
 
 
 @Component({
@@ -26,10 +27,12 @@ export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     formBuilder: FormBuilder;
 
-    constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, private fb: FormBuilder) {
+    constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, private fb: FormBuilder, private  messageService: MessageService) {
         this.authService = authService;
+        this.messageService = this.messageService;
         this.registerView = false;
         this.formBuilder = fb;
+
     }
 
     ngOnInit() {
@@ -56,11 +59,12 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem('currentUser', value.userName);
                 this.router.navigate([this.authService.getRedirectUrl()]);
             }).catch(reason => {
-                console.error(reason.toString());
+                this.messageService.openSnackBar(reason);
             });
 
         }
     }
+
 
 }
 

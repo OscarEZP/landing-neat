@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {RecoverPasswordService} from "../_services/recoverPassword.service";
+import {MessageService} from "../../shared/_services/message.service";
 
 @Component({
     selector: 'lsl-find-account',
@@ -19,8 +20,9 @@ export class FindAccountComponent implements OnInit {
     formBuilder: FormBuilder;
 
 
-    constructor(private recoverPasswordService: RecoverPasswordService, private router: Router, private fb: FormBuilder) {
+    constructor(private recoverPasswordService: RecoverPasswordService, private messageService: MessageService, private router: Router, private fb: FormBuilder) {
         this.recoverPasswordService = recoverPasswordService;
+        this.messageService = this.messageService;
         this.formBuilder = fb;
     }
 
@@ -37,7 +39,7 @@ export class FindAccountComponent implements OnInit {
                 this.router.navigate([this.recoverPasswordService.getRecoverUrl()]);
 
             }).catch(reason => {
-                console.error(reason.toString());
+                this.messageService.openSnackBar(reason);
             });
 
         }

@@ -3,6 +3,7 @@ import {User} from '../_models/user.model';
 import {Http} from '@angular/http'
 import 'rxjs/add/operator/toPromise';
 import * as constants from '../../constants';
+import {StatusError} from "../_models/statusError.model";
 
 @Injectable()
 export class RecoverPasswordService {
@@ -49,7 +50,8 @@ export class RecoverPasswordService {
                     return Promise.resolve(this.data.destination);
                 }
             ).catch(reason => {
-                return Promise.reject(reason.message || reason);
+                let error: StatusError = reason.json();
+                return Promise.reject(error.message);
             });
 
     }
@@ -64,10 +66,12 @@ export class RecoverPasswordService {
             .post(constants.API_POST_CHANGE_PASSWORD, JSON.stringify(user), this.headers)
             .toPromise()
             .then(value => {
-                let status:boolean=value.json();
+                let status: boolean = value.json();
                 return Promise.resolve(status);
+
             }).catch(reason => {
-                return Promise.reject(reason.message || reason);
+                let error: StatusError = reason.json();
+                return Promise.reject(error.message);
             });
 
     }

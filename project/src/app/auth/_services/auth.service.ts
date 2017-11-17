@@ -3,6 +3,7 @@ import {User} from '../_models/user.model';
 import {Http} from '@angular/http'
 import 'rxjs/add/operator/toPromise';
 import * as constants from '../../constants';
+import {StatusError} from "../_models/statusError.model";
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
     private user: User;
     private headers: Headers;
     private data: { username: string, password: string };
+
 
     constructor(private http: Http) {
         this.headers = new Headers({'Content-Type': 'application/json'});
@@ -37,9 +39,9 @@ export class AuthService {
             .then(value => {
                 this.user = value.json();
                 return Promise.resolve(this.user);
-
             }).catch(reason => {
-                return Promise.reject(reason.message || reason);
+               let error:StatusError=reason.json();
+                return Promise.reject(error.message);
             });
 
     }
