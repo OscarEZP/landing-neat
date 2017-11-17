@@ -16,17 +16,19 @@ export class FindAccountComponent implements OnInit {
 
     matcher = new MyErrorStateMatcher();
     findAccountForm: FormGroup;
+    formBuilder: FormBuilder;
 
 
-    constructor(private recoverPasswordService: RecoverPasswordService, private router: Router, fb: FormBuilder) {
+    constructor(private recoverPasswordService: RecoverPasswordService, private router: Router, private fb: FormBuilder) {
         this.recoverPasswordService = recoverPasswordService;
-        this.findAccountForm = fb.group({
-            'usernameFormControl': this.usernameFormControl
-        })
+        this.formBuilder = fb;
     }
 
     ngOnInit() {
         this.recoverPasswordService.reset();
+        this.findAccountForm = this.formBuilder.group({
+            'usernameFormControl': this.usernameFormControl
+        })
     }
 
     findAccount(form: NgForm) {

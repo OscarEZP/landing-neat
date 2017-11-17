@@ -24,17 +24,20 @@ export class LoginComponent implements OnInit {
     routeData: any;
 
     loginForm: FormGroup;
+    formBuilder: FormBuilder;
 
-    constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, fb: FormBuilder) {
+    constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, private fb: FormBuilder) {
         this.authService = authService;
         this.registerView = false;
-        this.loginForm = fb.group({
-            'usernameFormControl': this.usernameFormControl,
-            'passwordFormControl': this.passwordFormControl
-        })
+        this.formBuilder = fb;
     }
 
     ngOnInit() {
+        this.authService.reset();
+        this.loginForm = this.formBuilder.group({
+            'usernameFormControl': this.usernameFormControl,
+            'passwordFormControl': this.passwordFormControl
+        })
         this.routeData = this.route.data.subscribe((data: { logout: string }) => {
 
             if (data.logout && this.authService.getIsLoggedIn()) {

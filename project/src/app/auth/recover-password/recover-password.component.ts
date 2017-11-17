@@ -21,22 +21,22 @@ export class RecoverPasswordComponent implements OnInit {
     ]);
     matcher = new MyErrorStateMatcher();
     recoverPasswordForm: FormGroup;
+    formBuilder: FormBuilder
     destination: string;
 
-    constructor(private recoverPasswordService: RecoverPasswordService, private router: Router, fb: FormBuilder) {
+    constructor(private recoverPasswordService: RecoverPasswordService, private router: Router, private fb: FormBuilder) {
         this.recoverPasswordService = recoverPasswordService;
+        this.formBuilder=fb;
         this.destination = '';
-        this.recoverPasswordForm = fb.group({
-            'verificationCodeFormControl': this.verificationCodeFormControl,
-            'passwordFormControl': this.passwordFormControl,
-            'confirmPasswordFormControl': this.confirmPasswordFormControl
-        })
-
-
     }
 
     ngOnInit() {
         this.destination = this.recoverPasswordService.getData().destination;
+        this.recoverPasswordForm = this.formBuilder.group({
+            'verificationCodeFormControl': this.verificationCodeFormControl,
+            'passwordFormControl': this.passwordFormControl,
+            'confirmPasswordFormControl': this.confirmPasswordFormControl
+        })
     }
 
     changePassword(form: NgForm) {
