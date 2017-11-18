@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ContingenceListComponent} from './contingenceList.component/contingenceList.component';
+import {ContingencyListComponent} from './contingency-list.component/contingency-list.component';
 
 @Component({
     selector: 'lsl-operations',
@@ -11,7 +11,7 @@ export class OperationsComponent implements OnInit {
 
     private itemsCount: number;
 
-    @ViewChild(ContingenceListComponent) child;
+    @ViewChild(ContingencyListComponent) child;
 
     constructor() { }
 

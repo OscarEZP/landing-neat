@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
-import {AuthService} from '../_services/auth.service';
+import {RecoverPasswordService} from "../_services/recoverPassword.service";
+
 @Component({
     selector: 'lsl-find-account',
     templateUrl: './find-account.component.html',
@@ -14,20 +16,30 @@ export class FindAccountComponent implements OnInit {
 
     matcher = new MyErrorStateMatcher();
     findAccountForm: FormGroup;
+    formBuilder: FormBuilder;
 
-    constructor(private authService: AuthService,fb: FormBuilder) {
-        this.authService = authService;
-        this.findAccountForm = fb.group({
+
+    constructor(private recoverPasswordService: RecoverPasswordService, private router: Router, private fb: FormBuilder) {
+        this.recoverPasswordService = recoverPasswordService;
+        this.formBuilder = fb;
+    }
+
+    ngOnInit() {
+        this.recoverPasswordService.reset();
+        this.findAccountForm = this.formBuilder.group({
             'usernameFormControl': this.usernameFormControl
         })
     }
 
-    ngOnInit() {
-    }
-
     findAccount(form: NgForm) {
-        if(form.valid) {
-            this.authService.findAccount()
+        if (form.valid) {
+            this.recoverPasswordService.findAccount(this.usernameFormControl.value).then(value => {
+                this.router.navigate([this.recoverPasswordService.getRecoverUrl()]);
+
+            }).catch(reason => {
+                console.error(reason.toString());
+            });
+
         }
     }
 }

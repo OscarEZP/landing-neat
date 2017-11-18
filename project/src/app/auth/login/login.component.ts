@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-
 import {AuthService} from '../_services/auth.service';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+
 
 @Component({
     selector: 'lsl-login',
@@ -20,26 +20,26 @@ export class LoginComponent implements OnInit {
 
     matcher = new MyErrorStateMatcher();
 
-    user: string;
-    password: string;
     registerView: boolean;
     routeData: any;
 
     loginForm: FormGroup;
+    formBuilder: FormBuilder;
 
-    constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, fb: FormBuilder) {
+    constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, private fb: FormBuilder) {
         this.authService = authService;
-        this.user = '';
-        this.password = '';
         this.registerView = false;
-        this.loginForm = fb.group({
-            'usernameFormControl': this.usernameFormControl,
-            'passwordFormControl': this.passwordFormControl
-        })
+        this.formBuilder = fb;
     }
 
     ngOnInit() {
-        this.routeData = this.route.data.subscribe((data: {logout: string}) => {
+        this.authService.reset();
+        this.loginForm = this.formBuilder.group({
+            'usernameFormControl': this.usernameFormControl,
+            'passwordFormControl': this.passwordFormControl
+        })
+        this.routeData = this.route.data.subscribe((data: { logout: string }) => {
+
             if (data.logout && this.authService.getIsLoggedIn()) {
                 this.authService.logOut();
                 this.router.navigate([this.authService.getLoginUrl()]);
@@ -50,9 +50,15 @@ export class LoginComponent implements OnInit {
     }
 
     logIn(form: NgForm) {
-        if(form.valid) {
-            this.authService.logIn();
-            this.router.navigate([this.authService.getRedirectUrl()]);
+        if (form.valid) {
+            const data = this.authService.getData();
+            this.authService.logIn(data.username, data.password).then(value => {
+                localStorage.setItem('currentUser', value.userName);
+                this.router.navigate([this.authService.getRedirectUrl()]);
+            }).catch(reason => {
+                console.error(reason.toString());
+            });
+
         }
     }
 
