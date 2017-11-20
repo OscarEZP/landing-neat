@@ -6,7 +6,6 @@ import {ToolbarComponent} from './toolbar/toolbar.component';
 import {LayoutComponent} from './layout.component';
 import {SidenavComponent} from './sidenav/sidenav.component';
 import {SidenavService} from './_services/sidenav.service';
-import {DialogService} from '../content/_services/dialog.service';
 import {StorageService} from "../shared/_services/storage.service";
 
 
@@ -27,7 +26,6 @@ import {StorageService} from "../shared/_services/storage.service";
     ],
     providers: [
         SidenavService,
-        DialogService,
         StorageService
     ]
 })

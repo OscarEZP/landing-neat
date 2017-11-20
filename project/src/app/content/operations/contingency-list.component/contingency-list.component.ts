@@ -16,7 +16,7 @@ import { ContingenceFormComponent } from '../../../content/operations/contingenc
 export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private _messageSubscriptions: Subscription;
-    private apiUrl = environment.apiUrl + '/api/contingences?userName=a&idToken=a';
+    private apiUrl = environment.apiUrl + environment.paths.contingencyList;
     private contingenceList: any = {};
     private utcTime: number;
 
