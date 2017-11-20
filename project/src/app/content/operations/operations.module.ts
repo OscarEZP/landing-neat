@@ -7,7 +7,6 @@ import { ContingencyListComponent } from './contingency-list.component/contingen
 import { ContingenceFormComponent } from './contingence-form/contingence-form.component';
 import { DialogService } from '../../content/_services/dialog.service';
 
-
 @NgModule({
     imports: [
         BrowserModule,
@@ -19,9 +18,7 @@ import { DialogService } from '../../content/_services/dialog.service';
         ContingenceFormComponent
     ],
     exports: [
-        OperationsComponent,
-        ContingencyListComponent,
-        ContingenceFormComponent
+
     ],
     providers:[
         DialogService
