@@ -8,6 +8,7 @@ export class RoutingService {
     public setActiveModule(url: string){
         switch (url) {
             case '/dashboard'    : this.moduleTitle = 'Dashboard'; break;
+            default:
             case '/operations/contingencies'   : this.moduleTitle = 'Operations Module'; break;
         }
         console.log('Title: ' + this.moduleTitle);
