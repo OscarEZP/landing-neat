@@ -1,9 +1,39 @@
 @import '../../../assets/style/baseTheme/colorStyle';
 
-.mat-toolbar.mat-primary{
-    background: $white;
-}
+#toolbar {
+    background-color: $white;
+    font-family: 'Noto Sans', 'Tahoma', 'Arial', sans-serif;
 
-mat-icon{
-    color: $blue;
+    .mat-toolbar.mat-primary {
+        background: $white;
+    }
+
+    mat-icon {
+        color: $blue;
+    }
+
+    figure {
+        background: url('../../../assets/img/logo-maintenix@2x.png') no-repeat 0 11px;
+        display: inline-block;
+        height: 55px;
+        width: 250px;
+        background-size: contain;
+    }
+
+    aside{
+        font-size: 13px;
+        width: 100%;
+        text-align: right;
+        display: inline-block;
+
+        #datetime{
+            color: $typography-dark;
+            padding: 0 10px;
+        }
+
+        /deep/
+        .mat-input-container{
+            width: 120px;
+        }
+    }
 }

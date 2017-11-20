@@ -34,7 +34,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private sidenavService: SidenavService,
         private dialogService: DialogService
     ) {
-        this.display = false;
+        this.display = true;
         this.alive = true;
         this.interval = 60000;
         this.currentDateLong = 0;
