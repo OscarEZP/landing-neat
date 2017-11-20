@@ -2,12 +2,12 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
 import {SharedModule} from '../shared/shared.module';
-import {AuthService} from '../auth/_services/auth.service'
 import {ToolbarComponent} from './toolbar/toolbar.component';
 import {LayoutComponent} from './layout.component';
 import {SidenavComponent} from './sidenav/sidenav.component';
 import {SidenavService} from './_services/sidenav.service';
 import {DialogService} from '../content/_services/dialog.service';
+import {StorageService} from "../shared/_services/storage.service";
 
 
 @NgModule({
@@ -28,7 +28,7 @@ import {DialogService} from '../content/_services/dialog.service';
     providers: [
         SidenavService,
         DialogService,
-        AuthService
+        StorageService
     ]
 })
 export class LayoutModule {

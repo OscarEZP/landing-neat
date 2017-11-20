@@ -5,18 +5,18 @@ import {
     MatButtonModule,
     MatCardModule,
     MatTabsModule,
-    MatFormFieldModule, 
+    MatFormFieldModule,
     MatInputModule,
-    MatListModule, 
-    MatProgressBarModule, 
+    MatListModule,
+    MatProgressBarModule,
     MatIconModule,
     MatDialogModule,
     MatCheckboxModule,
     MatRadioModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule
-    
+    MatNativeDateModule,
+    MatSnackBarModule
 
 
 } from '@angular/material';
@@ -40,7 +40,8 @@ import {FlexLayoutModule} from '@angular/flex-layout';
         MatSelectModule,
         MatDatepickerModule,
         MatNativeDateModule,
-        FlexLayoutModule
+        FlexLayoutModule,
+        MatSnackBarModule
 
     ],
     exports: [
@@ -60,7 +61,8 @@ import {FlexLayoutModule} from '@angular/flex-layout';
         MatSelectModule,
         MatDatepickerModule,
         MatNativeDateModule,
-        FlexLayoutModule
+        FlexLayoutModule,
+        MatSnackBarModule
     ],
 
 })
