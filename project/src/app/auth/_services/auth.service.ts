@@ -18,14 +18,11 @@ export class AuthService {
 
 
     constructor(private http: Http, private storageService: StorageService) {
-
         this.headers = new Headers({'Content-Type': 'application/json'});
         this.isLoggedIn = this.getIsLoggedIn();
-        this.redirectUrl = '/dashboard';
+        this.redirectUrl = '/operations';
         this.loginUrl = '/login';
         this.reset();
-
-
     }
 
     logIn(username: string, password: string): Promise<User> {
