@@ -3,9 +3,7 @@
     <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">menu</mat-icon>
   </button>
   <figure id="logo"></figure>
-  <button mat-icon-button>
-    <mat-icon (click)="openDialog()" class="mat-icon material-icons" role="img" aria-hidden="true">add_circle</mat-icon>
-  </button>
+  <h1 [innerHtml]="routingService.getModuleTitle()"></h1>
   <aside>
     <nav>
       <span *ngIf="display" id="datetime">{{ currentDateString | date: 'dd-MMM-yyyy'}} | {{ time | date: 'HH:mm:ss' }} UTC</span>

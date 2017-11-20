@@ -3,6 +3,11 @@
 #toolbar {
     background-color: $white;
     font-family: 'Noto Sans', 'Tahoma', 'Arial', sans-serif;
+    color: $typography-dark;
+
+    h1{
+        font-size: 15px;
+    }
 
     .mat-toolbar.mat-primary {
         background: $white;
@@ -21,13 +26,12 @@
     }
 
     aside{
-        font-size: 13px;
         width: 100%;
         text-align: right;
         display: inline-block;
+        font-size: 13px;
 
         #datetime{
-            color: $typography-dark;
             padding: 0 10px;
         }
 

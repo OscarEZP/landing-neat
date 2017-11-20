@@ -9,6 +9,7 @@ import { ClockService } from '../../shared/_services/clock.service';
 import { SidenavService } from '../_services/sidenav.service';
 import { DialogService } from '../../content/_services/dialog.service';
 import { ContingenceFormComponent } from '../../content/operations/contingence-form/contingence-form.component';
+import {RoutingService} from "../../shared/_services/routing.service";
 
 @Component({
     selector: 'lsl-toolbar',
@@ -26,19 +27,22 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     public currentDateLong: number;
     public currentDateString: string;
     private time: Date;
+    private moduleTitle: string;
 
     constructor(
         private datetimeService: DatetimeService,
         private messageData: DataService,
         private clockService: ClockService,
         private sidenavService: SidenavService,
-        private dialogService: DialogService
+        private dialogService: DialogService,
+        private routingService: RoutingService
     ) {
         this.display = true;
         this.alive = true;
         this.interval = 60000;
         this.currentDateLong = 0;
         this.currentDateString = '';
+        this.moduleTitle = '';
     }
 
     openDialog() {
@@ -66,6 +70,9 @@ export class ToolbarComponent implements OnInit, OnDestroy {
             });
 
         this.clockService.getClock().subscribe(time => this.time = time);
+
+        this.moduleTitle = this.routingService.getModuleTitle();
+
     }
 
     ngOnDestroy() {
