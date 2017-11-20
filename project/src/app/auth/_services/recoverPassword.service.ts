@@ -4,6 +4,7 @@ import {Http} from '@angular/http'
 import 'rxjs/add/operator/toPromise';
 import * as constants from '../../constants';
 import {StatusError} from "../_models/statusError.model";
+import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class RecoverPasswordService {
@@ -41,7 +42,7 @@ export class RecoverPasswordService {
         let user = new User();
         user.userName = username;
         return this.http
-            .post(constants.API_POST_FIND_ACCOUNT, JSON.stringify(user), this.headers)
+            .post(environment.apiUrl + environment.paths.forgotPassword, JSON.stringify(user), this.headers)
             .toPromise()
             .then(
                 value => {
@@ -62,7 +63,7 @@ export class RecoverPasswordService {
         user.confirmationCode = verificationCode;
 
         return this.http
-            .post(constants.API_POST_CHANGE_PASSWORD, JSON.stringify(user), this.headers)
+            .post(environment.apiUrl + environment.paths.confirmForgotPassword, JSON.stringify(user), this.headers)
             .toPromise()
             .then(value => {
                 let status: boolean = value.json();

@@ -5,6 +5,7 @@ import 'rxjs/add/operator/toPromise';
 import * as constants from '../../constants';
 import {StatusError} from '../_models/statusError.model';
 import {StorageService} from '../../shared/_services/storage.service';
+import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +35,7 @@ export class AuthService {
         user.password = password;
 
         return this.http
-            .post(constants.API_POST_LOGIN, JSON.stringify(user), this.headers)
+            .post(environment.apiUrl + environment.paths.login, JSON.stringify(user), this.headers)
             .toPromise()
             .then(value => {
                 user = value.json();

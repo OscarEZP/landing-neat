@@ -8,7 +8,7 @@ import {environment} from "../../../../environments/environment";
 
 @Injectable()
 export class DatetimeService {
-    private url = environment.apiUrl + '/api/security/currentdatetime';
+    private url = environment.apiUrl + environment.paths.dateTime;
 
   constructor(private http: Http) {
   }
