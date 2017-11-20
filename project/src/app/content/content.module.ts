@@ -2,13 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ObjNgForPipe } from '../shared/_pipes/objNgForPipe.pipe';
-import { SharedModule } from '../shared/shared.module';
-import { OperationsModule } from './operations/operations.module'
+import { OperationsModule } from './operations/operations.module';
+
 
 @NgModule({
     imports: [
         CommonModule,
-        SharedModule,
         OperationsModule
     ],
     declarations: [
@@ -16,7 +15,7 @@ import { OperationsModule } from './operations/operations.module'
         ObjNgForPipe
     ],
     exports: [
-        OperationsModule
+
     ],
     providers: [
         

@@ -16,11 +16,12 @@ import {
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatAutocompleteModule,
     MatSnackBarModule
 
-
 } from '@angular/material';
-import {FlexLayoutModule} from '@angular/flex-layout';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
     imports: [
@@ -40,8 +41,11 @@ import {FlexLayoutModule} from '@angular/flex-layout';
         MatSelectModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatAutocompleteModule,
+        MatSnackBarModule,
         FlexLayoutModule,
-        MatSnackBarModule
+        FormsModule,
+        ReactiveFormsModule
 
     ],
     exports: [
@@ -61,8 +65,12 @@ import {FlexLayoutModule} from '@angular/flex-layout';
         MatSelectModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatAutocompleteModule,
+        MatSnackBarModule,
         FlexLayoutModule,
-        MatSnackBarModule
+        FormsModule,
+        ReactiveFormsModule
+
     ],
 
 })

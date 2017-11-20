@@ -1,3 +1,5 @@
+@import '../../../../assets/style/baseTheme/colorStyle';
+
 @mixin border-padd-top(){
     border-top: 0.6px solid #c5c5c5;
     padding-top: 25px;
@@ -8,21 +10,72 @@
 @mixin padding-left(){
     padding-left: 33px;
 }
-
-.full-width{
-    width: 100%;
+@mixin md-icon-size($size: 24px) {
+    font-size: $size;
+    height: $size;
+    width: $size;
 }
 
-.operation-container{
-    @include border-padd-top();
-    @include border-right();
+.title-dialog-container{
+    margin-bottom: 33px;
+    div{
+        margin: 0;
+    }
+    span.title-dialog{
+        font-size: 25px;
+        color: #37474f;
+    }
+    .date-title-dialog{
+        font-size: 16px;
+        color:#37474f;
+    }
+    mat-icon.close-dialog {
+        @include md-icon-size(48px);
+    }
+    .msg-required-dialog{
+        font-size: 16px;
+        font-style: italic;
+        color: #546e7a;
+    }
 }
-.safety-container{
-    @include border-padd-top();
-    @include border-right();
-    @include padding-left();
+
+.content-dialog-container{
+    
+    div.title-dialog{
+        color: $blue;
+        font-size: 21px;
+        margin-bottom: 4px;
+    }
+    .sections-content{
+        font-size: 18px;
+        color: #37474f;
+        .title-section{
+            font-size: 20px;
+            color: #37474f;
+        }
+        .label-element{
+            color: #546e7a;
+        }    
+        .alert-warning{
+            color: #ef6c00;
+        }
+        .operation-container{
+            @include border-padd-top();
+            @include border-right();
+        }
+        .safety-container{
+            @include border-padd-top();
+            @include border-right();
+            @include padding-left();
+        }
+        .maintenance-container{
+            @include border-padd-top();
+            @include padding-left();
+            .full-width{
+                width: 100%;
+            }
+        }
+    }
 }
-.maintenance-container{
-    @include border-padd-top();
-    @include padding-left();
-}
+
+
