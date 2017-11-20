@@ -3,11 +3,14 @@ import { Http, Response } from '@angular/http';
 import { DataService } from '../../../shared/_services/data.service';
 import { Subscription } from 'rxjs/Subscription';
 import { environment } from "../../../../../environments/environment";
+import { DialogService } from '../../../content/_services/dialog.service';
+import { ContingenceFormComponent } from '../../../content/operations/contingence-form/contingence-form.component';
 
 @Component({
     selector: 'lsl-contingency-list',
     templateUrl: './contingency-list.component.html',
-    styleUrls: ['./contingency-list.component.scss']
+    styleUrls: ['./contingency-list.component.scss'],
+    providers: [DialogService]
 })
 
 export class ContingencyListComponent implements OnInit, OnDestroy {
@@ -19,10 +22,14 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     @Output() messageEvent = new EventEmitter<number>();
 
-    constructor(private http: Http, private messageData: DataService) {
+    constructor(private http: Http, private messageData: DataService, private dialogService: DialogService) {
         this.getContingences();
         this.getData();
         this.utcTime = 0;
+    }
+
+    openDialog() {
+        this.dialogService.openDialog(ContingenceFormComponent);
     }
 
     getData() {
@@ -48,7 +55,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         } else {
             average = 100;
         }
-
         return average;
     }
 

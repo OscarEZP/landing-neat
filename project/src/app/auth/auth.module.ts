@@ -12,6 +12,7 @@ import {RecoverPasswordComponent} from './recover-password/recover-password.comp
 import {HttpModule}    from '@angular/http';
 import {MessageService} from "../shared/_services/message.service";
 import {StorageService} from "../shared/_services/storage.service";
+import {RoutingService} from "../shared/_services/routing.service";
 
 @NgModule({
     imports: [
@@ -28,7 +29,8 @@ import {StorageService} from "../shared/_services/storage.service";
         AuthGuardService,
         RecoverPasswordService,
         MessageService,
-        StorageService
+        StorageService,
+        RoutingService
     ]
 })
 export class AuthModule {
