@@ -1,13 +1,13 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {LoginComponent} from './auth/login/login.component';
-import {DashboardComponent} from './content/dashboard/dashboard.component';
-import {LayoutComponent} from './layout/layout.component';
-import {AuthGuardService} from "./auth/_services/authGuard.service";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from './auth/login/login.component';
+import { DashboardComponent } from './content/dashboard/dashboard.component';
+import { LayoutComponent } from './layout/layout.component';
+import { AuthGuardService } from "./auth/_services/authGuard.service";
 import { ContingenceFormComponent } from './content/operations/contingence-form/contingence-form.component';
-import {FindAccountComponent} from "./auth/find-account/find-account.component";
-import {OperationsComponent} from "./content/operations/operations.component";
-import {RecoverPasswordComponent} from "./auth/recover-password/recover-password.component";
+import { FindAccountComponent } from "./auth/find-account/find-account.component";
+import { OperationsComponent } from "./content/operations/operations.component";
+import { RecoverPasswordComponent } from "./auth/recover-password/recover-password.component";
 
 const ROUTES: Routes = [
     {
@@ -49,7 +49,7 @@ const ROUTES: Routes = [
     {
         path: 'logout',
         component: LoginComponent,
-        data: {logout: true}
+        data: { logout: true }
     },
     {
         path: 'findAccount',

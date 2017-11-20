@@ -49,8 +49,6 @@ export class StorageService {
 
     public getCurrentUser(): User {
         let user: User = JSON.parse(localStorage.getItem(StorageService.CURRENT_USER));
-        user.firstName = constants.DUMMY_FIRST_NAME;
-        user.lastName = constants.DUMMY_LAST_NAME;
         return user;
     }
 
