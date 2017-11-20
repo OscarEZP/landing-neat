@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {SidenavService} from '../_services/sidenav.service';
-import {AuthService} from "../../auth/_services/auth.service";
+import {StorageService} from "../../shared/_services/storage.service";
 
 @Component({
     selector: 'lsl-sidenav',
@@ -13,12 +13,11 @@ export class SidenavComponent implements OnInit {
     private arrMenu: { label: string, link: string, icon: string }[];
     private arrFooterMenu: { label: string, link: string, icon: string }[];
 
-    constructor(private sidenavService: SidenavService, private authService: AuthService) {
-        this.authService = authService;
+    constructor(private sidenavService: SidenavService, private storageService: StorageService) {
         this.user = {username: '', name: '', email: ''};
-        this.user.username=this.authService.getCurrentUser().userName;
-        this.user.email = authService.getCurrentUser().email;
-        this.user.name = authService.getCurrentUser().firstName + " " + this.authService.getCurrentUser().lastName;
+        this.user.username=this.storageService.getCurrentUser().userName;
+        this.user.email = storageService.getCurrentUser().email;
+        this.user.name = storageService.getCurrentUser().firstName + " " + this.storageService.getCurrentUser().lastName;
 
     }
 
@@ -48,8 +47,7 @@ export class SidenavComponent implements OnInit {
     }
 
     toggleSidenav() {
-        this.sidenavService.closeSidenav().then(() => {
-        });
+        this.sidenavService.closeSidenav().then(() => {});
     }
 
 }

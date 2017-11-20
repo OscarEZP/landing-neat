@@ -8,7 +8,7 @@ import { OperationsModule } from './operations/operations.module';
 @NgModule({
     imports: [
         CommonModule,
-        OperationsModule,
+        OperationsModule
     ],
     declarations: [
         DashboardComponent,
