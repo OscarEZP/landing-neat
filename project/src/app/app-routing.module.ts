@@ -16,7 +16,7 @@ const ROUTES: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: '/dashboard',
+                redirectTo: '/operations/contingencies',
                 pathMatch: 'full',
             },
             {

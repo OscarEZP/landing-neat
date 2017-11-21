@@ -18,11 +18,11 @@
 
     <div fxLayout="row" class="sections-content">
 
-        <div fxFlex="33" fxLayout="column" fxLayoutGap="25px" class="operation-container">
-            <span class="title-section">Operation Info</span>
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+        <div fxFlex="33" fxLayout="column"  class="operation-container">
+            <span class="title-section bottom-margin-10">Operation Info</span>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px" >
 
-                <mat-form-field fxFlex="15">
+                <mat-form-field fxFlex="20">
                     <input type="text" placeholder="A/C" matInput [formControl]="myControl" [matAutocomplete]="auto" required>
                     <mat-autocomplete #auto="matAutocomplete">
                         <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
@@ -40,22 +40,22 @@
                 </mat-form-field>
 
             </div>
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-                <mat-checkbox labelPosition="after" fxFlex="15">Back up</mat-checkbox>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px">
+                <mat-checkbox labelPosition="after" fxFlex="20">Back up</mat-checkbox>
                 <mat-form-field fxFlex="15">
                     <input matInput placeholder="Flight" required>
                 </mat-form-field>
                 <mat-form-field fxFlex="15">
                     <mat-select placeholder="From">
-                        <mat-option value="option1">option 1</mat-option>
-                        <mat-option value="option2">option 2</mat-option>
+                        <mat-option value="option1">ABC</mat-option>
+                        <mat-option value="option2">CBA</mat-option>
                     </mat-select>
                 </mat-form-field>
 
                 <mat-form-field fxFlex="15">
                     <mat-select placeholder="To">
-                        <mat-option value="option1">option 1</mat-option>
-                        <mat-option value="option2">option 2</mat-option>
+                        <mat-option value="option1">ABC</mat-option>
+                        <mat-option value="option2">CBA</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -81,7 +81,7 @@
                     <mat-checkbox labelPosition="after" fxFlex="15">Maintenance</mat-checkbox>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-                    <mat-checkbox labelPosition="after" fxFlex="15">Barcode</mat-checkbox>
+                    <mat-checkbox labelPosition="after" fxFlex="20">Barcode</mat-checkbox>
                     <mat-form-field fxFlex="20">
                         <input matInput placeholder="barcode...">
                     </mat-form-field>
@@ -115,21 +115,21 @@
             </div>
 
         </div>
-        <div fxFlex="33" fxLayout="column" fxLayoutGap="30px" class="maintenance-container">
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="20px" class="maintenance-container">
             <span class="title-section">Maintenance Info</span>
             <div fxLayout="column" fxLayoutGap="15px">
                 <span class="label-element">Contingency Type * :</span>
-                <div fxLayout="row">
-                    <mat-checkbox labelPosition="after" fxFlex>Contingency in the Operation</mat-checkbox>
-                    <mat-checkbox labelPosition="after" fxFlex>Extended Maintenance</mat-checkbox>
-                </div>
+                <mat-radio-group fxLayoutGap="20px" [(ngModel)]="contingencyType">
+                    <mat-radio-button labelPosition="after" value="in operation" fxFlex="75">Contingency in the Operation</mat-radio-button>
+                    <mat-radio-button labelPosition="after" value="extended" fxFlex>Extended</mat-radio-button>
+                </mat-radio-group>
             </div>
             <div fxLayout="column" fxLayoutGap="15px">
                 <span class="label-element">Failure Type * :</span>
                 <div fxLayout="row">
-                    <mat-checkbox labelPosition="after" fxFlex="25">Technical</mat-checkbox>
-                    <mat-checkbox labelPosition="after" fxFlex="25">Damage</mat-checkbox>
-                    <mat-checkbox labelPosition="after" fxFlex="25">Process</mat-checkbox>
+                    <mat-radio-button labelPosition="after" fxFlex="30">Technical</mat-radio-button>
+                    <mat-radio-button labelPosition="after" fxFlex="30">Damage</mat-radio-button>
+                    <mat-radio-button labelPosition="after" fxFlex="30">Process</mat-radio-button>
                 </div>
             </div>
             <mat-form-field class="full-width">
@@ -138,8 +138,8 @@
             <div fxLayout="column" fxLayoutGap="15px">
                 <span class="label-element">Tipology * </span>
                 <div fxLayout="row">
-                    <mat-checkbox labelPosition="after" fxFlex="10">NI</mat-checkbox>
-                    <mat-checkbox labelPosition="after" fxFlex="10">ETR</mat-checkbox>
+                    <mat-checkbox labelPosition="after" fxFlex="15">NI</mat-checkbox>
+                    <mat-checkbox labelPosition="after" fxFlex="15">ETR</mat-checkbox>
                     <span fxFlexOffset="10" fxLayoutAlign="center center" class="alert-warning">The ETR must be validated by the Maintenance Team</span>
                 </div>
             </div>
@@ -154,11 +154,11 @@
                         </mat-select>
                     </mat-form-field>
                     <div fxFlexOffset="5" fxLayoutAlign="center center" fxFlex>
-                        <div fxLayout="row" fxFlex="35">
+                        <div fxLayout="row" fxFlex="60">
                             <mat-icon>today</mat-icon>
                             <span fxLayoutAlign="center center">23.NOV.2017</span>
                         </div>
-                        <div fxLayout="row" fxFlex="20">
+                        <div fxLayout="row" fxFlex="30">
                             <mat-icon>access_time</mat-icon>
                             <span fxLayoutAlign="center center">15:33</span>
                         </div>
