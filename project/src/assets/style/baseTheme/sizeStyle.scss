@@ -1,0 +1,7 @@
+$typography-regular: 14px;
+
+$navbar-height: 49px;
+
+@mixin container-height() {
+  height: calc(100vh - 49px);
+}

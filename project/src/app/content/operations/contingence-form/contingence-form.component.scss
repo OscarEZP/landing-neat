@@ -1,4 +1,5 @@
 @import '../../../../assets/style/baseTheme/colorStyle';
+@import '../../../../assets/style/baseTheme/sizeStyle';
 
 @mixin border-padd-top(){
     border-top: 0.6px solid #c5c5c5;
@@ -16,31 +17,46 @@
     width: $size;
 }
 
+@mixin generate-font-size($delta : 0) {
+    font-size: $typography-regular + $delta;
+}
+
+.mat-dialog-content{
+    max-height: none;
+}
+
 .title-dialog-container{
     margin-bottom: 33px;
     div{
         margin: 0;
     }
     span.title-dialog{
-        font-size: 25px;
+        @include generate-font-size(9);
+        text-transform: uppercase;
         color: #37474f;
     }
     .date-title-dialog{
-        font-size: 16px;
+        @include generate-font-size();
         color:#37474f;
     }
     mat-icon.close-dialog {
         @include md-icon-size(48px);
     }
     .msg-required-dialog{
-        font-size: 16px;
+        @include generate-font-size();
         font-style: italic;
         color: #546e7a;
     }
 }
 
+.mat-button.mat-primary{
+    background-color: $blue;
+}
+
 .content-dialog-container{
-    
+
+
+
     div.title-dialog{
         color: $blue;
         font-size: 21px;
@@ -50,12 +66,14 @@
         font-size: 18px;
         color: #37474f;
         .title-section{
-            font-size: 20px;
+            @include generate-font-size(4);
             color: #37474f;
         }
         .label-element{
             color: #546e7a;
-        }    
+            @include generate-font-size(2);
+            padding: 5px 0 0 0;
+        }
         .alert-warning{
             color: #ef6c00;
         }

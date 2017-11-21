@@ -1,9 +1,18 @@
 @import '../../../assets/style/baseTheme/colorStyle';
+@import '../../../assets/style/baseTheme/sizeStyle';
 
 #toolbar {
     background-color: $white;
     font-family: 'Noto Sans', 'Tahoma', 'Arial', sans-serif;
     color: $typography-dark;
+    height: $navbar-height;
+    min-height: 0;
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+
+    /deep/
+    .mat-toolbar-layout {
+        margin: -5px 0 0 0;
+    }
 
     h1{
         font-size: 15px;
