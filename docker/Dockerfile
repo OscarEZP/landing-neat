@@ -4,7 +4,7 @@ FROM nginx:1.10-alpine
 MAINTAINER Mxi Technologies
 
 
-ENV DIST_DIR project/dist
+ENV DIST_DIR dist
 ENV WEB_DIR /usr/share/nginx/html
 ENV HOME /usr/share/nginx
 ENV NGINX_DIR /etc/nginx

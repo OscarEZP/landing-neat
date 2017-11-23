@@ -3,19 +3,33 @@ version: '2'
 
 # Define your services
 services:
+
   web:  # Main web service
-    build: ../    # Directory containing Dockerfile
+    build: ./    # Directory containing Dockerfile
     ports:  # Ports to expose
     - "4200:4200"
     volumes:    # Volumes (directories) to mount
     - ../../:/var/www/html/
     command: bash -c "npm install && ng serve -o --host 0.0.0.0 --port 4200"
-    #stdin_open: true # Interactive container
-    #tty: true # Interactive container
+
+  test:  # Main web service
+    build: ./    # Directory containing Dockerfile
+    ports:  # Ports to expose
+    - "9876:9876"
+    volumes:    # Volumes (directories) to mount
+    - ../../:/var/www/html/
+    command: bash -c "ng test"
+
+  interactive:  # Main web service
+    build: ./    # Directory containing Dockerfile
+    ports:  # Ports to expose
+    - "4201:4201"
+    volumes:    # Volumes (directories) to mount
+    - ../../:/var/www/html/
+    stdin_open: true # Interactive container
+    tty: true # Interactive container
   #  links:  # Containers on which 'web' depends
   #  - redis
   #redis:    # Redis container service
   #  image: redis    # Specify an existing docker image
 # volumes:    # Create volume using volume parameters (check out official documentation)
-#  cacheApp: {}
-#  cacheAppLog: {}
