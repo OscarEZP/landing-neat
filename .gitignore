@@ -6,4 +6,4 @@ node_modules
 .settings
 .idea/watcherTasks.xml
 .npm
-
+*.log
