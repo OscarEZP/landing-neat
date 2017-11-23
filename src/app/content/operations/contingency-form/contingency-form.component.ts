@@ -6,18 +6,18 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
 
 @Component({
-    selector: 'app-contingence-form',
-    templateUrl: './contingence-form.component.html',
-    styleUrls: ['./contingence-form.component.scss']
+    selector: 'app-contingency-form',
+    templateUrl: './contingency-form.component.html',
+    styleUrls: ['./contingency-form.component.scss']
 })
 
-export class ContingenceFormComponent {
+export class ContingencyFormComponent {
 
     myControl: FormControl = new FormControl();
     filteredOptions: Observable<String[]>;
 
     constructor(
-        public dialogRef: MatDialogRef<ContingenceFormComponent>
+        public dialogRef: MatDialogRef<ContingencyFormComponent>
     ) { }
 
     options = [

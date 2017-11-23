@@ -4,7 +4,7 @@ import { SharedModule } from '../../shared/shared.module';
 
 import { OperationsComponent } from './operations.component';
 import { ContingencyListComponent } from './contingency-list.component/contingency-list.component';
-import { ContingenceFormComponent } from './contingence-form/contingence-form.component';
+import { ContingencyFormComponent } from './contingency-form/contingency-form.component';
 import { DialogService } from '../../content/_services/dialog.service';
 
 @NgModule({
@@ -15,7 +15,7 @@ import { DialogService } from '../../content/_services/dialog.service';
     declarations: [
         OperationsComponent,
         ContingencyListComponent,
-        ContingenceFormComponent
+        ContingencyFormComponent
     ],
     exports: [
 

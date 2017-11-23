@@ -4,7 +4,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { DashboardComponent } from './content/dashboard/dashboard.component';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuardService } from "./auth/_services/authGuard.service";
-import { ContingenceFormComponent } from './content/operations/contingence-form/contingence-form.component';
+import { ContingencyFormComponent } from './content/operations/contingency-form/contingency-form.component';
 import { FindAccountComponent } from "./auth/find-account/find-account.component";
 import { OperationsComponent } from "./content/operations/operations.component";
 import { RecoverPasswordComponent } from "./auth/recover-password/recover-password.component";
@@ -37,7 +37,7 @@ const ROUTES: Routes = [
             },
             {
                 path: 'operations/contingency',
-                component: ContingenceFormComponent,
+                component: ContingencyFormComponent,
             }
         ],
         canActivate: [AuthGuardService]
