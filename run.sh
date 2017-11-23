@@ -1,5 +1,6 @@
 #!/bin/bash
 PROJECT_NAME=$(basename $(pwd))
+DOCKER_DIR=docker/dev
 clear
 echo
 echo "PROJECT -> " $PROJECT_NAME
@@ -21,33 +22,33 @@ if [[ $OPTION = "1" ]] ;then
   clear
   echo "Running DEVELOPMENT..."
   echo ""
-  cd env
+  cd $DOCKER_DIR
   docker-compose run --service-ports --rm web
-  cd ..
+  cd ../../
 elif [[ $OPTION = "2" ]] ;then
   clear
   echo "Running TESTS..."
-  cd env/test/
+  cd $DOCKER_DIR/test/
   docker-compose run --service-ports --rm web
   cd ../../
 elif [[ $OPTION = "3" ]] ;then
   clear
   echo "Running PRODUCTION..."
-  #cd env/prod/
+  #cd $DOCKER_DIR/prod/
   #docker-compose run --service-ports --rm web
   #cd ../../
-  docker run -it -u $UID -v $(pwd):$(pwd) -p 4200:4200 --rm $PROJECT_NAME-dev /bin/bash -c 'cd project && npm install --quiet && npm run ng serve'
+  docker run -it -u $UID -v $(pwd):$(pwd) -p 4200:4200 --rm $PROJECT_NAME-dev /bin/bash -c 'npm install --quiet && npm run ng serve'
 elif [[ $OPTION = "4" ]] ;then
   clear
   echo "Building IMAGE..."
-  #cd env
+  #cd $DOCKER_DIR
   #docker-compose build
   #cd ..
   docker build -f docker/Dockerfile -t $PROJECT_NAME-prod --build-arg ACTION=build .
 elif [[ $OPTION = "5" ]] ;then
   clear
   echo "Running CONTAINER..."
-  cd env/run
+  cd $DOCKER_DIR/run
   docker-compose run --service-ports --rm web
   cd ../../
 else

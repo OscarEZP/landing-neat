@@ -4,11 +4,11 @@ version: '2'
 # Define your services
 services:
   web:  # Main web service
-    build: ./    # Directory containing Dockerfile
+    build: ../    # Directory containing Dockerfile
     ports:  # Ports to expose
     - "4200:4200"
     volumes:    # Volumes (directories) to mount
-    - ../project/:/var/www/html/
+    - ../../:/var/www/html/
     command: bash -c "npm install && ng serve -o --host 0.0.0.0 --port 4200"
     #stdin_open: true # Interactive container
     #tty: true # Interactive container

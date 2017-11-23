@@ -21,7 +21,7 @@ branches:
 cache: true
 
 cache_dir_list:
-  - $SHIPPABLE_BUILD_DIR/project/node_modules
+  - $SHIPPABLE_BUILD_DIR/node_modules
 
 build:
   #commands in this section run inside your CI container. In addition, any commands such as ls, in this section can be used to skip default processing for CI.
@@ -32,11 +32,11 @@ build:
     - git clean -f -x
 
     # install NPM depedencies
-    - cd $SHIPPABLE_BUILD_DIR/project
+    - cd $SHIPPABLE_BUILD_DIR
     - shippable_retry npm install --quiet
 
     #Run the build
-    - cd $SHIPPABLE_BUILD_DIR/project
+    - cd $SHIPPABLE_BUILD_DIR
     - npm run ng build
 
     #Run the test
