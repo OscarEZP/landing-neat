@@ -5,6 +5,7 @@ version: '2'
 services:
 
   web:  # Main web service
+    container_name: moc_web
     build: ./    # Directory containing Dockerfile
     ports:  # Ports to expose
     - "4200:4200"
@@ -12,7 +13,17 @@ services:
     - ../../:/var/www/html/
     command: bash -c "npm install && ng serve -o --host 0.0.0.0 --port 4200"
 
-  test:  # Main web service
+  prod:  # Production web service
+    container_name: moc_web
+    build: ../    # Directory containing Dockerfile
+    ports:  # Ports to expose
+    - "4200:4200"
+    volumes:    # Volumes (directories) to mount
+    - ../../:/var/www/html/
+    command: bash -c "ng serve -o --host 0.0.0.0 --port 4200"
+
+  test:  # Test service
+    container_name: moc_test
     build: ./    # Directory containing Dockerfile
     ports:  # Ports to expose
     - "9876:9876"
@@ -20,7 +31,8 @@ services:
     - ../../:/var/www/html/
     command: bash -c "ng test"
 
-  interactive:  # Main web service
+  interactive:  # Interactive service
+    container_name: moc_interactive
     build: ./    # Directory containing Dockerfile
     ports:  # Ports to expose
     - "4201:4201"

@@ -1,7 +1,11 @@
 #!/bin/bash
 PROJECT_NAME=$(basename $(pwd))
 DOCKER_DEV_DIR=docker/dev
+
 clear
+cd $DOCKER_DEV_DIR
+
+# Options
 echo
 echo "PROJECT -> " $PROJECT_NAME
 echo
@@ -9,7 +13,7 @@ echo "Choose an option:"
 echo
 echo "1.- [Run DEVELOPMENT environment]"
 echo "2.- [Run TESTS]"
-#echo "3.- [Run PRODUCTION environment (not yet)]"
+echo "3.- [Run PRODUCTION environment]"
 echo
 echo "4.- [Build IMAGE]"
 echo "5.- [Run CONTAINER]"
@@ -22,35 +26,30 @@ if [[ $OPTION = "1" ]] ;then
   clear
   echo "Running DEVELOPMENT..."
   echo ""
-  cd $DOCKER_DEV_DIR
+  docker-compose down
   docker-compose run --service-ports --rm web
-  cd ../../
 elif [[ $OPTION = "2" ]] ;then
   clear
   echo "Running TESTS..."
-  cd $DOCKER_DEV_DIR/
+  docker-compose down
   docker-compose run --service-ports --rm test
-  cd ../../
 #elif [[ $OPTION = "3" ]] ;then
-  #clear
-  #echo "Running PRODUCTION..."
-  #cd $DOCKER_DEV_DIR/prod/
-  #docker-compose run --service-ports --rm web
-  #cd ../../
-  #docker run -it -u $UID -v $(pwd):$(pwd) -p 4200:4200 --rm $PROJECT_NAME-dev /bin/bash -c 'npm install --quiet && npm run ng serve'
+  clear
+  echo "Running PRODUCTION..."
+#  docker-compose down
+#  docker-compose run --service-ports --rm prod
+  #docker run -it -u $UID -v $(pwd):$(pwd) -p 4200:4200 --rm $PROJECT_NAME-dev /bin/bash -c 'npm install --quiet && npm run ng build'
 elif [[ $OPTION = "4" ]] ;then
   clear
   echo "Building IMAGE..."
-  cd $DOCKER_DEV_DIR
   docker-compose build
-  cd ../../
 elif [[ $OPTION = "5" ]] ;then
   clear
   echo "Running CONTAINER..."
-  cd $DOCKER_DEV_DIR/run
+  docker-compose down
   docker-compose run --service-ports --rm interactive
-  cd ../../
 else
   clear
   echo "Bye."
 fi
+cd ../../
