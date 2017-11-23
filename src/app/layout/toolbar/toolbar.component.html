@@ -6,7 +6,7 @@
   <h1 [innerHtml]="routingService.getModuleTitle()"></h1>
   <aside>
     <nav>
-      <span *ngIf="display" id="datetime">{{ currentDateString | date: 'dd-MMM-yyyy'}} | {{ time | date: 'HH:mm:ss' }} UTC</span>
+        <span *ngIf="display" id="datetime">{{ currentDateString | utcDate | date: 'dd MMM yyyy'}} | {{ time | utcDate | date: 'HH:mm:ss' }} UTC</span>
       <mat-form-field class="mat-form-field">
         <input matInput type="text" >
       </mat-form-field>

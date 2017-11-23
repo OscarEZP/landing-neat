@@ -7,6 +7,5 @@ export const environment = {
         confirmForgotPassword: '/api/security/users/_confirmforgotpassword',
         login: '/api/security/users/_login',
         dateTime: '/api/security/currentdatetime'
-
     }
 };

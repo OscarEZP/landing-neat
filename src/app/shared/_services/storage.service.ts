@@ -1,12 +1,11 @@
 import {Injectable} from '@angular/core';
-import {User} from "../../auth/_models/user.model";
-import * as constants from '../../constants';
+import {User} from '../../auth/_models/user.model';
 
 @Injectable()
 export class StorageService {
-    private static RECOVER_ACCOUNT: string = 'recoverAccount';
-    private static RECOVER_DESTINATION: string = 'recoverDestination';
-    private static CURRENT_USER: string = 'currentUser';
+    private static RECOVER_ACCOUNT = 'recoverAccount';
+    private static RECOVER_DESTINATION = 'recoverDestination';
+    private static CURRENT_USER = 'currentUser';
 
     constructor() {
     }
@@ -43,12 +42,12 @@ export class StorageService {
     }
 
     public hasCurrentUser(): boolean {
-        return localStorage.getItem(StorageService.CURRENT_USER) ? true : false;
+        return !!localStorage.getItem(StorageService.CURRENT_USER);
 
     }
 
     public getCurrentUser(): User {
-        let user: User = JSON.parse(localStorage.getItem(StorageService.CURRENT_USER));
+        const user: User = JSON.parse(localStorage.getItem(StorageService.CURRENT_USER));
         return user;
     }
 

@@ -1,1 +1,1 @@
-export const ERROR_PASSWORD_NOT_SAME: string='password not same';
+export const ERROR_PASSWORD_NOT_SAME = 'password not same';

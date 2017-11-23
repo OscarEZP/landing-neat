@@ -25,7 +25,7 @@ export class ContingencyFormComponent {
         'BBB-CC',
         'CCCC-DD',
         'DDD-EE'
-    ]
+    ];
 
     ngOnInit(): void {
         this.filteredOptions = this.myControl.valueChanges

@@ -11,11 +11,11 @@ export class DataService {
 
     constructor() { }
 
-    changeStringMessage(message: string) {
+    activateLoadingBar(message: string) {
         this.messageSourceString.next(message);
     }
 
-    changeNumberMessage(message: number) {
+    changeTimeUTCMessage(message: number) {
         this.messageSourceNumber.next(message);
     }
 }

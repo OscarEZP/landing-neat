@@ -7,33 +7,33 @@
         <div class="block-xl">Description</div>
         <div class="block-s">Status</div>
         <div class="block-s">Type</div>
-        <div class="block-m">Safety Event</div>
+        <div class="block-s">Safety Event</div>
         <div class="block-m">Progress</div>
         <div class="block-m">Time Left</div>
         <div class="block-s">Focal</div>
-        <div class="block-xs">&nbsp;</div>
+        <div class="block-xs block-last">&nbsp;</div>
     </mat-list-item>
 </mat-list>
-<mat-list *ngIf="contingenceList?.length > 0" class="content-mat-list">
-    <mat-list-item *ngFor="let contingence of contingenceList" class="moc-items-list">
+<mat-list *ngIf="contingencyList?.length > 0" class="content-mat-list">
+    <mat-list-item *ngFor="let contingency of contingencyList" class="moc-items-list">
         <div class="block-s">
-            <span class="two-lines">{{ contingence.tail }}</span>
-            <span class="two-lines">{{ contingence.fleet }}</span>
+            <span class="two-lines">{{ contingency.tail }}</span>
+            <span class="two-lines">{{ contingency.fleet }}</span>
         </div>
         <div class="block-s">
             <span class="flag-icon">&nbsp;</span>
-            {{ contingence.operator }}
+            {{ contingency.operator }}
         </div>
-        <div class="block-s">{{ contingence.flight }}</div>
-        <div class="block-s">{{ contingence.from }} {{ contingence.to }}</div>
-        <div class="block-xl description">{{ (contingence.description.length > 65) ? (contingence.description | slice:0:65) + '...' : contingence.description }}</div>
-        <div class="block-s"><span class="badge badge-ni-1">{{ contingence.status }}</span></div>
-        <div class="block-s">{{ contingence.type }}</div>
-        <div class="block-m"><span class="badge">{{ contingence.safetyEvent }}</span></div>
-        <div class="block-m"><mat-progress-bar mode="determinate" value="{{ getTimeAverage(contingence.creationDateLong, contingence.duration) }}"></mat-progress-bar></div>
-        <div class="block-m"><mat-icon class="mat-icon-adj">timer</mat-icon> <lsl-countdown [creationTime]="contingence.creationDateLong" [duration]="contingence.duration"></lsl-countdown></div>
-        <div class="block-s"><mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingence.responsible }}</div>
-        <div class="block-xs">
+        <div class="block-s">{{ contingency.flight }}</div>
+        <div class="block-s">{{ contingency.from }} / {{ contingency.to }}</div>
+        <div class="block-xl description">{{ (contingency.description.length > 65) ? (contingency.description | slice:0:65) + '...' : contingency.description }}</div>
+        <div class="block-s"><span class="badge {{ contingency.status | lowercase }}">{{ contingency.status }}</span></div>
+        <div class="block-s"><div><strong>CONT</strong></div><div>OPR</div></div>
+        <div class="block-s"><span class="badge">{{ contingency.safetyEvent }}</span></div>
+        <div class="block-m"><mat-progress-bar mode="determinate" [value]="getTimeAverage(contingency.creationDateLong, contingency.duration, false, 0)" [color]="getTimeAverage(contingency.creationDateLong, contingency.duration, true, 600000) ? 'warn' : 'primary'" class="mat-progress-bar"  ></mat-progress-bar></div>
+        <div class="block-m"><mat-icon class="mat-icon-adj" [color]="getTimeAverage(contingency.creationDateLong, contingency.duration, true, 300000) ? 'warn' : 'primary'">timer</mat-icon> <lsl-countdown [creationTime]="contingency.creationDateLong" [duration]="contingency.duration" [threshold]="5"></lsl-countdown></div>
+        <div class="block-s"><mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.responsible }}</div>
+        <div class="block-xs block-last">
             <button mat-icon-button>
                 <mat-icon aria-label="options">more_vert</mat-icon>
             </button>

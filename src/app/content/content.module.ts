@@ -18,7 +18,7 @@ import { OperationsModule } from './operations/operations.module';
 
     ],
     providers: [
-        
+
     ],
     bootstrap: []
 })
