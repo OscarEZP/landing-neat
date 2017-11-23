@@ -4,7 +4,7 @@ import { DataService } from '../../../shared/_services/data.service';
 import { Subscription } from 'rxjs/Subscription';
 import { environment } from "../../../../../environments/environment";
 import { DialogService } from '../../../content/_services/dialog.service';
-import { ContingenceFormComponent } from '../../../content/operations/contingence-form/contingence-form.component';
+import { ContingencyFormComponent } from '../contingency-form/contingency-form.component';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -29,7 +29,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     openDialog() {
-        this.dialogService.openDialog(ContingenceFormComponent);
+        this.dialogService.openDialog(ContingencyFormComponent);
     }
 
     getData() {
