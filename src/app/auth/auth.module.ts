@@ -9,10 +9,10 @@ import {AuthGuardService} from './_services/authGuard.service';
 import {LoginComponent} from './login/login.component';
 import {FindAccountComponent} from './find-account/find-account.component';
 import {RecoverPasswordComponent} from './recover-password/recover-password.component';
-import {HttpModule}    from '@angular/http';
-import {MessageService} from "../shared/_services/message.service";
-import {StorageService} from "../shared/_services/storage.service";
-import {RoutingService} from "../shared/_services/routing.service";
+import {HttpModule} from '@angular/http';
+import {MessageService} from '../shared/_services/message.service';
+import {StorageService} from '../shared/_services/storage.service';
+import {RoutingService} from '../shared/_services/routing.service';
 
 @NgModule({
     imports: [

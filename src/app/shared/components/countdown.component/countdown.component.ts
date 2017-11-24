@@ -80,15 +80,17 @@ export class CountdownComponent implements OnDestroy {
     }
 
     private _startTimer() {
-        if(this.delta <= 0) return;
+        if (this.delta <= 0) {
+            return;
+        }
 
         this._stopTimer();
         this._interval = setInterval(() => {
             this._changeDetector.detectChanges();
-            if(this.delta <= 0) {
+            if (this.delta <= 0) {
                 this._stopTimer();
             }
-        }, this._timing)
+        }, this._timing);
     }
 
     private _stopTimer() {

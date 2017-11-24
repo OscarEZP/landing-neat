@@ -48,10 +48,11 @@ export class RecoverPasswordComponent implements OnInit {
         if (form.valid) {
             const data: { password: string, confirmPassword: string, verificationCode: string } = this.recoverPasswordService.getData();
             if (data.password === data.confirmPassword) {
-                this.recoverPasswordService.changePassword(this.storageService.getRecoverAccount(), data.password, data.verificationCode).then(value => {
-
-                    this.storageService.removeRecoverPassword();
-                    this.router.navigate([this.recoverPasswordService.getRedirectUrl()]);
+                this.recoverPasswordService.changePassword(this.storageService
+                    .getRecoverAccount(), data.password, data.verificationCode)
+                    .then(value => {
+                        this.storageService.removeRecoverPassword();
+                        this.router.navigate([this.recoverPasswordService.getRedirectUrl()]);
                 }).catch(reason => {
                     this.messageService.openSnackBar(reason);
                 });

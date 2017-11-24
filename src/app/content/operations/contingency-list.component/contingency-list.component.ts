@@ -5,7 +5,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {environment} from '../../../../../environments/environment';
 import {DialogService} from '../../_services/dialog.service';
 import {ContingencyFormComponent} from '../contingency-form/contingency-form.component';
-import {TranslateService} from "@ngx-translate/core";
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -68,7 +68,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         let warning = false;
 
         if (valueNumber > 0) {
-            if (valueNumber <= limit) warning = true;
+            if (valueNumber <= limit) {
+                warning = true;
+            }
             average = 100 - Math.round(((valueNumber * 100) / duration));
         } else {
             warning = true;
