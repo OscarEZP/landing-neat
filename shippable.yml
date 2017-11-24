@@ -61,16 +61,16 @@ build:
       fi
 
 integrations:
-  notifications:
-    - integrationName: moc-Slack-integration
-      type: slack
-      recipients:
-        - "#moc-staging"
-      branches:
-        only:
-          - develop
-      on_success: change
-      on_failure: always
+#  notifications:
+#    - integrationName: moc-Slack-integration
+#      type: slack
+#      recipients:
+#        - "#moc-staging"
+#      branches:
+#        only:
+#          - develop
+#      on_success: change
+#      on_failure: always
   hub:
     - integrationName: moc-AWS-integration
       type: amazonKeys
