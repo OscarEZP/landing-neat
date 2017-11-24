@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {SidenavService} from '../_services/sidenav.service';
-import {StorageService} from "../../shared/_services/storage.service";
+import {StorageService} from '../../shared/_services/storage.service';
 
 @Component({
     selector: 'lsl-sidenav',
@@ -15,9 +15,9 @@ export class SidenavComponent implements OnInit {
 
     constructor(private sidenavService: SidenavService, private storageService: StorageService) {
         this.user = {username: '', name: '', email: ''};
-        this.user.username=this.storageService.getCurrentUser().userName;
+        this.user.username = storageService.getCurrentUser().userName;
         this.user.email = storageService.getCurrentUser().email;
-        this.user.name = storageService.getCurrentUser().firstName + " " + this.storageService.getCurrentUser().lastName;
+        this.user.name = storageService.getCurrentUser().firstName + ' ' + storageService.getCurrentUser().lastName;
 
     }
 

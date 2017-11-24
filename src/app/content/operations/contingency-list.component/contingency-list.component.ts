@@ -1,10 +1,10 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { DataService } from '../../../shared/_services/data.service';
-import { Subscription } from 'rxjs/Subscription';
-import { environment } from "../../../../../environments/environment";
-import { DialogService } from '../../../content/_services/dialog.service';
-import { ContingencyFormComponent } from '../contingency-form/contingency-form.component';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Http, Response} from '@angular/http';
+import {DataService} from '../../../shared/_services/data.service';
+import {Subscription} from 'rxjs/Subscription';
+import {environment} from '../../../../../environments/environment';
+import {DialogService} from '../../_services/dialog.service';
+import {ContingencyFormComponent} from '../contingency-form/contingency-form.component';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -17,8 +17,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private _messageSubscriptions: Subscription;
     private apiUrl = environment.apiUrl + environment.paths.contingencyList;
-    private contingenceList: any = {};
+    private contingencyList: any = {};
+    private errorMessage: string;
     private utcTime: number;
+    private progressBarColor: string;
 
     @Output() messageEvent = new EventEmitter<number>();
 
@@ -26,6 +28,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.getContingences();
         this.getData();
         this.utcTime = 0;
+        this.progressBarColor = 'primary';
     }
 
     openDialog() {
@@ -33,6 +36,8 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     getData() {
+        this.messageData.activateLoadingBar('open');
+
         return this.http
             .get(this.apiUrl)
             .map((res: Response) => res.json());
@@ -40,26 +45,34 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     getContingences() {
         this.getData().subscribe(data => {
-            this.contingenceList = data;
+            this.contingencyList = data;
             this.messageEvent.emit(data.length);
+            this.messageData.activateLoadingBar('close');
+        }, error => {
+            this.errorMessage = error;
+            this.messageData.activateLoadingBar('close');
         });
     }
 
-    getTimeAverage(creationDate: any, duration: any) {
+    getTimeAverage(creationDate: any, duration: any, remain: boolean, limit: number) {
         const actualTime = this.utcTime;
         let average: number;
-        let valueNumber = (creationDate + duration) - actualTime;
+        const valueNumber = (creationDate + duration) - actualTime;
+        let warning = false;
 
         if (valueNumber > 0) {
+            if (valueNumber <= limit) warning = true;
             average = 100 - Math.round(((valueNumber * 100) / duration));
         } else {
+            warning = true;
             average = 100;
         }
-        return average;
+
+        return remain ? warning : average;
     }
 
     ngOnInit() {
-        this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.utcTime = message)
+        this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.utcTime = message);
     }
 
     ngOnDestroy() {
