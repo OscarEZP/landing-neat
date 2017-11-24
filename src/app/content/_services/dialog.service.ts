@@ -3,13 +3,11 @@ import { MatDialog } from '@angular/material';
 
 @Injectable()
 export class DialogService {
-    
-    constructor(
-        private dialog: MatDialog
-    ){ }
+
+    constructor(private dialog: MatDialog) { }
 
     public openDialog(dialogInstance): void {
-        this.dialog.open(dialogInstance,{
+        this.dialog.open(dialogInstance, {
             panelClass: 'full-dialog'
         });
     }

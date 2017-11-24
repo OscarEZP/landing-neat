@@ -1,0 +1,20 @@
+{
+  "OPERATIONS" : {
+    "ALERT" : "Alert",
+    "ALERTS" : "Alerts",
+    "THIS_MOMENT" : "at this moment on Contingency",
+    "AOG_CONTINGENCY" : "AOG / CONTINGENCY",
+    "PIT_STOP" : "PIT STOP",
+    "TAIL_FLEET" : "Tail/Fleet",
+    "OPERATOR" : "Operator",
+    "FLIGHT" : "Flight",
+    "FROM_TO" : "From/To",
+    "DESCRIPTION" : "Description",
+    "STATUS" : "Status",
+    "TYPE" : "Type",
+    "SAFETY_EVENT" : "Safety Event",
+    "PROGRESS" : "Progress",
+    "TIME_LEFT" : "Time Left",
+    "FOCAL" : "Focal"
+  }
+}
