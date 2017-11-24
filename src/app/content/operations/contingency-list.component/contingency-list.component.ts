@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {environment} from '../../../../../environments/environment';
 import {DialogService} from '../../_services/dialog.service';
 import {ContingencyFormComponent} from '../contingency-form/contingency-form.component';
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -24,11 +25,17 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     @Output() messageEvent = new EventEmitter<number>();
 
-    constructor(private http: Http, private messageData: DataService, private dialogService: DialogService) {
+    constructor(
+        private http: Http,
+        private messageData: DataService,
+        private dialogService: DialogService,
+        translate: TranslateService
+    ) {
         this.getContingences();
         this.getData();
         this.utcTime = 0;
         this.progressBarColor = 'primary';
+        translate.setDefaultLang('en');
     }
 
     openDialog() {

@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ContingencyListComponent} from './contingency-list.component/contingency-list.component';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'lsl-operations',
@@ -13,7 +14,9 @@ export class OperationsComponent implements OnInit {
 
     @ViewChild(ContingencyListComponent) child;
 
-    constructor() { }
+    constructor(translate: TranslateService) {
+        translate.setDefaultLang('en');
+    }
 
     ngOnInit() {
         this.itemsCount = this.child.contingenceLength;
