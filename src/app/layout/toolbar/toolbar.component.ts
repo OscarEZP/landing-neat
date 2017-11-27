@@ -9,7 +9,7 @@ import { ClockService } from '../../shared/_services/clock.service';
 import { SidenavService } from '../_services/sidenav.service';
 import { DialogService } from '../../content/_services/dialog.service';
 import { ContingencyFormComponent } from '../../content/operations/contingency-form/contingency-form.component';
-import { RoutingService } from "../../shared/_services/routing.service";
+import { RoutingService } from '../../shared/_services/routing.service';
 
 @Component({
     selector: 'lsl-toolbar',

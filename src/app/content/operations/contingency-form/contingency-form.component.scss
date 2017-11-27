@@ -1,6 +1,3 @@
-@import '../../../../assets/style/baseTheme/colorStyle';
-@import '../../../../assets/style/baseTheme/sizeStyle';
-
 @mixin border-padd-top(){
     border-top: 0.6px solid #c5c5c5;
     padding-top: 25px;
@@ -18,7 +15,7 @@
 }
 
 @mixin generate-font-size($delta : 0) {
-    font-size: $typography-regular + $delta;
+    //font-size: $typography-regular + $delta;
 }
 
 .mat-dialog-content{
@@ -49,16 +46,10 @@
     }
 }
 
-.mat-button.mat-primary{
-    background-color: $blue;
-}
-
 .content-dialog-container{
 
-
-
     div.title-dialog{
-        color: $blue;
+        //color: $blue;
         font-size: 21px;
         margin-bottom: 4px;
     }

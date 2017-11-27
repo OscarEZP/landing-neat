@@ -1,3 +1,5 @@
+@import '../../../../assets/style/base.scss';
+
 .content-mat-list {
   margin: auto 25px;
 }
@@ -71,7 +73,7 @@
 
   .badge {
     margin: 0 0 0 8px;
-    background-color: #546e7a;
+    //background-color: #546e7a;
     font-size: 10px;
     color: white;
     padding: 0 15px;
@@ -80,11 +82,11 @@
   }
 
   .badge-safety-event {
-    background-color: #546e7a;
+    //background-color: #546e7a;
   }
 
   .badge-ni-1 {
-    background-color: #ef5350;
+    //background-color: #ef5350;
   }
 }
 
@@ -114,7 +116,7 @@
 #add-contingency {
   width: 56px;
   height: 56px;
-  background-color: #f3be17;
+  background-color: mat-color($accent, 500);
   border: 0.5px solid transparent;
   border-image-slice: 1;
   color: #fff;

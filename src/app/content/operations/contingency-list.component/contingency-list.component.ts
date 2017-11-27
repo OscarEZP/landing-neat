@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { Http, Response } from '@angular/http';
 import { DataService } from '../../../shared/_services/data.service';
 import { Subscription } from 'rxjs/Subscription';
-import { environment } from "../../../../../environments/environment";
+import { environment } from '../../../../../environments/environment';
 import { DialogService } from '../../../content/_services/dialog.service';
 import { ContingencyFormComponent } from '../contingency-form/contingency-form.component';
 
@@ -48,7 +48,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     getTimeAverage(creationDate: any, duration: any) {
         const actualTime = this.utcTime;
         let average: number;
-        let valueNumber = (creationDate + duration) - actualTime;
+        const valueNumber = (creationDate + duration) - actualTime;
 
         if (valueNumber > 0) {
             average = 100 - Math.round(((valueNumber * 100) / duration));
