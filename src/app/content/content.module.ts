@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ObjNgForPipe } from '../shared/_pipes/objNgForPipe.pipe';
 import { OperationsModule } from './operations/operations.module';
@@ -9,6 +10,7 @@ import { OperationsModule } from './operations/operations.module';
     imports: [
         CommonModule,
         OperationsModule
+        
     ],
     declarations: [
         DashboardComponent,
@@ -23,4 +25,4 @@ import { OperationsModule } from './operations/operations.module';
     bootstrap: []
 })
 
-export class ContentModule {}
+export class ContentModule { }

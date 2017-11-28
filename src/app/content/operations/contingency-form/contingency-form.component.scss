@@ -80,6 +80,9 @@
         .operation-container{
             @include border-padd-top();
             @include border-right();
+            .barcode-container{
+                min-height: 77.44px;
+            }
         }
         .safety-container{
             @include border-padd-top();
