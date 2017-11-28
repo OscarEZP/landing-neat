@@ -14,10 +14,6 @@
     width: $size;
 }
 
-@mixin generate-font-size($delta : 0) {
-    //font-size: $typography-regular + $delta;
-}
-
 .mat-dialog-content{
     max-height: none;
 }
@@ -49,7 +45,6 @@
 .content-dialog-container{
 
     div.title-dialog{
-        //color: $blue;
         font-size: 21px;
         margin-bottom: 4px;
     }
