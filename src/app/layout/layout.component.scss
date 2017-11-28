@@ -7,10 +7,12 @@
 #nav-drawer-container {
     height: calc(100vh);
 }
+
 /deep/
 .mat-drawer-content.mat-sidenav-content{
     overflow: hidden;
 }
+
 /deep/
 .main-panel{
     overflow: auto;
