@@ -17,3 +17,7 @@
     @include content-height($navbar-height);
 }
 
+/deep/
+.mat-tab-body-wrapper{
+    background-color: mat-color($primary, 'default-contrast');
+}

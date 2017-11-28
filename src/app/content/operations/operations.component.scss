@@ -2,30 +2,28 @@
 
 #post-header-container {
   position: relative;
-/*  background: #f7f9fa;
-  border-bottom: solid 1px rgba(151, 151, 151, .2);*/
   display: block;
-  margin: -5px 0 0 0;
   color: mat-color($foreground, secondary-text);
 
   #item-counter-container {
     font-family: 'Noto Sans', 'Arial', sans-serif;
-    font-size: 16px;
+    @include add-font-size(-1);
     position: absolute;
     right: 30px;
-    top: 45px;
+    top: 33px;
+    strong{
+      font-weight: bold;
+    }
   }
 }
 
 /deep/
 #post-header-tab {
-  height: 30px;
-  padding: 30px 0;
   display: block;
 
   .mat-tab-header {
-    padding-left: 24px;
     border-bottom: none;
+    padding: 20px 25px
   }
 
   .mat-tab-item {
@@ -35,12 +33,15 @@
 
   .mat-tab-label {
     height: 36px;
+    @include add-font-size(-3);
+    font-family: Roboto, "Noto Sans", Tahoma;
+    color: mat-color($primary);
   }
 
   .mat-tab-label-active {
-    //background-color: #0a85c0;
+    background-color: mat-color($primary);
     opacity: 1;
-    //color: white;
+    color: mat-color($primary, 'default-contrast');
     font-weight: bold;
   }
 

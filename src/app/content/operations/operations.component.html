@@ -2,8 +2,11 @@
     <div id="item-counter-container"><strong>{{ itemsCount }} Alerts</strong> at this moment on Contingency</div>
 
     <mat-tab-group id="post-header-tab">
-        <mat-tab class="mat-tab-item" label="AOG / CONTINGENCY">
+        <mat-tab class="mat-tab-item" label="CONTINGENCY">
             <lsl-contingency-list (messageEvent)="receiveMessage($event)"></lsl-contingency-list>
+        </mat-tab>
+        <mat-tab class="mat-tab-item" label="AOG">
+            <p>AOG Content</p>
         </mat-tab>
         <mat-tab class="mat-tab-item" label="PIT STOP">
             <p>Pit Stop Content</p>
