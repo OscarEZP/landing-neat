@@ -4,12 +4,6 @@ body {
   font-family: 'Noto Sans', 'Tahoma', 'Arial', sans-serif;
   height: calc(100vh);
 }
-.full-dialog .mat-dialog-container {
-  max-width: none;
-  width: 100vw;
-  height: 100vh;
-}
-
 #progress-bar{
   position: fixed;
   z-index: 9;
