@@ -12,11 +12,12 @@ export class CountdownComponent implements OnDestroy {
     private _duration: number;
     private _timing = 1000;
     private _interval;
+    private _warning: boolean;
+    private _threshold: number;
 
     @Input()
     public set creationTime(value: string | number) {
         this._creationTime = parseInt(value as string, 10);
-        //this._startTimer();
     }
 
     @Input()
@@ -32,10 +33,15 @@ export class CountdownComponent implements OnDestroy {
     }
 
     @Input()
+    public set threshold(value: string | number) {
+        this._threshold = parseInt(value as string, 10);
+    }
+
+    @Input()
     public format = '{hh}:{mm}:{ss}';
 
     public get delta() {
-        let currentDate = new Date();
+        const currentDate = new Date();
 
         return Math.max(0, Math.floor(((this._creationTime + this._duration) - currentDate.getTime()) / 1000));
     }
@@ -48,6 +54,12 @@ export class CountdownComponent implements OnDestroy {
         minutes = Math.floor(delta  / 60) % 60;
         delta -= minutes * 60;
         seconds = delta % 60;
+
+        if (hours === 0) {
+            if (minutes <= this._threshold && seconds === 0) {
+                this._warning = true;
+            }
+        }
 
         hours = hours.toString().length === 1 ? '0' + hours : hours;
         minutes = minutes.toString().length === 1 ? '0' + minutes : minutes;
@@ -68,15 +80,17 @@ export class CountdownComponent implements OnDestroy {
     }
 
     private _startTimer() {
-        if(this.delta <= 0) return;
+        if (this.delta <= 0) {
+            return;
+        }
 
         this._stopTimer();
         this._interval = setInterval(() => {
             this._changeDetector.detectChanges();
-            if(this.delta <= 0) {
+            if (this.delta <= 0) {
                 this._stopTimer();
             }
-        }, this._timing)
+        }, this._timing);
     }
 
     private _stopTimer() {

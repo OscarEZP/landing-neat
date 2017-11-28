@@ -1,11 +1,10 @@
 import {Injectable} from '@angular/core';
 import {User} from '../_models/user.model';
-import {Http} from '@angular/http'
+import {Http} from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import * as constants from '../../constants';
 import {StatusError} from '../_models/statusError.model';
 import {StorageService} from '../../shared/_services/storage.service';
-import { environment } from '../../../../environments/environment';
+import {environment} from '../../../../environments/environment';
 
 @Injectable()
 export class AuthService {
@@ -13,12 +12,10 @@ export class AuthService {
     private isLoggedIn: boolean;
     private redirectUrl: string;
     private loginUrl: string;
-    private headers: Headers;
     private data: { username: string, password: string };
 
 
     constructor(private http: Http, private storageService: StorageService) {
-        this.headers = new Headers({'Content-Type': 'application/json'});
         this.isLoggedIn = this.getIsLoggedIn();
         this.redirectUrl = '/operations';
         this.loginUrl = '/login';
@@ -32,13 +29,13 @@ export class AuthService {
         user.password = password;
 
         return this.http
-            .post(environment.apiUrl + environment.paths.login, JSON.stringify(user), this.headers)
+            .post(environment.apiUrl + environment.paths.login, JSON.stringify(user))
             .toPromise()
             .then(value => {
                 user = value.json();
                 return Promise.resolve(user);
             }).catch(reason => {
-                let error: StatusError = reason.json();
+                const error: StatusError = reason.json();
                 return Promise.reject(error.message);
             });
 

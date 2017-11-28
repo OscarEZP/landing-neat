@@ -26,7 +26,12 @@ export class RecoverPasswordComponent implements OnInit {
     recoverPasswordForm: FormGroup;
     destination: string;
 
-    constructor(private recoverPasswordService: RecoverPasswordService, private storageService: StorageService, private messageService: MessageService, private router: Router, private fb: FormBuilder) {
+    constructor(
+        private recoverPasswordService: RecoverPasswordService,
+        private storageService: StorageService,
+        private messageService: MessageService,
+        private router: Router,
+        private fb: FormBuilder) {
         this.destination = '';
     }
 
@@ -36,17 +41,18 @@ export class RecoverPasswordComponent implements OnInit {
             'verificationCodeFormControl': this.verificationCodeFormControl,
             'passwordFormControl': this.passwordFormControl,
             'confirmPasswordFormControl': this.confirmPasswordFormControl
-        })
+        });
     }
 
     changePassword(form: NgForm) {
         if (form.valid) {
             const data: { password: string, confirmPassword: string, verificationCode: string } = this.recoverPasswordService.getData();
             if (data.password === data.confirmPassword) {
-                this.recoverPasswordService.changePassword(this.storageService.getRecoverAccount(), data.password, data.verificationCode).then(value => {
-
-                    this.storageService.removeRecoverPassword();
-                    this.router.navigate([this.recoverPasswordService.getRedirectUrl()]);
+                this.recoverPasswordService.changePassword(this.storageService
+                    .getRecoverAccount(), data.password, data.verificationCode)
+                    .then(value => {
+                        this.storageService.removeRecoverPassword();
+                        this.router.navigate([this.recoverPasswordService.getRedirectUrl()]);
                 }).catch(reason => {
                     this.messageService.openSnackBar(reason);
                 });

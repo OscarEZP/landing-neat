@@ -81,11 +81,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     }
 
     newMessage() {
-        this.messageData.changeNumberMessage(this.currentDateLong);
+        this.messageData.changeTimeUTCMessage(this.currentDateLong);
     }
 
     toggleSidenav() {
         this.sidenavService.toggleSidenav().then();
     }
-
 }

@@ -1,14 +1,11 @@
 <div id="post-header-container">
-    <div id="item-counter-container"><strong>{{ itemsCount }} Alerts</strong> at this moment on Contingency</div>
+    <div id="item-counter-container"><strong>{{ itemsCount }} {{ 'OPERATIONS.ALERTS' | translate }}</strong> {{ 'OPERATIONS.THIS_MOMENT' | translate }}</div>
 
     <mat-tab-group id="post-header-tab">
-        <mat-tab class="mat-tab-item" label="CONTINGENCY">
+        <mat-tab class="mat-tab-item" label="{{ 'OPERATIONS.AOG_CONTINGENCY' | translate }}">
             <lsl-contingency-list (messageEvent)="receiveMessage($event)"></lsl-contingency-list>
         </mat-tab>
-        <mat-tab class="mat-tab-item" label="AOG">
-            <p>AOG Content</p>
-        </mat-tab>
-        <mat-tab class="mat-tab-item" label="PIT STOP">
+        <mat-tab class="mat-tab-item" label="{{ 'OPERATIONS.PIT_STOP' | translate }}">
             <p>Pit Stop Content</p>
         </mat-tab>
     </mat-tab-group>

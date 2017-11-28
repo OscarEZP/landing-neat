@@ -6,12 +6,12 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
 
 @Component({
-    selector: 'app-contingency-form',
+    selector: 'lsl-contingency-form',
     templateUrl: './contingency-form.component.html',
     styleUrls: ['./contingency-form.component.scss']
 })
 
-export class ContingencyFormComponent {
+export class ContingencyFormComponent implements OnInit {
 
     myControl: FormControl = new FormControl();
     filteredOptions: Observable<String[]>;
@@ -25,7 +25,7 @@ export class ContingencyFormComponent {
         'BBB-CC',
         'CCCC-DD',
         'DDD-EE'
-    ]
+    ];
 
     ngOnInit(): void {
         this.filteredOptions = this.myControl.valueChanges

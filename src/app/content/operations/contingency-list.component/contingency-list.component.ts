@@ -17,15 +17,24 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private _messageSubscriptions: Subscription;
     private apiUrl = environment.apiUrl + environment.paths.contingencyList;
-    private contingenceList: any = {};
+    private contingencyList: any = {};
+    private errorMessage: string;
     private utcTime: number;
+    private progressBarColor: string;
 
     @Output() messageEvent = new EventEmitter<number>();
 
-    constructor(private http: Http, private messageData: DataService, private dialogService: DialogService) {
+    constructor(
+        private http: Http,
+        private messageData: DataService,
+        private dialogService: DialogService,
+        translate: TranslateService
+    ) {
         this.getContingences();
         this.getData();
         this.utcTime = 0;
+        this.progressBarColor = 'primary';
+        translate.setDefaultLang('en');
     }
 
     openDialog() {
@@ -33,6 +42,8 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     getData() {
+        this.messageData.activateLoadingBar('open');
+
         return this.http
             .get(this.apiUrl)
             .map((res: Response) => res.json());
@@ -40,26 +51,36 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     getContingences() {
         this.getData().subscribe(data => {
-            this.contingenceList = data;
+            this.contingencyList = data;
             this.messageEvent.emit(data.length);
+            this.messageData.activateLoadingBar('close');
+        }, error => {
+            this.errorMessage = error;
+            this.messageData.activateLoadingBar('close');
         });
     }
 
-    getTimeAverage(creationDate: any, duration: any) {
+    getTimeAverage(creationDate: any, duration: any, remain: boolean, limit: number) {
         const actualTime = this.utcTime;
         let average: number;
         const valueNumber = (creationDate + duration) - actualTime;
+        let warning = false;
 
         if (valueNumber > 0) {
+            if (valueNumber <= limit) {
+                warning = true;
+            }
             average = 100 - Math.round(((valueNumber * 100) / duration));
         } else {
+            warning = true;
             average = 100;
         }
-        return average;
+
+        return remain ? warning : average;
     }
 
     ngOnInit() {
-        this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.utcTime = message)
+        this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.utcTime = message);
     }
 
     ngOnDestroy() {
