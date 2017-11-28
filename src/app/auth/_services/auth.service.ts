@@ -12,7 +12,7 @@ export class AuthService {
     private isLoggedIn: boolean;
     private redirectUrl: string;
     private loginUrl: string;
-    private data: { username: string, password: string };
+    public data: { username: string, password: string };
 
 
     constructor(private http: Http, private storageService: StorageService) {

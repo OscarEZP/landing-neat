@@ -1,8 +1,7 @@
-@import '../../../../assets/style/baseTheme/colorStyle';
-@import '../../../../assets/style/baseTheme/sizeStyle';
+@import '../../../../assets/style/base.scss';
 
 @mixin border-padd-top(){
-    border-top: 0.6px solid #c5c5c5;
+    border-top: .6px solid #c5c5c5;
     padding-top: 25px;
 }
 @mixin border-right(){
@@ -17,8 +16,8 @@
     width: $size;
 }
 
-@mixin generate-font-size($delta : 0) {
-    font-size: $typography-regular + $delta;
+.close-btn{
+
 }
 
 .mat-dialog-content{
@@ -40,7 +39,8 @@
         color:#37474f;
     }
     mat-icon.close-dialog {
-        @include md-icon-size(48px);
+        font-size: 26px;
+        margin: -5px 0 0 -2px
     }
     .msg-required-dialog{
         @include generate-font-size();
@@ -49,16 +49,9 @@
     }
 }
 
-.mat-button.mat-primary{
-    background-color: $blue;
-}
-
 .content-dialog-container{
 
-
-
     div.title-dialog{
-        color: $blue;
         font-size: 21px;
         margin-bottom: 4px;
     }

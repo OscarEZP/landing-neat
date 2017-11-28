@@ -1,0 +1,19 @@
+@import '~@angular/material/theming';
+@import 'mixin';
+@import 'variables';
+
+// Theme
+@import 'themes/default';
+
+// Palettes
+@include mat-core();
+$primary: mat-palette($mat-palette-primary);
+$secondary: mat-palette($mat-palette-secondary);
+$accent: mat-palette($mat-palette-primary);
+$warn: mat-palette($mat-red);
+$moc-app-theme: mat-light-theme($primary, $accent, $warn);
+@include angular-material-theme($moc-app-theme);
+
+// Extract whichever individual palettes you need from the theme.
+$foreground: map-get($moc-app-theme, foreground);
+$background: map-get($moc-app-theme, background);

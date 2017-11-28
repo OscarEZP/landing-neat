@@ -29,10 +29,10 @@ export class LoginComponent implements OnInit {
 
     private _messageDataSubscription: Subscription;
 
-    private loading: boolean;
-    private mode: string;
-    private value: number;
-    private disableButton: boolean;
+    public loading: boolean;
+    public mode: string;
+    public value: number;
+    public disableButton: boolean;
 
     loginForm: FormGroup;
 
@@ -90,13 +90,12 @@ export class LoginComponent implements OnInit {
         }
     }
     activateLoadingBar(message: string) {
-
         if (message === 'open') {
             this.loading = true;
             this.mode = 'indeterminate';
             this.value = 20;
         } else {
-            this.loading = true;
+            this.loading = false;
             this.mode = 'determinate';
             this.value = 100;
         }

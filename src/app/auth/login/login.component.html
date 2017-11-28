@@ -1,4 +1,4 @@
-<mat-progress-bar [mode]="mode" [value]="value" *ngIf="loading"></mat-progress-bar>
+<mat-progress-bar id="progress-bar" [mode]="mode" [value]="value" *ngIf="loading"></mat-progress-bar>
 <div fxLayout="row" fxLayoutAlign="center center" fxFill>
     <mat-card id="login">
 
@@ -34,7 +34,7 @@
                     <a routerLink='/findAccount'>Need Help?</a>
                 </div>
 
-                <button mat-raised-button class="button-submit">SIGN IN</button>
+                <button color="primary" mat-raised-button class="button-submit">SIGN IN</button>
             </mat-card-actions>
         </form>
 

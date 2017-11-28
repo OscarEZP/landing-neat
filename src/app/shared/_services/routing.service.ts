@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 @Injectable()
 export class RoutingService {
 
-    private moduleTitle: string;
+    public moduleTitle: string;
 
     public setActiveModule(url: string) {
         switch (url) {

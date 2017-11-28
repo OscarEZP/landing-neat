@@ -1,0 +1,3 @@
+@mixin generate-font-size($extra: 0){
+  font-size: $base-font+$extra;
+}

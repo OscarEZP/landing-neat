@@ -12,9 +12,9 @@ import {Subscription} from 'rxjs/Subscription';
 export class LayoutComponent implements OnInit, OnDestroy {
     @ViewChild('sidenav') public sidenav: MatSidenav;
     private _messageDataSubscription: Subscription;
-    private loading: boolean;
-    private mode: string;
-    private value: number;
+    public loading: boolean;
+    public mode: string;
+    public value: number;
 
     constructor(private sidenavService: SidenavService, private messageData: DataService) {
         this.sidenavService = sidenavService;
@@ -34,13 +34,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
 
     activateLoadingBar(message: string) {
-
         if (message === 'open') {
             this.loading = true;
             this.mode = 'indeterminate';
             this.value = 20;
         } else {
-            this.loading = true;
+            this.loading = false;
             this.mode = 'determinate';
             this.value = 100;
         }
