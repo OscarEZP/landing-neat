@@ -5,7 +5,7 @@
     font-family: 'Noto Sans', 'Tahoma', 'Arial', sans-serif;
     color: mat-color($foreground, secondary-text);
     min-height: 0;
-    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, .16), 0 2px 5px 0 rgba(0, 0, 0, .26);
     height: $navbar-height;
 
     h1{
