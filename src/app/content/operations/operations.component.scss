@@ -7,7 +7,7 @@
 
   #item-counter-container {
     font-family: 'Noto Sans', 'Arial', sans-serif;
-    @include add-font-size(-1);
+    @include generate-font-size(-1);
     position: absolute;
     right: 30px;
     top: 33px;
@@ -33,7 +33,7 @@
 
   .mat-tab-label {
     height: 36px;
-    @include add-font-size(-3);
+    @include generate-font-size(-3);
     font-family: Roboto, "Noto Sans", Tahoma;
     color: mat-color($primary);
   }
