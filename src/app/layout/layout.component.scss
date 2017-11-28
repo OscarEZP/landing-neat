@@ -1,14 +1,25 @@
-@import '../../assets/style/baseTheme/sizeStyle';
+@import '../../assets/style/base.scss';
+
+@mixin content-height($navbar-height : 50px){
+    height: calc(100vh - #{$navbar-height});
+}
 
 #nav-drawer-container {
     height: calc(100vh);
 }
+
 /deep/
 .mat-drawer-content.mat-sidenav-content{
     overflow: hidden;
 }
+
 /deep/
 .main-panel{
     overflow: auto;
-    @include container-height();
+    @include content-height($navbar-height);
+}
+
+/deep/
+.mat-tab-body-wrapper{
+    background-color: mat-color($primary, 'default-contrast');
 }

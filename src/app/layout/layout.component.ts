@@ -34,13 +34,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
 
     activateLoadingBar(message: string) {
-
         if (message === 'open') {
             this.loading = true;
             this.mode = 'indeterminate';
             this.value = 20;
         } else {
-            this.loading = true;
+            this.loading = false;
             this.mode = 'determinate';
             this.value = 100;
         }

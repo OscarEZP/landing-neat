@@ -2,7 +2,8 @@
   <button mat-icon-button (click)="toggleSidenav()">
     <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">menu</mat-icon>
   </button>
-  <figure id="logo"></figure>
+  <figure id="logo">
+  </figure>
   <h1 [innerHtml]="routingService.getModuleTitle()"></h1>
   <aside>
     <nav>
@@ -21,6 +22,4 @@
       </button>
     </nav>
   </aside>
-
-
 </mat-toolbar>
