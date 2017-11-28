@@ -21,13 +21,13 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     private _messageDataSubscription: Subscription;
     private data: ActualTimeModel;
-    private display: boolean;
+    public display: boolean;
     private alive: boolean;
     private interval: number;
     public currentDateLong: number;
     public currentDateString: string;
-    private time: Date;
-    private moduleTitle: string;
+    public time: Date;
+    public moduleTitle: string;
 
     constructor(
         private datetimeService: DatetimeService,
@@ -35,7 +35,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private clockService: ClockService,
         private sidenavService: SidenavService,
         private dialogService: DialogService,
-        private routingService: RoutingService
+        public routingService: RoutingService
     ) {
         this.display = true;
         this.alive = true;

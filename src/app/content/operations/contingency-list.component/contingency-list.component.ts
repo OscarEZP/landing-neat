@@ -18,10 +18,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private _messageSubscriptions: Subscription;
     private apiUrl = environment.apiUrl + environment.paths.contingencyList;
-    private contingencyList: any = {};
+    public contingencyList: any = {};
     private errorMessage: string;
     private utcTime: number;
-    private progressBarColor: string;
+    public progressBarColor: string;
 
     @Output() messageEvent = new EventEmitter<number>();
 

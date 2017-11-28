@@ -8,7 +8,10 @@ export class DialogService {
 
     public openDialog(dialogInstance): void {
         this.dialog.open(dialogInstance, {
-            panelClass: 'full-dialog'
+            panelClass: 'full-dialog',
+            maxWidth: '100vw',
+            height: '100%',
+            hasBackdrop: false
         });
     }
 

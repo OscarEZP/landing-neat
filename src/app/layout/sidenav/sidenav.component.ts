@@ -9,9 +9,9 @@ import {StorageService} from '../../shared/_services/storage.service';
 })
 export class SidenavComponent implements OnInit {
 
-    private user: { username: string, name: string, email: string };
-    private arrMenu: { label: string, link: string, icon: string }[];
-    private arrFooterMenu: { label: string, link: string, icon: string }[];
+    public user: { username: string, name: string, email: string };
+    public arrMenu: { label: string, link: string, icon: string }[];
+    public arrFooterMenu: { label: string, link: string, icon: string }[];
 
     constructor(private sidenavService: SidenavService, private storageService: StorageService) {
         this.user = {username: '', name: '', email: ''};

@@ -29,10 +29,10 @@ export class LoginComponent implements OnInit {
 
     private _messageDataSubscription: Subscription;
 
-    private loading: boolean;
-    private mode: string;
-    private value: number;
-    private disableButton: boolean;
+    public loading: boolean;
+    public mode: string;
+    public value: number;
+    public disableButton: boolean;
 
     loginForm: FormGroup;
 
