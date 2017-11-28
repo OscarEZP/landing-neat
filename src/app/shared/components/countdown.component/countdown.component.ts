@@ -12,7 +12,7 @@ export class CountdownComponent implements OnDestroy {
     private _duration: number;
     private _timing = 1000;
     private _interval;
-    private _warning: boolean;
+    public _warning: boolean;
     private _threshold: number;
 
     @Input()

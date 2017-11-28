@@ -1,6 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
-import { LayoutComponent } from './layout.component';
-import {LoginComponent} from './access/login.component/login.component';
+import { LayoutComponent } from './layout/layout.component';
+import {LoginComponent} from './auth/login/login.component';
 describe('LayoutComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({

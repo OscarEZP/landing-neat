@@ -10,7 +10,7 @@ import {TranslateService} from '@ngx-translate/core';
 
 export class OperationsComponent implements OnInit {
 
-    private itemsCount: number;
+    public itemsCount: number;
 
     @ViewChild(ContingencyListComponent) child;
 

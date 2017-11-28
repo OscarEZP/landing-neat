@@ -12,9 +12,9 @@ import {Subscription} from 'rxjs/Subscription';
 export class LayoutComponent implements OnInit, OnDestroy {
     @ViewChild('sidenav') public sidenav: MatSidenav;
     private _messageDataSubscription: Subscription;
-    private loading: boolean;
-    private mode: string;
-    private value: number;
+    public loading: boolean;
+    public mode: string;
+    public value: number;
 
     constructor(private sidenavService: SidenavService, private messageData: DataService) {
         this.sidenavService = sidenavService;
