@@ -33,11 +33,12 @@ export class LoginComponent implements OnInit {
     public mode: string;
     public value: number;
     public disableButton: boolean;
+    public hide: boolean;
 
     loginForm: FormGroup;
 
     constructor(
-        private authService: AuthService,
+        protected authService: AuthService,
         private storageService: StorageService,
         private router: Router,
         private route: ActivatedRoute,

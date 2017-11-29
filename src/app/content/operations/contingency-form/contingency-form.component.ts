@@ -16,6 +16,9 @@ export class ContingencyFormComponent implements OnInit {
     myControl: FormControl = new FormControl();
     filteredOptions: Observable<String[]>;
 
+    protected safety: string;
+    protected contingencyType: string;
+
     constructor(
         public dialogRef: MatDialogRef<ContingencyFormComponent>
     ) { }

@@ -25,10 +25,12 @@ export class RecoverPasswordComponent implements OnInit {
     matcher = new MyErrorStateMatcher();
     recoverPasswordForm: FormGroup;
     destination: string;
+    protected hideCp: boolean;
+    protected hidePw: boolean;
 
     constructor(
-        private recoverPasswordService: RecoverPasswordService,
-        private storageService: StorageService,
+        public recoverPasswordService: RecoverPasswordService,
+        protected storageService: StorageService,
         private messageService: MessageService,
         private router: Router,
         private fb: FormBuilder) {
