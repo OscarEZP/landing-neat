@@ -29,6 +29,7 @@
     "@angular2-material/toolbar": "^2.0.0-alpha.8-experimental3",
     "@ngx-translate/core": "^9.0.1",
     "@ngx-translate/http-loader": "2.0.0",
+    "angular-in-memory-web-api": "^0.5.1",
     "bootstrap": "3.3.5",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
