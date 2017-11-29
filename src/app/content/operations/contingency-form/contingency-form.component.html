@@ -2,7 +2,7 @@
     <div mat-dialog-title fxLayoutGap="30px" class="title-dialog-container" fxLayout="column">
         <div fxLayout="row" fxFlex>
             <span class="title-dialog" fxFlex>CONTINGENCY CREATION</span>
-            <span class="date-title-dialog">25 Nov 2017 | 15:22:45 UTC</span>
+            <span *ngIf="display" class="date-title-dialog">{{ currentDateString | utcDate | date: 'dd MMM yyyy'}} | {{ time | utcDate | date: 'HH:mm:ss' }} UTC</span>
             <button class="close-btn" mat-icon-button fxFlexOffset="1">
 
             <mat-icon aria-label="Example icon-button" class="material-icons close-dialog" (click)="onCancelClick()">close</mat-icon>
@@ -24,12 +24,7 @@
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px">
 
                     <mat-form-field fxFlex="20">
-                        <input  #searchAircraft 
-                                type="text" 
-                                placeholder="A/C" 
-                                matInput 
-                                [formControl]="contingencyForm.controls['aircraft']" 
-                                [matAutocomplete]="ac"
+                        <input #searchAircraft type="text" placeholder="A/C" matInput [formControl]="contingencyForm.controls['aircraft']" [matAutocomplete]="ac"
                             required>
                             <mat-error *ngIf="contingencyForm.controls['aircraft'].hasError('required') && contingencyForm.controls['aircraft'].touched">
                                 Aircraft is <strong>required</strong>
@@ -61,12 +56,7 @@
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px">
                     <mat-checkbox labelPosition="after" fxFlex="20" [formControl]="contingencyForm.controls['backup']">Back up</mat-checkbox>
                     <mat-form-field fxFlex="15">
-                        <input  #searchFlight 
-                                type="text" 
-                                placeholder="Flight" 
-                                matInput 
-                                [formControl]="contingencyForm.controls['flight']" 
-                                [matAutocomplete]="flight"
+                        <input #searchFlight type="text" placeholder="Flight" matInput [formControl]="contingencyForm.controls['flight']" [matAutocomplete]="flight"
                             required>
                             <mat-error *ngIf="contingencyForm.controls['flight'].hasError('required') && contingencyForm.controls['flight'].touched">
                                 Flight is <strong>required</strong>
@@ -91,20 +81,23 @@
                     </mat-form-field>
                 </div>
                 <div fxLayout="column">
-                    <span class="label-element">Flight Time (ETD) *</span>
+                    
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-                        <mat-form-field fxFlex="15">
-                            <input matInput placeholder="hh:mm" [(ngModel)]="selectedFlight.time" [formControl]="contingencyForm.controls['time']" name="time">
-                            <mat-error *ngIf="contingencyForm.controls['time'].hasError('required') && contingencyForm.controls['flight'].touched">
-                                Flight is <strong>required</strong>
-                            </mat-error>
+
+                        <mat-form-field fxFlex="20">
+                            <input matInput placeholder="Flight Time" [(ngModel)]="selectedFlight.time" [formControl]="contingencyForm.controls['time']"
+                                name="time" required> 
+                                <mat-error *ngIf="contingencyForm.controls['time'].hasError('required') && contingencyForm.controls['time'].touched">
+                                    Time is <strong>required</strong>
+                                </mat-error>
                         </mat-form-field>
+
                         <label fxFlex="10">UTC</label>
                         <mat-form-field fxFlex="25">
-                            <input matInput [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="selectedFlight.date" [formControl]="contingencyForm.controls['date']"
-                                name="date">
-                                <mat-error *ngIf="contingencyForm.controls['date'].hasError('required') && contingencyForm.controls['flight'].touched">
-                                    Flight is <strong>required</strong>
+                            <input matInput [matDatepicker]="picker" placeholder="Flight Date" [(ngModel)]="selectedFlight.date" [formControl]="contingencyForm.controls['date']"
+                                name="date" required>
+                                <mat-error *ngIf="contingencyForm.controls['date'].hasError('required') && contingencyForm.controls['date'].touched">
+                                    Date is <strong>required</strong>
                                 </mat-error>
                                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                                 <mat-datepicker #picker></mat-datepicker>
@@ -124,10 +117,10 @@
                         </mat-error>
                     </div>
                     <div class="barcode-container" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-                        
+
                         <mat-checkbox labelPosition="after" fxFlex="20" [formControl]="contingencyForm.controls['barcode']">Barcode</mat-checkbox>
                         <mat-form-field fxFlex="20" *ngIf="contingencyForm.controls['barcode'].value">
-                            <input matInput placeholder="barcode" >
+                            <input matInput placeholder="barcode">
                         </mat-form-field>
                     </div>
 
@@ -144,10 +137,9 @@
                     </mat-radio-group>
                 </div>
                 <div fxLayout="column" *ngIf="contingencyForm.controls['safety'].value==='yes'">
-                    <span class="label-element">Technical Type *</span>
                     <div fxLayout="row">
                         <mat-form-field fxFlex="70">
-                            <mat-select placeholder="Select Type" [formControl]="contingencyForm.controls['typeSafety']">
+                            <mat-select placeholder="Technical Type" [formControl]="contingencyForm.controls['typeSafety']" required>
                                 <mat-option value="option1">In Flight Shut Down</mat-option>
                                 <mat-option value="option2">Air Turn Back</mat-option>
                                 <mat-option value="option3">Rejected Take Off</mat-option>
@@ -166,16 +158,16 @@
                 <div fxLayout="column" fxLayoutGap="15px">
                     <span class="label-element">Contingency Type * :</span>
                     <mat-radio-group fxLayoutGap="20px" [formControl]="contingencyForm.controls['contingencyType']">
-                        <mat-radio-button labelPosition="after" value="operation" >Contingency in the Operation</mat-radio-button>
-                        <mat-radio-button labelPosition="after" value="extended" >Extended Maintenance</mat-radio-button>
+                        <mat-radio-button labelPosition="after" value="operation">Contingency in the Operation</mat-radio-button>
+                        <mat-radio-button labelPosition="after" value="extended">Extended Maintenance</mat-radio-button>
                     </mat-radio-group>
                 </div>
                 <div fxLayout="column" fxLayoutGap="15px">
                     <span class="label-element">Failure Type * :</span>
                     <mat-radio-group fxLayoutGap="20px" [formControl]="contingencyForm.controls['failureType']">
-                        <mat-radio-button labelPosition="after" value="technical" >Technical</mat-radio-button>
-                        <mat-radio-button labelPosition="after" value="damage" >Damage</mat-radio-button>
-                        <mat-radio-button labelPosition="after" value="process" >Process</mat-radio-button>
+                        <mat-radio-button labelPosition="after" value="technical">Technical</mat-radio-button>
+                        <mat-radio-button labelPosition="after" value="damage">Damage</mat-radio-button>
+                        <mat-radio-button labelPosition="after" value="process">Process</mat-radio-button>
                     </mat-radio-group>
                 </div>
                 <mat-form-field class="full-width">
@@ -195,7 +187,6 @@
                     </div>
                 </div>
                 <div fxLayout="column" fxLayoutGap="15px">
-                    <span class="label-element">Interval</span>
                     <div fxLayout="row">
 
                         <mat-form-field fxFlex="25">

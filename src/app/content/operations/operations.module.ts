@@ -8,6 +8,7 @@ import { ContingencyFormComponent } from './contingency-form/contingency-form.co
 import { DialogService } from '../_services/dialog.service';
 import { ContingencyService } from './_services/contingency.service';
 import { LogService } from './_services/log.service';
+import { ClockService } from '../../shared/_services/clock.service';
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { LogService } from './_services/log.service';
     providers: [
         DialogService,
         ContingencyService,
-        LogService
+        LogService,
+        ClockService
     ]
 })
 

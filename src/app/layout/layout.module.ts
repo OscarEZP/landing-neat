@@ -7,7 +7,6 @@ import {LayoutComponent} from './layout.component';
 import {SidenavComponent} from './sidenav/sidenav.component';
 import {SidenavService} from './_services/sidenav.service';
 import {StorageService} from '../shared/_services/storage.service';
-import {UtcDatePipe} from '../shared/_pipes/utcDatePipe.pipe';
 
 
 @NgModule({
@@ -24,7 +23,6 @@ import {UtcDatePipe} from '../shared/_pipes/utcDatePipe.pipe';
         ToolbarComponent,
         LayoutComponent,
         SidenavComponent,
-        UtcDatePipe
     ],
     providers: [
         SidenavService,

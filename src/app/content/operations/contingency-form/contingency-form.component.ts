@@ -1,25 +1,37 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { TimerObservable } from 'rxjs/observable/TimerObservable';
+import { DatetimeService } from '../../../shared/_services/datetime.service';
+import { ActualTimeModel } from '../../../shared/_models/actual-time-model';
+import { ClockService } from '../../../shared/_services/clock.service';
+import { DataService } from '../../../shared/_services/data.service';
+import { Subscription } from 'rxjs/Subscription';
 
 import { Aircraft } from '../_models/aircraft';
 import { Flight } from '../_models/flight';
 import { ContingencyService } from '../_services/contingency.service';
 
 @Component({
-    selector: 'app-contingency-form',
+    selector: 'lsl-contingency-form',
     templateUrl: './contingency-form.component.html',
     styleUrls: ['./contingency-form.component.scss']
 })
 
-export class ContingencyFormComponent {
+export class ContingencyFormComponent implements OnInit {
     contingencyForm: FormGroup;
+    private interval: number;
+    public display: boolean;
+    private alive: boolean;
+    private data: ActualTimeModel;
+    public currentDateLong: number;
+    public currentDateString: string;
+    public time: Date;
+    private _messageDataSubscription: Subscription;
 
     selectedAircraft: Aircraft = new Aircraft();
     aircrafts: Aircraft[];
@@ -34,9 +46,18 @@ export class ContingencyFormComponent {
     constructor(
         private dialogRef: MatDialogRef<ContingencyFormComponent>,
         private contingencyService: ContingencyService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private datetimeService: DatetimeService,
+        private clockService: ClockService,
+        private messageData: DataService,
 
     ) {
+        this.display = true;
+        this.alive = true;
+        this.interval = 60000;
+        this.currentDateLong = 0;
+        this.currentDateString = '';
+
         this.contingencyForm = fb.group({
             'aircraft': [null, Validators.required],
             'fleet': [null, Validators.required],
@@ -73,6 +94,26 @@ export class ContingencyFormComponent {
     ]
 
     ngOnInit() {
+        this._messageDataSubscription = this.messageData.currentNumberMessage.subscribe(message => this.currentDateLong = message);
+
+        TimerObservable.create(0, this.interval)
+            .takeWhile(() => this.alive)
+            .subscribe(() => {
+                this.datetimeService.getTime()
+                    .subscribe((data) => {
+                        this.data = data;
+                        this.currentDateLong = this.data.currentTimeLong;
+                        this.currentDateString = this.data.currentTime;
+                        this.newMessage();
+                        this.clockService.setClock(this.currentDateLong);
+                        if (!this.display) {
+                            this.display = true;
+                        }
+                    });
+            });
+
+        this.clockService.getClock().subscribe(time => this.time = time);
+
         this.filteredAircrafts = this.contingencyForm.controls['aircraft'].valueChanges
             .startWith('')
             .map(val => this.filterAircrafts(val));
@@ -80,6 +121,8 @@ export class ContingencyFormComponent {
         this.filteredFlights = this.contingencyForm.controls['flight'].valueChanges
             .startWith('')
             .map(val => this.filterFlights(val));
+
+
 
     }
 
@@ -131,5 +174,9 @@ export class ContingencyFormComponent {
 
     onCancelClick(): void {
         this.dialogRef.close();
+    }
+
+    newMessage() {
+        this.messageData.changeTimeUTCMessage(this.currentDateLong);
     }
 }
