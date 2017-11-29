@@ -1,0 +1,13 @@
+@import '../../../assets/style/base';
+
+/deep/
+#details-nav{
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    background-color: mat-color($background, 'background');
+    width: $nav-details-width;
+    height: 100%;
+    color: mat-color($foreground, 'icon');
+}

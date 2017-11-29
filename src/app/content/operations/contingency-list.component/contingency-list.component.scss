@@ -155,17 +155,3 @@
   display: inline-flex;
   vertical-align: middle;
 }
-
-#add-contingency {
-  width: 56px;
-  height: 56px;
-  background-color: mat-color($secondary, 500);
-  border: .5px solid transparent;
-  border-image-slice: 1;
-  color: #fff;
-  font-size: 25px;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, .25);
-}

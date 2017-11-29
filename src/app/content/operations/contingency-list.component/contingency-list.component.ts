@@ -38,9 +38,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         translate.setDefaultLang('en');
     }
 
-    openDialog() {
-        this.dialogService.openDialog(ContingencyFormComponent);
-    }
+
 
     getData() {
         this.messageData.activateLoadingBar('open');

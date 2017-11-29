@@ -7,6 +7,7 @@ import {AuthModule} from './auth/auth.module';
 import {ContentModule} from './content/content.module';
 import {LayoutModule} from './layout/layout.module';
 import {AppRoutingModule} from './app-routing.module';
+import {DetailsModule} from './details/details.module';
 // Components
 import {AppComponent} from './app.component';
 // Services
@@ -31,6 +32,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         ContentModule,
         LayoutModule,
         AppRoutingModule,
+        DetailsModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

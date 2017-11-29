@@ -1,25 +1,40 @@
 @import '../../assets/style/base.scss';
 
-@mixin content-height($navbar-height : 50px){
-    height: calc(100vh - #{$navbar-height});
-}
-
 #nav-drawer-container {
-    height: calc(100vh);
+  height: calc(100vh);
 }
 
 /deep/
-.mat-drawer-content.mat-sidenav-content{
-    overflow: hidden;
+.main-panel {
+  position: relative;
+  width: calc(100% - #{$nav-details-width});
+}
+
+#nav-details-container {
+  height: calc(100vh - #{$navbar-height});
+}
+
+#main-container {
+  margin: $navbar-height 0 0 0;
+  position: relative;
 }
 
 /deep/
-.main-panel{
-    overflow: auto;
-    @include content-height($navbar-height);
+.mat-tab-body-wrapper {
+  background-color: mat-color($primary, 'default-contrast');
 }
 
-/deep/
-.mat-tab-body-wrapper{
-    background-color: mat-color($primary, 'default-contrast');
+#add-contingency {
+  width: 56px;
+  height: 56px;
+  background-color: mat-color($secondary, 500);
+  border: 0.5px solid transparent;
+  border-image-slice: 1;
+  color: mat-color($primary, 'default-contrast');
+  font-size: 25px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, .25);
+  z-index: 2;
 }

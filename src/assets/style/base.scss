@@ -9,6 +9,8 @@
 @include mat-core();
 $primary: mat-palette($mat-palette-primary);
 $secondary: mat-palette($mat-palette-secondary);
+$mxi: mat-palette($mat-palette-mxi);
+
 $accent: mat-palette($mat-palette-primary);
 $warn: mat-palette($mat-red);
 $moc-app-theme: mat-light-theme($primary, $accent, $warn);

@@ -1,0 +1,36 @@
+@import '../../assets/style/base.scss';
+
+$details-with: 300px;
+$details-title-size: 19px;
+
+/deep/
+#details{
+    width: $details-with;
+    overflow: hidden;
+
+    header{
+        background-color: mat-color($primary);
+        color: mat-color($primary, 'default-contrast');
+        height: $details-header-height;
+        padding: 38px 17px;
+        box-sizing: border-box;
+        h1{
+            font-size: $details-title-size;
+        }
+        p{
+            font-size: calc(#{$details-title-size} - 5px);
+        }
+        .mat-icon{
+            font-size: 20px;
+        }
+        > div{
+            padding: 0 0 5px 0;
+        }
+    }
+
+    content{
+        overflow: auto;
+        height: calc(100vh - (#{$navbar-height} + #{$details-header-height}));
+        display: inline-block;
+    }
+}
