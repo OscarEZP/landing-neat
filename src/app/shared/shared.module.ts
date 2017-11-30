@@ -5,7 +5,7 @@ import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
     declarations: [
-        CountdownComponent
+        CountdownComponent,
     ],
     imports: [
         MaterialModule,
