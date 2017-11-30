@@ -17,4 +17,12 @@ export class MessageService {
         });
 
     }
+
+    openFromComponent(component, config) {
+        this.matSnackBar.openFromComponent(component, config);
+    }
+
+    dismissSnackBar() {
+        this.matSnackBar.dismiss();
+    }
 }

@@ -1,20 +1,23 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import {Component, OnInit, Input} from '@angular/core';
+import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
-import { TimerObservable } from 'rxjs/observable/TimerObservable';
-import { DatetimeService } from '../../../shared/_services/datetime.service';
-import { ActualTimeModel } from '../../../shared/_models/actual-time-model';
-import { ClockService } from '../../../shared/_services/clock.service';
-import { DataService } from '../../../shared/_services/data.service';
-import { Subscription } from 'rxjs/Subscription';
+import {TimerObservable} from 'rxjs/observable/TimerObservable';
+import {DatetimeService} from '../../../shared/_services/datetime.service';
+import {ActualTimeModel} from '../../../shared/_models/actual-time-model';
+import {ClockService} from '../../../shared/_services/clock.service';
+import {DataService} from '../../../shared/_services/data.service';
+import {Subscription} from 'rxjs/Subscription';
 
-import { Aircraft } from '../_models/aircraft';
-import { Flight } from '../_models/flight';
-import { ContingencyService } from '../_services/contingency.service';
+import {Aircraft} from '../_models/aircraft';
+import {Flight} from '../_models/flight';
+import {ContingencyService} from '../_services/contingency.service';
+import {MessageService} from '../../../shared/_services/message.service';
+import {CancelComponent} from '../cancel/cancel.component';
+
 
 @Component({
     selector: 'lsl-contingency-form',
@@ -43,15 +46,13 @@ export class ContingencyFormComponent implements OnInit {
 
     departureArrival = [];
 
-    constructor(
-        private dialogRef: MatDialogRef<ContingencyFormComponent>,
-        private contingencyService: ContingencyService,
-        private fb: FormBuilder,
-        private datetimeService: DatetimeService,
-        private clockService: ClockService,
-        private messageData: DataService,
-
-    ) {
+    constructor(private dialogRef: MatDialogRef<ContingencyFormComponent>,
+                private contingencyService: ContingencyService,
+                private fb: FormBuilder,
+                private datetimeService: DatetimeService,
+                private clockService: ClockService,
+                private messageData: DataService,
+                private messageService: MessageService) {
         this.display = true;
         this.alive = true;
         this.interval = 60000;
@@ -78,20 +79,20 @@ export class ContingencyFormComponent implements OnInit {
             'tipology': ['ni', Validators.required],
             'interval': [null]
 
-        })
+        });
     }
 
     aircraftOptions: Aircraft[] = [
-        { tail: 'CC-BAA', fleet: 'A320', operator: 'CL' },
-        { tail: 'AA-CBB', fleet: 'B320', operator: 'PE' },
-        { tail: 'AA-CCB', fleet: 'C320', operator: 'BR' }
+        {tail: 'CC-BAA', fleet: 'A320', operator: 'CL'},
+        {tail: 'AA-CBB', fleet: 'B320', operator: 'PE'},
+        {tail: 'AA-CCB', fleet: 'C320', operator: 'BR'}
     ];
 
     flightsOptions: Flight[] = [
-        { flight: 'LA238', departure: 'ZCO', arrival: 'SCL', time: '22:59:59', date: '2017-10-25' },
-        { flight: 'AL238', departure: 'SCL', arrival: 'LIM', time: '18:59:45', date: '2017-09-15' },
-        { flight: 'LA538', departure: 'LIM', arrival: 'ZCO', time: '14:25:45', date: '2017-08-30' }
-    ]
+        {flight: 'LA238', departure: 'ZCO', arrival: 'SCL', time: '22:59:59', date: '2017-10-25'},
+        {flight: 'AL238', departure: 'SCL', arrival: 'LIM', time: '18:59:45', date: '2017-09-15'},
+        {flight: 'LA538', departure: 'LIM', arrival: 'ZCO', time: '14:25:45', date: '2017-08-30'}
+    ];
 
     ngOnInit() {
         this._messageDataSubscription = this.messageData.currentNumberMessage.subscribe(message => this.currentDateLong = message);
@@ -121,13 +122,18 @@ export class ContingencyFormComponent implements OnInit {
         this.filteredFlights = this.contingencyForm.controls['flight'].valueChanges
             .startWith('')
             .map(val => this.filterFlights(val));
-
-
-
     }
 
     submitForm(value: any) {
         console.log(value);
+    }
+
+    openCancelDialog() {
+        this.messageService.openFromComponent(CancelComponent, {
+            data: {message: 'Are you sure that you want to Cancel? (The filled information will be lost)'},
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+        });
     }
 
     getAircrafts(): void {
@@ -146,7 +152,7 @@ export class ContingencyFormComponent implements OnInit {
     }
 
     onSelectAircraft(selectedOption: string): void {
-        this.selectedAircraft = this.aircraftOptions.filter(ac => ac.tail === selectedOption)[0]
+        this.selectedAircraft = this.aircraftOptions.filter(ac => ac.tail === selectedOption)[0];
     }
 
     getFlights(): void {
@@ -166,7 +172,7 @@ export class ContingencyFormComponent implements OnInit {
 
     onSelectFlight(selectedOption: string): void {
         this.departureArrival = [];
-        this.selectedFlight = this.flightsOptions.filter(fl => fl.flight === selectedOption)[0]
+        this.selectedFlight = this.flightsOptions.filter(fl => fl.flight === selectedOption)[0];
         this.departureArrival.push(this.selectedFlight.departure);
         this.departureArrival.push(this.selectedFlight.arrival);
 
