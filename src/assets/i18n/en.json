@@ -18,6 +18,21 @@
     "FOCAL": "Focal",
     "CANCEL_COMPONENT": {
       "MESSAGE": "Are you sure that you want to Cancel? (The filled information will be lost)"
+    },
+    "CONTINGENCY_FORM":{
+      "CONTINGENCY_CREATION":"CONTINGENCY CREATION",
+      "REQUIRE_FIELDS":"All fields with (*) are required",
+      "CONTINGENCY_INFORMATION":"Contingency Information",
+      "OPERATION_INFO":"Operation Info",
+      "AIRCRAFT_REQUIRED":"Aircraft is required",
+      "FLEET_REQUIRED":"Fleet is required",
+      "OPERATOR_REQUIRED":"Operator is required",
+      "FLIGHT_REQUIRED":"Flight is required",
+      "TIME_REQUIRED":"Time is required",
+      "DATE_REQUIRED":"Time is required",
+      "INFORMER_REQUIRED":"Time is required",
+      "SAFETY_MESSAGE":"If the Contingency is due a Safety Event, please follow the Safety protocols of your Company",
+      "TIPOLOGY_MESSAGE":"The ETR must be validated by the Maintenance Team"
     }
   }
 }

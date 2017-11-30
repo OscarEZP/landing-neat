@@ -55,13 +55,14 @@ export class ContingencyFormComponent implements OnInit {
                 private clockService: ClockService,
                 private messageData: DataService,
                 private messageService: MessageService,
-                private translate: TranslateService) {
+                public translate: TranslateService) {
         this.display = true;
         this.alive = true;
         this.interval = 60000;
         this.currentDateLong = 0;
         this.currentDateString = '';
         this.cancelMessage = '';
+        this.translate.setDefaultLang('en');
 
         this.contingencyForm = fb.group({
             'aircraft': [null, Validators.required],
