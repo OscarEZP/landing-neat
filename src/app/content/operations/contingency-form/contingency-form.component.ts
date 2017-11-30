@@ -1,22 +1,23 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
-import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
+import { Component, OnInit, Input } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
-import {TimerObservable} from 'rxjs/observable/TimerObservable';
-import {DatetimeService} from '../../../shared/_services/datetime.service';
-import {ActualTimeModel} from '../../../shared/_models/actual-time-model';
-import {ClockService} from '../../../shared/_services/clock.service';
-import {DataService} from '../../../shared/_services/data.service';
-import {Subscription} from 'rxjs/Subscription';
+import { TimerObservable } from 'rxjs/observable/TimerObservable';
+import { DatetimeService } from '../../../shared/_services/datetime.service';
+import { ActualTimeModel } from '../../../shared/_models/actual-time-model';
+import { ClockService } from '../../../shared/_services/clock.service';
+import { DataService } from '../../../shared/_services/data.service';
+import { Subscription } from 'rxjs/Subscription';
 
-import {Aircraft} from '../_models/aircraft';
-import {Flight} from '../_models/flight';
-import {ContingencyService} from '../_services/contingency.service';
-import {MessageService} from '../../../shared/_services/message.service';
-import {CancelComponent} from '../cancel/cancel.component';
+import { Aircraft } from '../_models/aircraft';
+import { Flight } from '../_models/flight';
+import { ContingencyService } from '../_services/contingency.service';
+import { MessageService } from '../../../shared/_services/message.service';
+import { CancelComponent } from '../cancel/cancel.component';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -45,6 +46,7 @@ export class ContingencyFormComponent implements OnInit {
     filteredFlights: Observable<Flight[]>;
 
     departureArrival = [];
+    private cancelMessage: string;
 
     constructor(private dialogRef: MatDialogRef<ContingencyFormComponent>,
                 private contingencyService: ContingencyService,
@@ -52,12 +54,14 @@ export class ContingencyFormComponent implements OnInit {
                 private datetimeService: DatetimeService,
                 private clockService: ClockService,
                 private messageData: DataService,
-                private messageService: MessageService) {
+                private messageService: MessageService,
+                private translate: TranslateService) {
         this.display = true;
         this.alive = true;
         this.interval = 60000;
         this.currentDateLong = 0;
         this.currentDateString = '';
+        this.cancelMessage = '';
 
         this.contingencyForm = fb.group({
             'aircraft': [null, Validators.required],
@@ -122,15 +126,23 @@ export class ContingencyFormComponent implements OnInit {
         this.filteredFlights = this.contingencyForm.controls['flight'].valueChanges
             .startWith('')
             .map(val => this.filterFlights(val));
+
+        this.translateMessageCancel();
     }
 
     submitForm(value: any) {
         console.log(value);
     }
 
+    translateMessageCancel() {
+        this.translate.get('OPERATIONS.CANCEL_COMPONENT.MESSAGE').subscribe((res: string) => {
+            this.cancelMessage = res;
+        });
+    }
+
     openCancelDialog() {
         this.messageService.openFromComponent(CancelComponent, {
-            data: {message: 'Are you sure that you want to Cancel? (The filled information will be lost)'},
+            data: {message: this.cancelMessage},
             horizontalPosition: 'center',
             verticalPosition: 'top'
         });
