@@ -52,6 +52,7 @@ export class ContingencyFormComponent implements OnInit {
     filteredFlights: Observable<FlightList[]>;
     
     departureArrival = [];
+    private cancelMessage: string;
     
     protected safety: string;
     protected contingencyType: string;
@@ -65,13 +66,16 @@ export class ContingencyFormComponent implements OnInit {
                 private clockService: ClockService,
                 private messageData: DataService,
                 private http: Http,
-                private messageService: MessageService) {
+                private messageService: MessageService,
+                public translate: TranslateService) {
         this.display = true;
         this.alive = true;
         this.interval = 60000;
         this.currentUTCTime = 0;
         this.currentDateString = '';
-        
+        this.cancelMessage = '';
+        this.translate.setDefaultLang('en');
+
         this.contingencyForm = fb.group({
             'tail': [null, Validators.required],
             'fleet': [null, Validators.required],
@@ -212,7 +216,21 @@ export class ContingencyFormComponent implements OnInit {
     private createEpochFromTwoStrings(dt: string, tm: string) {
         return Date.parse(dt + ' ' + tm);
     }
-    
+
+    translateMessageCancel() {
+        this.translate.get('OPERATIONS.CANCEL_COMPONENT.MESSAGE').subscribe((res: string) => {
+            this.cancelMessage = res;
+        });
+    }
+
+    openCancelDialog() {
+        this.messageService.openFromComponent(CancelComponent, {
+            data: {message: this.cancelMessage},
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+        });
+    }
+
     getAircrafts(): void {
         this.contingencyService.getAircrafts()
             .subscribe(aircrafts => {
