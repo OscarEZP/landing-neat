@@ -1,10 +1,241 @@
 <section id="details-information">
-    <h2>Follow up</h2>
-    <content>
-        <div fxLayout="row">
-            <div>Tipology</div>
-            <div>ETR</div>
+    <section>
+        <h2>Follow up</h2>
+        <div class="stripped table">
+            <div fxLayout="row">
+                <div fxFlex="40">Tipology:</div>
+                <div>ETR</div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">Interval:</div>
+                <div>30 minutes</div>
+            </div>
         </div>
-    </content>
+    </section>
     <hr/>
+    <section>
+        <h2>Aditional Info</h2>
+        <div class="stripped table">
+            <div fxLayout="row">
+                <div fxFlex="40">Focal:</div>
+                <div>Ignacio Pardo</div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">Barcode:</div>
+                <div>T006A7</div>
+            </div>
+        </div>
+    </section>
+    <hr/>
+    <section>
+        <h2>Safety Event</h2>
+        <div class="stripped table">
+            <div fxLayout="row">
+                <div fxFlex="40">Technical Type:</div>
+                <div>
+                    ATB
+                </div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">PMCIA Reading:</div>
+                <div>
+                    <mat-slide-toggle
+                            class=""
+                            [color]="primary"
+                            [checked]=""
+                            [disabled]="">
+                    </mat-slide-toggle>
+                </div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">CVR Request:</div>
+                <div>
+                    <mat-slide-toggle
+                            class=""
+                            [color]="primary"
+                            [checked]="true"
+                            [disabled]="">
+                    </mat-slide-toggle>
+                </div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">AQD Event Load:</div>
+                <div>
+                    <mat-slide-toggle
+                            class=""
+                            [color]="primary"
+                            [checked]="true"
+                            [disabled]="">
+                    </mat-slide-toggle>
+                </div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">Meeting:</div>
+                <div>
+                    <mat-slide-toggle
+                            class=""
+                            [color]="primary"
+                            [checked]=""
+                            [disabled]="">
+                    </mat-slide-toggle>
+                </div>
+            </div>
+        </div>
+    </section>
+    <hr>
+    <section fxLayout="row" fxLayoutAlign="end">
+        <button mat-button class="button-cancel">CANCEL</button>
+        <button color="primary" mat-raised-button class="button-submit">SAVE</button>
+    </section>
+    <hr>
+    <section >
+        <h2>Safety Events Pendings(3)</h2>
+    </section>
+
+    <div class="stripped box">
+        <section>
+            <header>
+                <div fxFlex="70">
+                    <mat-icon>email</mat-icon>
+                    ignacio.pardo@latam.com
+                </div>
+                <div>
+                    <mat-icon>today</mat-icon>
+                    12-07-2017
+                </div>
+            </header>
+            <hr>
+            <div class="description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus.</div>
+            <footer class="icon-footer" fxLayoutAlign="end">
+                <mat-icon color="warn">error</mat-icon>
+            </footer>
+        </section>
+        <section>
+            <header>
+                <div fxFlex="70">
+                    <mat-icon>email</mat-icon>
+                    ignacio.pardo@latam.com
+                </div>
+                <div>
+                    <mat-icon>today</mat-icon>
+                    12-07-2017
+                </div>
+            </header>
+            <hr>
+            <div class="description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus.</div>
+            <footer class="icon-footer" fxLayoutAlign="end">
+                <mat-icon color="warn">error</mat-icon>
+            </footer>
+        </section>
+        <section>
+            <header>
+                <div fxFlex="70">
+                    <mat-icon>email</mat-icon>
+                    ignacio.pardo@latam.com
+                </div>
+                <div>
+                    <mat-icon>today</mat-icon>
+                    12-07-2017
+                </div>
+            </header>
+            <hr>
+            <div class="description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus.</div>
+            <footer class="icon-footer" fxLayoutAlign="end">
+                <mat-icon color="warn">error</mat-icon>
+            </footer>
+        </section>
+    </div>
+    <hr>
+    <section >
+        <h2>Pendings resolved (1)</h2>
+    </section>
+    <div class="stripped box">
+        <section>
+            <header>
+                <div fxFlex="70">
+                    <mat-icon>email</mat-icon>
+                    ignacio.pardo@latam.com
+                </div>
+                <div>
+                    <mat-icon>today</mat-icon>
+                    12-07-2017
+                </div>
+            </header>
+            <hr>
+            <div class="description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus.</div>
+            <footer class="icon-footer" fxLayoutAlign="end">
+                <mat-icon class="success">check_circle</mat-icon>
+            </footer>
+        </section>
+    </div>
+    <hr>
+    <section>
+        <h2>Operation Info</h2>
+        <div class="stripped table">
+            <div fxLayout="row">
+                <div fxFlex="40">A/C :</div>
+                <div>ETR</div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">Fleet :</div>
+                <div>CL</div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">Operator :</div>
+                <div>SCL</div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">Flight :</div>
+                <div>LA238</div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">From :</div>
+                <div>SCL</div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">To :</div>
+                <div>GRU</div>
+            </div>
+        </div>
+    </section>
+    <hr>
+    <section>
+        <h2>Maintenance Info</h2>
+        <div class="stripped table">
+            <div fxLayout="row">
+                <div fxFlex="40">Contingency Type :</div>
+                <div>ETR</div>
+            </div>
+            <div fxLayout="row">
+                <div fxFlex="40">Failure Type :</div>
+                <div>30 minutes</div>
+            </div>
+        </div>
+    </section>
+    <hr>
+    <section >
+        <h2>Observations to Maintenance</h2>
+    </section>
+    <div class="stripped box no-separator">
+        <section>
+            <header>
+                <mat-icon>account_circle</mat-icon>
+                Ignacio Pardo - Analyst
+            </header>
+            <div class="description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus.</div>
+            <footer fxLayout="row">
+                <div fxFlex="40">
+                    <span class="badge">NI2</span>
+                </div>
+                <div fxFlex="30" >
+                    <mat-icon>account_circle</mat-icon>
+                    OCT.12.2017
+                </div>
+                <div fxFlex="30" fxLayout="row" fxLayoutAlign="end">
+                    <mat-icon>today</mat-icon>
+                    30 min ago
+                </div>
+            </footer>
+        </section>
+    </div>
 </section>

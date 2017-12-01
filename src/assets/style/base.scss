@@ -9,7 +9,7 @@
 @include mat-core();
 $primary: mat-palette($mat-palette-primary);
 $secondary: mat-palette($mat-palette-secondary);
-$mxi: mat-palette($mat-palette-mxi);
+$custom: mat-palette($mat-palette-custom);
 
 $accent: mat-palette($mat-palette-primary);
 $warn: mat-palette($mat-red);
