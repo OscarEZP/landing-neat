@@ -1,20 +1,25 @@
 import { Interval } from './interval';
+import { TimeInstant } from './timeInstant';
 
 export class Status {
 
     private _code: string;
+    private _contingencyId: number;
+    private _creationDate: TimeInstant;
     private _observation: string;
+    private _realInterval: Interval;
     private _requestedInterval: Interval;
-    private _user: string;
+    private _username: string;
 
-
-    constructor (code: string, observation: string, requestedInterval: Interval, user: string) {
+    constructor (code: string, contingencyId: number, creationDate: TimeInstant, observation: string, realInterval: Interval, requestedInterval: Interval, username: string) {
         this._code = code;
+        this._contingencyId = contingencyId;
+        this._creationDate = creationDate;
         this._observation = observation;
+        this._realInterval = realInterval;
         this._requestedInterval = requestedInterval;
-        this._user = user;
+        this._username = username;
     }
-
 
     get code (): string {
         return this._code;
@@ -22,6 +27,22 @@ export class Status {
 
     set code (value: string) {
         this._code = value;
+    }
+
+    get contingencyId (): number {
+        return this._contingencyId;
+    }
+
+    set contingencyId (value: number) {
+        this._contingencyId = value;
+    }
+
+    get creationDate (): TimeInstant {
+        return this._creationDate;
+    }
+
+    set creationDate (value: TimeInstant) {
+        this._creationDate = value;
     }
 
     get observation (): string {
@@ -32,6 +53,14 @@ export class Status {
         this._observation = value;
     }
 
+    get realInterval (): Interval {
+        return this._realInterval;
+    }
+
+    set realInterval (value: Interval) {
+        this._realInterval = value;
+    }
+
     get requestedInterval (): Interval {
         return this._requestedInterval;
     }
@@ -40,11 +69,11 @@ export class Status {
         this._requestedInterval = value;
     }
 
-    get user (): string {
-        return this._user;
+    get username (): string {
+        return this._username;
     }
 
-    set user (value: string) {
-        this._user = value;
+    set username (value: string) {
+        this._username = value;
     }
 }

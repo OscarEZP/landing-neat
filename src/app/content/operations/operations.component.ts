@@ -14,8 +14,8 @@ export class OperationsComponent implements OnInit {
 
     @ViewChild(ContingencyListComponent) child;
 
-    constructor(translate: TranslateService) {
-        translate.setDefaultLang('en');
+    constructor(private translate: TranslateService) {
+        this.translate.setDefaultLang('en');
     }
 
     ngOnInit() {

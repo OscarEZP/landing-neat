@@ -1,17 +1,17 @@
 export class DateModel {
 
-    private _date: number;
+    private _dateStr: string;
 
 
-    constructor (date: number) {
-        this._date = date;
+    constructor (dateStr: string) {
+        this._dateStr = dateStr;
     }
 
-    get date (): number {
-        return this._date;
+    get dateStr (): string {
+        return this._dateStr;
     }
 
-    set date (value: number) {
-        this._date = value;
+    set dateStr (value: string) {
+        this._dateStr = value;
     }
 }

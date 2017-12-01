@@ -1,14 +1,23 @@
-import { DateModel } from './dateModel';
+import { TimeInstant } from './timeInstant';
 
 export class Interval {
 
+    private _dt: TimeInstant;
     private _duration: number;
-    private _date: DateModel;
 
 
-    constructor (duration: number, date: DateModel) {
+    constructor (dt: TimeInstant, duration: number) {
+        this._dt = dt;
         this._duration = duration;
-        this._date = date;
+    }
+
+
+    get dt (): TimeInstant {
+        return this._dt;
+    }
+
+    set dt (value: TimeInstant) {
+        this._dt = value;
     }
 
     get duration (): number {
@@ -17,13 +26,5 @@ export class Interval {
 
     set duration (value: number) {
         this._duration = value;
-    }
-
-    get date (): DateModel {
-        return this._date;
-    }
-
-    set date (value: DateModel) {
-        this._date = value;
     }
 }

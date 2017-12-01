@@ -2,12 +2,14 @@ import { Aircraft } from './aircraft';
 import { Flight } from './flight';
 import { Safety } from './safety';
 import { Status } from './status';
+import { TimeInstant } from './timeInstant';
 
 export class Contingency {
 
+    private _id: number;
     private _aircraft: Aircraft;
     private _barcode: string;
-    private _etd: number;
+    private _creationDate: TimeInstant;
     private _failure: string;
     private _flight: Flight;
     private _informer: string;
@@ -16,11 +18,13 @@ export class Contingency {
     private _safetyEvent: Safety;
     private _status: Status;
     private _type: string;
+    private _username: string;
 
-    constructor (aircraft: Aircraft, barcode: string, etd: number, failure: string, flight: Flight, informer: string, isBackup: boolean, reason: string, safetyEvent: Safety, status: Status, type: string) {
+    constructor (id: number, aircraft: Aircraft, barcode: string, creationDate: TimeInstant, failure: string, flight: Flight, informer: string, isBackup: boolean, reason: string, safetyEvent: Safety, status: Status, type: string, username: string) {
+        this._id = id;
         this._aircraft = aircraft;
         this._barcode = barcode;
-        this._etd = etd;
+        this._creationDate = creationDate;
         this._failure = failure;
         this._flight = flight;
         this._informer = informer;
@@ -29,8 +33,16 @@ export class Contingency {
         this._safetyEvent = safetyEvent;
         this._status = status;
         this._type = type;
+        this._username = username;
     }
 
+    get id (): number {
+        return this._id;
+    }
+
+    set id (value: number) {
+        this._id = value;
+    }
 
     get aircraft (): Aircraft {
         return this._aircraft;
@@ -48,12 +60,12 @@ export class Contingency {
         this._barcode = value;
     }
 
-    get etd (): number {
-        return this._etd;
+    get creationDate (): TimeInstant {
+        return this._creationDate;
     }
 
-    set etd (value: number) {
-        this._etd = value;
+    set creationDate (value: TimeInstant) {
+        this._creationDate = value;
     }
 
     get failure (): string {
@@ -119,4 +131,29 @@ export class Contingency {
     set type (value: string) {
         this._type = value;
     }
+
+    get username (): string {
+        return this._username;
+    }
+
+    set username (value: string) {
+        this._username = value;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
