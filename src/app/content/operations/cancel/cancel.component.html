@@ -1,0 +1,10 @@
+<div fxLayout="row" fxLayoutGap="20px">
+    <div>
+        <span>{{data.message}}</span>
+    </div>
+
+    <div fxLayoutAlign="end">
+        <button mat-button  (click)="closeCancelDialog()">{{'OPERATIONS.CANCEL_COMPONENT.NO_BUTTON_LABEL'|translate}}</button>
+        <button mat-button mat-raised-button color="warn" (click)="closeContingencyForm()">{{'OPERATIONS.CANCEL_COMPONENT.YES_BUTTON_LABEL'|translate}}</button>
+    </div>
+</div>

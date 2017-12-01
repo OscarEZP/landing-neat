@@ -1,33 +1,33 @@
 <form [formGroup]="contingencyForm" (ngSubmit)="submitForm(contingencyForm.value)">
     <div mat-dialog-title fxLayoutGap="30px" class="title-dialog-container" fxLayout="column">
         <div fxLayout="row" fxFlex>
-            <span class="title-dialog" fxFlex>CONTINGENCY CREATION</span>
+            <span class="title-dialog" fxFlex>{{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_CREATION' | translate}}</span>
             <span *ngIf="display" class="date-title-dialog">{{ currentDateString | utcDate | date: 'dd MMM yyyy'}} | {{ time | utcDate | date: 'HH:mm:ss' }} UTC</span>
             <button class="close-btn" mat-icon-button fxFlexOffset="1">
 
             <mat-icon aria-label="Example icon-button" class="material-icons close-dialog" (click)="onCancelClick()">close</mat-icon>
         </button>
         </div>
-        <span class="msg-required-dialog" fxFlex>All fields with (*) are required</span>
+        <span class="msg-required-dialog" fxFlex>{{'OPERATIONS.CONTINGENCY_FORM.REQUIRE_FIELDS'| translate}}</span>
 
     </div>
 
     <div mat-dialog-content class="content-dialog-container">
         <div class="title-dialog">
-            <span>Contingency Information</span>
+            <span>{{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_INFORMATION'|translate}}</span>
         </div>
 
         <div fxLayout="row" class="sections-content">
 
             <div fxFlex="33" fxLayout="column" class="operation-container">
-                <span class="title-section bottom-margin-10">Operation Info</span>
+                <span class="title-section bottom-margin-10">{{'OPERATIONS.CONTINGENCY_FORM.OPERATION_INFO'|translate}}</span>
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px">
 
                     <mat-form-field fxFlex="20">
                         <input #searchAircraft type="text" placeholder="A/C" matInput [formControl]="contingencyForm.controls['aircraft']" [matAutocomplete]="ac"
                             required>
                             <mat-error *ngIf="contingencyForm.controls['aircraft'].hasError('required') && contingencyForm.controls['aircraft'].touched">
-                                Aircraft is <strong>required</strong>
+                                {{'OPERATIONS.CONTINGENCY_FORM.AIRCRAFT_REQUIRED'|translate}}
                             </mat-error>
                             <mat-autocomplete #ac="matAutocomplete" (optionSelected)="onSelectAircraft(searchAircraft.value)">
                                 <mat-option *ngFor="let ac of filteredAircrafts | async" [value]="ac.tail">
@@ -40,7 +40,7 @@
                         <input matInput placeholder="Fleet" [formControl]="contingencyForm.controls['fleet']" [(ngModel)]="selectedAircraft.fleet"
                             name="fleet" required>
                             <mat-error *ngIf="contingencyForm.controls['fleet'].hasError('required') && contingencyForm.controls['fleet'].touched">
-                                Fleet is <strong>required</strong>
+                                {{'OPERATIONS.CONTINGENCY_FORM.FLEET_REQUIRED'|translate}}
                             </mat-error>
                     </mat-form-field>
 
@@ -48,7 +48,7 @@
                         <input matInput placeholder="Operator" [formControl]="contingencyForm.controls['operator']" [(ngModel)]="selectedAircraft.operator"
                             name="operator" required>
                             <mat-error *ngIf="contingencyForm.controls['operator'].hasError('required') && contingencyForm.controls['operator'].touched">
-                                Operator is <strong>required</strong>
+                                {{'OPERATIONS.CONTINGENCY_FORM.OPERATOR_REQUIRED'|translate}}
                             </mat-error>
                     </mat-form-field>
 
@@ -59,7 +59,7 @@
                         <input #searchFlight type="text" placeholder="Flight" matInput [formControl]="contingencyForm.controls['flight']" [matAutocomplete]="flight"
                             required>
                             <mat-error *ngIf="contingencyForm.controls['flight'].hasError('required') && contingencyForm.controls['flight'].touched">
-                                Flight is <strong>required</strong>
+                                {{'OPERATIONS.CONTINGENCY_FORM.FLIGHT_REQUIRED'|translate}}
                             </mat-error>
                             <mat-autocomplete #flight="matAutocomplete" (optionSelected)="onSelectFlight(searchFlight.value)">
                                 <mat-option *ngFor="let fl of filteredFlights | async" [value]="fl.flight">
@@ -88,7 +88,7 @@
                             <input matInput placeholder="Flight Time" [(ngModel)]="selectedFlight.time" [formControl]="contingencyForm.controls['time']"
                                 name="time" required> 
                                 <mat-error *ngIf="contingencyForm.controls['time'].hasError('required') && contingencyForm.controls['time'].touched">
-                                    Time is <strong>required</strong>
+                                    {{'OPERATIONS.CONTINGENCY_FORM.TIME_REQUIRED'|translate}}
                                 </mat-error>
                         </mat-form-field>
 
@@ -97,7 +97,7 @@
                             <input matInput [matDatepicker]="picker" placeholder="Flight Date" [(ngModel)]="selectedFlight.date" [formControl]="contingencyForm.controls['date']"
                                 name="date" required>
                                 <mat-error *ngIf="contingencyForm.controls['date'].hasError('required') && contingencyForm.controls['date'].touched">
-                                    Date is <strong>required</strong>
+                                    {{'OPERATIONS.CONTINGENCY_FORM.DATE_REQUIRED'|translate}}
                                 </mat-error>
                                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                                 <mat-datepicker #picker></mat-datepicker>
@@ -113,7 +113,7 @@
                             <mat-radio-button labelPosition="after" value="maintenance">Maintenance</mat-radio-button>
                         </mat-radio-group>
                         <mat-error *ngIf="contingencyForm.controls['informer'].hasError('required') && contingencyForm.controls['informer'].touched">
-                            Flight is <strong>required</strong>
+                            {{'OPERATIONS.CONTINGENCY_FORM.INFORMER_REQUIRED'|translate}}
                         </mat-error>
                     </div>
                     <div class="barcode-container" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
@@ -149,7 +149,7 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <span class="alert-warning">If the Contingency is due a Safety Event, please follow the Safety protocols of your Company</span>
+                    <span class="alert-warning">{{'OPERATIONS.CONTINGENCY_FORM.SAFETY_MESSAGE'|translate}}</span>
                 </div>
 
             </div>
@@ -183,7 +183,7 @@
                             <mat-radio-button labelPosition="after" value="etr" fxFlex="">ETR</mat-radio-button>
                         </mat-radio-group>
 
-                        <span fxFlexOffset="" fxLayoutAlign="center center" class="alert-warning">The ETR must be validated by the Maintenance Team</span>
+                        <span fxFlexOffset="" fxLayoutAlign="center center" class="alert-warning">{{'OPERATIONS.CONTINGENCY_FORM.TIPOLOGY_MESSAGE'|translate}}</span>
                     </div>
                 </div>
                 <div fxLayout="column" fxLayoutGap="15px">
@@ -214,7 +214,7 @@
 
     </div>
     <div mat-dialog-actions fxLayoutAlign="end">
-        <button mat-button (click)="onCancelClick()">CANCEL</button>
-        <button type="submit" mat-button mat-raised-button color="primary" [disabled]="!contingencyForm.valid">CREATE</button>
+        <button type="button" mat-button (click)="openCancelDialog()">{{'OPERATIONS.CONTINGENCY_FORM.CANCEL_LABEL'|translate}}</button>
+        <button type="submit" mat-button mat-raised-button color="primary" [disabled]="!contingencyForm.valid">{{'OPERATIONS.CONTINGENCY_FORM.CREATE_LABEL'|translate}}</button>
     </div>
 </form>
