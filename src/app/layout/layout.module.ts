@@ -7,7 +7,6 @@ import {LayoutComponent} from './layout.component';
 import {SidenavComponent} from './sidenav/sidenav.component';
 import {SidenavService} from './_services/sidenav.service';
 import {StorageService} from '../shared/_services/storage.service';
-import {UtcDatePipe} from '../shared/_pipes/utcDatePipe.pipe';
 import {DetailsModule} from '../details/details.module';
 import {RightnavComponent} from './rightnav/rightnav.component';
 import {DetailsService} from '../details/_services/details.service';
@@ -28,7 +27,6 @@ import {DetailsService} from '../details/_services/details.service';
         ToolbarComponent,
         LayoutComponent,
         SidenavComponent,
-        UtcDatePipe,
         RightnavComponent
     ],
     providers: [
