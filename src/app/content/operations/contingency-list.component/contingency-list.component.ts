@@ -31,7 +31,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         private dialogService: DialogService,
         translate: TranslateService
     ) {
-        this.getContingences();
+        //this.getContingences();
         this.getData();
         this.utcTime = 0;
         this.progressBarColor = 'primary';

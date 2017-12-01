@@ -214,7 +214,7 @@
 
     </div>
     <div mat-dialog-actions fxLayoutAlign="end">
-        <button type="button" mat-button (click)="openCancelDialog()">CANCEL</button>
-        <button type="submit" mat-button mat-raised-button color="primary" [disabled]="!contingencyForm.valid">CREATE</button>
+        <button type="button" mat-button (click)="openCancelDialog()">{{'OPERATIONS.CONTINGENCY_FORM.CANCEL_LABEL'|translate}}</button>
+        <button type="submit" mat-button mat-raised-button color="primary" [disabled]="!contingencyForm.valid">{{'OPERATIONS.CONTINGENCY_FORM.CREATE_LABEL'|translate}}</button>
     </div>
 </form>
