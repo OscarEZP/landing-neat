@@ -140,20 +140,3 @@ export class Contingency {
         this._username = value;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
