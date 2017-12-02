@@ -24,6 +24,8 @@ import { AircraftList } from '../_models/aircraft';
 import { FlightList } from '../_models/flight';
 import { ContingencyService } from '../_services/contingency.service';
 import { MessageService } from '../../../shared/_services/message.service';
+import { TranslateService } from '@ngx-translate/core';
+import { CancelComponent } from '../cancel/cancel.component';
 
 @Component({
     selector: 'lsl-contingency-form',
@@ -42,23 +44,23 @@ export class ContingencyFormComponent implements OnInit {
     public display: boolean;
     public time: Date;
     public contingency: Contingency;
-    
+
     selectedAircraft: AircraftList = new AircraftList();
     aircrafts: AircraftList[];
     filteredAircrafts: Observable<AircraftList[]>;
-    
+
     selectedFlight: FlightList = new FlightList();
     flights: FlightList[];
     filteredFlights: Observable<FlightList[]>;
-    
+
     departureArrival = [];
     private cancelMessage: string;
-    
+
     protected safety: string;
     protected contingencyType: string;
-    
+
     private apiUrl = environment.apiUrl + environment.paths.contingencyList;
-    
+
     constructor(private dialogRef: MatDialogRef<ContingencyFormComponent>,
                 private contingencyService: ContingencyService,
                 private fb: FormBuilder,
@@ -97,22 +99,22 @@ export class ContingencyFormComponent implements OnInit {
             'duration': [null]
         });
     }
-    
+
     aircraftOptions: AircraftList[] = [
         {tail: 'CC-BAA', fleet: 'A320', operator: 'CL'},
         {tail: 'AA-CBB', fleet: 'B320', operator: 'PE'},
         {tail: 'AA-CCB', fleet: 'C320', operator: 'BR'}
     ];
-    
+
     flightsOptions: FlightList[] = [
         {flightNumber: 'LA238', origin: 'ZCO', destination: 'SCL', tm: '22:59:59', dt: '2017-10-25'},
         {flightNumber: 'AL238', origin: 'SCL', destination: 'LIM', tm: '18:59:45', dt: '2017-09-15'},
         {flightNumber: 'LA538', origin: 'LIM', destination: 'ZCO', tm: '14:25:45', dt: '2017-08-30'}
     ];
-    
+
     ngOnInit() {
         this._messageUTCSubscription = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
-        
+
         TimerObservable.create(0, this.interval)
                        .takeWhile(() => this.alive)
                        .subscribe(() => {
@@ -123,32 +125,32 @@ export class ContingencyFormComponent implements OnInit {
                                    this.currentDateString = this.data.currentTime;
                                    this.newMessage();
                                    this.clockService.setClock(this.currentUTCTime);
-                                   if(!this.display) {
+                                   if (!this.display) {
                                        this.display = true;
                                    }
                                });
                        });
-        
+
         this.clockService.getClock().subscribe(time => this.time = time);
-        
+
         this.filteredAircrafts = this.contingencyForm.controls['tail'].valueChanges
                                                                       .startWith('')
                                                                       .map(val => this.filterAircrafts(val));
-        
+
         this.filteredFlights = this.contingencyForm.controls['flightNumber'].valueChanges
                                                                             .startWith('')
                                                                             .map(val => this.filterFlights(val));
-        
+
     }
-    
+
     submitForm(value: any) {
-        
-        if(this.contingencyForm.valid) {
-            
+
+        if (this.contingencyForm.valid) {
+
             this.datetimeService.getTime().subscribe(current => {
                 this.currentUTCTime = current.currentTimeLong;
                 this.currentDateString = current.currentTime;
-                
+
                 this.contingency = new Contingency(
                     null,
                     new Aircraft(
@@ -193,7 +195,7 @@ export class ContingencyFormComponent implements OnInit {
                     'type',
                     'username acá'
                 );
-                
+
                 return new Promise((resolve, reject) => {
                     this.http
                         .post(this.apiUrl, JSON.stringify(this.contingency).replace(/_/g, ''))
@@ -209,10 +211,10 @@ export class ContingencyFormComponent implements OnInit {
                         });
                 });
             });
-            
+
         }
     }
-    
+
     private createEpochFromTwoStrings(dt: string, tm: string) {
         return Date.parse(dt + ' ' + tm);
     }
@@ -240,16 +242,16 @@ export class ContingencyFormComponent implements OnInit {
                                                                               .map(val => this.filterAircrafts(val));
             });
     }
-    
+
     filterAircrafts(val: string): AircraftList[] {
         return this.aircraftOptions.filter(option =>
             option.tail.toLowerCase().indexOf(val.toLowerCase()) === 0);
     }
-    
+
     onSelectAircraft(selectedOption: string): void {
         this.selectedAircraft = this.aircraftOptions.filter(ac => ac.tail === selectedOption)[0];
     }
-    
+
     getFlights(): void {
         this.contingencyService.getFlights()
             .subscribe(flights => {
@@ -259,24 +261,24 @@ export class ContingencyFormComponent implements OnInit {
                                                                                     .map(val => this.filterFlights(val));
             });
     }
-    
+
     filterFlights(val: string): FlightList[] {
         return this.flightsOptions.filter(option =>
             option.flightNumber.toLowerCase().indexOf(val.toLowerCase()) === 0);
     }
-    
+
     onSelectFlight(selectedOption: string): void {
         this.departureArrival = [];
         this.selectedFlight = this.flightsOptions.filter(fl => fl.flightNumber === selectedOption)[0];
         this.departureArrival.push(this.selectedFlight.origin);
         this.departureArrival.push(this.selectedFlight.destination);
-        
+
     }
-    
+
     onCancelClick(): void {
         this.dialogRef.close();
     }
-    
+
     newMessage() {
         this.messageData.changeTimeUTCMessage(this.currentUTCTime);
     }

@@ -32,7 +32,7 @@
         <div class="block-s"><span class="badge">{{ contingency.safetyEvent.code }}</span></div>
         <div class="block-m"><mat-progress-bar mode="determinate" [value]="getTimeAverage(contingency.creationDate.epochTime, contingency.status.requestedInterval.duration, false, 0)" [color]="getTimeAverage(contingency.creationDate.epochTime, contingency.status.requestedInterval.duration, true, 600000) ? 'warn' : 'primary'" class="mat-progress-bar"  ></mat-progress-bar></div>
         <div class="block-m"><mat-icon class="mat-icon-adj" [color]="getTimeAverage(contingency.creationDate.epochTime, contingency.status.requestedInterval.duration, true, 300000) ? 'warn' : 'primary'">timer</mat-icon> <lsl-countdown [creationTime]="contingency.creationDate.epochTime" [duration]="contingency.status.requestedInterval.duration" [threshold]="5"></lsl-countdown></div>
-        <div class="block-s"><mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username }} {{ contingency.id }}</div>
+        <div class="block-s"><mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username }}</div>
         <div class="block-xs block-last">
             <button mat-icon-button>
                 <mat-icon aria-label="options">more_vert</mat-icon>

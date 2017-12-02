@@ -138,7 +138,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                         ),
                         data[i].status.requestedInterval.duration
                     ),
-                    data[i].status.userName
+                    data[i].status.username
                 ),
                 data[i].type,
                 data[i].username
@@ -151,7 +151,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         let average: number;
         const valueNumber = (creationDate + (duration * 60 * 1000)) - actualTime;
         let warning = false;
-        
+
         if (valueNumber > 0) {
             if (valueNumber <= limit) {
                 warning = true;
