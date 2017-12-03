@@ -35,9 +35,9 @@ build:
     - cd $SHIPPABLE_BUILD_DIR
     - shippable_retry npm install --quiet
 
-    #Run the build
+    #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR
-    - npm run ng build
+    - npm run ng build --env=staging
 
     #Run the test
     #- npm run ng test
