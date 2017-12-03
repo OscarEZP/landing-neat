@@ -10,6 +10,7 @@ import {ContingencyService} from './_services/contingency.service';
 import {LogService} from './_services/log.service';
 import {ClockService} from '../../shared/_services/clock.service';
 import {CancelComponent} from './cancel/cancel.component';
+import { CloseComponent } from './close/close.component';
 
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import {CancelComponent} from './cancel/cancel.component';
         OperationsComponent,
         ContingencyListComponent,
         ContingencyFormComponent,
-        CancelComponent
+        CancelComponent,
+        CloseComponent
     ],
     exports: [],
     providers: [

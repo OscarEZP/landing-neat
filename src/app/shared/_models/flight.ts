@@ -7,44 +7,42 @@ export class Flight {
     private _destination: string;
     private _etd: TimeInstant;
 
-
-    constructor (flightNumber: string, origin: string, destination: string, etd: TimeInstant) {
+    constructor(flightNumber: string, origin: string, destination: string, etd: TimeInstant) {
         this._flightNumber = flightNumber;
         this._origin = origin;
         this._destination = destination;
         this._etd = etd;
     }
 
-
-    get flightNumber (): string {
+    get flightNumber(): string {
         return this._flightNumber;
     }
 
-    set flightNumber (value: string) {
+    set flightNumber(value: string) {
         this._flightNumber = value;
     }
 
-    get origin (): string {
+    get origin(): string {
         return this._origin;
     }
 
-    set origin (value: string) {
+    set origin(value: string) {
         this._origin = value;
     }
 
-    get destination (): string {
+    get destination(): string {
         return this._destination;
     }
 
-    set destination (value: string) {
+    set destination(value: string) {
         this._destination = value;
     }
 
-    get etd (): TimeInstant {
+    get etd(): TimeInstant {
         return this._etd;
     }
 
-    set etd (value: TimeInstant) {
+    set etd(value: TimeInstant) {
         this._etd = value;
     }
 }

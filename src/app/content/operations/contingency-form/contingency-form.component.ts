@@ -2,29 +2,27 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Http } from '@angular/http';
 import { MatDialogRef } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
-import { Observable } from 'rxjs/Observable';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Subscription } from 'rxjs/Subscription';
 import { environment } from '../../../../../environments/environment';
 import { ActualTimeModel } from '../../../shared/_models/actual-time-model';
 import { Aircraft } from '../../../shared/_models/aircraft';
 import { Contingency } from '../../../shared/_models/contingency';
-import { TimeInstant } from '../../../shared/_models/timeInstant';
 import { Flight } from '../../../shared/_models/flight';
+import { FlightConfiguration } from '../../../shared/_models/flightConfiguration';
 import { Interval } from '../../../shared/_models/interval';
+import { Legs } from '../../../shared/_models/legs';
 import { Safety } from '../../../shared/_models/safety';
 import { Status } from '../../../shared/_models/status';
+import { TimeInstant } from '../../../shared/_models/timeInstant';
 import { ClockService } from '../../../shared/_services/clock.service';
 import { DataService } from '../../../shared/_services/data.service';
 import { DatetimeService } from '../../../shared/_services/datetime.service';
-
-import { AircraftList } from '../_models/aircraft';
-import { FlightList } from '../_models/flight';
-import { ContingencyService } from '../_services/contingency.service';
 import { MessageService } from '../../../shared/_services/message.service';
-import { TranslateService } from '@ngx-translate/core';
+import { ContingencyService } from '../_services/contingency.service';
 import { CancelComponent } from '../cancel/cancel.component';
 
 @Component({
@@ -44,22 +42,25 @@ export class ContingencyFormComponent implements OnInit {
     public display: boolean;
     public time: Date;
     public contingency: Contingency;
+    public safetyEventList: Safety[];
+    public aircraftList: Aircraft[];
+    public flightList = [{'flightNumber' : null, 'etd' : null, 'legs' : null}];
+    public aircraftTempModel: Aircraft;
+    public flightTempModel = [{ 'origin' : null, 'destination' : null}];
+    public timeModel: string;
+    public dateModel: Date;
+    public origin: string;
+    public destination: string;
 
-    selectedAircraft: AircraftList = new AircraftList();
-    aircrafts: AircraftList[];
-    filteredAircrafts: Observable<AircraftList[]>;
-
-    selectedFlight: FlightList = new FlightList();
-    flights: FlightList[];
-    filteredFlights: Observable<FlightList[]>;
-
-    departureArrival = [];
     private cancelMessage: string;
 
     protected safety: string;
     protected contingencyType: string;
 
-    private apiUrl = environment.apiUrl + environment.paths.contingencyList;
+    private apiContingency = environment.apiUrl + environment.paths.contingencyList;
+    private apiSafetyEvents = environment.apiUrl + environment.paths.safetyEvent;
+    private apiAircrafts = environment.apiUrl + environment.paths.aircrafts;
+    private apiFlights = environment.apiUrl + environment.paths.flights;
 
     constructor(private dialogRef: MatDialogRef<ContingencyFormComponent>,
                 private contingencyService: ContingencyService,
@@ -77,6 +78,9 @@ export class ContingencyFormComponent implements OnInit {
         this.currentDateString = '';
         this.cancelMessage = '';
         this.translate.setDefaultLang('en');
+        this.safetyEventList = [];
+        this.aircraftList = [];
+        this.aircraftTempModel = new Aircraft(null, null, null);
 
         this.contingencyForm = fb.group({
             'tail': [null, Validators.required],
@@ -100,18 +104,6 @@ export class ContingencyFormComponent implements OnInit {
         });
     }
 
-    aircraftOptions: AircraftList[] = [
-        {tail: 'CC-BAA', fleet: 'A320', operator: 'CL'},
-        {tail: 'AA-CBB', fleet: 'B320', operator: 'PE'},
-        {tail: 'AA-CCB', fleet: 'C320', operator: 'BR'}
-    ];
-
-    flightsOptions: FlightList[] = [
-        {flightNumber: 'LA238', origin: 'ZCO', destination: 'SCL', tm: '22:59:59', dt: '2017-10-25'},
-        {flightNumber: 'AL238', origin: 'SCL', destination: 'LIM', tm: '18:59:45', dt: '2017-09-15'},
-        {flightNumber: 'LA538', origin: 'LIM', destination: 'ZCO', tm: '14:25:45', dt: '2017-08-30'}
-    ];
-
     ngOnInit() {
         this._messageUTCSubscription = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
 
@@ -133,90 +125,155 @@ export class ContingencyFormComponent implements OnInit {
 
         this.clockService.getClock().subscribe(time => this.time = time);
 
-        this.filteredAircrafts = this.contingencyForm.controls['tail'].valueChanges
-                                                                      .startWith('')
-                                                                      .map(val => this.filterAircrafts(val));
-
-        this.filteredFlights = this.contingencyForm.controls['flightNumber'].valueChanges
-                                                                            .startWith('')
-                                                                            .map(val => this.filterFlights(val));
+        this.retrieveSafetyEventsConfiguration();
+        this.retrieveAircraftsConfiguration();
+        this.retrieveFlightsConfiguration();
 
     }
 
-    submitForm(value: any) {
+    public submitForm(value: any) {
 
         if (this.contingencyForm.valid) {
 
-            this.datetimeService.getTime().subscribe(current => {
-                this.currentUTCTime = current.currentTimeLong;
-                this.currentDateString = current.currentTime;
-
-                this.contingency = new Contingency(
-                    null,
-                    new Aircraft(
-                        value.tail,
-                        value.fleet,
-                        value.operator
-                    ),
-                    value.barcode,
-                    null,
-                    value.failure,
-                    new Flight(
-                        value.flightNumber,
-                        value.origin,
-                        value.destination,
-                        new TimeInstant(
-                            this.createEpochFromTwoStrings(value.dt, value.tm),
-                            null
-                        )
-                    ),
-                    value.informer,
-                    value.isBackup,
-                    'fake reason, we need to implement in front',
-                    new Safety(
-                        value.safetyEventCode,
+            this.contingency = new Contingency(
+                null,
+                new Aircraft(
+                    value.tail,
+                    value.fleet,
+                    value.operator
+                ),
+                value.barcode,
+                null,
+                value.failure,
+                new Flight(
+                    value.flightNumber,
+                    value.origin,
+                    value.destination,
+                    new TimeInstant(
+                        this.createEpochFromTwoStrings(this.dateModel, this.timeModel),
                         null
-                    ),
-                    new Status(
-                        value.statusCode,
-                        null,
-                        null,
-                        value.observation,
-                        null,
-                        new Interval(
-                            new TimeInstant(
-                                this.currentUTCTime,
-                                null
-                            ),
-                            value.duration
+                    )
+                ),
+                value.informer,
+                value.isBackup,
+                'fake reason, we need to implement in front',
+                new Safety(
+                    value.safetyEventCode,
+                    null
+                ),
+                new Status(
+                    value.statusCode,
+                    null,
+                    null,
+                    value.observation,
+                    null,
+                    new Interval(
+                        new TimeInstant(
+                            null,
+                            null
                         ),
-                        'here goes creator'
+                        value.duration
                     ),
-                    'type',
-                    'username acá'
-                );
+                    'here goes creator'
+                ),
+                'type',
+                'username acá'
+            );
 
-                return new Promise((resolve, reject) => {
-                    this.http
-                        .post(this.apiUrl, JSON.stringify(this.contingency).replace(/_/g, ''))
-                        .toPromise()
-                        .then(rs => {
-                            this.messageService.openSnackBar(rs.json());
-                            this.dialogRef.close();
-                            this.messageData.stringMessage('reload');
-                            resolve();
-                        }, reason => {
-                            this.messageService.openSnackBar(reason);
-                            reject(reason);
-                        });
-                });
+            return new Promise((resolve, reject) => {
+
+                this.http
+                    .post(this.apiContingency, JSON.stringify(this.contingency).replace(/_/g, ''))
+                    .toPromise()
+                    .then(rs => {
+                        this.messageService.openSnackBar(rs.json());
+                        this.dialogRef.close();
+                        this.messageData.stringMessage('reload');
+                        resolve();
+                    }, reason => {
+                        this.messageService.openSnackBar(reason);
+                        reject(reason);
+                    });
             });
 
         }
     }
 
-    private createEpochFromTwoStrings(dt: string, tm: string) {
-        return Date.parse(dt + ' ' + tm);
+    private createEpochFromTwoStrings(dt: Date, tm: string) {
+        const timeStr = tm.split(':');
+        return Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), parseInt(timeStr[0], 10), parseInt(timeStr[1], 10), parseInt(timeStr[2], 10));
+    }
+
+    private retrieveSafetyEventsConfiguration() {
+        return new Promise((resolve, reject) => {
+            this.http
+                .get(this.apiSafetyEvents)
+                .toPromise()
+                .then(data => {
+                    const jsonData = data.json();
+                    for (let i = 0; i < jsonData.length; i++) {
+                        this.safetyEventList[i] = new Safety(jsonData[i].code, jsonData[i].description);
+                    }
+                    resolve();
+                }, reason => {
+                    this.messageService.openSnackBar(reason);
+                    reject(reason);
+                });
+        });
+    }
+
+    private retrieveAircraftsConfiguration() {
+        return new Promise((resolve, reject) => {
+            this.http
+                .get(this.apiAircrafts)
+                .toPromise()
+                .then(data => {
+                    const jsonData = data.json();
+                    for (let i = 0; i < jsonData.length; i++) {
+                        this.aircraftList[i] = new Aircraft(jsonData[i].tail, jsonData[i].fleet, jsonData[i].operator);
+                    }
+                    resolve();
+                }, reason => {
+                    this.messageService.openSnackBar(reason);
+                    reject(reason);
+                });
+        });
+    }
+
+    private retrieveFlightsConfiguration() {
+        return new Promise((resolve, reject) => {
+            this.http
+                .get(this.apiFlights)
+                .toPromise()
+                .then(data => {
+                    this.flightList.pop();
+                    const jsonData = data.json();
+                    for (let i = 0; i < jsonData.length; i++) {
+                        const legList = [];
+                        for (let j = 0; j < jsonData[i].legs.length; j++) {
+                            const legItem = new Legs(
+                                    jsonData[i].legs[j].origin,
+                                    jsonData[i].legs[j].destination,
+                                    new TimeInstant(
+                                        jsonData[i].legs[j].updateDate.epochTime,
+                                        jsonData[i].legs[j].updateDate.label
+                                    )
+                                );
+                            legList.push(legItem);
+                        }
+
+                        const flightConfig = new FlightConfiguration(
+                            jsonData[i].flightNumber,
+                            legList,
+                            new TimeInstant(jsonData[i].etd.epochTime, jsonData[i].etd.label));
+                        this.flightList.push(flightConfig);
+                    }
+                    resolve();
+                }, reason => {
+                    this.messageService.openSnackBar(reason);
+                    reject(reason);
+                });
+        });
     }
 
     translateMessageCancel() {
@@ -233,46 +290,28 @@ export class ContingencyFormComponent implements OnInit {
         });
     }
 
-    getAircrafts(): void {
-        this.contingencyService.getAircrafts()
-            .subscribe(aircrafts => {
-                this.aircrafts = aircrafts;
-                this.filteredAircrafts = this.contingencyForm.controls['tail'].valueChanges
-                                                                              .startWith('')
-                                                                              .map(val => this.filterAircrafts(val));
-            });
+    public onSelectAircraft(selectedOption: string): void {
+
+        for (const item of this.aircraftList) {
+            if (item.tail === selectedOption) {
+                this.aircraftTempModel = new Aircraft(item.tail, item.fleet, item.operator);
+            }
+        }
     }
 
-    filterAircrafts(val: string): AircraftList[] {
-        return this.aircraftOptions.filter(option =>
-            option.tail.toLowerCase().indexOf(val.toLowerCase()) === 0);
-    }
+    public onSelectFlight(selectedOption: string): void {
 
-    onSelectAircraft(selectedOption: string): void {
-        this.selectedAircraft = this.aircraftOptions.filter(ac => ac.tail === selectedOption)[0];
-    }
-
-    getFlights(): void {
-        this.contingencyService.getFlights()
-            .subscribe(flights => {
-                this.flights = flights;
-                this.filteredFlights = this.contingencyForm.controls['flightNumber'].valueChanges
-                                                                                    .startWith('')
-                                                                                    .map(val => this.filterFlights(val));
-            });
-    }
-
-    filterFlights(val: string): FlightList[] {
-        return this.flightsOptions.filter(option =>
-            option.flightNumber.toLowerCase().indexOf(val.toLowerCase()) === 0);
-    }
-
-    onSelectFlight(selectedOption: string): void {
-        this.departureArrival = [];
-        this.selectedFlight = this.flightsOptions.filter(fl => fl.flightNumber === selectedOption)[0];
-        this.departureArrival.push(this.selectedFlight.origin);
-        this.departureArrival.push(this.selectedFlight.destination);
-
+        for (const item of this.flightList) {
+            if (item.flightNumber === selectedOption) {
+                const newDate = new Date(item.etd.label)
+                this.timeModel = newDate.getHours() + ':' + newDate.getMinutes() + ':' + newDate.getSeconds();
+                this.dateModel = newDate;
+                this.flightTempModel.pop();
+                for (let i = 0; i < item.legs.length; i++) {
+                    this.flightTempModel.push({'origin' : item.legs[i].origin, 'destination' : item.legs[i].destination});
+                }
+            }
+        }
     }
 
     onCancelClick(): void {

@@ -11,9 +11,11 @@ import { Safety } from '../../../shared/_models/safety';
 import { Status } from '../../../shared/_models/status';
 import { TimeInstant } from '../../../shared/_models/timeInstant';
 import { DataService } from '../../../shared/_services/data.service';
+import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
 import { ContingencyFormComponent } from '../contingency-form/contingency-form.component';
-import { MessageService } from '../../../shared/_services/message.service';
+import { MatDialog } from '@angular/material';
+import { CloseComponent } from '../close/close.component';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -149,19 +151,24 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public getTimeAverage(creationDate: any, duration: any, remain: boolean, limit: number) {
         const actualTime = this.currentUTCTime;
         let average: number;
-        const valueNumber = (creationDate + (duration * 60 * 1000)) - actualTime;
+        const valueNumber = (creationDate + duration * 60000) - actualTime;
         let warning = false;
 
         if (valueNumber > 0) {
             if (valueNumber <= limit) {
                 warning = true;
             }
-            average = 100 - Math.round(((valueNumber * 100) / (duration * 60 * 1000)));
+            const minutesConsumed = (valueNumber / 1000) / 60;
+            average = Math.round((minutesConsumed * 100) / duration);
         } else {
             warning = true;
             average = 100;
         }
 
         return remain ? warning : average;
+    }
+
+    public closeContingency(): void {
+        this.dialogService.openCloseContingencyDialog(CloseComponent);
     }
 }
