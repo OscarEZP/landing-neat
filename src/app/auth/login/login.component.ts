@@ -1,12 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService} from '../_services/auth.service';
-import {ErrorStateMatcher} from '@angular/material/core';
-import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
-import {MessageService} from '../../shared/_services/message.service';
-import {StorageService} from '../../shared/_services/storage.service';
-import {Subscription} from 'rxjs/Subscription';
-import {DataService} from '../../shared/_services/data.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MessageService } from '../../shared/_services/message.service';
+import { StorageService } from '../../shared/_services/storage.service';
+import { AuthService } from '../_services/auth.service';
 
 
 @Component({
@@ -27,31 +25,28 @@ export class LoginComponent implements OnInit {
     registerView: boolean;
     routeData: any;
 
-    private _messageDataSubscription: Subscription;
-
     public loading: boolean;
     public mode: string;
     public value: number;
     public disableButton: boolean;
+    public hide: boolean;
 
     loginForm: FormGroup;
 
     constructor(
-        private authService: AuthService,
+        protected authService: AuthService,
         private storageService: StorageService,
         private router: Router,
         private route: ActivatedRoute,
         private fb: FormBuilder,
-        private  messageService: MessageService,
-        private messageData: DataService) {
-        this.registerView = false;
-        this.loading = true;
-        this.disableButton = false;
-        this.mode = 'determinate';
-        this.value = 100;
+        private  messageService: MessageService) {
     }
 
     ngOnInit() {
+        this.registerView = false;
+        this.disableButton = false;
+        this.activateLoadingBar(false);
+
         this.authService.reset();
         this.loginForm = this.fb.group({
             'usernameFormControl': this.usernameFormControl,
@@ -66,12 +61,10 @@ export class LoginComponent implements OnInit {
                 this.router.navigate([this.authService.getRedirectUrl()]);
             }
         });
-
-        this._messageDataSubscription = this.messageData.currentStringMessage.subscribe(message => this.activateLoadingBar(message));
     }
 
     logIn(form: NgForm) {
-        this.messageData.activateLoadingBar('open');
+        this.activateLoadingBar(true);
 
         if (form.valid && !this.disableButton) {
             this.disableButton = true;
@@ -79,18 +72,18 @@ export class LoginComponent implements OnInit {
             this.authService.logIn(data.username, data.password).then(value => {
                 this.storageService.addCurrentUser(value);
                 this.router.navigate([this.authService.getRedirectUrl()]);
-                this.messageData.activateLoadingBar('close');
+                this.activateLoadingBar(false);
                 this.disableButton = false;
             }).catch(reason => {
                 this.messageService.openSnackBar(reason);
-                this.messageData.activateLoadingBar('close');
+                this.activateLoadingBar(false);
                 this.disableButton = false;
             });
 
         }
     }
-    activateLoadingBar(message: string) {
-        if (message === 'open') {
+    activateLoadingBar(show: boolean) {
+        if (show) {
             this.loading = true;
             this.mode = 'indeterminate';
             this.value = 20;

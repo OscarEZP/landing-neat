@@ -10,7 +10,7 @@ export class RecoverPasswordService {
 
     private redirectUrl: string;
     private recoverUrl: string;
-    public data: {password: string, confirmPassword: string, verificationCode: string, destination: string };
+    public data: {username: string, password: string, confirmPassword: string, verificationCode: string, destination: string };
 
     constructor(private http: Http) {
         this.redirectUrl = '/login';
@@ -28,7 +28,7 @@ export class RecoverPasswordService {
     }
 
     reset() {
-        this.data = {password: '', confirmPassword: '', verificationCode: '', destination: ''};
+        this.data = {username: '', password: '', confirmPassword: '', verificationCode: '', destination: ''};
     }
 
     getData() {

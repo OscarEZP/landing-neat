@@ -1,8 +1,8 @@
-export class Flight {
-    flight: string;
-    departure: string;
-    arrival: string;
-    time: string;
-    date: string;
+export class FlightList {
+    flightNumber: string;
+    origin: string;
+    destination: string;
+    tm: string;
+    dt: string;
     constructor() { }
 }
