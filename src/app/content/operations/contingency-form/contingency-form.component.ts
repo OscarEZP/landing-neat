@@ -22,6 +22,7 @@ import { ClockService } from '../../../shared/_services/clock.service';
 import { DataService } from '../../../shared/_services/data.service';
 import { DatetimeService } from '../../../shared/_services/datetime.service';
 import { MessageService } from '../../../shared/_services/message.service';
+import { StorageService } from '../../../shared/_services/storage.service';
 import { ContingencyService } from '../_services/contingency.service';
 import { CancelComponent } from '../cancel/cancel.component';
 
@@ -70,7 +71,8 @@ export class ContingencyFormComponent implements OnInit {
                 private messageData: DataService,
                 private http: Http,
                 private messageService: MessageService,
-                public translate: TranslateService) {
+                public translate: TranslateService,
+                private storageService: StorageService) {
         this.display = true;
         this.alive = true;
         this.interval = 60000;
@@ -132,71 +134,68 @@ export class ContingencyFormComponent implements OnInit {
     }
 
     public submitForm(value: any) {
+        const user = this.storageService.getCurrentUser();
 
-        if (this.contingencyForm.valid) {
-
-            this.contingency = new Contingency(
-                null,
-                new Aircraft(
-                    value.tail,
-                    value.fleet,
-                    value.operator
-                ),
-                value.barcode,
-                null,
-                value.failure,
-                new Flight(
-                    value.flightNumber,
-                    value.origin,
-                    value.destination,
-                    new TimeInstant(
-                        this.createEpochFromTwoStrings(this.dateModel, this.timeModel),
-                        null
-                    )
-                ),
-                value.informer,
-                value.isBackup,
-                'fake reason, we need to implement in front',
-                new Safety(
-                    value.safetyEventCode,
+        this.contingency = new Contingency(
+            null,
+            new Aircraft(
+                value.tail,
+                value.fleet,
+                value.operator
+            ),
+            value.barcode,
+            null,
+            value.failure,
+            new Flight(
+                value.flightNumber,
+                value.origin,
+                value.destination,
+                new TimeInstant(
+                    this.createEpochFromTwoStrings(this.dateModel, this.timeModel),
                     null
-                ),
-                new Status(
-                    value.statusCode,
-                    null,
-                    null,
-                    value.observation,
-                    null,
-                    new Interval(
-                        new TimeInstant(
-                            null,
-                            null
-                        ),
-                        value.duration
+                )
+            ),
+            value.informer,
+            value.isBackup,
+            'fake reason, we need to implement in front',
+            new Safety(
+                value.safetyEventCode,
+                null
+            ),
+            new Status(
+                value.statusCode,
+                null,
+                null,
+                value.observation,
+                null,
+                new Interval(
+                    new TimeInstant(
+                        null,
+                        null
                     ),
-                    'here goes creator'
+                    value.duration
                 ),
-                'type',
-                'username acá'
-            );
+                user.userId
+            ),
+            'type',
+            user.userId
+        );
 
-            return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
 
-                this.http
-                    .post(this.apiContingency, JSON.stringify(this.contingency).replace(/_/g, ''))
-                    .toPromise()
-                    .then(rs => {
-                        this.messageService.openSnackBar(rs.json());
-                        this.dialogRef.close();
-                        this.messageData.stringMessage('reload');
-                        resolve();
-                    }, reason => {
-                        this.messageService.openSnackBar(reason);
-                        reject(reason);
-                    });
-            });
-
-        }
+            this.http
+                .post(this.apiContingency, JSON.stringify(this.contingency).replace(/_/g, ''))
+                .toPromise()
+                .then(rs => {
+                    this.messageService.openSnackBar(rs.json());
+                    this.dialogRef.close();
+                    this.messageData.stringMessage('reload');
+                    resolve();
+                }, reason => {
+                    this.messageService.openSnackBar(reason);
+                    reject(reason);
+                });
+        });
     }
 
     private createEpochFromTwoStrings(dt: Date, tm: string) {
