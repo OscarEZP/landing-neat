@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'lsl-follow-up',
-  templateUrl: './follow-up.component.html',
-  styleUrls: ['./follow-up.component.css']
+    selector: 'lsl-follow-up',
+    templateUrl: './follow-up.component.html',
+    styleUrls: ['./follow-up.component.css']
 })
 export class FollowUpComponent implements OnInit {
 
-  constructor() { }
+    constructor() {
+    }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
+
+    bla(event){
+        console.log(event);
+    }
 
 }

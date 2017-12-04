@@ -21,7 +21,8 @@ import {DetailsService} from '../details/_services/details.service';
     ],
     exports: [
         ToolbarComponent,
-        SidenavComponent
+        SidenavComponent,
+        RightnavComponent
     ],
     declarations: [
         ToolbarComponent,

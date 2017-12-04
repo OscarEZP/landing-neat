@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 
 @Component({
   selector: 'lsl-timeline',
   templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.css']
+  styleUrls: ['./timeline.component.css'],
 })
 export class TimelineComponent implements OnInit {
 
@@ -11,5 +11,8 @@ export class TimelineComponent implements OnInit {
 
   ngOnInit() {
   }
+
+
+
 
 }

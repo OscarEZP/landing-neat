@@ -3,10 +3,12 @@ import { MaterialModule } from './modules/material.module';
 import { CountdownComponent } from './components/countdown.component/countdown.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { PipesModule } from './_pipes/pipes.module';
+import { ScrollTriggerDirective } from './directives/scroll-trigger.directive';
 
 @NgModule({
     declarations: [
         CountdownComponent,
+        ScrollTriggerDirective,
     ],
     imports: [
         MaterialModule,
@@ -17,7 +19,8 @@ import { PipesModule } from './_pipes/pipes.module';
         MaterialModule,
         PipesModule,
         CountdownComponent,
-        TranslateModule
+        TranslateModule,
+        ScrollTriggerDirective
     ],
     providers: [
 

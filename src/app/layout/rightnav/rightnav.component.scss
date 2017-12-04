@@ -10,4 +10,15 @@
     width: $nav-details-width;
     height: 100%;
     color: mat-color($foreground, 'icon');
+    box-shadow: $box-shadow;
+
+    .mat-icon-button{
+        border-radius: 0;
+        width: 100%;
+    }
+
+    .mat-icon-button.active{
+        background-color: mat-color($primary);
+        color: mat-color($primary, 'default-contrast');
+    }
 }

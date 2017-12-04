@@ -14,6 +14,8 @@ $details-padd: 20px;
 #details{
     width: $details-with;
     overflow: hidden;
+    box-shadow: $box-shadow;
+    font-size: $details-base-font-size;
 
     .mat-icon.success{
         color: mat-color($custom, 'success');
@@ -49,7 +51,6 @@ $details-padd: 20px;
         display: inline-block;
         width: 100%;
         box-sizing: border-box;
-        padding: $details-padd 0;
 
         /deep/
         h2{
@@ -103,6 +104,7 @@ $details-padd: 20px;
 
             .description{
                 color: mat-color($foreground, 'secondary-text');
+                line-height: 18px;
             }
         }
 
@@ -120,7 +122,9 @@ $details-padd: 20px;
         /deep/
         > * {
             > section {
-                min-height: 800px;
+                min-height: 600px;
+                margin: 25px 0;
+
                 section {
                     padding: 0 $details-padd;
                 }
@@ -128,5 +132,38 @@ $details-padd: 20px;
         }
     }
 
+    .button-cancel{
+        color: mat-color($foreground, 'secondary-text');
+    }
 
+    .mat-raised-button{
+        margin-left: 5px;
+    }
+
+    span.tag {
+        background-color: mat-color($foreground, 'icon');
+        margin: 0 10px 0 0;
+        padding: 3px 10px;
+        color: mat-color($primary, 'default-contrast');
+        font-size: 11px;
+        font-weight: bold;
+        border-radius: 2px;
+        display: inline-block;
+    }
+    span.tag.etr{
+        background-color: mat-color($primary);
+    }
+    .load-more{
+        text-transform: uppercase;
+        a, a:active, a:hover, a:focus {
+            color: mat-color($primary);
+        }
+    }
+    .mat-input-container{
+        margin: 10px 0;
+        font-size: 13px;
+    }
+    .mat-form-field-infix{
+        width: 100%;
+    }
 }

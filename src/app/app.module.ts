@@ -10,6 +10,7 @@ import { ContentModule } from './content/content.module';
 import { LayoutModule } from './layout/layout.module';
 import { AppRoutingModule } from './app-routing.module';
 import { DetailsModule } from './details/details.module';
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 
 // Components
 import { AppComponent } from './app.component';
@@ -36,13 +37,14 @@ export function HttpLoaderFactory(http: HttpClient) {
         AppRoutingModule,
         HttpClientModule,
         DetailsModule,
+        ScrollToModule.forRoot(),
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
                 useFactory: HttpLoaderFactory,
                 deps: [HttpClient]
             }
-        })
+        }),
     ],
     declarations: [
         AppComponent
@@ -54,7 +56,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     schemas: [
 
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [ AppComponent ]
 })
 
 export class AppModule { }
