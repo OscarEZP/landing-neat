@@ -37,7 +37,7 @@ build:
 
     #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR
-    - npm run ng build --env=staging
+    - npm run ng build
 
     #Run the test
     #- npm run ng test
