@@ -1,0 +1,26 @@
+<ol>
+    <li>
+        <mat-form-field>
+            <div mat-dialog-title="Close Contingency"></div>
+            <hr>
+            <div>Contingency Info</div>
+            <div flex="33">A/C:</div>
+            <div flex="33">Operator:</div>
+            <div flex="33">Flight:</div>
+            <div flex="20">Description:</div>
+            <div flex="80">texto</div>
+            <hr >
+            <div>Closure Info</div>
+            <div flex="20">Closure Type:</div>
+            <div flex="80">radios</div>
+            <hr>
+            <div>Observations</div>
+            <div>Comments</div>
+            <hr >
+            <div fxLayoutAlign="end">
+                <button mat-button  (click)="closeCancelDialog()">{{'OPERATIONS.CANCEL_COMPONENT.NO_BUTTON_LABEL'|translate}}</button>
+                <button mat-button mat-raised-button color="warn" (click)="closeContingencyForm()">{{'OPERATIONS.CANCEL_COMPONENT.YES_BUTTON_LABEL'|translate}}</button>
+            </div>
+        </mat-form-field>
+    </li>
+</ol>

@@ -21,7 +21,7 @@ export class FindAccountComponent implements OnInit {
 
 
     constructor(
-        private recoverPasswordService: RecoverPasswordService,
+        protected recoverPasswordService: RecoverPasswordService,
         private messageService: MessageService,
         private storageService: StorageService,
         private router: Router,

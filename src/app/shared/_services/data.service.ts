@@ -11,7 +11,7 @@ export class DataService {
 
     constructor() { }
 
-    activateLoadingBar(message: string) {
+    stringMessage(message: string) {
         this.messageSourceString.next(message);
     }
 

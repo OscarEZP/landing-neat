@@ -22,6 +22,14 @@ export class DialogService {
         this.dialog.getDialogById(dialogId);
     }
 
+    public openCloseContingencyDialog(dialogInstance): void {
+        this.dialog.open(dialogInstance, {
+            width: '40vw',
+            height: '60hw',
+            hasBackdrop: true
+        });
+    }
+
     public closeAllDialogs(): void {
         this.dialog.closeAll();
     }

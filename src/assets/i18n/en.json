@@ -36,7 +36,23 @@
       "SAFETY_MESSAGE": "If the Contingency is due a Safety Event, please follow the Safety protocols of your Company",
       "TIPOLOGY_MESSAGE": "The ETR must be validated by the Maintenance Team",
       "CANCEL_LABEL": "CANCEL",
-      "CREATE_LABEL": "CREATE"
+      "CREATE_LABEL": "CREATE",
+      "OBSERVATIONS_PLACEHOLDER" : "Observations to Maintenance",
+      "TIPOLOGY" : "Tipology",
+      "TECHNICAL_TYPE_PLACEHOLDER" : "Technical Type",
+      "YES" : "Yes",
+      "NO" : "No",
+      "BARCODE" : "Barcode",
+      "MAINTENANCE" : "Maintenance",
+      "CCO" : "CCO",
+      "FLIGHT_TIME" : "Flight Time",
+      "TO" : "To",
+      "FLIGHT" : "Flight",
+      "BACKUP" : "Backup",
+      "OPERATOR" : "Operator",
+      "FLEET" : "Fleet",
+      "AC" : "A/C",
+      "CLOSE": "close"
     }
   }
 }
