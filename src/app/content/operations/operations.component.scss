@@ -2,7 +2,7 @@
 
 #post-header-container {
   position: relative;
-  display: block;
+  display: inline-block;
   color: mat-color($foreground, secondary-text);
 
   #item-counter-container {
