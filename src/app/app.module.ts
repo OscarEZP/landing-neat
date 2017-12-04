@@ -15,11 +15,11 @@ import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 // Components
 import { AppComponent } from './app.component';
 // Services
-import { DatetimeService } from './shared/_services/datetime.service';
-import { DataService } from './shared/_services/data.service';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { HttpClient } from '@angular/common/http';
+import {DatetimeService} from './shared/_services/datetime.service';
+import {DataService} from './shared/_services/data.service';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {HttpClient} from '@angular/common/http';
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http);
@@ -44,7 +44,7 @@ export function HttpLoaderFactory(http: HttpClient) {
                 useFactory: HttpLoaderFactory,
                 deps: [HttpClient]
             }
-        }),
+        })
     ],
     declarations: [
         AppComponent
@@ -53,10 +53,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         DatetimeService,
         DataService
     ],
-    schemas: [
-
-    ],
-    bootstrap: [ AppComponent ]
+    schemas: [],
+    bootstrap: [AppComponent]
 })
 
 export class AppModule { }

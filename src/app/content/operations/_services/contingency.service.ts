@@ -3,8 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { catchError, map, tap } from 'rxjs/operators';
-import { Aircraft } from '../_models/aircraft';
-import { Flight } from '../_models/flight';
+import { AircraftList } from '../_models/aircraft';
+import { FlightList } from '../_models/flight';
 import { LogService } from './log.service';
 
 @Injectable()
@@ -16,16 +16,16 @@ export class ContingencyService {
         private logService: LogService
     ) { }
 
-    getAircrafts(): Observable<Aircraft[]> {
-        return this.http.get<Aircraft[]>('api/aircrafts')
+    getAircrafts(): Observable<AircraftList[]> {
+        return this.http.get<AircraftList[]>('api/aircrafts')
             .pipe(
             tap(aircrafts => this.log(`fetched aircrafts`)),
             catchError(this.handleError('getAircrafts', []))
             );
     }
 
-    getFlights(): Observable<Flight[]> {
-        return this.http.get<Flight[]>('api/flights')
+    getFlights(): Observable<FlightList[]> {
+        return this.http.get<FlightList[]>('api/flights')
             .pipe(
             tap(flights => this.log(`fetched flights`)),
             catchError(this.handleError('getFlights', []))

@@ -48,7 +48,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.loading = true;
             this.mode = 'indeterminate';
             this.value = 20;
-        } else {
+        } else if(message === 'close') {
             this.loading = false;
             this.mode = 'determinate';
             this.value = 100;
