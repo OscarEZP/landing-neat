@@ -68,14 +68,15 @@
                             </mat-autocomplete>
                     </mat-form-field>
                     <mat-form-field fxFlex="15">
-                        <mat-select placeholder="From" [ngModel]="selectedFlight.departure" [formControl]="contingencyForm.controls['departure']"
-                            name="departure">
+                        <mat-select #from placeholder="From" [ngModel]="selectedFlight.departure" [formControl]="contingencyForm.controls['departure']"
+                            name="departure" (selectionChange)="onSelectFrom(from.value)">
                             <mat-option *ngFor="let option of departureArrival" [value]="option">{{option}}</mat-option>
                             </mat-select>
                     </mat-form-field>
 
                     <mat-form-field fxFlex="15">
-                        <mat-select placeholder="To" [ngModel]="selectedFlight.arrival" [formControl]="contingencyForm.controls['arrival']" name="arrival">
+                        <mat-select #to placeholder="To" [ngModel]="selectedFlight.arrival" [formControl]="contingencyForm.controls['arrival']"
+                                    name="arrival" (selectionChange)="onSelectTo(to.value)">
                             <mat-option *ngFor="let option of departureArrival" [value]="option">{{option}}</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -130,13 +131,12 @@
             <div fxFlex="33" fxLayout="column" fxLayoutGap="30px" class="safety-container">
                 <span class="title-section">Safety Event Info</span>
                 <div fxLayout="column" fxLayoutGap="15px">
-                    <span class="label-element">Safety Event *</span>
-                    <mat-radio-group fxLayoutGap="20px" [formControl]="contingencyForm.controls['safety']">
-                        <mat-radio-button labelPosition="after" value="yes">Yes</mat-radio-button>
-                        <mat-radio-button labelPosition="after" value="no">No</mat-radio-button>
-                    </mat-radio-group>
+                    <mat-checkbox labelPosition="after" fxFlex="20" [formControl]="contingencyForm.controls['safety']">Safety Event *</mat-checkbox>
+                    <mat-error *ngIf="contingencyForm.controls['safety'].hasError('required') && contingencyForm.controls['safety'].touched">
+                        Safety Event is required
+                    </mat-error>
                 </div>
-                <div fxLayout="column" *ngIf="contingencyForm.controls['safety'].value==='yes'">
+                <div fxLayout="column" *ngIf="contingencyForm.controls['safety'].value">
                     <div fxLayout="row">
                         <mat-form-field fxFlex="70">
                             <mat-select placeholder="Technical Type" [formControl]="contingencyForm.controls['typeSafety']" required>
