@@ -19,6 +19,6 @@
 
     .mat-icon-button.active{
         background-color: mat-color($primary);
-        color: mat-color($primary, 'default-contrast');
+        background-color: map_get($mat-grey, 300);
     }
 }

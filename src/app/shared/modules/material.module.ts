@@ -17,9 +17,7 @@ import {
     MatDatepickerModule,
     MatNativeDateModule,
     MatAutocompleteModule,
-    MatSnackBarModule,
     MatSlideToggleModule,
-    MatMenuModule
     MatSnackBarModule,
     MatMenuModule
 

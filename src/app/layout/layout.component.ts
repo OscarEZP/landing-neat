@@ -40,7 +40,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this._messageDataSubscription.unsubscribe();
+        // this._messageDataSubscription.unsubscribe();
     }
 
     activateLoadingBar(message: string) {

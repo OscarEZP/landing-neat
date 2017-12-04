@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DetailsService } from './_services/details.service';
 
 @Component({
   selector: 'lsl-details',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DetailsComponent implements OnInit {
 
-  constructor() { }
+  constructor(public detailsService: DetailsService) { }
 
   ngOnInit() {
   }
