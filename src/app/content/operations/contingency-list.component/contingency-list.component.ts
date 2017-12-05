@@ -13,7 +13,6 @@ import { TimeInstant } from '../../../shared/_models/timeInstant';
 import { DataService } from '../../../shared/_services/data.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
-import { ContingencyFormComponent } from '../contingency-form/contingency-form.component';
 import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
 import { DetailsService } from '../../../details/_services/details.service';
 
@@ -45,6 +44,11 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     ) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
+    }
+
+    openDetails(contingency: Contingency, section: string){
+        this.detailsService.contingency = contingency;
+        this.detailsService.openDetails(section);
     }
 
     ngOnInit() {
@@ -86,6 +90,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                     this.messageData.stringMessage('close');
                     console.log('alerts length: ' + data.json().length);
                     this.messageEvent.emit(data.json().length);
+                    if (data.json().length) {
+                        this.detailsService.contingency = this.contingencyList[0];
+                    }
                     resolve();
                 }, reason => { // error
                     this.messageData.stringMessage('close');

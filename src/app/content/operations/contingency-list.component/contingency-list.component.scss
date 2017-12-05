@@ -1,6 +1,16 @@
 @import '../../../../assets/style/base.scss';
 
 /deep/
+.moc-items-list.mat-list-item.active{
+  background-color: #eaf2f5;
+}
+
+/deep/
+.mat-tab-group {
+  display: inline-block;
+}
+
+/deep/
 .mat-list-item-content{
   font-size: $base-font;
 }

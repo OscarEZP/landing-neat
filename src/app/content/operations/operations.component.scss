@@ -1,8 +1,6 @@
 @import '../../../assets/style/base.scss';
 
 #post-header-container {
-  position: relative;
-  display: inline-block;
   color: mat-color($foreground, secondary-text);
   width: 100%;
 
@@ -20,8 +18,6 @@
 
 /deep/
 #post-header-tab {
-  display: inline-block;
-  width: 100%;
 
   .mat-tab-header {
     border-bottom: none;
