@@ -9,6 +9,8 @@
 @include mat-core();
 $primary: mat-palette($mat-palette-primary);
 $secondary: mat-palette($mat-palette-secondary);
+$custom: mat-palette($mat-palette-custom);
+
 $accent: mat-palette($mat-palette-primary);
 $warn: mat-palette($mat-red);
 $moc-app-theme: mat-light-theme($primary, $accent, $warn);
@@ -17,3 +19,12 @@ $moc-app-theme: mat-light-theme($primary, $accent, $warn);
 // Extract whichever individual palettes you need from the theme.
 $foreground: map-get($moc-app-theme, foreground);
 $background: map-get($moc-app-theme, background);
+
+
+.margin-top{
+  margin-top: $base-margin;
+}
+
+.margin-top{
+  margin-top: $base-margin;
+}

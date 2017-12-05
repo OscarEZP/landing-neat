@@ -69,5 +69,21 @@
       "BTN_CANCEL":"CANCEL",
       "BTN_SAVE":"SAVE"
     }
+  },
+  "BUTTONS": {
+    "CANCEL": "CANCEL",
+    "CLOSE": "CLOSE",
+    "CREATE": "CREATE",
+    "SAVE": "SAVE"
+  },
+  "TITLES": {
+    "FOLLOW_UP": "Follow up",
+    "ADITIONAL_INFO": "Aditional Info",
+    "SAFETY_EVENTS": "Safety Events",
+    "SAFETY_EVENTS_PENDINGS": "Safety Events Pendings",
+    "PENDINGS_RESOLVED": "Pendings resolved",
+    "OPERATION_INFO": "Operation Info",
+    "MAINTENANCE_INFO": "Maintenance Info",
+    "OBSERVATIONS_TO_MAINTENANCE": "Observations to Maintenance"
   }
 }

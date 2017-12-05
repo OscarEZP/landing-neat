@@ -17,6 +17,7 @@ import {
     MatDatepickerModule,
     MatNativeDateModule,
     MatAutocompleteModule,
+    MatSlideToggleModule,
     MatSnackBarModule,
     MatMenuModule
 
@@ -45,6 +46,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         MatSelectModule,
         MatSidenavModule,
         MatSnackBarModule,
+        MatSlideToggleModule,
+        FlexLayoutModule,
+        FormsModule,
         MatTabsModule,
         MatToolbarModule,
         ReactiveFormsModule
@@ -70,6 +74,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         MatSelectModule,
         MatSidenavModule,
         MatSnackBarModule,
+        MatSlideToggleModule,
+        FlexLayoutModule,
+        FormsModule,
         MatTabsModule,
         MatToolbarModule,
         ReactiveFormsModule

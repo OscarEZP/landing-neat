@@ -7,26 +7,33 @@ import {LayoutComponent} from './layout.component';
 import {SidenavComponent} from './sidenav/sidenav.component';
 import {SidenavService} from './_services/sidenav.service';
 import {StorageService} from '../shared/_services/storage.service';
+import {DetailsModule} from '../details/details.module';
+import {RightnavComponent} from './rightnav/rightnav.component';
+import {DetailsService} from '../details/_services/details.service';
 
 
 @NgModule({
     imports: [
         CommonModule,
         SharedModule,
-        RouterModule
+        RouterModule,
+        DetailsModule
     ],
     exports: [
         ToolbarComponent,
-        SidenavComponent
+        SidenavComponent,
+        RightnavComponent
     ],
     declarations: [
         ToolbarComponent,
         LayoutComponent,
         SidenavComponent,
+        RightnavComponent
     ],
     providers: [
         SidenavService,
-        StorageService
+        StorageService,
+        DetailsService
     ]
 })
 export class LayoutModule {
