@@ -1,15 +1,15 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {DatetimeService} from '../../shared/_services/datetime.service';
-import {ActualTimeModel} from '../../shared/_models/actual-time-model';
-import {TimerObservable} from 'rxjs/observable/TimerObservable';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DatetimeService } from '../../shared/_services/datetime.service';
+import { ActualTimeModel } from '../../shared/_models/actual-time-model';
+import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
-import {DataService} from '../../shared/_services/data.service';
-import {Subscription} from 'rxjs/Subscription';
-import {ClockService} from '../../shared/_services/clock.service';
-import {SidenavService} from '../_services/sidenav.service';
-import {DialogService} from '../../content/_services/dialog.service';
-import {ContingencyFormComponent} from '../../content/operations/contingency-form/contingency-form.component';
-import {RoutingService} from '../../shared/_services/routing.service';
+import { DataService } from '../../shared/_services/data.service';
+import { Subscription } from 'rxjs/Subscription';
+import { ClockService } from '../../shared/_services/clock.service';
+import { SidenavService } from '../_services/sidenav.service';
+import { DialogService } from '../../content/_services/dialog.service';
+import { ContingencyFormComponent } from '../../content/operations/contingency-form/contingency-form.component';
+import { RoutingService } from '../../shared/_services/routing.service';
 
 @Component({
     selector: 'lsl-toolbar',
