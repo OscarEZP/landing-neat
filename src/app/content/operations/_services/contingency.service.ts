@@ -6,15 +6,28 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { AircraftList } from '../_models/aircraft';
 import { FlightList } from '../_models/flight';
 import { LogService } from './log.service';
+import { environment} from '../../../../../environments/environment';
+
+const httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
 
 @Injectable()
 export class ContingencyService {
-    private apiUrl = 'api/contingency';
+    private apiUrl = environment.apiUrl;
+    private closePath = environment.paths.close;
 
     constructor(
         private http: HttpClient,
         private logService: LogService
     ) { }
+
+    closeContingency (closeSignature: any): Observable<any> {
+        return this.http.post<any>(this.apiUrl + this.closePath, closeSignature, httpOptions).pipe(
+            tap((signature: any) => this.log(`close contingency w/ id=${signature.id}`)),
+            catchError(this.handleError<any>('closeContingency'))
+        );
+    }
 
     getAircrafts(): Observable<AircraftList[]> {
         return this.http.get<AircraftList[]>('api/aircrafts')

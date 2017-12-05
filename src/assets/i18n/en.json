@@ -67,7 +67,8 @@
       "AOG":"Aircraft declared AOG",
       "OBS":"OBSERVATIONS",
       "BTN_CANCEL":"CANCEL",
-      "BTN_SAVE":"SAVE"
+      "BTN_SAVE":"SAVE",
+      "CLOSE_SUCCESS":"Contingency has been closed successfully"
     }
   },
   "BUTTONS": {

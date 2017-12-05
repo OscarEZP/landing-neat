@@ -13,10 +13,9 @@ import { TimeInstant } from '../../../shared/_models/timeInstant';
 import { DataService } from '../../../shared/_services/data.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
-import { ContingencyFormComponent } from '../contingency-form/contingency-form.component';
 import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
 import { DetailsService } from '../../../details/_services/details.service';
-
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -30,19 +29,19 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
     private apiUrl = environment.apiUrl + environment.paths.contingencyList;
-    public contingencyList: Contingency[];
+    public contingencyList;
     public progressBarColor: string;
     public currentUTCTime: number;
 
     @Output() messageEvent = new EventEmitter<number>();
 
     constructor(private http: Http,
+                private httpClient: HttpClient,
                 private messageData: DataService,
                 private dialogService: DialogService,
                 public translate: TranslateService,
                 private messageService: MessageService,
-                public detailsService: DetailsService
-    ) {
+                public detailsService: DetailsService) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
     }
@@ -52,7 +51,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.progressBarColor = 'primary';
         this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
         this._reloadSubscription = this.messageData.currentStringMessage.subscribe(message => this.reloadList(message));
-        this.getContingences();
+        this.showContingencies();
     }
 
     ngOnDestroy() {
@@ -60,9 +59,11 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this._reloadSubscription.unsubscribe();
     }
 
-    public openCloseContingency() {
+    public openCloseContingency(contingency: any) {
         this.dialogService.openDialog(CloseContingencyComponent, {
-            hasBackdrop: false,
+            data: contingency,
+            hasBackdrop: true,
+            disableClose: true,
             height: '536px',
             width: '500px'
         });
@@ -70,8 +71,23 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     public reloadList(message) {
         if (message === 'reload') {
-            this.getContingences();
+            this.showContingencies();
         }
+    }
+
+    private showContingencies() {
+        this.messageData.stringMessage('open');
+        this.httpClient.get(this.apiUrl).subscribe(
+            data => {
+                this.contingencyList = data;
+                this.messageData.stringMessage('close');
+                console.log('alerts length: ' + (<any>data).length);
+                this.messageEvent.emit((<any>data).length);
+            }, reason => {
+                this.messageData.stringMessage('close');
+                this.messageService.openSnackBar(reason);
+            }
+        );
     }
 
     private getContingences() {
