@@ -53,6 +53,21 @@
       "FLEET" : "Fleet",
       "AC" : "A/C",
       "CLOSE": "close"
+    },
+    "CLOSE_COMPONENT":{
+      "TITLE":"Close Contingency",
+      "CONTINGENCY_INFO":"CONTINGENCY INFO",
+      "AC":"A/C:",
+      "OPERATOR":"Operator:",
+      "FLIGHT":"Flight:",
+      "DESC":"Description:",
+      "CLOSURE_INFO":"CLOSURE INFO",
+      "AC_STATUS":"Aircraft status",
+      "RELEASED":"Released to service",
+      "AOG":"Aircraft declared AOG",
+      "OBS":"OBSERVATIONS",
+      "BTN_CANCEL":"CANCEL",
+      "BTN_SAVE":"SAVE"
     }
   }
 }
