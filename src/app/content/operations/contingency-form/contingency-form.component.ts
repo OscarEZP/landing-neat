@@ -45,9 +45,9 @@ export class ContingencyFormComponent implements OnInit {
     public contingency: Contingency;
     public safetyEventList: Safety[];
     public aircraftList: Aircraft[];
-    public flightList = [{'flightNumber' : null, 'etd' : null, 'legs' : null}];
+    public flightList = [{'flightNumber': null, 'etd': null, 'legs': null}];
     public aircraftTempModel: Aircraft;
-    public flightTempModel = [{ 'origin' : null, 'destination' : null}];
+    public flightTempModel = [{'origin': null, 'destination': null}];
     public timeModel: string;
     public dateModel: Date;
     public origin: string;
@@ -95,7 +95,8 @@ export class ContingencyFormComponent implements OnInit {
             'tm': [null, Validators.required],
             'dt': [null, Validators.required],
             'informer': ['cco', Validators.required],
-            'barcode': [false],
+            'showBarcode': [false],
+            'barcode': [null],
             'safety': ['no', Validators.required],
             'safetyEventCode': [null, Validators.required],
             'contingencyType': ['operation', Validators.required],
@@ -110,20 +111,20 @@ export class ContingencyFormComponent implements OnInit {
         this._messageUTCSubscription = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
 
         TimerObservable.create(0, this.interval)
-                       .takeWhile(() => this.alive)
-                       .subscribe(() => {
-                           this.datetimeService.getTime()
-                               .subscribe((data) => {
-                                   this.data = data;
-                                   this.currentUTCTime = this.data.currentTimeLong;
-                                   this.currentDateString = this.data.currentTime;
-                                   this.newMessage();
-                                   this.clockService.setClock(this.currentUTCTime);
-                                   if (!this.display) {
-                                       this.display = true;
-                                   }
-                               });
-                       });
+            .takeWhile(() => this.alive)
+            .subscribe(() => {
+                this.datetimeService.getTime()
+                    .subscribe((data) => {
+                        this.data = data;
+                        this.currentUTCTime = this.data.currentTimeLong;
+                        this.currentDateString = this.data.currentTime;
+                        this.newMessage();
+                        this.clockService.setClock(this.currentUTCTime);
+                        if (!this.display) {
+                            this.display = true;
+                        }
+                    });
+            });
 
         this.clockService.getClock().subscribe(time => this.time = time);
 
@@ -135,6 +136,7 @@ export class ContingencyFormComponent implements OnInit {
 
     public submitForm(value: any) {
         const user = this.storageService.getCurrentUser();
+        const initials = user.firstName.substring(0, 1).toUpperCase() + user.lastName.substring(0, 1).toUpperCase();
 
         this.contingency = new Contingency(
             null,
@@ -175,10 +177,10 @@ export class ContingencyFormComponent implements OnInit {
                     ),
                     value.duration
                 ),
-                user.userId
+                initials
             ),
             'type',
-            user.userId
+            initials
         );
 
         return new Promise((resolve, reject) => {
@@ -251,13 +253,13 @@ export class ContingencyFormComponent implements OnInit {
                         const legList = [];
                         for (let j = 0; j < jsonData[i].legs.length; j++) {
                             const legItem = new Legs(
-                                    jsonData[i].legs[j].origin,
-                                    jsonData[i].legs[j].destination,
-                                    new TimeInstant(
-                                        jsonData[i].legs[j].updateDate.epochTime,
-                                        jsonData[i].legs[j].updateDate.label
-                                    )
-                                );
+                                jsonData[i].legs[j].origin,
+                                jsonData[i].legs[j].destination,
+                                new TimeInstant(
+                                    jsonData[i].legs[j].updateDate.epochTime,
+                                    jsonData[i].legs[j].updateDate.label
+                                )
+                            );
                             legList.push(legItem);
                         }
 
@@ -302,12 +304,12 @@ export class ContingencyFormComponent implements OnInit {
 
         for (const item of this.flightList) {
             if (item.flightNumber === selectedOption) {
-                const newDate = new Date(item.etd.label)
+                const newDate = new Date(item.etd.label);
                 this.timeModel = newDate.getHours() + ':' + newDate.getMinutes() + ':' + newDate.getSeconds();
                 this.dateModel = newDate;
                 this.flightTempModel.pop();
                 for (let i = 0; i < item.legs.length; i++) {
-                    this.flightTempModel.push({'origin' : item.legs[i].origin, 'destination' : item.legs[i].destination});
+                    this.flightTempModel.push({'origin': item.legs[i].origin, 'destination': item.legs[i].destination});
                 }
             }
         }
