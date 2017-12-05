@@ -7,6 +7,7 @@ import { StorageService } from '../../../shared/_services/storage.service';
 import { ContingencyService } from '../_services/contingency.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DataService } from '../../../shared/_services/data.service';
+import { CancelComponent } from '../cancel/cancel.component';
 
 
 @Component({
@@ -63,6 +64,16 @@ export class CloseContingencyComponent implements OnInit {
                 this.messageService.openSnackBar(err);
             }
         );
+    }
+
+    openCancelDialog() {
+        this.translateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
+        this.messageService.openFromComponent(CancelComponent, {
+            data: {message: this.snackBarMessage},
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+        });
+
     }
 
     dismissCloseContigency(): void {
