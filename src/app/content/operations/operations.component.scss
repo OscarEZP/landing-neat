@@ -20,7 +20,8 @@
 
 /deep/
 #post-header-tab {
-  display: block;
+  display: inline-block;
+  width: 100%;
 
   .mat-tab-header {
     border-bottom: none;

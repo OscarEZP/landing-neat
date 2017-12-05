@@ -68,15 +68,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         });
     }
 
-    public openCreationContingency() {
-        this.dialogService.openDialog(ContingencyFormComponent, {
-            maxWidth: '100vw',
-            width: '100%',
-            height: '100%',
-            hasBackdrop: false
-        });
-    }
-
     public reloadList(message) {
         if (message === 'reload') {
             this.getContingences();
