@@ -14,8 +14,8 @@ import { DataService } from '../../../shared/_services/data.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
 import { ContingencyFormComponent } from '../contingency-form/contingency-form.component';
-import { MatDialog } from '@angular/material';
 import { CloseComponent } from '../close/close.component';
+import { DetailsService } from '../../../details/_services/details.service';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -35,7 +35,13 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     @Output() messageEvent = new EventEmitter<number>();
 
-    constructor(private http: Http, private messageData: DataService, private dialogService: DialogService, translate: TranslateService, private messageService: MessageService) {
+    constructor(private http: Http,
+                private messageData: DataService,
+                private dialogService: DialogService,
+                public translate: TranslateService,
+                private messageService: MessageService,
+                public detailsService: DetailsService
+    ) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
     }

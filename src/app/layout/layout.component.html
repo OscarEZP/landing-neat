@@ -7,8 +7,16 @@
 
   <lsl-toolbar></lsl-toolbar>
 
-  <div class="main-panel">
-    <router-outlet></router-outlet>
-  </div>
-
+  <section id="main-container">
+    <div class="main-panel">
+      <mat-sidenav-container id="nav-details-container">
+        <router-outlet></router-outlet>
+        <mat-sidenav align="end" id="details" #details [(opened)]="opened" mode="side">
+          <lsl-details></lsl-details>
+        </mat-sidenav>
+      </mat-sidenav-container>
+    </div>
+    <lsl-rightnav></lsl-rightnav>
+  </section>
+  <button (click)="openDialog()" mat-icon-button id="add-contingency">+</button>
 </mat-sidenav-container>

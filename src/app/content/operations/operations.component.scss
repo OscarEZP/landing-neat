@@ -2,8 +2,9 @@
 
 #post-header-container {
   position: relative;
-  display: block;
+  display: inline-block;
   color: mat-color($foreground, secondary-text);
+  width: 100%;
 
   #item-counter-container {
     font-family: 'Noto Sans', 'Arial', sans-serif;
