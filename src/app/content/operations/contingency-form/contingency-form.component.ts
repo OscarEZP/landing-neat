@@ -141,7 +141,6 @@ export class ContingencyFormComponent implements OnInit {
         this.retrieveAircraftsConfiguration();
         this.retrieveFlightsConfiguration();
         this.retrieveTypesConfiguration();
-        this.translateMessageCancel();
     }
 
     public submitForm(value: any) {
@@ -339,12 +338,6 @@ export class ContingencyFormComponent implements OnInit {
             }
         }
     }
-
-    translateMessageCancel() {
-        this.translate.get('OPERATIONS.CANCEL_COMPONENT.MESSAGE').subscribe((res: string) => {
-            this.cancelMessage = res;
-        });
-    }
     
     private getTranslateString(toTranslate: string) {
         this.translate.get(toTranslate).subscribe((res: string) => {
@@ -353,8 +346,9 @@ export class ContingencyFormComponent implements OnInit {
     }
 
     openCancelDialog() {
+        this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
         this.messageService.openFromComponent(CancelComponent, {
-            data: {message: this.cancelMessage},
+            data: {message: this.snackbarMessage},
             horizontalPosition: 'center',
             verticalPosition: 'top'
         });
