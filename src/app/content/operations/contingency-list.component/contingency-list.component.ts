@@ -46,6 +46,11 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.contingencyList = [];
     }
 
+    openDetails(contingency: Contingency, section: string){
+        this.detailsService.contingency = contingency;
+        this.detailsService.openDetails(section);
+    }
+
     ngOnInit() {
         this.currentUTCTime = 0;
         this.progressBarColor = 'primary';
@@ -102,6 +107,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                     this.messageData.stringMessage('close');
                     console.log('alerts length: ' + data.json().length);
                     this.messageEvent.emit(data.json().length);
+                    if (data.json().length) {
+                        this.detailsService.contingency = this.contingencyList[0];
+                    }
                     resolve();
                 }, reason => { // error
                     this.messageData.stringMessage('close');
@@ -178,14 +186,15 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public getTimeAverage(creationDate: any, duration: any, remain: boolean, limit: number) {
         const actualTime = this.currentUTCTime;
         let average: number;
-        const valueNumber = (creationDate + duration * 60000) - actualTime;
+        const valueNumber = creationDate - actualTime;
         let warning = false;
 
         if (valueNumber > 0) {
             if (valueNumber <= limit) {
                 warning = true;
             }
-            const minutesConsumed = (valueNumber / 1000) / 60;
+            const minutesConsumed = duration - ((valueNumber / 1000) / 60);
+
             average = Math.round((minutesConsumed * 100) / duration);
         } else {
             warning = true;

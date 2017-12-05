@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatSidenav } from '@angular/material';
 import { ScrollService } from '../../shared/_services/scrolling.service';
+import { Contingency } from '../../shared/_models/contingency';
 
 @Injectable()
 export class DetailsService {
@@ -9,8 +10,17 @@ export class DetailsService {
     private _opened: boolean;
     private _active: string;
     private _activeTitle: string;
+    private _contingency: Contingency;
 
     constructor(private _scrollService: ScrollService){
+    }
+
+    public get contingency(): Contingency {
+        return this._contingency;
+    }
+
+    public set contingency(value: Contingency) {
+        this._contingency = value;
     }
 
     public getActiveTitle(): string {

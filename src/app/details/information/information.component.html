@@ -18,11 +18,11 @@
         <div class="stripped table">
             <div fxLayout="row">
                 <div fxFlex="40">Focal:</div>
-                <div>Ignacio Pardo</div>
+                <div [innerHtml]="detailsService.contingency ? detailsService.contingency.username : ''"></div>
             </div>
             <div fxLayout="row">
                 <div fxFlex="40">Barcode:</div>
-                <div>T006A7</div>
+                <div [innerHtml]="detailsService.contingency ? detailsService.contingency.barcode : ''"></div>
             </div>
         </div>
     </section>
@@ -32,9 +32,7 @@
         <div class="stripped table">
             <div fxLayout="row">
                 <div fxFlex="40">Technical Type:</div>
-                <div>
-                    ATB
-                </div>
+                <div [innerHtml]="detailsService.contingency ? detailsService.contingency.safetyEvent.code : ''"></div>
             </div>
             <div fxLayout="row">
                 <div fxFlex="40">PMCIA Reading:</div>
