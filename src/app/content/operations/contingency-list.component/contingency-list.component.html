@@ -38,7 +38,7 @@
                 <mat-icon aria-label="options">more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="closeContingency()">
+                <button mat-menu-item (click)="openCloseContingency()">
                     <span>Close Contingency</span>
                 </button>
                 <button mat-menu-item>
@@ -51,4 +51,6 @@
         </div>
     </mat-list-item>
 </mat-list>
+
+<button (click)="openCreationContingency()" mat-icon-button id="add-contingency">+</button>
 

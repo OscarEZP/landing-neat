@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Http } from '@angular/http';
-import { MatDialogRef } from '@angular/material';
+import { DialogService} from '../../_services/dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
@@ -47,7 +47,8 @@ export class ContingencyFormComponent implements OnInit {
     public aircraftList: Aircraft[];
     public flightList = [{'flightNumber': null, 'etd': null, 'legs': null}];
     public aircraftTempModel: Aircraft;
-    public flightTempModel = [{'origin': null, 'destination': null}];
+    public flightTempModel;
+    public firstLeg;
     public timeModel: string;
     public dateModel: Date;
     public origin: string;
@@ -63,7 +64,7 @@ export class ContingencyFormComponent implements OnInit {
     private apiAircrafts = environment.apiUrl + environment.paths.aircrafts;
     private apiFlights = environment.apiUrl + environment.paths.flights;
 
-    constructor(private dialogRef: MatDialogRef<ContingencyFormComponent>,
+    constructor(private  dialogService: DialogService,
                 private contingencyService: ContingencyService,
                 private fb: FormBuilder,
                 private datetimeService: DatetimeService,
@@ -73,6 +74,8 @@ export class ContingencyFormComponent implements OnInit {
                 private messageService: MessageService,
                 public translate: TranslateService,
                 private storageService: StorageService) {
+        this.flightTempModel = [];
+        this.firstLeg = {};
         this.display = true;
         this.alive = true;
         this.interval = 60000;
@@ -95,14 +98,14 @@ export class ContingencyFormComponent implements OnInit {
             'tm': [null, Validators.required],
             'dt': [null, Validators.required],
             'informer': ['cco', Validators.required],
+            'safety': [null, Validators.required],
             'showBarcode': [false],
             'barcode': [null],
-            'safety': ['no', Validators.required],
             'safetyEventCode': [null, Validators.required],
             'contingencyType': ['operation', Validators.required],
             'failure': ['technical', Validators.required],
-            'observation': [null],
-            'statusCode': ['ni', Validators.required],
+            'observation': [null, Validators.required],
+            'statusCode': ['NI1', Validators.required],
             'duration': [null]
         });
     }
@@ -131,7 +134,7 @@ export class ContingencyFormComponent implements OnInit {
         this.retrieveSafetyEventsConfiguration();
         this.retrieveAircraftsConfiguration();
         this.retrieveFlightsConfiguration();
-
+        this.translateMessageCancel();
     }
 
     public submitForm(value: any) {
@@ -190,7 +193,7 @@ export class ContingencyFormComponent implements OnInit {
                 .toPromise()
                 .then(rs => {
                     this.messageService.openSnackBar(rs.json());
-                    this.dialogRef.close();
+                    this.dialogService.closeAllDialogs();
                     this.messageData.stringMessage('reload');
                     resolve();
                 }, reason => {
@@ -307,19 +310,26 @@ export class ContingencyFormComponent implements OnInit {
                 const newDate = new Date(item.etd.label);
                 this.timeModel = newDate.getHours() + ':' + newDate.getMinutes() + ':' + newDate.getSeconds();
                 this.dateModel = newDate;
-                this.flightTempModel.pop();
-                for (let i = 0; i < item.legs.length; i++) {
-                    this.flightTempModel.push({'origin': item.legs[i].origin, 'destination': item.legs[i].destination});
-                }
+                this.flightTempModel = item.legs;
             }
         }
+        this.firstLeg.origin = this.flightTempModel[0].origin;
+        this.firstLeg.destination = this.flightTempModel[0].destination;
     }
 
-    onCancelClick(): void {
-        this.dialogRef.close();
+    onCloseCreationContingencyForm(): void {
+        this.dialogService.closeAllDialogs();
     }
 
     newMessage() {
         this.messageData.changeTimeUTCMessage(this.currentUTCTime);
+    }
+
+    onSelectOrigin(selected: string): void {
+        this.firstLeg.destination = this.flightTempModel.filter(leg => leg.origin === selected)[0].destination;
+    }
+
+    onSelectDestination(selected: string): void {
+        this.firstLeg.origin = this.flightTempModel.filter(leg => leg.destination === selected)[0].origin;
     }
 }

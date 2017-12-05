@@ -1,0 +1,72 @@
+<form>
+    <div mat-dialog-title fxLayoutGap="20px">
+        <span class="title-dialog" fxFlex>{{'OPERATIONS.CLOSE_COMPONENT.TITLE'|translate}}</span>
+        <mat-divider></mat-divider>
+    </div>
+
+    <mat-divider></mat-divider>
+    <div mat-dialog-content fxLayoutGap="" fxLayout="column">
+        <div fxLayout="column" fxLayoutGap="20px">
+            <div>
+                <span>{{'OPERATIONS.CLOSE_COMPONENT.CONTINGENCY_INFO'|translate}}</span>
+            </div>
+            <div fxLayout="row">
+                <div fxLayout="row" fxFlex="">
+                    <label>{{'OPERATIONS.CLOSE_COMPONENT.AC'|translate}}</label>
+                    <span>PT-MZU</span>
+                </div>
+                <div fxLayout="row" fxFlex="">
+                    <label>{{'OPERATIONS.CLOSE_COMPONENT.OPERATOR'|translate}}</label>
+                    <span>SCL</span>
+                </div>
+                <div fxLayout="row" fxFlex="">
+                    <label>{{'OPERATIONS.CLOSE_COMPONENT.FLIGHT'|translate}}</label>
+                    <span>LA238</span>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="20px">
+                <label>{{'OPERATIONS.CLOSE_COMPONENT.DESC'|translate}}</label>
+                <span>HOUVE COLISAO DA LOREM IPSUM LOREM IPSUM LOREM IPSUM</span>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+        <div fxLayout="column" fxLayoutGap="20px">
+            <div>
+                <span>{{'OPERATIONS.CLOSE_COMPONENT.CLOSURE_INFO'|translate}}</span>
+            </div>
+            <div fxLayout="row">
+                <label fxFlex="25">{{'OPERATIONS.CLOSE_COMPONENT.AC_STATUS'|translate}}</label>
+                <mat-radio-group>
+                    <mat-radio-button labelPosition="after" value="release">
+                        {{'OPERATIONS.CLOSE_COMPONENT.RELEASED'|translate}}
+                    </mat-radio-button>
+                    <mat-radio-button labelPosition="after" value="aog">
+                        {{'OPERATIONS.CLOSE_COMPONENT.AOG'|translate}}
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+
+        <div fxLayout="column" fxLayoutGap="20px">
+            <div>
+                <span>{{'OPERATIONS.CLOSE_COMPONENT.OBS'|translate}}</span>
+            </div>
+            <mat-form-field class="full-width">
+                <textarea matInput placeholder="Observations to Maintenance"
+                ></textarea>
+            </mat-form-field>
+
+        </div>
+
+    </div>
+
+    <div mat-dialog-actions fxLayoutAlign="end">
+        <button type="button" mat-button (click)="dismissCloseContigency()">
+            {{'OPERATIONS.CLOSE_COMPONENT.BTN_CANCEL'|translate}}
+        </button>
+        <button type="submit" mat-button mat-raised-button color="primary" (click)="dismissCloseContigency()">
+            {{'OPERATIONS.CLOSE_COMPONENT.BTN_SAVE'|translate}}
+        </button>
+    </div>
+</form>
