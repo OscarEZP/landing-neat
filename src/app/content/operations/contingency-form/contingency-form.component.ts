@@ -98,8 +98,9 @@ export class ContingencyFormComponent implements OnInit {
             'tm': [null, Validators.required],
             'dt': [null, Validators.required],
             'informer': ['cco', Validators.required],
-            'barcode': [false],
             'safety': [null, Validators.required],
+            'showBarcode': [false],
+            'barcode': [null],
             'safetyEventCode': [null, Validators.required],
             'contingencyType': ['operation', Validators.required],
             'failure': ['technical', Validators.required],
@@ -138,6 +139,7 @@ export class ContingencyFormComponent implements OnInit {
 
     public submitForm(value: any) {
         const user = this.storageService.getCurrentUser();
+        const initials = user.firstName.substring(0, 1).toUpperCase() + user.lastName.substring(0, 1).toUpperCase();
 
         this.contingency = new Contingency(
             null,
@@ -178,10 +180,10 @@ export class ContingencyFormComponent implements OnInit {
                     ),
                     value.duration
                 ),
-                user.userId
+                initials
             ),
             'type',
-            user.userId
+            initials
         );
 
         return new Promise((resolve, reject) => {
