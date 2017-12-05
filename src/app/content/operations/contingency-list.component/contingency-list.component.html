@@ -32,7 +32,7 @@
         <div class="block-s" (click)="detailsService.openDetails('safety-events')"><span class="badge">{{ contingency.safetyEvent.code }}</span></div>
         <div class="block-m" (click)="detailsService.openDetails('timeline')"><mat-progress-bar mode="determinate" [value]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, false, 0)" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 600000) ? 'warn' : 'primary'" class="mat-progress-bar"  ></mat-progress-bar></div>
         <div class="block-m" (click)="detailsService.openDetails('timeline')"><mat-icon class="mat-icon-adj" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 300000) ? 'warn' : 'primary'">timer</mat-icon> <lsl-countdown [creationTime]="contingency.status.requestedInterval.dt.epochTime" [duration]="contingency.status.requestedInterval.duration" [threshold]="5"></lsl-countdown></div>
-        <div class="block-m" (click)="detailsService.openDetails()"><mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username }}</div>
+        <div class="block-s" (click)="detailsService.openDetails()"><mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username | slice:0:2 }}</div>
         <div class="block-xs block-last">
             <button mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon aria-label="options">more_vert</mat-icon>
