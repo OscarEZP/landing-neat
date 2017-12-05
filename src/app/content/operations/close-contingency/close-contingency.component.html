@@ -1,0 +1,65 @@
+<form>
+    <div mat-dialog-title fxLayoutGap="20px">
+        <span class="title-dialog" fxFlex>Close Contingency</span>
+        <mat-divider></mat-divider>
+    </div>
+
+    <mat-divider></mat-divider>
+    <div mat-dialog-content fxLayoutGap="" fxLayout="column">
+        <div fxLayout="column" fxLayoutGap="20px">
+            <div>
+                <span>CONTINGENCY INFO</span>
+            </div>
+            <div fxLayout="row">
+                <div fxLayout="row" fxFlex="">
+                    <label>A/C:</label>
+                    <span>PT-MZU</span>
+                </div>
+                <div fxLayout="row" fxFlex="">
+                    <label>Operator:</label>
+                    <span>SCL</span>
+                </div>
+                <div fxLayout="row" fxFlex="">
+                    <label>Flight:</label>
+                    <span>LA238</span>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="20px">
+                <label>Description:</label>
+                <span>HOUVE COLISAO DA LOREM IPSUM LOREM IPSUM LOREM IPSUM</span>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+        <div fxLayout="column" fxLayoutGap="20px">
+            <div>
+                <span>CLOSURE INFO</span>
+            </div>
+            <div fxLayout="row">
+                <label fxFlex="25">Aircraft status</label>
+                <mat-radio-group>
+                    <mat-radio-button labelPosition="after" value="release">Released to service</mat-radio-button>
+                    <mat-radio-button labelPosition="after" value="aog">Aircraft declared AOG</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+
+        <div fxLayout="column" fxLayoutGap="20px">
+            <div>
+                <span>OBSERVATIONS</span>
+            </div>
+            <mat-form-field class="full-width">
+                <textarea matInput placeholder="Observations to Maintenance"
+                ></textarea>
+            </mat-form-field>
+
+        </div>
+
+    </div>
+
+    <div mat-dialog-actions fxLayoutAlign="end">
+        <button type="button" mat-button (click)="dismissCloseContigency()">CANCEL</button>
+        <button type="submit" mat-button mat-raised-button color="primary" (click)="dismissCloseContigency()">SAVE
+        </button>
+    </div>
+</form>

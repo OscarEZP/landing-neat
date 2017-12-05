@@ -6,7 +6,7 @@
             <button class="close-btn" mat-icon-button fxFlexOffset="1">
 
                 <mat-icon aria-label="Example icon-button" class="material-icons close-dialog"
-                          (click)="onCancelClick()">{{ 'OPERATIONS.CONTINGENCY_FORM.CLOSE' | translate }}
+                          (click)="onCloseCreationContingencyForm()">{{ 'OPERATIONS.CONTINGENCY_FORM.CLOSE' | translate }}
                 </mat-icon>
             </button>
         </div>
@@ -208,7 +208,12 @@
                 <mat-form-field class="full-width">
                     <textarea matInput
                               placeholder="{{'OPERATIONS.CONTINGENCY_FORM.OBSERVATIONS_PLACEHOLDER' | translate}}"
-                              [formControl]="contingencyForm.controls['observation']"></textarea>
+                              [formControl]="contingencyForm.controls['observation']" required>
+
+                    </textarea>
+                    <mat-error *ngIf="contingencyForm.controls['observation'].hasError('required') && contingencyForm.controls['observation'].touched">
+                        Observation is required
+                    </mat-error>
                 </mat-form-field>
                 <div fxLayout="column" fxLayoutGap="15px">
                     <span class="label-element">{{'OPERATIONS.CONTINGENCY_FORM.TIPOLOGY' | translate}} * </span>

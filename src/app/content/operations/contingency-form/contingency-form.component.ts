@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Http } from '@angular/http';
-import { MatDialogRef } from '@angular/material';
+import { DialogService} from '../../_services/dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
@@ -64,7 +64,7 @@ export class ContingencyFormComponent implements OnInit {
     private apiAircrafts = environment.apiUrl + environment.paths.aircrafts;
     private apiFlights = environment.apiUrl + environment.paths.flights;
 
-    constructor(private dialogRef: MatDialogRef<ContingencyFormComponent>,
+    constructor(private  dialogService: DialogService,
                 private contingencyService: ContingencyService,
                 private fb: FormBuilder,
                 private datetimeService: DatetimeService,
@@ -103,7 +103,7 @@ export class ContingencyFormComponent implements OnInit {
             'safetyEventCode': [null, Validators.required],
             'contingencyType': ['operation', Validators.required],
             'failure': ['technical', Validators.required],
-            'observation': [null],
+            'observation': [null, Validators.required],
             'statusCode': ['NI1', Validators.required],
             'duration': [null]
         });
@@ -191,7 +191,7 @@ export class ContingencyFormComponent implements OnInit {
                 .toPromise()
                 .then(rs => {
                     this.messageService.openSnackBar(rs.json());
-                    this.dialogRef.close();
+                    this.dialogService.closeAllDialogs()
                     this.messageData.stringMessage('reload');
                     resolve();
                 }, reason => {
@@ -315,8 +315,8 @@ export class ContingencyFormComponent implements OnInit {
         this.firstLeg.destination = this.flightTempModel[0].destination;
     }
 
-    onCancelClick(): void {
-        this.dialogRef.close();
+    onCloseCreationContingencyForm(): void {
+        this.dialogService.closeAllDialogs();
     }
 
     newMessage() {

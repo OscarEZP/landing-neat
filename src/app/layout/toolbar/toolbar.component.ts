@@ -7,8 +7,6 @@ import { DataService } from '../../shared/_services/data.service';
 import { Subscription } from 'rxjs/Subscription';
 import { ClockService } from '../../shared/_services/clock.service';
 import { SidenavService } from '../_services/sidenav.service';
-import { DialogService } from '../../content/_services/dialog.service';
-import { ContingencyFormComponent } from '../../content/operations/contingency-form/contingency-form.component';
 import { RoutingService } from '../../shared/_services/routing.service';
 
 @Component({
@@ -29,24 +27,17 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     public time: Date;
     public moduleTitle: string;
 
-    constructor(
-        private datetimeService: DatetimeService,
-        private messageData: DataService,
-        private clockService: ClockService,
-        private sidenavService: SidenavService,
-        private dialogService: DialogService,
-        public routingService: RoutingService
-    ) {
+    constructor(private datetimeService: DatetimeService,
+                private messageData: DataService,
+                private clockService: ClockService,
+                private sidenavService: SidenavService,
+                public routingService: RoutingService) {
         this.display = true;
         this.alive = true;
         this.interval = 60000;
         this.currentDateLong = 0;
         this.currentDateString = '';
         this.moduleTitle = '';
-    }
-
-    openDialog() {
-        this.dialogService.openDialog(ContingencyFormComponent);
     }
 
     ngOnInit() {

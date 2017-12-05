@@ -14,8 +14,7 @@ import { DataService } from '../../../shared/_services/data.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
 import { ContingencyFormComponent } from '../contingency-form/contingency-form.component';
-import { MatDialog } from '@angular/material';
-import { CloseComponent } from '../close/close.component';
+import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -53,8 +52,21 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this._reloadSubscription.unsubscribe();
     }
 
-    public openDialog() {
-        this.dialogService.openDialog(ContingencyFormComponent);
+    public openCloseContingency() {
+        this.dialogService.openDialog(CloseContingencyComponent, {
+            hasBackdrop: false,
+            height: '536px',
+            width: '500px'
+        });
+    }
+
+    public openCreationContingency() {
+        this.dialogService.openDialog(ContingencyFormComponent, {
+            maxWidth: '100vw',
+            width: '100%',
+            height: '100%',
+            hasBackdrop: false
+        });
     }
 
     public reloadList(message) {
@@ -168,7 +180,4 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         return remain ? warning : average;
     }
 
-    public closeContingency(): void {
-        this.dialogService.openCloseContingencyDialog(CloseComponent);
-    }
 }
