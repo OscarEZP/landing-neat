@@ -191,7 +191,7 @@ export class ContingencyFormComponent implements OnInit {
                 .toPromise()
                 .then(rs => {
                     this.messageService.openSnackBar(rs.json());
-                    this.dialogService.closeAllDialogs()
+                    this.dialogService.closeAllDialogs();
                     this.messageData.stringMessage('reload');
                     resolve();
                 }, reason => {
