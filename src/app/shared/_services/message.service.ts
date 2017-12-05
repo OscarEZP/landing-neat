@@ -11,7 +11,7 @@ export class MessageService {
 
     openSnackBar(message: string) {
         this.matSnackBar.open(message, '', <MatSnackBarConfig>{
-            duration: 1500,
+            duration: 2500,
             verticalPosition: 'top',
             horizontalPosition: 'center'
         });
