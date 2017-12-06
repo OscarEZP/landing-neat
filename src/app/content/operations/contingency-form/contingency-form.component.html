@@ -215,7 +215,7 @@
 
                         </mat-radio-group>
 
-                        <span fxFlexOffset="" fxLayoutAlign="center center" class="alert-warning">{{'OPERATIONS.CONTINGENCY_FORM.TIPOLOGY_MESSAGE'|translate}}</span>
+                        <span fxFlexOffset="" *ngIf="contingencyForm.controls['statusCode'].value === 'ETR'" fxLayoutAlign="center center" class="alert-warning">{{'OPERATIONS.CONTINGENCY_FORM.TIPOLOGY_MESSAGE'|translate}}</span>
                     </div>
                 </div>
                 <div fxLayout="column" fxLayoutGap="15px">
@@ -230,11 +230,11 @@
                         <div fxFlexOffset="5" fxLayoutAlign="center center" fxFlex>
                             <div fxLayout="row" fxFlex="60">
                                 <mat-icon>today</mat-icon>
-                                <span fxLayoutAlign="center center">23.NOV.2017</span>
+                                <span fxLayoutAlign="center center">{{ currentUTCTime | date : 'dd-MMM-yyyy'}}</span>
                             </div>
                             <div fxLayout="row" fxFlex="30">
                                 <mat-icon>access_time</mat-icon>
-                                <span fxLayoutAlign="center center">15:33</span>
+                                <span fxLayoutAlign="center center">{{ currentUTCTime + (contingencyForm.controls['duration'].value * 60000) | date : 'HH:mm' : '+0'}}</span>
                             </div>
                             <span fxFlex=""> UTC</span>
                         </div>

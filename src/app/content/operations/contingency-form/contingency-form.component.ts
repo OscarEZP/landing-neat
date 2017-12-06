@@ -109,7 +109,7 @@ export class ContingencyFormComponent implements OnInit {
             'showBarcode': [false],
             'barcode': [null],
             'safetyEventCode': [null, Validators.required],
-            'contingencyType': ['CO', Validators.required],
+            'contingencyType': ['EXT', Validators.required],
             'failure': ['FT3', Validators.required],
             'observation': [null, Validators.required],
             'statusCode': ['NI1', Validators.required],
@@ -169,7 +169,7 @@ export class ContingencyFormComponent implements OnInit {
             ),
             value.informer,
             value.isBackup,
-            'fake reason, we need to implement in front',
+            value.observation, // temporally here goes reason (not yet in mockups)
             new Safety(
                 value.safetyEventCode,
                 null
