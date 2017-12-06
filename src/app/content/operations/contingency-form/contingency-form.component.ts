@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Http } from '@angular/http';
+import { StatusError } from '../../../auth/_models/statusError.model';
 import { GroupTypes } from '../../../shared/_models/groupTypes';
 import { Types } from '../../../shared/_models/types';
 import { DialogService} from '../../_services/dialog.service';
@@ -204,8 +205,10 @@ export class ContingencyFormComponent implements OnInit {
                     this.messageData.stringMessage('reload');
                     resolve();
                 }, reason => {
-                    this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE')
-                    this.messageService.openSnackBar(this.snackbarMessage);
+                    const error: StatusError = reason.json();
+                    this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
+                    const message: string = error.message !== null ? error.message : this.snackbarMessage;
+                    this.messageService.openSnackBar(message);
                     reject(reason);
                 });
         });
