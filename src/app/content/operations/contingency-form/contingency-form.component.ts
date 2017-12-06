@@ -219,7 +219,7 @@ export class ContingencyFormComponent implements OnInit {
                     });
             });
         } else {
-            this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.VALIDATION_ERROR_MESSAGE');
+            this.getTranslateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
             this.messageService.openSnackBar(this.snackbarMessage);
         }
     }

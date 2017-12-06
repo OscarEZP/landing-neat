@@ -1,10 +1,10 @@
 <form id="close-form" [formGroup]="closeForm" (ngSubmit)="submitForm(closeForm.value)">
-    <div mat-dialog-title fxLayoutGap="20px">
+    <div mat-dialog-title>
         <span class="title-dialog" fxFlex>{{'OPERATIONS.CLOSE_COMPONENT.TITLE'|translate}}</span>
-        <mat-divider></mat-divider>
     </div>
 
-    <mat-divider></mat-divider>
+    <mat-divider class="add-margin"></mat-divider>
+
     <div mat-dialog-content fxLayoutGap="" fxLayout="column">
         <div fxLayout="column" fxLayoutGap="20px">
             <div>
@@ -28,8 +28,9 @@
                 <label class="label-item">{{'OPERATIONS.CLOSE_COMPONENT.DESC'|translate}}</label>
                 <span>{{data.reason}}</span>
             </div>
-            <mat-divider></mat-divider>
+
         </div>
+        <mat-divider class="add-margin"></mat-divider>
         <div fxLayout="column" fxLayoutGap="20px">
             <div>
                 <span class="subtitles">{{'OPERATIONS.CLOSE_COMPONENT.CLOSURE_INFO'|translate}}</span>
@@ -45,31 +46,32 @@
                     </mat-radio-button>
                 </mat-radio-group>
             </div>
-            <mat-divider></mat-divider>
-        </div>
 
+        </div>
+        <mat-divider class="add-margin"></mat-divider>
         <div fxLayout="column" fxLayoutGap="20px">
             <div>
                 <span class="subtitles">{{'OPERATIONS.CLOSE_COMPONENT.OBS'|translate}}</span>
             </div>
             <mat-form-field class="full-width">
-                <textarea matInput placeholder="Observations to Maintenance"
+                <textarea matInput #observation placeholder="Observations to Maintenance" maxlength="400"
                           [formControl]="closeForm.controls['observation']"
                           required></textarea>
+                <mat-hint align="end">{{observation.value.length}} / 400</mat-hint>
+                <mat-error *ngIf="closeForm.controls['observation'].hasError('required') && closeForm.controls['observation'].invalid">
+                    {{'OPERATIONS.CLOSE_COMPONENT.OBS_REQUIRED'|translate}}
+                </mat-error>
             </mat-form-field>
-            <mat-error *ngIf="closeForm.controls['observation'].hasError('required') && closeForm.controls['observation'].touched">
-                Observations is required
-            </mat-error>
 
         </div>
 
     </div>
-
+    <mat-divider class="add-margin-last"></mat-divider>
     <div mat-dialog-actions fxLayoutAlign="end">
         <button type="button" mat-button (click)="openCancelDialog()">
             {{'OPERATIONS.CLOSE_COMPONENT.BTN_CANCEL'|translate}}
         </button>
-        <button type="submit" mat-button mat-raised-button color="primary" [disabled]="!closeForm.valid">
+        <button type="submit" mat-button mat-raised-button color="primary">
             {{'OPERATIONS.CLOSE_COMPONENT.BTN_SAVE'|translate}}
         </button>
     </div>
