@@ -1,13 +1,23 @@
-#close-form{
+#close-form {
+  color: rgba(0, 0, 0, 0.87);
   font-size: 13px;
-  .title-dialog{
+  .title-dialog {
     font-size: 20px;
   }
-  .subtitles{
+  .subtitles {
     font-size: 14px;
   }
+  .add-margin {
+    margin-bottom: 24px;
+    margin-top: 15px;
+  }
+  .add-margin-last {
+    margin-bottom: 15px;
+    margin-top: 30px;
+  }
 }
-.label-item{
+
+.label-item {
   letter-spacing: -0.7px;
   color: #7d7d7d;
 }

@@ -50,20 +50,26 @@ export class CloseContingencyComponent implements OnInit {
     }
 
     submitForm(value: any) {
-        const user = this.storageService.getCurrentUser();
-        this.closeSignature.id = this.data.id;
-        this.closeSignature.username = user.userId;
-        this.closeSignature.observation = value.observation;
-        this.contingencyService.closeContingency(this.closeSignature).subscribe(
-            res => {
-                this.translateString('OPERATIONS.CLOSE_COMPONENT.CLOSE_SUCCESS');
-                this.messageService.openSnackBar(this.snackBarMessage);
-                this.dismissCloseContigency();
-                this.dataService.stringMessage('reload');
-            }, err => {
-                this.messageService.openSnackBar(err);
-            }
-        );
+        if (this.closeForm.valid) {
+            const user = this.storageService.getCurrentUser();
+            this.closeSignature.id = this.data.id;
+            this.closeSignature.username = user.userId;
+            this.closeSignature.type = value.status;
+            this.closeSignature.observation = value.observation;
+            this.contingencyService.closeContingency(this.closeSignature).subscribe(
+                res => {
+                    this.translateString('OPERATIONS.CLOSE_COMPONENT.CLOSE_SUCCESS');
+                    this.messageService.openSnackBar(this.snackBarMessage);
+                    this.dismissCloseContigency();
+                    this.dataService.stringMessage('reload');
+                }, err => {
+                    this.messageService.openSnackBar(err);
+                }
+            );
+        } else {
+            this.translateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
+            this.messageService.openSnackBar(this.snackBarMessage);
+        }
     }
 
     openCancelDialog() {
