@@ -88,6 +88,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 this.messageData.stringMessage('close');
                 console.log('alerts length: ' + (<any>data).length);
                 this.messageEvent.emit((<any>data).length);
+                if (this.contingencyList) {
+                    this.detailsService.contingency = this.contingencyList[0];
+                }
             }, reason => {
                 this.messageData.stringMessage('close');
                 this.messageService.openSnackBar(reason);
@@ -107,9 +110,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                     this.messageData.stringMessage('close');
                     console.log('alerts length: ' + data.json().length);
                     this.messageEvent.emit(data.json().length);
-                    if (data.json().length) {
-                        this.detailsService.contingency = this.contingencyList[0];
-                    }
                     resolve();
                 }, reason => { // error
                     this.messageData.stringMessage('close');
