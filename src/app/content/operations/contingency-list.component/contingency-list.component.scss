@@ -1,13 +1,15 @@
 @import '../../../../assets/style/base.scss';
 
+$contingency-header: 76px;
+
 /deep/
 .moc-items-list.mat-list-item.active{
   background-color: #eaf2f5;
 }
 
 /deep/
-.mat-tab-group {
-  display: inline-block;
+.mat-tab-body-wrapper {
+  height: calc(100vh - #{$contingency-header} - #{$navbar-height});
 }
 
 /deep/
