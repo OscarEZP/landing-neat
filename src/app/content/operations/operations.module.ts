@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
+import { ContingencyConfigService } from '../../shared/_services/contingencyConfig.service';
 import {SharedModule} from '../../shared/shared.module';
 
 import {OperationsComponent} from './operations.component';
@@ -29,7 +30,8 @@ import { CloseContingencyComponent } from './close-contingency/close-contingency
         DialogService,
         ContingencyService,
         LogService,
-        ClockService
+        ClockService,
+        ContingencyConfigService
     ],
     entryComponents: [
         CancelComponent,

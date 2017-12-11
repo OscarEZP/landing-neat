@@ -4,13 +4,14 @@ import { Http } from '@angular/http';
 import { StatusError } from '../../../auth/_models/statusError.model';
 import { GroupTypes } from '../../../shared/_models/groupTypes';
 import { Types } from '../../../shared/_models/types';
+import { ContingencyConfigService } from '../../../shared/_services/contingencyConfig.service';
 import { DialogService } from '../../_services/dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Subscription } from 'rxjs/Subscription';
-import { environment } from '../../../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 import { ActualTimeModel } from '../../../shared/_models/actual-time-model';
 import { Aircraft } from '../../../shared/_models/aircraft';
 import { Contingency } from '../../../shared/_models/contingency';
@@ -48,7 +49,7 @@ export class ContingencyFormComponent implements OnInit {
     public contingency: Contingency;
     public safetyEventList: Safety[];
     public aircraftList: Aircraft[];
-    public flightList = [{'flightNumber': null, 'etd': null, 'legs': null}];
+    public flightList = [{'flightNumber': null, 'legs': null}];
     public typesList = [{'groupName': null, 'types': [{'code': null, 'description': null}]}];
     public typeListFinal = {
         'CONTINGENCY_TYPE': {'types': [{'code': null, 'description': null}]},
@@ -64,6 +65,8 @@ export class ContingencyFormComponent implements OnInit {
     public destination: string;
     public snackbarMessage: string;
     public optionalIsChecked = false;
+    public destinationModel = { 'label' : null, 'etd': null };
+    public flightTimeModel: number;
     
     private cancelMessage: string;
     
@@ -76,6 +79,8 @@ export class ContingencyFormComponent implements OnInit {
     private apiFlights = environment.apiUrl + environment.paths.flights;
     private apiTypes = environment.apiUrl + environment.paths.types;
     
+    public values: any[];
+    
     constructor(private  dialogService: DialogService,
                 private contingencyService: ContingencyService,
                 private fb: FormBuilder,
@@ -85,8 +90,8 @@ export class ContingencyFormComponent implements OnInit {
                 private http: Http,
                 private messageService: MessageService,
                 public translate: TranslateService,
-                private storageService: StorageService) {
-        this.flightTempModel = [];
+                private storageService: StorageService,
+                private _configService: ContingencyConfigService) {
         this.firstLeg = {};
         this.display = true;
         this.alive = true;
@@ -98,6 +103,7 @@ export class ContingencyFormComponent implements OnInit {
         this.safetyEventList = [];
         this.aircraftList = [];
         this.aircraftTempModel = new Aircraft(null, null, null);
+        this.flightTempModel = [];
         
         this.contingencyForm = fb.group({
             'tail': [null, Validators.required],
@@ -106,9 +112,9 @@ export class ContingencyFormComponent implements OnInit {
             'flightNumber': [null, Validators.required],
             'isBackup': [false],
             'origin': [false],
-            'destination': [false],
-            'tm': [null, Validators.required],
-            'dt': [null, Validators.required],
+            'destination': [{value: null, disabled: false}, false],
+            'tm': [{value: null, disabled: true}, Validators.required],
+            'dt': [{value: null, disabled: true}, Validators.required],
             'informer': ['Maintenance', Validators.required],
             'safety': [null],
             'showBarcode': [false],
@@ -123,6 +129,7 @@ export class ContingencyFormComponent implements OnInit {
     }
     
     ngOnInit() {
+        
         this._messageUTCSubscription = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
         
         TimerObservable.create(0, this.interval)
@@ -142,6 +149,16 @@ export class ContingencyFormComponent implements OnInit {
                        });
         
         this.clockService.getClock().subscribe(time => this.time = time);
+    
+        this._configService
+            .getAll<any[]>('safetyEvent')
+            .subscribe((data: any[]) => this.values = data,
+                error => () => {
+                    this.messageService.openSnackBar('error');
+                },
+                () => {
+                    console.info('data: ', this.values)
+                })
         
         this.retrieveSafetyEventsConfiguration();
         this.retrieveAircraftsConfiguration();
@@ -169,7 +186,7 @@ export class ContingencyFormComponent implements OnInit {
                     value.origin,
                     value.destination,
                     new TimeInstant(
-                        this.createEpochFromTwoStrings(this.dateModel, this.timeModel),
+                        this.destinationModel.etd,
                         null
                     )
                 ),
@@ -275,24 +292,27 @@ export class ContingencyFormComponent implements OnInit {
                 .then(data => {
                     this.flightList.pop();
                     const jsonData = data.json();
-                    for(let i = 0; i < jsonData.length; i++) {
+                    for (let i = 0; i < jsonData.length; i++) {
                         const legList = [];
                         for(let j = 0; j < jsonData[i].legs.length; j++) {
                             const legItem = new Legs(
-                                jsonData[i].legs[j].origin,
-                                jsonData[i].legs[j].destination,
-                                new TimeInstant(
-                                    jsonData[i].legs[j].updateDate.epochTime,
-                                    jsonData[i].legs[j].updateDate.label
-                                )
-                            );
+                                    jsonData[i].legs[j].origin,
+                                    jsonData[i].legs[j].destination,
+                                    new TimeInstant(
+                                        jsonData[i].legs[j].updateDate.epochTime,
+                                        jsonData[i].legs[j].updateDate.label
+                                    ),
+                                    new TimeInstant(
+                                        jsonData[i].legs[j].etd.epochTime,
+                                        jsonData[i].legs[j].etd.label
+                                    )
+                                );
                             legList.push(legItem);
                         }
                     
                         const flightConfig = new FlightConfiguration(
                             jsonData[i].flightNumber,
-                            legList,
-                            new TimeInstant(jsonData[i].etd.epochTime, jsonData[i].etd.label));
+                            legList);
                         this.flightList.push(flightConfig);
                     }
                     resolve();
@@ -360,6 +380,13 @@ export class ContingencyFormComponent implements OnInit {
         });
     }
     
+    public formatDate(value: number): void {
+        const date = new Date(value);
+        
+        this.timeModel = date.getHours() + ':' + date.getMinutes();
+        this.dateModel = date;
+    }
+    
     openCancelDialog() {
         this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
         this.messageService.openFromComponent(CancelComponent, {
@@ -379,17 +406,24 @@ export class ContingencyFormComponent implements OnInit {
     }
     
     public onSelectFlight(selectedOption: string): void {
-        
-        for(const item of this.flightList) {
-            if(item.flightNumber === selectedOption) {
-                const newDate = new Date(item.etd.label);
-                this.timeModel = newDate.getHours() + ':' + newDate.getMinutes() + ':' + newDate.getSeconds();
-                this.dateModel = newDate;
-                this.flightTempModel = item.legs;
+
+        for (const item of this.flightList) {
+            if (item.flightNumber === selectedOption) {
+                this.flightTempModel.push(item.legs);
             }
         }
-        this.firstLeg.origin = this.flightTempModel[0].origin;
-        this.firstLeg.destination = this.flightTempModel[0].destination;
+    }
+    
+    public onSelectOrigin(selectedOption: string): void {
+        let i: number;
+        for (i = 0; i < this.flightTempModel[0].length; i++) {
+            console.info('this.flightTempModel[i].origin : ', this.flightTempModel[0][i].origin);
+            if(this.flightTempModel[0][i].origin === selectedOption) {
+                this.destinationModel = { 'label' : this.flightTempModel[0][i].destination, 'etd' : this.flightTempModel[0][i].etd.epochTime };
+                this.destination = this.destinationModel.label;
+                this.formatDate(this.destinationModel.etd);
+            }
+        }
     }
     
     public onSelectOptional() {
@@ -412,13 +446,5 @@ export class ContingencyFormComponent implements OnInit {
     
     newMessage() {
         this.messageData.changeTimeUTCMessage(this.currentUTCTime);
-    }
-    
-    onSelectOrigin(selected: string): void {
-        this.firstLeg.destination = this.flightTempModel.filter(leg => leg.origin === selected)[0].destination;
-    }
-    
-    onSelectDestination(selected: string): void {
-        this.firstLeg.origin = this.flightTempModel.filter(leg => leg.destination === selected)[0].origin;
     }
 }

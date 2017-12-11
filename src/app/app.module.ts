@@ -1,25 +1,22 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
-import { HttpClientModule } from '@angular/common/http';
-
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
+import { AppRoutingModule } from './app-routing.module';
+// Components
+import { AppComponent } from './app.component';
 // Modules
 import { AuthModule } from './auth/auth.module';
 import { ContentModule } from './content/content.module';
-import { LayoutModule } from './layout/layout.module';
-import { AppRoutingModule } from './app-routing.module';
 import { DetailsModule } from './details/details.module';
-import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
-
-// Components
-import { AppComponent } from './app.component';
+import { LayoutModule } from './layout/layout.module';
+import { DataService } from './shared/_services/data.service';
 // Services
-import {DatetimeService} from './shared/_services/datetime.service';
-import {DataService} from './shared/_services/data.service';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import {HttpClient} from '@angular/common/http';
+import { DatetimeService } from './shared/_services/datetime.service';
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http);

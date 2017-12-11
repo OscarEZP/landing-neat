@@ -87,10 +87,10 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="15">
-                        <mat-select #origin placeholder="From" [(ngModel)]="firstLeg.origin"
+                        <mat-select #origin placeholder="From"
                                     [formControl]="contingencyForm.controls['origin']"
                                     name="origin" (selectionChange)="onSelectOrigin(origin.value)">
-                            <mat-option *ngFor="let option of flightTempModel" [value]="option.origin">
+                            <mat-option *ngFor="let option of flightTempModel[0]" [value]="option.origin">
                                 {{option.origin}}
                             </mat-option>
                         </mat-select>
@@ -98,10 +98,10 @@
 
                     <mat-form-field fxFlex="15">
                         <mat-select placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.TO' | translate }}"
-                                    [(ngModel)]="firstLeg.destination" [formControl]="contingencyForm.controls['destination']"
+                                    [(ngModel)]="destination" [formControl]="contingencyForm.controls['destination']"
                                     name="destination">
-                            <mat-option *ngFor="let option of flightTempModel" [value]="option.destination">
-                                {{option.destination}}
+                            <mat-option [value]="destination">
+                                {{ destination }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -113,22 +113,14 @@
                         <mat-form-field fxFlex="20">
                             <input matInput placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.FLIGHT_TIME' | translate }}"
                                    [(ngModel)]="timeModel" [formControl]="contingencyForm.controls['tm']"
-                                   name="tm" required>
-                            <mat-error
-                                    *ngIf="contingencyForm.controls['tm'].hasError('required') && contingencyForm.controls['tm'].touched">
-                                {{'OPERATIONS.CONTINGENCY_FORM.TIME_REQUIRED'|translate}}
-                            </mat-error>
+                                   name="tm">
                         </mat-form-field>
 
                         <label fxFlex="10">UTC</label>
                         <mat-form-field fxFlex="25">
                             <input matInput [matDatepicker]="picker" placeholder="Flight Date" [(ngModel)]="dateModel"
                                    [formControl]="contingencyForm.controls['dt']"
-                                   name="dt" required>
-                            <mat-error
-                                    *ngIf="contingencyForm.controls['dt'].hasError('required') && contingencyForm.controls['dt'].touched">
-                                {{'OPERATIONS.CONTINGENCY_FORM.DATE_REQUIRED'|translate}}
-                            </mat-error>
+                                   name="dt">
                             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                             <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>

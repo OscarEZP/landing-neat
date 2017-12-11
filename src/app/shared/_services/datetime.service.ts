@@ -3,7 +3,7 @@ import {Http, Response} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {ActualTimeModel} from '../_models/actual-time-model';
 import {Observable} from 'rxjs/Observable';
-import {environment} from '../../../../environments/environment';
+import {environment} from '../../../environments/environment';
 
 
 @Injectable()

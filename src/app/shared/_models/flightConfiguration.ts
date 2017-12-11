@@ -4,12 +4,10 @@ import { TimeInstant } from './timeInstant';
 export class FlightConfiguration {
         private _flightNumber: string;
     private _legs: Legs[];
-    private _etd: TimeInstant;
 
-    constructor(flightNumber: string, legs: Legs[], etd: TimeInstant) {
+    constructor(flightNumber: string, legs: Legs[]) {
         this._flightNumber = flightNumber;
         this._legs = legs;
-        this._etd = etd;
     }
 
     get flightNumber(): string {
@@ -26,13 +24,5 @@ export class FlightConfiguration {
 
     set legs(value: Legs[]) {
         this._legs = value;
-    }
-
-    get etd(): TimeInstant {
-        return this._etd;
-    }
-
-    set etd(value: TimeInstant) {
-        this._etd = value;
     }
 }
