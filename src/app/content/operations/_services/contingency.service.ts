@@ -6,7 +6,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { AircraftList } from '../_models/aircraft';
 import { FlightList } from '../_models/flight';
 import { LogService } from './log.service';
-import { environment} from '../../../../../environments/environment';
+import { environment} from '../../../../environments/environment';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

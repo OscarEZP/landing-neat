@@ -3,7 +3,7 @@ import {User} from '../_models/user.model';
 import {Http} from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import {StatusError} from '../_models/statusError.model';
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class RecoverPasswordService {

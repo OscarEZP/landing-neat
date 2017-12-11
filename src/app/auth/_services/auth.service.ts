@@ -4,7 +4,7 @@ import {Http} from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import {StatusError} from '../_models/statusError.model';
 import {StorageService} from '../../shared/_services/storage.service';
-import {environment} from '../../../../environments/environment';
+import {environment} from '../../../environments/environment';
 
 @Injectable()
 export class AuthService {
