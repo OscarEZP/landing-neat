@@ -15,10 +15,11 @@ export class SidenavComponent implements OnInit {
 
     constructor(private sidenavService: SidenavService, private storageService: StorageService) {
         this.user = {username: '', name: '', email: ''};
-        this.user.username = storageService.getCurrentUser().userName;
-        this.user.email = storageService.getCurrentUser().email;
-        this.user.name = storageService.getCurrentUser().firstName + ' ' + storageService.getCurrentUser().lastName;
-
+        this.user.username = storageService.getCurrentUser() ? storageService.getCurrentUser().userName : '';
+        this.user.email = storageService.getCurrentUser() ? storageService.getCurrentUser().email: '';
+        this.user.name = storageService.getCurrentUser() ?
+            storageService.getCurrentUser().firstName + ' ' + storageService.getCurrentUser().lastName :
+            '';
     }
 
     ngOnInit() {

@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
+import { MaterialModule } from './modules/material.module';
+import { CountdownComponent } from './components/countdown.component/countdown.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { PipesModule } from './_pipes/pipes.module';
-import { CountdownComponent } from './components/countdown.component/countdown.component';
-import { ScrollTriggerDirective } from './directives/scroll-trigger.directive';
-import { MaterialModule } from './modules/material.module';
+// import { ScrollTriggerDirective } from './directives/scroll-trigger.directive';
+import {ScrollService} from './_services/scrolling.service';
 
 @NgModule({
     declarations: [
-        CountdownComponent,
-        ScrollTriggerDirective
+        CountdownComponent
+        // ScrollTriggerDirective,
     ],
     imports: [
         MaterialModule,
@@ -20,10 +21,10 @@ import { MaterialModule } from './modules/material.module';
         PipesModule,
         CountdownComponent,
         TranslateModule,
-        ScrollTriggerDirective
+        // ScrollTriggerDirective
     ],
     providers: [
-
+        ScrollService
     ]
 })
 
