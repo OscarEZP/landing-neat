@@ -4,7 +4,7 @@ import { Http } from '@angular/http';
 import { StatusError } from '../../../auth/_models/statusError.model';
 import { GroupTypes } from '../../../shared/_models/groupTypes';
 import { Types } from '../../../shared/_models/types';
-import { ContingencyConfigService } from '../../../shared/_services/contingencyConfig.service';
+import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { DialogService } from '../../_services/dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/add/operator/map';
@@ -91,7 +91,7 @@ export class ContingencyFormComponent implements OnInit {
                 private messageService: MessageService,
                 public translate: TranslateService,
                 private storageService: StorageService,
-                private _configService: ContingencyConfigService) {
+                private _configService: ApiRestService) {
         this.firstLeg = {};
         this.display = true;
         this.alive = true;
@@ -216,6 +216,22 @@ export class ContingencyFormComponent implements OnInit {
                 initials
             );
     
+            this._configService
+                .add<any[]>('contingencyList', this.contingency)
+                .subscribe((data: Contingency[]) => this.values = data,
+                    error => (reason) => {
+                        const error: StatusError = reason.json();
+                        this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
+                        const message: string = error.message !== null ? error.message : this.snackbarMessage;
+                        this.messageService.openSnackBar(message);
+                    },
+                    () => {
+                        this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.SUCCESSFULLY_MESSAGE');
+                        this.messageService.openSnackBar(this.snackbarMessage);
+                        this.dialogService.closeAllDialogs();
+                        this.messageData.stringMessage('reload');
+                    })
+            /*
             return new Promise((resolve, reject) => {
         
                 this.http
@@ -235,6 +251,7 @@ export class ContingencyFormComponent implements OnInit {
                         reject(reason);
                     });
             });
+            */
         } else {
             this.getTranslateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
             this.messageService.openSnackBar(this.snackbarMessage);

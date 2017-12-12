@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { PipesModule } from './_pipes/pipes.module';
+import { ApiRestService } from './_services/apiRest.service';
 import { CountdownComponent } from './components/countdown.component/countdown.component';
 import { ScrollTriggerDirective } from './directives/scroll-trigger.directive';
 import { MaterialModule } from './modules/material.module';
@@ -23,7 +24,6 @@ import { MaterialModule } from './modules/material.module';
         ScrollTriggerDirective
     ],
     providers: [
-
     ]
 })
 

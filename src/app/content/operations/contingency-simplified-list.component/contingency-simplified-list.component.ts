@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 import { Subscription } from 'rxjs/Subscription';
-import { DetailsService } from '../../../details/_services/details.service';
 import { Aircraft } from '../../../shared/_models/aircraft';
 import { Contingency } from '../../../shared/_models/contingency';
 import { Flight } from '../../../shared/_models/flight';
@@ -14,33 +14,29 @@ import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { DataService } from '../../../shared/_services/data.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
-import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
 
 @Component({
-    selector: 'lsl-contingency-list',
-    templateUrl: './contingency-list.component.html',
-    styleUrls: ['./contingency-list.component.scss'],
+    selector: 'lsl-contingency-simplified-list',
+    templateUrl: './contingency-simplified-list.component.html',
+    styleUrls: ['./contingency-simplified-list.component.scss'],
     providers: [DialogService]
 })
 
-export class ContingencyListComponent implements OnInit, OnDestroy {
+export class ContingencySimplifiedListComponent implements OnInit, OnDestroy {
 
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
+    private _alive: boolean;
     public contingencyList;
     public progressBarColor: string;
     public currentUTCTime: number;
 
     @Output() messageEvent = new EventEmitter<number>();
 
-    constructor(private httpClient: HttpClient, private messageData: DataService, private dialogService: DialogService, public translate: TranslateService, private messageService: MessageService, public detailsService: DetailsService, private _apiService: ApiRestService) {
+    constructor(private httpClient: HttpClient, private messageData: DataService, private dialogService: DialogService, public translate: TranslateService, private messageService: MessageService, private _apiService: ApiRestService) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
-    }
-
-    openDetails(contingency: Contingency, section: string){
-        this.detailsService.contingency = contingency;
-        this.detailsService.openDetails(section);
+        this._alive = true;
     }
 
     ngOnInit() {
@@ -49,21 +45,18 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
         this._reloadSubscription = this.messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.getContingences();
+
+        IntervalObservable.create(60000)
+            .takeWhile(() => this._alive)
+            .subscribe(() => {
+                this.reloadList('reload');
+            });
+
     }
 
     ngOnDestroy() {
         this._messageSubscriptions.unsubscribe();
         this._reloadSubscription.unsubscribe();
-    }
-
-    public openCloseContingency(contingency: any) {
-        this.dialogService.openDialog(CloseContingencyComponent, {
-            data: contingency,
-            hasBackdrop: true,
-            disableClose: true,
-            height: '536px',
-            width: '500px'
-        });
     }
 
     public reloadList(message) {
@@ -91,7 +84,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 });
     }
 
-    private applyRs(data: any) {
+    private applyRs(data: any[]) {
 
         for (let i = 0; i < data.length; i++) {
 
