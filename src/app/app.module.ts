@@ -17,6 +17,7 @@ import { LayoutModule } from './layout/layout.module';
 import { DataService } from './shared/_services/data.service';
 // Services
 import { DatetimeService } from './shared/_services/datetime.service';
+import { SimplifiedLayoutModule } from './simplified-layout/simplified-layout.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http);
@@ -31,6 +32,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         AuthModule,
         ContentModule,
         LayoutModule,
+        SimplifiedLayoutModule,
         AppRoutingModule,
         HttpClientModule,
         DetailsModule,

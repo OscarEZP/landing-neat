@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {User} from '../../auth/_models/user.model';
+import { User } from '../_models/user/user';
 
 @Injectable()
 export class StorageService {
