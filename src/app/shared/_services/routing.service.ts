@@ -14,6 +14,9 @@ export class RoutingService {
             case '/operations/contingencies'   :
                 this.moduleTitle = 'Operations Module';
                 break;
+            case '/hemycicle/contingencies' :
+                this.moduleTitle = 'Hemycicle Module';
+                break;
         }
         console.log('Title: ' + this.moduleTitle);
     }
