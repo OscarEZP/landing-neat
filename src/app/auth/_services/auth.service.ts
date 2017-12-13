@@ -30,7 +30,7 @@ export class AuthService {
         user.password = password;
 
         return this.http
-            .post(environment.apiUrl + environment.paths.login, JSON.stringify(user))
+            .post(environment.apiUrl + environment.paths.login, JSON.stringify(user).replace(/\b[_]/g, ''))
             .toPromise()
             .then(value => {
                 const response = value.json();
