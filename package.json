@@ -10,7 +10,7 @@
     "lint": "ng lint",
     "e2e": "protractor ./protractor.conf.js",
     "pree2e": "webdriver-manager update --standalone false --gecko false --quiet",
-    "freshtall": "npm c/home/pablo/Testing/web-srv/adminer-webache clean --force && rm -rf node_modules && rm -f package-lock.json && npm install"
+    "freshtall": "npm cache clean --force && rm -rf node_modules && rm -f package-lock.json && npm install"
   },
   "private": true,
   "dependencies": {

@@ -53,9 +53,4 @@ describe('ContingencyFormComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-
-    it('should separate ', () => {
-
-        // expect(component.createEpochFromTwoStrings(dt, tm)).toEqual();
-    });
 });
