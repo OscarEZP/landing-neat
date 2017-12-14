@@ -16,7 +16,7 @@ env:
 branches:
   only:
     - develop
-#    - master
+    - master
 
 cache: true
 
@@ -69,6 +69,16 @@ integrations:
       branches:
         only:
           - develop
+      on_success: change
+      on_failure: always
+
+    - integrationName: moc-Slack-integration
+      type: slack
+      recipients:
+        - "#moc-production"
+      branches:
+        only:
+          - master
       on_success: change
       on_failure: always
   hub:
