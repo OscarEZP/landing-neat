@@ -7,17 +7,19 @@ module.exports = function (config) {
         frameworks: ['jasmine', '@angular/cli'],
         plugins: [
             require('karma-jasmine'),
+            require('karma-coverage'),
             require('karma-chrome-launcher'),
             require('karma-jasmine-html-reporter'),
             require('karma-coverage-istanbul-reporter'),
             require('karma-istanbul-threshold'),
-            require('@angular/cli/plugins/karma')
+            require('@angular/cli/plugins/karma'),
+            require('karma-phantomjs-launcher')
         ],
         client: {
-            clearContext: false // leave Jasmine Spec Runner output visible in browser
+            clearContext: true // leave Jasmine Spec Runner output visible in browser
         },
         coverageIstanbulReporter: {
-            reports: ['html', 'json'],
+            reports: ['lcovonly', 'html', 'json'],
             fixWebpackSourcePaths: true
         },
         istanbulThresholdReporter: {
@@ -42,7 +44,9 @@ module.exports = function (config) {
         angularCli: {
             environment: 'dev'
         },
-        reporters: ['progress', 'kjhtml'],
+        reporters: config.angularCli && config.angularCli.codeCoverage
+            ? ['progress', 'coverage-istanbul']
+            : ['progress', 'kjhtml'],
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
