@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-import { MaterialModule } from './modules/material.module';
-import { CountdownComponent } from './components/countdown.component/countdown.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { PipesModule } from './_pipes/pipes.module';
 import { CountdownComponent } from './components/countdown.component/countdown.component';

@@ -11,7 +11,6 @@ import {ClockService} from "../../../shared/_services/clock.service";
 import {DataService} from "../../../shared/_services/data.service";
 import {MessageService} from "../../../shared/_services/message.service";
 import {StorageService} from "../../../shared/_services/storage.service";
-import {ContingencyConfigService} from "../../../shared/_services/contingencyConfig.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 describe('ContingencyFormComponent', () => {
@@ -37,8 +36,7 @@ describe('ContingencyFormComponent', () => {
                 ClockService,
                 DataService,
                 MessageService,
-                StorageService,
-                ContingencyConfigService
+                StorageService
             ]
         })
         .compileComponents();

@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ContingencyListComponent } from './contingency-simplified-list.component';
+import {ContingencySimplifiedListComponent} from "./contingency-simplified-list.component";
 
-describe('ContingencyListComponent', () => {
-  let component: ContingencyListComponent;
-  let fixture: ComponentFixture<ContingencyListComponent>;
+describe('ContingencySimplifiedListComponent', () => {
+  let component: ContingencySimplifiedListComponent;
+  let fixture: ComponentFixture<ContingencySimplifiedListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContingencyListComponent ]
+      declarations: [ ContingencySimplifiedListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ContingencyListComponent);
+    fixture = TestBed.createComponent(ContingencySimplifiedListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

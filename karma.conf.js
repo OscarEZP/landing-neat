@@ -19,7 +19,7 @@ module.exports = function (config) {
             clearContext: true // leave Jasmine Spec Runner output visible in browser
         },
         coverageIstanbulReporter: {
-            reports: ['lcovonly', 'html', 'json'],
+            reports: ['html', 'json'],
             fixWebpackSourcePaths: true
         },
         istanbulThresholdReporter: {
@@ -45,7 +45,7 @@ module.exports = function (config) {
             environment: 'dev'
         },
         reporters: config.angularCli && config.angularCli.codeCoverage
-            ? ['progress', 'coverage-istanbul']
+            ? ['progress', 'coverage-istanbul', 'istanbul-threshold']
             : ['progress', 'kjhtml'],
         port: 9876,
         colors: true,

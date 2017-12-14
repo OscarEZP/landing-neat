@@ -29,4 +29,4 @@ services:
     - "9876:9876"
     volumes:    # Volumes (directories) to mount
     - ../../:/var/www/html/
-    command: bash -c "npm install && ng test --env=staging -sm=false --code-coverage"
+    command: bash -c "npm install && ng test --env=staging -sm=false --cc"
