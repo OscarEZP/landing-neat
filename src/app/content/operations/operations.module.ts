@@ -12,6 +12,7 @@ import {LogService} from './_services/log.service';
 import {ClockService} from '../../shared/_services/clock.service';
 import {CancelComponent} from './cancel/cancel.component';
 import { CloseContingencyComponent } from './close-contingency/close-contingency.component';
+import { SearchHistoricalComponent } from './search-historical/search-historical.component';
 
 @NgModule({
     imports: [
@@ -23,7 +24,8 @@ import { CloseContingencyComponent } from './close-contingency/close-contingency
         ContingencyListComponent,
         ContingencyFormComponent,
         CancelComponent,
-        CloseContingencyComponent
+        CloseContingencyComponent,
+        SearchHistoricalComponent
     ],
     exports: [],
     providers: [

@@ -1,0 +1,47 @@
+<form [formGroup]="searchForm" (ngSubmit)="submitForm(searchForm.value)">
+    <div fxLayout="row" fxLayoutGap="20px">
+        <span fxFlex="30" fxLayoutAlign="end center">Historical Search:</span>
+        <mat-form-field fxFlex="">
+            <mat-select placeholder="Tail" multiple [formControl]="searchForm.controls['tails']" required>
+
+                <div id="search">
+                    <mat-form-field style="width: 100%">
+                        <input matInput placeholder="Search" autofocus [(ngModel)]="term" [ngModelOptions]="{standalone: true}">
+                        <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                </div>
+
+                <mat-select-trigger>
+                    {{searchForm.controls['tails'].value ? searchForm.controls['tails'].value[0] : ''}}
+                    <span *ngIf="searchForm.controls['tails'].value?.length > 1"
+                          class="example-additional-selection">
+                        (+{{searchForm.controls['tails'].value.length - 1}} others)
+                    </span>
+                </mat-select-trigger>
+                <mat-option *ngFor="let topping of toppingList | filter : term" [value]="topping">{{topping}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex="15">
+            <input matInput [matDatepicker]="from" placeholder="From Date" [formControl]="searchForm.controls['from']"
+                   name="from" required>
+            <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+            <mat-datepicker #from></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field fxFlex="15">
+            <input matInput [matDatepicker]="to" placeholder="To Date" [formControl]="searchForm.controls['to']"
+                   name="to" required>
+            <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
+            <mat-datepicker #to></mat-datepicker>
+        </mat-form-field>
+
+        <div fxFlex="" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end center">
+            <button type="submit" mat-button color="primary">
+                FILTER
+            </button>
+            <button type="button" mat-button color="primary">
+                CLEAR
+            </button>
+        </div>
+    </div>
+
+</form>

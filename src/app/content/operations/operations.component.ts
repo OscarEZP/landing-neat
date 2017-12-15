@@ -19,7 +19,6 @@ export class OperationsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.itemsCount = this.child.contingenceLength;
     }
 
     receiveMessage($event) {

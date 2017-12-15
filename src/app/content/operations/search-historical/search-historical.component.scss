@@ -1,0 +1,10 @@
+.btn-container{
+  height: 35px;
+}
+/deep/
+#search{
+  .mat-input-infix {
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+}

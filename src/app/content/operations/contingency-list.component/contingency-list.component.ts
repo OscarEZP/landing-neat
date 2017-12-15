@@ -32,6 +32,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public contingencyList;
     public progressBarColor: string;
     public currentUTCTime: number;
+    public itemsCount: number;
 
     @Output() messageEvent = new EventEmitter<number>();
 
@@ -44,6 +45,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 public detailsService: DetailsService) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
+        this.itemsCount = 0;
     }
 
     openDetails(contingency: Contingency, section: string){
@@ -88,6 +90,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 this.messageData.stringMessage('close');
                 console.log('alerts length: ' + (<any>data).length);
                 this.messageEvent.emit((<any>data).length);
+                this.itemsCount = (<any>data).length;
                 if (this.contingencyList) {
                     this.detailsService.contingency = this.contingencyList[0];
                 }
