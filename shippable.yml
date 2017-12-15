@@ -12,8 +12,7 @@ env:
   global:
     - IMAGE_NAME=moc/moc-web
     - IMAGE_REPO_URL=693532776274.dkr.ecr.us-east-1.amazonaws.com/moc/moc-web
-    - ENVIRONMENT_CI=master IS_PROD=false
-    - ENVIRONMENT_CI=develop IS_PROD=true
+    - ENVIRONMENT_CI=staging
 
 branches:
   only:
@@ -39,7 +38,9 @@ build:
 
     #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR
-    - npm run ng -- build --env=staging
+    - if [ "$BRANCH" == "master" ]; then $ENVIRONMENT_CI=prod fi
+    - if [ "$BRANCH" == "develop" ] && [ "$IS_PULL_REQUEST" == false ]; then $ENVIRONMENT_CI=staging fi
+    - npm run ng -- build --env=$ENVIRONMENT_CI
 
     #Run the test
     #- npm run ng test
