@@ -37,7 +37,14 @@ build:
 
     #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR
-    - npm run ng -- build --env=staging
+
+        if [ "$BRANCH" == "master" ]; then
+          ENVIRONMENT=production
+        elif [ "$BRANCH" == "develop" ]; then
+          ENVIRONMENT=staging
+        fi
+
+    - npm run ng -- build --env=$ENVIRONMENT
 
     #Run the test
     #- npm run ng test
