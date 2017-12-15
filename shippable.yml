@@ -37,9 +37,6 @@ build:
     - cd $SHIPPABLE_BUILD_DIR
     - shippable_retry npm install --quiet
 
-    echo $ENVIRONMENT_CI
-    echo $IS_PROD
-
     #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR
     - npm run ng -- build --env=staging
@@ -49,6 +46,9 @@ build:
     #- mv shippable/codecoverage/*/coverage.xml shippable/codecoverage
 
   on_success:
+
+          echo $ENVIRONMENT_CI
+          echo $IS_PROD
     # WEB IMAGE
     - >
       if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ] && [ "$IS_PULL_REQUEST" == "false" ]; then
