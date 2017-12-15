@@ -48,15 +48,15 @@ build:
   on_success:
     # WEB IMAGE
     - >
-          echo $ENVIRONMENT_CI
-          echo $IS_PROD
-
       if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ] && [ "$IS_PULL_REQUEST" == "false" ]; then
         docker build -f $SHIPPABLE_BUILD_DIR/docker/Dockerfile  -t $IMAGE_NAME $SHIPPABLE_BUILD_DIR
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:latest
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
         docker push $IMAGE_REPO_URL:latest
         docker push $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
+
+        echo $ENVIRONMENT_CI
+        echo $IS_PROD
 
         if [ "$BRANCH" == "master" ]; then
           echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-production.env
