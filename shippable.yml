@@ -43,7 +43,6 @@ build:
       elif [ "$BRANCH" == "develop" ]; then
         npm run ng -- build --env=staging
       fi
-#    - npm run ng -- build --env=$ENVIRONMENT_CI
 
     #Run the test
     #- npm run ng test
