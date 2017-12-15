@@ -38,8 +38,8 @@ build:
 
     #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR
-    - if [ "$BRANCH" == "master" ]; then $ENVIRONMENT_CI=prod fi
-    - if [ "$BRANCH" == "develop" ] && [ "$IS_PULL_REQUEST" == false ]; then $ENVIRONMENT_CI=staging fi
+    - if [ "$BRANCH" == "master" ]; then ENVIRONMENT_CI=prod fi
+    - if [ "$BRANCH" == "develop" ] && [ "$IS_PULL_REQUEST" == false ]; then ENVIRONMENT_CI=staging fi
     - npm run ng -- build --env=$ENVIRONMENT_CI
 
     #Run the test
