@@ -139,4 +139,8 @@ export class Contingency {
     set username (value: string) {
         this._username = value;
     }
+
+    static fromJsonArray(array: Array<Object>): Contingency[] {
+        return array.map(obj => new Contingency(obj['id'], obj['aircraft'], obj['barcode'], obj['creationDate'], obj['failure'], obj['flight'], obj['informer'], obj['isBackup'], obj['reason'], obj['safetyEvent'], obj['status'], obj['type'], obj['username']));
+    }
 }

@@ -9,11 +9,11 @@
             <mat-card-content>
                 <mat-form-field class="mat-form-field">
                     <input matInput placeholder="Username" type="text"
-                           [formControl]="loginForm.controls['userNameFormControl']"
-                           [errorStateMatcher]="matcher" id="userNameId"
-                           [(ngModel)]="authService.data.userName">
-                    <mat-error *ngIf="userNameFormControl.hasError('required')">
-                        Please enter your userName
+                           [formControl]="loginForm.controls['usernameFormControl']"
+                           [errorStateMatcher]="matcher" id="usernameId"
+                           [(ngModel)]="authService.data.username">
+                    <mat-error *ngIf="usernameFormControl.hasError('required')">
+                        Please enter your username
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field class="mat-form-field">
