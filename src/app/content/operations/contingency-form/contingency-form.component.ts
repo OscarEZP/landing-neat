@@ -65,14 +65,14 @@ export class ContingencyFormComponent implements OnInit {
     public destination: string;
     public snackbarMessage: string;
     public optionalIsChecked = false;
-    public destinationModel = { 'label' : null, 'etd': null };
+    public destinationModel = {'label': null, 'etd': null};
     public flightTimeModel: number;
-    
+
     private cancelMessage: string;
-    
+
     protected safety: string;
     protected contingencyType: string;
-    
+
     private apiContingency = environment.apiUrl + environment.paths.contingencyList;
     private apiSafetyEvents = environment.apiUrl + environment.paths.safetyEvent;
     private apiAircrafts = environment.apiUrl + environment.paths.aircrafts;
@@ -82,7 +82,7 @@ export class ContingencyFormComponent implements OnInit {
     public durations: number[];
     
     public values: any[];
-    
+
     constructor(private  dialogService: DialogService,
                 private contingencyService: ContingencyService,
                 private fb: FormBuilder,
@@ -106,7 +106,7 @@ export class ContingencyFormComponent implements OnInit {
         this.aircraftList = [];
         this.aircraftTempModel = new Aircraft(null, null, null);
         this.flightTempModel = [];
-        
+
         this.contingencyForm = fb.group({
             'tail': [null, Validators.required],
             'fleet': [null, Validators.required],
@@ -130,27 +130,27 @@ export class ContingencyFormComponent implements OnInit {
         });
         this.durations = [];
     }
-    
+
     ngOnInit() {
-        
+
         this._messageUTCSubscription = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
-        
+
         TimerObservable.create(0, this.interval)
-                       .takeWhile(() => this.alive)
-                       .subscribe(() => {
-                           this.datetimeService.getTime()
-                               .subscribe((data) => {
-                                   this.data = data;
-                                   this.currentUTCTime = this.data.currentTimeLong;
-                                   this.currentDateString = this.data.currentTime;
-                                   this.newMessage();
-                                   this.clockService.setClock(this.currentUTCTime);
-                                   if(!this.display) {
-                                       this.display = true;
-                                   }
-                               });
-                       });
-        
+            .takeWhile(() => this.alive)
+            .subscribe(() => {
+                this.datetimeService.getTime()
+                    .subscribe((data) => {
+                        this.data = data;
+                        this.currentUTCTime = this.data.currentTimeLong;
+                        this.currentDateString = this.data.currentTime;
+                        this.newMessage();
+                        this.clockService.setClock(this.currentUTCTime);
+                        if (!this.display) {
+                            this.display = true;
+                        }
+                    });
+            });
+
         this.clockService.getClock().subscribe(time => this.time = time);
     
         this._configService
@@ -160,21 +160,21 @@ export class ContingencyFormComponent implements OnInit {
                     this.messageService.openSnackBar('error');
                 },
                 () => {
-                    console.info('data: ', this.values)
-                })
-        
+                    console.log('data: ', this.values);
+                });
+
         this.retrieveSafetyEventsConfiguration();
         this.retrieveAircraftsConfiguration();
         this.retrieveFlightsConfiguration();
         this.retrieveTypesConfiguration();
         this.generateIntervalSelection();
     }
-    
+
     public submitForm(value: any) {
-        if(this.contingencyForm.valid) {
+        if (this.contingencyForm.valid) {
             const user = this.storageService.getCurrentUser();
             const initials = user.firstName.substring(0, 1).toUpperCase() + user.lastName.substring(0, 1).toUpperCase();
-    
+
             this.contingency = new Contingency(
                 null,
                 new Aircraft(
@@ -258,12 +258,12 @@ export class ContingencyFormComponent implements OnInit {
     }
     
     private createEpochFromTwoStrings(dt: Date, tm: string) {
-        if(tm !== undefined) {
+        if (tm !== undefined) {
             const timeStr = tm.split(':');
             return Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), parseInt(timeStr[0], 10), parseInt(timeStr[1], 10), parseInt(timeStr[2], 10));
         }
     }
-    
+
     private retrieveSafetyEventsConfiguration() {
         return new Promise((resolve, reject) => {
             this.http
@@ -271,7 +271,7 @@ export class ContingencyFormComponent implements OnInit {
                 .toPromise()
                 .then(data => {
                     const jsonData = data.json();
-                    for(let i = 0; i < jsonData.length; i++) {
+                    for (let i = 0; i < jsonData.length; i++) {
                         this.safetyEventList[i] = new Safety(jsonData[i].code, jsonData[i].description);
                     }
                     resolve();
@@ -281,7 +281,7 @@ export class ContingencyFormComponent implements OnInit {
                 });
         });
     }
-    
+
     private retrieveAircraftsConfiguration() {
         return new Promise((resolve, reject) => {
             this.http
@@ -289,7 +289,7 @@ export class ContingencyFormComponent implements OnInit {
                 .toPromise()
                 .then(data => {
                     const jsonData = data.json();
-                    for(let i = 0; i < jsonData.length; i++) {
+                    for (let i = 0; i < jsonData.length; i++) {
                         this.aircraftList[i] = new Aircraft(jsonData[i].tail, jsonData[i].fleet, jsonData[i].operator);
                     }
                     resolve();
@@ -299,7 +299,7 @@ export class ContingencyFormComponent implements OnInit {
                 });
         });
     }
-    
+
     private retrieveFlightsConfiguration() {
         return new Promise((resolve, reject) => {
             this.http
@@ -310,22 +310,22 @@ export class ContingencyFormComponent implements OnInit {
                     const jsonData = data.json();
                     for (let i = 0; i < jsonData.length; i++) {
                         const legList = [];
-                        for(let j = 0; j < jsonData[i].legs.length; j++) {
+                        for (let j = 0; j < jsonData[i].legs.length; j++) {
                             const legItem = new Legs(
-                                    jsonData[i].legs[j].origin,
-                                    jsonData[i].legs[j].destination,
-                                    new TimeInstant(
-                                        jsonData[i].legs[j].updateDate.epochTime,
-                                        jsonData[i].legs[j].updateDate.label
-                                    ),
-                                    new TimeInstant(
-                                        jsonData[i].legs[j].etd.epochTime,
-                                        jsonData[i].legs[j].etd.label
-                                    )
-                                );
+                                jsonData[i].legs[j].origin,
+                                jsonData[i].legs[j].destination,
+                                new TimeInstant(
+                                    jsonData[i].legs[j].updateDate.epochTime,
+                                    jsonData[i].legs[j].updateDate.label
+                                ),
+                                new TimeInstant(
+                                    jsonData[i].legs[j].etd.epochTime,
+                                    jsonData[i].legs[j].etd.label
+                                )
+                            );
                             legList.push(legItem);
                         }
-                    
+
                         const flightConfig = new FlightConfiguration(
                             jsonData[i].flightNumber,
                             legList);
@@ -338,7 +338,7 @@ export class ContingencyFormComponent implements OnInit {
                 });
         });
     }
-    
+
     retrieveTypesConfiguration() {
         return new Promise((resolve, reject) => {
             this.http
@@ -347,9 +347,9 @@ export class ContingencyFormComponent implements OnInit {
                 .then(data => {
                     this.typesList.pop();
                     const jsonData = data.json();
-                    for(let i = 0; i < jsonData.length; i++) {
+                    for (let i = 0; i < jsonData.length; i++) {
                         const typeList = [];
-                        for(let j = 0; j < jsonData[i].types.length; j++) {
+                        for (let j = 0; j < jsonData[i].types.length; j++) {
                             const typeItem = new Types(
                                 jsonData[i].types[j].code,
                                 jsonData[i].types[j].description,
@@ -366,7 +366,7 @@ export class ContingencyFormComponent implements OnInit {
                         );
                         this.typesList.push(typeGroup);
                     }
-                
+
                     this.separateTypes(this.typesList);
                     resolve();
                 }, reason => {
@@ -375,13 +375,13 @@ export class ContingencyFormComponent implements OnInit {
                 });
         });
     }
-    
+
     private separateTypes(typeList) {
-        for(let h = 0; h < typeList.length; h++) {
+        for (let h = 0; h < typeList.length; h++) {
             let groupName = typeList[h].groupName;
             this.typeListFinal[groupName] = {'types': []};
-            
-            for(let i = 0; i < typeList[h].types.length; i++) {
+
+            for (let i = 0; i < typeList[h].types.length; i++) {
                 this.typeListFinal[groupName]['types'][i] = {
                     'code': typeList[h].types[i].code,
                     'description': typeList[h].types[i].description
@@ -389,20 +389,20 @@ export class ContingencyFormComponent implements OnInit {
             }
         }
     }
-    
+
     private getTranslateString(toTranslate: string) {
         this.translate.get(toTranslate).subscribe((res: string) => {
             this.snackbarMessage = res;
         });
     }
-    
+
     public formatDate(value: number): void {
         const date = new Date(value);
-        
+
         this.timeModel = date.getHours() + ':' + date.getMinutes();
         this.dateModel = date;
     }
-    
+
     openCancelDialog() {
         this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
         this.messageService.openFromComponent(CancelComponent, {
@@ -411,16 +411,16 @@ export class ContingencyFormComponent implements OnInit {
             verticalPosition: 'top'
         });
     }
-    
+
     public onSelectAircraft(selectedOption: string): void {
-        
-        for(const item of this.aircraftList) {
-            if(item.tail === selectedOption) {
+
+        for (const item of this.aircraftList) {
+            if (item.tail === selectedOption) {
                 this.aircraftTempModel = new Aircraft(item.tail, item.fleet, item.operator);
             }
         }
     }
-    
+
     public onSelectFlight(selectedOption: string): void {
 
         for (const item of this.flightList) {
@@ -429,10 +429,11 @@ export class ContingencyFormComponent implements OnInit {
             }
         }
     }
-    
+
     public onSelectOrigin(selectedOption: string): void {
         let i: number;
         for (i = 0; i < this.flightTempModel[0].length; i++) {
+            console.info('this.flightTempModel[i].origin : ', this.flightTempModel[0][i].origin);
             if(this.flightTempModel[0][i].origin === selectedOption) {
                 this.destinationModel = { 'label' : this.flightTempModel[0][i].destination, 'etd' : this.flightTempModel[0][i].etd.epochTime };
                 this.destination = this.destinationModel.label;
@@ -440,24 +441,24 @@ export class ContingencyFormComponent implements OnInit {
             }
         }
     }
-    
+
     public onSelectOptional() {
         if(!this.optionalIsChecked) {
             this.contingencyForm.get('safetyEventCode').setValue('EAT');
             this.contingencyForm.get('safetyEventCode').setValidators(Validators.required);
             this.contingencyForm.get('safetyEventCode').updateValueAndValidity();
         } else {
-            
+
             this.contingencyForm.get('safetyEventCode').setValue(null);
             this.contingencyForm.get('safetyEventCode').setValidators(null);
             this.contingencyForm.get('safetyEventCode').updateValueAndValidity();
         }
     }
-    
+
     onCloseCreationContingencyForm(): void {
         this.dialogService.closeAllDialogs();
     }
-    
+
     newMessage() {
         this.messageData.changeTimeUTCMessage(this.currentUTCTime);
     }

@@ -24,11 +24,12 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public contingencyList: Contingency[];
     public progressBarColor: string;
     public currentUTCTime: number;
-
-    @Output() messageEvent = new EventEmitter<number>();
+    public itemsCount: number;
 
     constructor(private http: HttpClient, private messageData: DataService, private dialogService: DialogService, public translate: TranslateService, private messageService: MessageService, public detailsService: DetailsService, private _apiService: ApiRestService) {
         translate.setDefaultLang('en');
+        this.contingencyList = [];
+        this.itemsCount = 0;
     }
 
     openDetails(contingency: Contingency, section: string) {
@@ -73,6 +74,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                    .getAll<Contingency[]>('contingencyList')
                    .subscribe(data => {
                        this.messageData.stringMessage('close');
+                       this.itemsCount = response.length;
                        return this.contingencyList = data;
                    });
 

@@ -9,7 +9,8 @@
     @include generate-font-size(-1);
     position: absolute;
     right: 30px;
-    top: 33px;
+    top: 13px;
+    z-index: 100;
     strong{
       font-weight: bold;
     }
