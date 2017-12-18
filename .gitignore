@@ -1,9 +1,11 @@
 node_modules
+.npm
 *.iml
 ?/
 \.idea/
 .DS_Store
 .settings
 .idea/watcherTasks.xml
-.npm
 *.log
+docker/dev/.bash_history
+coverage
