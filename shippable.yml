@@ -16,7 +16,7 @@ env:
 branches:
   only:
     - develop
-#    - master
+    - master
 
 cache: true
 
@@ -37,7 +37,12 @@ build:
 
     #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR
-    - npm run ng -- build --env=staging
+    - >
+      if [ "$BRANCH" == "master" ]; then
+        npm run ng -- build --env=prod
+      elif [ "$BRANCH" == "develop" ]; then
+        npm run ng -- build --env=staging
+      fi
 
     #Run the test
     #- npm run ng test
@@ -69,6 +74,16 @@ integrations:
       branches:
         only:
           - develop
+      on_success: change
+      on_failure: always
+
+    - integrationName: moc-Slack-integration
+      type: slack
+      recipients:
+        - "#moc-production"
+      branches:
+        only:
+          - master
       on_success: change
       on_failure: always
   hub:
