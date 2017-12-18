@@ -10,19 +10,11 @@ import {TranslateService} from '@ngx-translate/core';
 
 export class OperationsComponent implements OnInit {
 
-    public itemsCount: number;
-
-    @ViewChild(ContingencyListComponent) child;
-
     constructor(private translate: TranslateService) {
         this.translate.setDefaultLang('en');
     }
 
     ngOnInit() {
-    }
-
-    receiveMessage($event) {
-        this.itemsCount = $event;
     }
 
 }

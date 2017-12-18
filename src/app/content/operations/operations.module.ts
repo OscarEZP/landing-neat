@@ -1,7 +1,8 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import { ContingencyConfigService } from '../../shared/_services/contingencyConfig.service';
+import { ApiRestService } from '../../shared/_services/apiRest.service';
 import {SharedModule} from '../../shared/shared.module';
+import { ContingencySimplifiedListComponent } from './contingency-simplified-list.component/contingency-simplified-list.component';
 
 import {OperationsComponent} from './operations.component';
 import {ContingencyListComponent} from './contingency-list.component/contingency-list.component';
@@ -22,6 +23,7 @@ import { SearchHistoricalComponent } from './search-historical/search-historical
     declarations: [
         OperationsComponent,
         ContingencyListComponent,
+        ContingencySimplifiedListComponent,
         ContingencyFormComponent,
         CancelComponent,
         CloseContingencyComponent,
@@ -33,7 +35,7 @@ import { SearchHistoricalComponent } from './search-historical/search-historical
         ContingencyService,
         LogService,
         ClockService,
-        ContingencyConfigService
+        ApiRestService
     ],
     entryComponents: [
         CancelComponent,
