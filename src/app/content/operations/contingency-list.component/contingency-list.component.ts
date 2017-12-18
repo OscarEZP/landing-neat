@@ -74,7 +74,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                    .getAll<Contingency[]>('contingencyList')
                    .subscribe(data => {
                        this.messageData.stringMessage('close');
-                       this.itemsCount = response.length;
+                       this.itemsCount = data.length;
                        return this.contingencyList = data;
                    });
 
