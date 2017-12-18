@@ -1,14 +1,12 @@
 <div id="post-header-container">
+
     <div id="item-counter-container">
-        <strong>{{ itemsCount }}
-            <span *ngIf="itemsCount === 1"> {{ 'OPERATIONS.CONTINGENCY_ACTIVE' | translate }}</span>
-            <span *ngIf="itemsCount > 1"> {{ 'OPERATIONS.CONTINGENCIES_ACTIVES' | translate }}</span>
-        </strong>
+        <lsl-search-historical></lsl-search-historical>
     </div>
 
     <mat-tab-group id="post-header-tab">
         <mat-tab class="mat-tab-item" label="{{ 'OPERATIONS.AOG_CONTINGENCY' | translate }}">
-            <lsl-contingency-list (messageEvent)="receiveMessage($event)"></lsl-contingency-list>
+            <lsl-contingency-list></lsl-contingency-list>
         </mat-tab>
         <mat-tab class="mat-tab-item" label="{{ 'OPERATIONS.PIT_STOP' | translate }}">
             <p>Pit Stop Content</p>

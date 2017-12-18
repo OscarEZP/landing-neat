@@ -30,15 +30,15 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public contingencyList;
     public progressBarColor: string;
     public currentUTCTime: number;
-
-    @Output() messageEvent = new EventEmitter<number>();
+    public itemsCount: number;
 
     constructor(private httpClient: HttpClient, private messageData: DataService, private dialogService: DialogService, public translate: TranslateService, private messageService: MessageService, public detailsService: DetailsService, private _apiService: ApiRestService) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
+        this.itemsCount = 0;
     }
 
-    openDetails(contingency: Contingency, section: string){
+    openDetails(contingency: Contingency, section: string) {
         this.detailsService.contingency = contingency;
         this.detailsService.openDetails(section);
     }
@@ -85,9 +85,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                     this.messageService.openSnackBar(error);
                 },
                 () => {
+                    this.itemsCount = response.length;
                     this.messageData.stringMessage('close');
                     this.applyRs(response);
-                    this.messageEvent.emit(response.length);
                 });
     }
 
