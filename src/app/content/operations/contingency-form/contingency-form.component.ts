@@ -12,7 +12,7 @@ import 'rxjs/add/operator/startWith';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Subscription } from 'rxjs/Subscription';
 import { environment } from '../../../../environments/environment';
-import { ActualTimeModel } from '../../../shared/_models/actual-time-model';
+import { ActualTimeModel } from '../../../shared/_models/actualTime';
 import { Aircraft } from '../../../shared/_models/aircraft';
 import { Contingency } from '../../../shared/_models/contingency';
 import { Flight } from '../../../shared/_models/flight';
@@ -78,7 +78,9 @@ export class ContingencyFormComponent implements OnInit {
     private apiAircrafts = environment.apiUrl + environment.paths.aircrafts;
     private apiFlights = environment.apiUrl + environment.paths.flights;
     private apiTypes = environment.apiUrl + environment.paths.types;
-
+    
+    public durations: number[];
+    
     public values: any[];
 
     constructor(private  dialogService: DialogService,
@@ -115,17 +117,18 @@ export class ContingencyFormComponent implements OnInit {
             'destination': [{value: null, disabled: false}, false],
             'tm': [{value: null, disabled: true}, Validators.required],
             'dt': [{value: null, disabled: true}, Validators.required],
-            'informer': ['Maintenance', Validators.required],
+            'informer': [null, Validators.required],
             'safety': [null],
             'showBarcode': [false],
             'barcode': [null],
             'safetyEventCode': [null],
-            'contingencyType': ['EXT', Validators.required],
-            'failure': ['FT3', Validators.required],
+            'contingencyType': [null, Validators.required],
+            'failure': [null, Validators.required],
             'observation': [null, Validators.required],
-            'statusCode': ['NI1', Validators.required],
-            'duration': ['30', Validators.required]
+            'statusCode': [null, Validators.required],
+            'duration': [45, Validators.required]
         });
+        this.durations = [];
     }
 
     ngOnInit() {
@@ -149,7 +152,7 @@ export class ContingencyFormComponent implements OnInit {
             });
 
         this.clockService.getClock().subscribe(time => this.time = time);
-
+    
         this._configService
             .getAll<any[]>('safetyEvent')
             .subscribe((data: any[]) => this.values = data,
@@ -164,6 +167,7 @@ export class ContingencyFormComponent implements OnInit {
         this.retrieveAircraftsConfiguration();
         this.retrieveFlightsConfiguration();
         this.retrieveTypesConfiguration();
+        this.generateIntervalSelection();
     }
 
     public submitForm(value: any) {
@@ -215,27 +219,11 @@ export class ContingencyFormComponent implements OnInit {
                 value.contingencyType,
                 initials
             );
-
-            this._configService
-                .add<any[]>('contingencyList', this.contingency)
-                .subscribe((data: Contingency[]) => this.values = data,
-                    error => (reason) => {
-                        const error: StatusError = reason.json();
-                        this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
-                        const message: string = error.message !== null ? error.message : this.snackbarMessage;
-                        this.messageService.openSnackBar(message);
-                    },
-                    () => {
-                        this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.SUCCESSFULLY_MESSAGE');
-                        this.messageService.openSnackBar(this.snackbarMessage);
-                        this.dialogService.closeAllDialogs();
-                        this.messageData.stringMessage('reload');
-                    });
-            /*
+            
             return new Promise((resolve, reject) => {
         
                 this.http
-                    .post(this.apiContingency, JSON.stringify(this.contingency).replace(/_/g, ''))
+                    .post(this.apiContingency, JSON.stringify(this.contingency).replace(/\b[_]/g, ''))
                     .toPromise()
                     .then(rs => {
                         this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.SUCCESSFULLY_MESSAGE');
@@ -248,16 +236,27 @@ export class ContingencyFormComponent implements OnInit {
                         this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
                         const message: string = error.message !== null ? error.message : this.snackbarMessage;
                         this.messageService.openSnackBar(message);
-                        reject(reason);
+                    })
+                    .catch( error => {
+                        reject(error);
                     });
             });
-            */
+            
         } else {
             this.getTranslateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
             this.messageService.openSnackBar(this.snackbarMessage);
         }
     }
-
+    
+    private generateIntervalSelection() {
+        let i: number;
+        let quantity = 36;
+        
+        for (i = 0; i < quantity; i++) {
+            this.durations.push(i * 5 + 5);
+        }
+    }
+    
     private createEpochFromTwoStrings(dt: Date, tm: string) {
         if (tm !== undefined) {
             const timeStr = tm.split(':');
@@ -435,8 +434,8 @@ export class ContingencyFormComponent implements OnInit {
         let i: number;
         for (i = 0; i < this.flightTempModel[0].length; i++) {
             console.info('this.flightTempModel[i].origin : ', this.flightTempModel[0][i].origin);
-            if (this.flightTempModel[0][i].origin === selectedOption) {
-                this.destinationModel = {'label': this.flightTempModel[0][i].destination, 'etd': this.flightTempModel[0][i].etd.epochTime};
+            if(this.flightTempModel[0][i].origin === selectedOption) {
+                this.destinationModel = { 'label' : this.flightTempModel[0][i].destination, 'etd' : this.flightTempModel[0][i].etd.epochTime };
                 this.destination = this.destinationModel.label;
                 this.formatDate(this.destinationModel.etd);
             }
@@ -444,8 +443,7 @@ export class ContingencyFormComponent implements OnInit {
     }
 
     public onSelectOptional() {
-        console.info('this.optionalIsChecked: ' + this.optionalIsChecked);
-        if (!this.optionalIsChecked) {
+        if(!this.optionalIsChecked) {
             this.contingencyForm.get('safetyEventCode').setValue('EAT');
             this.contingencyForm.get('safetyEventCode').setValidators(Validators.required);
             this.contingencyForm.get('safetyEventCode').updateValueAndValidity();

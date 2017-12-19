@@ -13,6 +13,7 @@ export const environment = {
         flights: '/api/contingencies/configurations/flights',
         locations: '/api/contingencies/configurations/locations',
         types: '/api/contingencies/configurations/types',
-        close: '/api/contingencies/_close'
+        close: '/api/contingencies/_close',
+        followUp: '/api/contingencies/status',
     }
 };

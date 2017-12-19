@@ -3,13 +3,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
 import { DetailsService } from '../../../details/_services/details.service';
-import { Aircraft } from '../../../shared/_models/aircraft';
 import { Contingency } from '../../../shared/_models/contingency';
-import { Flight } from '../../../shared/_models/flight';
-import { Interval } from '../../../shared/_models/interval';
-import { Safety } from '../../../shared/_models/safety';
-import { Status } from '../../../shared/_models/status';
-import { TimeInstant } from '../../../shared/_models/timeInstant';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { DataService } from '../../../shared/_services/data.service';
 import { MessageService } from '../../../shared/_services/message.service';
@@ -27,12 +21,12 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
-    public contingencyList;
+    public contingencyList: Contingency[];
     public progressBarColor: string;
     public currentUTCTime: number;
     public itemsCount: number;
 
-    constructor(private httpClient: HttpClient, private messageData: DataService, private dialogService: DialogService, public translate: TranslateService, private messageService: MessageService, public detailsService: DetailsService, private _apiService: ApiRestService) {
+    constructor(private http: HttpClient, private messageData: DataService, private dialogService: DialogService, public translate: TranslateService, private messageService: MessageService, public detailsService: DetailsService, private _apiService: ApiRestService) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
         this.itemsCount = 0;
@@ -48,6 +42,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.progressBarColor = 'primary';
         this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
         this._reloadSubscription = this.messageData.currentStringMessage.subscribe(message => this.reloadList(message));
+
         this.getContingences();
     }
 
@@ -75,83 +70,14 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private getContingences() {
         this.messageData.stringMessage('open');
 
-        let response;
+        return this._apiService
+                   .getAll<Contingency[]>('contingencyList')
+                   .subscribe(data => {
+                       this.messageData.stringMessage('close');
+                       this.itemsCount = data.length;
+                       return this.contingencyList = data;
+                   });
 
-        this._apiService
-            .getAll<any[]>('contingencyList')
-            .subscribe((data: any[]) => response = data,
-                error => () => {
-                    this.messageData.stringMessage('close');
-                    this.messageService.openSnackBar(error);
-                },
-                () => {
-                    this.itemsCount = response.length;
-                    this.messageData.stringMessage('close');
-                    this.applyRs(response);
-                });
-    }
-
-    private applyRs(data: any) {
-
-        for (let i = 0; i < data.length; i++) {
-
-            this.contingencyList[i] = new Contingency(
-                data[i].id,
-                new Aircraft(
-                    data[i].aircraft.tail,
-                    data[i].aircraft.fleet,
-                    data[i].aircraft.operator
-                ),
-                data[i].barcode,
-                new TimeInstant(
-                    data[i].creationDate.epochTime,
-                    data[i].creationDate.label
-                ),
-                data[i].failure,
-                new Flight(
-                    data[i].flight.flightNumber,
-                    data[i].flight.origin,
-                    data[i].flight.destination,
-                    new TimeInstant(
-                        data[i].flight.etd.epochTime,
-                        data[i].flight.etd.label
-                    )
-                ),
-                data[i].informer,
-                data[i].isBackup,
-                data[i].reason,
-                new Safety(
-                    data[i].safetyEvent.code,
-                    data[i].safetyEvent.description
-                ),
-                new Status(
-                    data[i].status.code,
-                    data[i].status.contingencyId,
-                    new TimeInstant(
-                        data[i].status.creationDate.epochTime,
-                        data[i].status.creationDate.label
-                    ),
-                    data[i].status.observation,
-                    new Interval(
-                        new TimeInstant(
-                            data[i].status.realInterval.dt.epochTime,
-                            data[i].status.realInterval.dt.label
-                        ),
-                        data[i].status.realInterval.duration
-                    ),
-                    new Interval(
-                        new TimeInstant(
-                            data[i].status.requestedInterval.dt.epochTime,
-                            data[i].status.requestedInterval.dt.label
-                        ),
-                        data[i].status.requestedInterval.duration
-                    ),
-                    data[i].status.username
-                ),
-                data[i].type,
-                data[i].username
-            );
-        }
     }
 
     public getTimeAverage(creationDate: any, duration: any, remain: boolean, limit: number) {

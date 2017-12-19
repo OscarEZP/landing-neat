@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import { User } from '../../shared/_models/user/user';
 import {SidenavService} from '../_services/sidenav.service';
 import {StorageService} from '../../shared/_services/storage.service';
 
@@ -9,17 +10,19 @@ import {StorageService} from '../../shared/_services/storage.service';
 })
 export class SidenavComponent implements OnInit {
 
-    public user: { username: string, name: string, email: string };
+    private user: User;
+    public userArray: { username: string, name: string, email: string };
     public arrMenu: { label: string, link: string, icon: string }[];
     public arrFooterMenu: { label: string, link: string, icon: string }[];
 
-    constructor(private sidenavService: SidenavService, private storageService: StorageService) {
-        this.user = {username: '', name: '', email: ''};
-        this.user.username = storageService.getCurrentUser() ? storageService.getCurrentUser().userName : '';
-        this.user.email = storageService.getCurrentUser() ? storageService.getCurrentUser().email: '';
-        this.user.name = storageService.getCurrentUser() ?
-            storageService.getCurrentUser().firstName + ' ' + storageService.getCurrentUser().lastName :
-            '';
+    constructor(private sidenavService: SidenavService, private _storageService: StorageService) {
+        this.userArray = {username: '', name: '', email: ''};
+        this.user = this._storageService.getCurrentUser();
+
+        this.userArray.username = this.user.username;
+        this.userArray.email = this.user.email;
+        this.userArray.name = this.user.firstName + ' ' + this.user.lastName;
+
     }
 
     ngOnInit() {

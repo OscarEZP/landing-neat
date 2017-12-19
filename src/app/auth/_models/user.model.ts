@@ -1,7 +1,7 @@
 export class User {
 
     public userId: string;
-    public userName: string;
+    public username: string;
     public givenName: string;
     public firstName: string;
     public lastName: string;

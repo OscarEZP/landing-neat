@@ -13,7 +13,7 @@ export class AuthService {
     private isLoggedIn: boolean;
     private redirectUrl: string;
     private loginUrl: string;
-    public data: { userName: string, password: string };
+    public data: { username: string, password: string };
 
 
     constructor(private http: Http, private storageService: StorageService) {
@@ -23,10 +23,10 @@ export class AuthService {
         this.reset();
     }
 
-    logIn(userName: string, password: string): Promise<User> {
+    logIn(username: string, password: string): Promise<User> {
 
         const user: User = new User();
-        user.userName = userName;
+        user.username = username;
         user.password = password;
 
         return this.http
@@ -38,7 +38,7 @@ export class AuthService {
                 let i: number;
                 const groups = [];
 
-                user.userName = response.userName;
+                user.username = response.username;
                 user.email = response.email;
                 user.firstName = response.firstName;
                 user.givenName = response.givenName;
@@ -46,7 +46,7 @@ export class AuthService {
                 user.lastName = response.lastName;
                 user.phoneNumber = response.phoneNumber;
                 user.userId = response.userId;
-                user.userName = response.userName;
+                user.username = response.username;
                 user.password = null;
 
                 for (i = 0; i < response.groupList.length; i++) {
@@ -88,7 +88,7 @@ export class AuthService {
     }
 
     reset() {
-        this.data = {userName: '', password: ''};
+        this.data = {username: '', password: ''};
     }
 
 }

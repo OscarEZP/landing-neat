@@ -47,8 +47,7 @@ export class StorageService {
     }
 
     public getCurrentUser(): User {
-        const user: User = JSON.parse(localStorage.getItem(StorageService.CURRENT_USER));
-        return user;
+        return Object.assign(new User(), JSON.parse(localStorage.getItem(StorageService.CURRENT_USER)));
     }
 
     public addRecoverPassword(username: string, destination: string) {
