@@ -85,6 +85,11 @@
       "FILTER":"FILTER",
       "CLEAR":"CLEAR"
 
+    },
+    "CONTINGENCY_DETAILS": {
+      "FOLLOW_UP": {
+        "OBSERVATION_TITLE": "Write your comment"
+      }
     }
 
   },

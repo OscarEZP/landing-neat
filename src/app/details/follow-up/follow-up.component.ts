@@ -1,7 +1,5 @@
-import { HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { forEach } from '@angular/router/src/utils/collection';
 import { ActualTimeModel } from '../../shared/_models/actualTime';
 import { Contingency } from '../../shared/_models/contingency';
 import { Interval } from '../../shared/_models/interval';
@@ -76,8 +74,6 @@ export class FollowUpComponent implements OnInit {
         this.user = this._storageService.getCurrentUser();
         this._dataService.currentSelectedContingency.subscribe(message => this.contingencyChanged(message));
         this._dataService.currentSafeEventMessage.subscribe(message => this.currentSafeEventCode = message);
-
-        this.generateStatusCodes();
     }
 
     private contingencyChanged(contingency: Contingency) {
@@ -85,6 +81,7 @@ export class FollowUpComponent implements OnInit {
             this.selectedContingency = contingency;
 
             this.generateIntervalSelection(this.selectedContingency.creationDate.epochTime);
+            this.getStatusCodesAvailable();
         }
     }
 
@@ -110,13 +107,16 @@ export class FollowUpComponent implements OnInit {
         }
     }
 
-    private generateStatusCodes(): StatusCode[] {
-        let i: number;
-        const codes: string[] = ['NI1', 'NI2', 'NI3', 'NI4', 'ETR'];
-
-        for (i = 0; i < 5; i++) {
-            this.statusCodes.push(new StatusCode(codes[i], 45, true));
-        }
+    private getStatusCodesAvailable(): StatusCode[] {
+        this._dataService.stringMessage('open');
+        this._apiRestService
+            .getSingle('configStatus', this.selectedContingency.status.code)
+            .subscribe((data: StatusCode[]) => this.statusCodes = data,
+                error => () => {
+                    this._dataService.stringMessage('close');
+                }, () => {
+                    this._dataService.stringMessage('close');
+                });
 
         return this.statusCodes;
     }
@@ -126,8 +126,8 @@ export class FollowUpComponent implements OnInit {
         for (i = 0; i < this.statusCodes.length; i++) {
             if (this.statusCodes[i].code === code) {
                 this.validations.defaultTime = this.statusCodes[i].defaultTime;
-                this.followUpForm.get('code').setValue(this.validations.defaultTime);
-                this.followUpForm.get('code').updateValueAndValidity();
+                this.followUpForm.get('duration').setValue(this.validations.defaultTime);
+                this.followUpForm.get('duration').updateValueAndValidity();
             }
         }
     }
@@ -139,7 +139,6 @@ export class FollowUpComponent implements OnInit {
                 error => () => {
                 },
                 () => {
-
                 });
     }
 
@@ -173,7 +172,7 @@ export class FollowUpComponent implements OnInit {
         this.validations.isSubmitted = true;
 
         if (this.followUpForm.valid) {
-            
+
             this.validations.isSubmitted = false;
             let rs;
 
@@ -184,7 +183,7 @@ export class FollowUpComponent implements OnInit {
             this._followUp.realInterval = new Interval(new TimeInstant(null, null), null);
             this._followUp.username = this.user.username;
             this._followUp.creationDate = null;
-            const safetyCode =  this.followUpForm.get('safetyEventCode').value;
+            const safetyCode = this.followUpForm.get('safetyEventCode').value;
 
             this._apiRestService
                 .add<Response>('followUp', this._followUp, safetyCode)
@@ -194,6 +193,8 @@ export class FollowUpComponent implements OnInit {
                         this._messageService.openSnackBar(error);
                     },
                     () => {
+                        this._detailsService.closeSidenav();
+                        this._dataService.stringMessage('reload');
                         this._messageService.openSnackBar('created');
                     });
         }

@@ -5,7 +5,7 @@
             <div fxLayout="row">
                 <mat-button-toggle-group #group="matButtonToggleGroup" [formControl]="followUpForm.controls['code']">
                     <ng-container *ngFor="let codes of statusCodes">
-                        <mat-button-toggle [value]="codes.code" *ngIf="codes.isVisible" (click)="selectActiveCode(codes.code)">
+                        <mat-button-toggle [value]="codes.code" *ngIf="codes.isActive" (click)="selectActiveCode(codes.code)">
                             {{ codes.code }}
                         </mat-button-toggle>
                     </ng-container>

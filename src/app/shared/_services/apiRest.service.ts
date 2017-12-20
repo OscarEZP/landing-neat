@@ -16,7 +16,7 @@ export class ApiRestService {
         return this.http.get<T>(this.baseUrl + environment.paths[path]);
     }
 
-    public getSingle<T>(path: string, id: number): Observable<T> {
+    public getSingle<T>(path: string, id: number|string): Observable<T> {
         return this.http.get<T>(this.baseUrl + environment.paths[path] + '/' + id);
     }
 
