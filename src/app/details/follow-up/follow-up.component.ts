@@ -74,8 +74,6 @@ export class FollowUpComponent implements OnInit {
         this.user = this._storageService.getCurrentUser();
         this._dataService.currentSelectedContingency.subscribe(message => this.contingencyChanged(message));
         this._dataService.currentSafeEventMessage.subscribe(message => this.currentSafeEventCode = message);
-
-        // this.generateStatusCodes();
     }
 
     private contingencyChanged(contingency: Contingency) {
