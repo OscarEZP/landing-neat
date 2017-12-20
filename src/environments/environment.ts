@@ -1,7 +1,7 @@
 export const environment = {
     production: false,
     envName: 'staging',
-    apiUrl: 'https://staging.moc.maintenix.aero',
+    apiUrl: 'https://staging.mcp.maintenix.ifs.cloud',
     paths: {
         confirmForgotPassword: '/api/security/users/_confirmforgotpassword',
         contingencyList: '/api/v1/contingencies',
