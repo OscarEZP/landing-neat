@@ -15,5 +15,6 @@ export const environment = {
         types: '/api/v1/contingencies/configurations/types',
         close: '/api/v1/contingencies/_close',
         followUp: '/api/v1/contingencies/_followUp',
+        configStatus: '/api/v1/contingencies/configurations/status'
     }
 };
