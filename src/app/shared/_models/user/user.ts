@@ -8,7 +8,7 @@ export class User {
     private _email: string;
     private _phoneNumber: string;
     private _userId: string;
-    private _userName: string;
+    private _username: string;
     private _password: string;
     private _idToken: string;
     private _groupList: Group[];
@@ -66,12 +66,12 @@ export class User {
         this._userId = value;
     }
 
-    get userName(): string {
-        return this._userName;
+    get username(): string {
+        return this._username;
     }
 
-    set userName(value: string) {
-        this._userName = value;
+    set username(value: string) {
+        this._username = value;
     }
 
     get password(): string {

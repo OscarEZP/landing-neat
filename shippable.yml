@@ -10,8 +10,8 @@ node_js:
 
 env:
   global:
-    - IMAGE_NAME=moc/moc-web
-    - IMAGE_REPO_URL=693532776274.dkr.ecr.us-east-1.amazonaws.com/moc/moc-web
+    - IMAGE_NAME=mcp/moc-web
+    - IMAGE_REPO_URL=693532776274.dkr.ecr.us-east-1.amazonaws.com/mcp/moc-web
 
 branches:
   only:
@@ -59,9 +59,9 @@ build:
         docker push $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
 
         if [ "$BRANCH" == "master" ]; then
-          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-production.env
+          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/mcp-web-img-production.env
         elif [ "$BRANCH" == "develop" ]; then
-          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/moc-web-img-staging.env
+          echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/mcp-web-img-staging.env
         fi
       fi
 

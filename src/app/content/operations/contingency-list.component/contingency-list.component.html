@@ -1,4 +1,13 @@
 <mat-list class="content-mat-list">
+    <mat-list-item>
+        <strong>
+            {{itemsCount}}
+            <span *ngIf="itemsCount === 1"> {{ 'OPERATIONS.CONTINGENCY_ACTIVE' | translate }}</span>
+            <span *ngIf="itemsCount > 1"> {{ 'OPERATIONS.CONTINGENCIES_ACTIVES' | translate }}</span>
+        </strong>
+    </mat-list-item>
+</mat-list>
+<mat-list class="content-mat-list">
     <mat-list-item class="moc-items-list no-bg moc-items-list-title">
         <div class="block-s">{{ 'OPERATIONS.TAIL_FLEET' | translate }}</div>
         <div class="block-s">{{ 'OPERATIONS.OPERATOR' | translate }}</div>
@@ -44,7 +53,7 @@
                 <button mat-menu-item>
                     <span>Meeting</span>
                 </button>
-                <button mat-menu-item>
+                <button mat-menu-item (click)="openDetails(contingency, 'follow-up')">
                     <span>Follow up</span>
                 </button>
             </mat-menu>

@@ -215,8 +215,7 @@
 
                         <mat-form-field fxFlex="25">
                             <mat-select placeholder="Interval" [formControl]="contingencyForm.controls['duration']">
-                                <mat-option value="30">30 minutes</mat-option>
-                                <mat-option value="60">60 minutes</mat-option>
+                                <mat-option [value]="time" *ngFor="let time of durations">{{ time }} minutes</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <div fxFlexOffset="5" fxLayoutAlign="center center" fxFlex>

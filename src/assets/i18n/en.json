@@ -75,7 +75,23 @@
       "BTN_CANCEL":"CANCEL",
       "BTN_SAVE":"SAVE",
       "CLOSE_SUCCESS":"Contingency has been closed successfully"
+    },
+    "SEARCH_HISTORICAL":{
+      "TITLE":"Historical Search:",
+      "TAIL":"Tail",
+      "SEARCH":"Search",
+      "FROM":"From Date",
+      "TO":"To Date",
+      "FILTER":"FILTER",
+      "CLEAR":"CLEAR"
+
+    },
+    "CONTINGENCY_DETAILS": {
+      "FOLLOW_UP": {
+        "OBSERVATION_TITLE": "Write your comment"
+      }
     }
+
   },
   "BUTTONS": {
     "CANCEL": "CANCEL",

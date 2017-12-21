@@ -37,7 +37,7 @@ export class RecoverPasswordService {
 
     findAccount(username: string): Promise<string> {
         const user = new User();
-        user.userName = username;
+        user.username = username;
         return this.http
             .post(environment.apiUrl + environment.paths.forgotPassword, JSON.stringify(user))
             .toPromise()
@@ -55,7 +55,7 @@ export class RecoverPasswordService {
 
     changePassword(username: string, password: string, verificationCode: string): Promise<boolean> {
         const user = new User();
-        user.userName = username;
+        user.username = username;
         user.newPassword = password;
         user.confirmationCode = verificationCode;
 

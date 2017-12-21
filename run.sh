@@ -33,12 +33,12 @@ elif [[ $OPTION = "2" ]] ;then
   echo "Running TESTS..."
   docker-compose down
   docker-compose run --service-ports --rm test
-#elif [[ $OPTION = "3" ]] ;then
+elif [[ $OPTION = "3" ]] ;then
   clear
   echo "Running PRODUCTION..."
-#  docker-compose down
-#  docker-compose run --service-ports --rm prod
-  #docker run -it -u $UID -v $(pwd):$(pwd) -p 4200:4200 --rm $PROJECT_NAME-dev /bin/bash -c 'npm install --quiet && npm run ng build'
+# docker-compose down
+# docker-compose run --service-ports --rm prod
+# docker run -it -u $UID -v $(pwd):$(pwd) -p 4200:4200 --rm $PROJECT_NAME-dev /bin/bash -c 'npm install --quiet && npm run ng build'
 elif [[ $OPTION = "4" ]] ;then
   clear
   echo "Building IMAGE..."
@@ -46,8 +46,8 @@ elif [[ $OPTION = "4" ]] ;then
 elif [[ $OPTION = "5" ]] ;then
   clear
   echo "Running CONTAINER..."
-  docker-compose down
-  docker-compose run --service-ports --rm interactive
+  docker build -t moc-web-interactive ./
+  docker run -v $(pwd)/../../:/var/www/html/ -it moc-web-interactive /bin/bash
 else
   clear
   echo "Bye."
