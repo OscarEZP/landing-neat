@@ -398,9 +398,10 @@ export class ContingencyFormComponent implements OnInit {
 
     public formatDate(value: number): void {
         const date = new Date(value);
+        const utcDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
 
-        this.timeModel = date.getHours() + ':' + date.getMinutes();
-        this.dateModel = date;
+        this.timeModel = utcDate.getHours() + ':' + utcDate.getMinutes();
+        this.dateModel = utcDate;
     }
 
     openCancelDialog() {
@@ -443,12 +444,10 @@ export class ContingencyFormComponent implements OnInit {
     }
 
     public onSelectOptional() {
-        if(!this.optionalIsChecked) {
-            this.contingencyForm.get('safetyEventCode').setValue('EAT');
+        if(this.optionalIsChecked) {
             this.contingencyForm.get('safetyEventCode').setValidators(Validators.required);
             this.contingencyForm.get('safetyEventCode').updateValueAndValidity();
         } else {
-
             this.contingencyForm.get('safetyEventCode').setValue(null);
             this.contingencyForm.get('safetyEventCode').setValidators(null);
             this.contingencyForm.get('safetyEventCode').updateValueAndValidity();
