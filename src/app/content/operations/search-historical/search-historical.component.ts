@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from '../../../shared/_services/message.service';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { Aircraft } from '../../../shared/_models/aircraft';
+import { ContingencyService} from '../_services/contingency.service';
 
 @Component({
     selector: 'lsl-search-historical',
@@ -23,7 +24,8 @@ export class SearchHistoricalComponent implements OnInit {
     constructor(fb: FormBuilder,
                 public translate: TranslateService,
                 public messageService: MessageService,
-                public service: ApiRestService) {
+                public service: ApiRestService,
+                public contingencyService: ContingencyService) {
         this.searchForm = fb.group({
             'tails': [null, Validators.required],
             'from': [null, Validators.required],
@@ -39,7 +41,10 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     private getAircraft(): void {
-        this.service.getAll('aircrafts').subscribe((data) => {
+        const searchSignature = {
+            enable: 2
+        }
+        this.contingencyService.getAircrafts(searchSignature).subscribe((data) => {
             this.aicraftList = data as Aircraft[];
         });
     }

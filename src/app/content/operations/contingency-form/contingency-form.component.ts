@@ -29,7 +29,8 @@ import { MessageService } from '../../../shared/_services/message.service';
 import { StorageService } from '../../../shared/_services/storage.service';
 import { ContingencyService } from '../_services/contingency.service';
 import { CancelComponent } from '../cancel/cancel.component';
-import { HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
+
 
 @Component({
     selector: 'lsl-contingency-form',
@@ -50,6 +51,7 @@ export class ContingencyFormComponent implements OnInit {
     public contingency: Contingency;
     public safetyEventList: Safety[];
     public aircraftList: Aircraft[];
+    public filteredAircrafts: Observable<Aircraft[]>;
     public flightList = [{'flightNumber': null, 'legs': null}];
     public typesList = [{'groupName': null, 'types': [{'code': null, 'description': null}]}];
     public typeListFinal = {
@@ -76,7 +78,6 @@ export class ContingencyFormComponent implements OnInit {
 
     private apiContingency = environment.apiUrl + environment.paths.contingencyList;
     private apiSafetyEvents = environment.apiUrl + environment.paths.safetyEvent;
-    private apiAircraftsSearch = environment.apiUrl + environment.paths.aircraftsSearch;
     private apiFlights = environment.apiUrl + environment.paths.flights;
     private apiTypes = environment.apiUrl + environment.paths.types;
 
@@ -94,7 +95,8 @@ export class ContingencyFormComponent implements OnInit {
                 private messageService: MessageService,
                 public translate: TranslateService,
                 private storageService: StorageService,
-                private _configService: ApiRestService) {
+                private _configService: ApiRestService,
+                private service: ApiRestService) {
         this.firstLeg = {};
         this.display = true;
         this.alive = true;
@@ -104,7 +106,6 @@ export class ContingencyFormComponent implements OnInit {
         this.cancelMessage = '';
         this.translate.setDefaultLang('en');
         this.safetyEventList = [];
-        this.aircraftList = [];
         this.aircraftTempModel = new Aircraft(null, null, null);
         this.flightTempModel = [];
 
@@ -287,27 +288,19 @@ export class ContingencyFormComponent implements OnInit {
         const searchAircraftsSignature = {
             enable: 1
         };
-        //return new Promise((resolve, reject) => {
-        this.http.post(this.apiAircraftsSearch, searchAircraftsSignature).subscribe(rs => {
-            console.log('success', rs);
-
+        this.contingencyService.getAircrafts(searchAircraftsSignature).subscribe(rs => {
+            this.aircraftList = rs as Aircraft[];
+            this.filteredAircrafts = this.contingencyForm.controls['tail'].valueChanges
+                .startWith('')
+                .map(val => this.filterAircrafts(val));
         }, err => {
             console.log(err);
         });
+    }
 
-
-        /*.toPromise()
-        .then(data => {
-            const jsonData = data.json();
-            for (let i = 0; i < jsonData.length; i++) {
-                this.aircraftList[i] = new Aircraft(jsonData[i].tail, jsonData[i].fleet, jsonData[i].operator);
-            }
-            resolve();
-        }, reason => {
-            this.messageService.openSnackBar(reason);
-            reject(reason);
-        });*/
-        //});
+    private filterAircrafts(val: string): Aircraft[] {
+        return this.aircraftList.filter(aircraft =>
+            aircraft.tail.toLocaleLowerCase().replace('-', '').search(val.toLocaleLowerCase().replace('-', '')) !== -1);
     }
 
     private retrieveFlightsConfiguration() {
