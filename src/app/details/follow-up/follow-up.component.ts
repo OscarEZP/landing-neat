@@ -40,6 +40,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     public validations = {
         'optionalIsChecked': null,
         'isFollowUpDisabled': null,
+        'isSending': null,
         'isSubmitted': null,
         'timeAlert': null,
         'delta': 0,
@@ -64,9 +65,10 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this.statusCodes = [];
         this.durations = [];
         this.validations = {
-            optionalIsChecked: false,
+            'optionalIsChecked': false,
             'isFollowUpDisabled': false,
             'isSubmitted': false,
+            'isSending': false,
             'timeAlert': false,
             'delta': 180,
             'defaultTime': 30
@@ -77,7 +79,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             'safetyEventCode': [null],
             'observation': [null, Validators.required],
             'code': [null, Validators.required],
-            'duration': [this.validations.defaultTime, Validators.required]
+            'duration': [null, Validators.required]
         });
     }
 
@@ -170,6 +172,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             for (i = 0; i < quantity; i++) {
                 this.durations.push(i * 5 + 5);
             }
+            this.validations.isFollowUpDisabled = false;
         } else {
             this.validations.isFollowUpDisabled = true;
         }
@@ -308,9 +311,9 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this.validations.isSubmitted = true;
 
         if (this.followUpForm.valid) {
+            this.validations.isSending = true;
             this._dataService.stringMessage('open');
 
-            this.validations.isSubmitted = false;
             let rs;
 
             this._followUp.contingencyId = this.selectedContingency.id;
@@ -328,12 +331,16 @@ export class FollowUpComponent implements OnInit, OnDestroy {
                     error => () => {
                         this._dataService.stringMessage('close');
                         this._messageService.openSnackBar(error);
+                        this.validations.isSubmitted = false;
+                        this.validations.isSending = false;
                     },
                     () => {
                         this._detailsService.closeSidenav();
                         this._dataService.stringMessage('reload');
                         this._messageService.openSnackBar('created');
                         this._dataService.stringMessage('close');
+                        this.validations.isSubmitted = false;
+                        this.validations.isSending = false;
                     });
         }
     }

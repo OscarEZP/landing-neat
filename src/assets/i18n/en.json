@@ -92,7 +92,8 @@
         "TIME_AVAILABLE_WARNING": "Maximum time available:",
         "MINUTES": "minutes",
         "OBSERVATION_REQUIRED": "Observation is required",
-        "CONTINGENCY_TYPE_REQUIRED": "Contingency type is required"
+        "CONTINGENCY_TYPE_REQUIRED": "Contingency type is required",
+        "FOLLOW_UP_DISABLED": "Sorry follow up is disabled because from creation of contingency past more than 180 minutes"
       }
     }
 
@@ -101,7 +102,12 @@
     "CANCEL": "CANCEL",
     "CLOSE": "CLOSE",
     "CREATE": "CREATE",
-    "SAVE": "SAVE"
+    "SAVE": "SAVE",
+    "SUB_MENUS": {
+      "CLOSE_CONTINGENCY": "Close Contingency",
+      "MEETING": "Meeting",
+      "FOLLOW_UP": "Follow up"
+    }
   },
   "TITLES": {
     "FOLLOW_UP": "Follow up",

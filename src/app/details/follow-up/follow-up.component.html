@@ -1,5 +1,5 @@
 <section id="follow-up">
-    <section class="box">
+    <section class="box" *ngIf="!validations.isFollowUpDisabled">
         <form [formGroup]="followUpForm" (ngSubmit)="submitForm(followUpForm.value)">
             <h2>{{ 'OPERATIONS.CONTINGENCY_FORM.TYPOLOGY' | translate }}</h2>
             <div fxLayout="row" class="remove-space">
@@ -11,7 +11,7 @@
                     </ng-container>
                 </mat-button-toggle-group>
             </div>
-            <div fxLayout="row" class="remove-space" *ngIf="validations.isSubmitted && followUpForm.controls['code'].untouched">
+            <div fxLayout="row" class="remove-space">
                 <mat-error *ngIf="validations.isSubmitted && followUpForm.controls['code'].untouched">{{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.CONTINGENCY_TYPE_REQUIRED' | translate }}</mat-error>
             </div>
 
@@ -72,13 +72,17 @@
                 </mat-error>
             </mat-form-field>
             <div mat-dialog-actions fxLayoutAlign="end" class="remove-space">
-                <button type="button" mat-button (click)="closeDetails()">
-                    {{'OPERATIONS.CONTINGENCY_FORM.CANCEL_LABEL'|translate}}
+                <button type="button" mat-button (click)="closeDetails()" [disabled]="validations.isSending">
+                    {{ 'BUTTONS.CANCEL' | translate }}
                 </button>
-                <button type="submit" mat-button mat-raised-button color="primary" [disabled]="validations.isFollowUpDisabled">
-                    {{'OPERATIONS.CONTINGENCY_FORM.CREATE_LABEL'|translate}}
+                <button type="submit" mat-button mat-raised-button color="primary" [disabled]="validations.isSending">
+                    {{ 'BUTTONS.SAVE' | translate }}
                 </button>
             </div>
         </form>
+    </section>
+    <section class="box" *ngIf="validations.isFollowUpDisabled">
+        <h2>{{ 'OPERATIONS.CONTINGENCY_FORM.TYPOLOGY' | translate }}</h2>
+        {{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_DISABLED' | translate }}
     </section>
 </section>
