@@ -1,0 +1,36 @@
+#interval-select{
+    margin: -7px 10px 0 0;
+}
+
+.mat-button-toggle-group {
+    box-shadow: none;
+}
+
+/deep/
+.button-item {
+  label {
+    .mat-button-toggle-label-content {
+      line-height: 20px;
+    }
+  }
+}
+
+.mat-button-toggle-checked {
+  color: white;
+  background-color: #479fff!important;
+}
+
+.mat-button-toggle {
+    background: rgba(236, 239, 241, .35);
+    margin-right: 5px;
+    border-radius: 6px;
+    font-size: 10px;
+}
+
+.remove-space {
+    padding: 10px 0!important;
+}
+
+.validate-warning {
+    color: #fb8c00;
+}
