@@ -10,6 +10,7 @@ export const environment = {
         login: '/api/security/users/_login',
         safetyEvent: '/api/v1/contingencies/configurations/safetyEvents',
         aircrafts: '/api/v1/contingencies/configurations/aircrafts',
+        aircraftsSearch: '/api/v1/contingencies/configurations/aircrafts/_search',
         flights: '/api/v1/contingencies/configurations/flights',
         locations: '/api/v1/contingencies/configurations/locations',
         types: '/api/v1/contingencies/configurations/types',
