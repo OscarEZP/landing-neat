@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "e2e": "protractor ./protractor.conf.js",
     "pree2e": "webdriver-manager update --standalone false --gecko false --quiet",
-    "freshtall": "npm cache clean --force && rm -rf node_modules && rm -f package-lock.json && npm install"
+    "freshtall": "npm cache clean --force && rm -rf node_modules && rm -f package-lock.json && npm install",
+    "compodoc": "./node_modules/.bin/compodoc -p src/tsconfig.app.json"
   },
   "private": true,
   "dependencies": {
@@ -44,6 +45,7 @@
     "@angular/cli": "1.5.5",
     "@angular/compiler-cli": "5.0.3",
     "@angular/language-service": "5.0.3",
+    "@compodoc/compodoc": "^1.0.5",
     "@types/jasmine": "2.5.53",
     "@types/jasminewd2": "2.0.2",
     "@types/lodash": "4.14.50",

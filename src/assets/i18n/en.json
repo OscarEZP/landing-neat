@@ -88,7 +88,11 @@
     },
     "CONTINGENCY_DETAILS": {
       "FOLLOW_UP": {
-        "OBSERVATION_TITLE": "Write your comment"
+        "OBSERVATION_TITLE": "Write your comment",
+        "TIME_AVAILABLE_WARNING": "Maximum time available:",
+        "MINUTES": "minutes",
+        "OBSERVATION_REQUIRED": "Observation is required",
+        "CONTINGENCY_TYPE_REQUIRED": "Contingency type is required"
       }
     }
 
