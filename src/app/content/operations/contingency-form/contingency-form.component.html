@@ -35,7 +35,7 @@
                         </mat-error>
                         <mat-autocomplete #ac="matAutocomplete"
                                           (optionSelected)="onSelectAircraft(searchAircraft.value)">
-                            <mat-option *ngFor="let ac of aircraftList" [value]="ac.tail">
+                            <mat-option *ngFor="let ac of filteredAircrafts | async" [value]="ac.tail">
                                 {{ ac.tail }}
                             </mat-option>
                         </mat-autocomplete>
