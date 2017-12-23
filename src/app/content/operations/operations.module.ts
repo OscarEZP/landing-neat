@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import { MAT_DATE_LOCALE } from '@angular/material';
 import {BrowserModule} from '@angular/platform-browser';
 import { ApiRestService } from '../../shared/_services/apiRest.service';
 import {SharedModule} from '../../shared/shared.module';
@@ -35,7 +36,8 @@ import { SearchHistoricalComponent } from './search-historical/search-historical
         ContingencyService,
         LogService,
         ClockService,
-        ApiRestService
+        ApiRestService,
+        {provide: MAT_DATE_LOCALE, useValue: 'es-CL'}
     ],
     entryComponents: [
         CancelComponent,

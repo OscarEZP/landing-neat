@@ -1,8 +1,7 @@
 import { Legs } from './legs';
-import { TimeInstant } from './timeInstant';
 
 export class FlightConfiguration {
-        private _flightNumber: string;
+    private _flightNumber: string;
     private _legs: Legs[];
 
     constructor(flightNumber: string, legs: Legs[]) {
