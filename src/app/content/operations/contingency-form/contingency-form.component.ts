@@ -1,13 +1,42 @@
-import readability
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Http } from '@angular/http';
+import { TranslateService } from '@ngx-translate/core';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/startWith';
+import { Observable } from 'rxjs/Observable';
+import { TimerObservable } from 'rxjs/observable/TimerObservable';
+import { Subscription } from 'rxjs/Subscription';
+import { environment } from '../../../../environments/environment';
+import { ActualTimeModel } from '../../../shared/_models/actualTime';
+import { Aircraft } from '../../../shared/_models/aircraft';
+import { Contingency } from '../../../shared/_models/contingency';
+import { Flight } from '../../../shared/_models/flight';
+import { FlightConfiguration } from '../../../shared/_models/flightConfiguration';
+import { GroupTypes } from '../../../shared/_models/groupTypes';
+import { Interval } from '../../../shared/_models/interval';
+import { Legs } from '../../../shared/_models/legs';
+import { Safety } from '../../../shared/_models/safety';
+import { Status } from '../../../shared/_models/status';
+import { TimeInstant } from '../../../shared/_models/timeInstant';
+import { Types } from '../../../shared/_models/types';
+import { ApiRestService } from '../../../shared/_services/apiRest.service';
+import { ClockService } from '../../../shared/_services/clock.service';
+import { DataService } from '../../../shared/_services/data.service';
+import { DatetimeService } from '../../../shared/_services/datetime.service';
+import { MessageService } from '../../../shared/_services/message.service';
+import { StorageService } from '../../../shared/_services/storage.service';
+import { DialogService } from '../../_services/dialog.service';
+import { ContingencyService } from '../_services/contingency.service';
+import { CancelComponent } from '../cancel/cancel.component';
 
-/**
- * Component to create Contingency throw form
- */
+
 @Component({
-    selector: 'lsl-conreadabilityorm',
-    templatunnecessaryontingency-form.component.html',
+    selector: 'lsl-contingency-form',
+    templateUrl: './contingency-form.component.html',
     styleUrls: ['./contingency-form.component.scss']
 })
+
 
 export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _messageUTCSubscription: Subscription;
