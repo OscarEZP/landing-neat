@@ -9,6 +9,8 @@ import { DataService } from '../../../shared/_services/data.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
 import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
+import {ActivatedRoute} from '@angular/router';
+import {HistoricalSearchService} from '../_services/historical-search.service';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -26,15 +28,20 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public currentUTCTime: number;
     public itemsCount: number;
 
-    constructor(private http: HttpClient, private messageData: DataService, private dialogService: DialogService, public translate: TranslateService, private messageService: MessageService, public detailsService: DetailsService, private _apiService: ApiRestService) {
+    constructor(
+        private http: HttpClient,
+        private messageData: DataService,
+        private dialogService: DialogService,
+        public translate: TranslateService,
+        private messageService: MessageService,
+        public detailsService: DetailsService,
+        private _apiService: ApiRestService,
+        private route: ActivatedRoute,
+        private _historicalSearchService: HistoricalSearchService
+    ) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
         this.itemsCount = 0;
-    }
-
-    openDetails(contingency: Contingency, section: string) {
-        this.detailsService.contingency = contingency;
-        this.detailsService.openDetails(section);
     }
 
     ngOnInit() {
@@ -42,8 +49,15 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.progressBarColor = 'primary';
         this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
         this._reloadSubscription = this.messageData.currentStringMessage.subscribe(message => this.reloadList(message));
-
+        this.route.data.subscribe((data: any) => {
+            this._historicalSearchService.active = data.historical;
+        });
         this.getContingences();
+    }
+
+    openDetails(contingency: Contingency, section: string) {
+        this.detailsService.contingency = contingency;
+        this.detailsService.openDetails(section);
     }
 
     ngOnDestroy() {

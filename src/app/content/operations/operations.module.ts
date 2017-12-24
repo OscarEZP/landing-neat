@@ -15,11 +15,16 @@ import {ClockService} from '../../shared/_services/clock.service';
 import {CancelComponent} from './cancel/cancel.component';
 import { CloseContingencyComponent } from './close-contingency/close-contingency.component';
 import { SearchHistoricalComponent } from './search-historical/search-historical.component';
+import {PitStopListComponent} from './pit-stop-list/pit-stop-list.component';
+import {RouterModule} from '@angular/router';
+import {InfiniteScrollService} from './_services/infinite-scroll.service';
+import {HistoricalSearchService} from './_services/historical-search.service';
 
 @NgModule({
     imports: [
         BrowserModule,
-        SharedModule
+        SharedModule,
+        RouterModule
     ],
     declarations: [
         OperationsComponent,
@@ -28,7 +33,8 @@ import { SearchHistoricalComponent } from './search-historical/search-historical
         ContingencyFormComponent,
         CancelComponent,
         CloseContingencyComponent,
-        SearchHistoricalComponent
+        SearchHistoricalComponent,
+        PitStopListComponent
     ],
     exports: [],
     providers: [
@@ -37,6 +43,8 @@ import { SearchHistoricalComponent } from './search-historical/search-historical
         LogService,
         ClockService,
         ApiRestService,
+        InfiniteScrollService,
+        HistoricalSearchService,
         {provide: MAT_DATE_LOCALE, useValue: 'es-CL'}
     ],
     entryComponents: [

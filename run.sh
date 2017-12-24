@@ -25,7 +25,7 @@ echo
 
 if [[ $OPTION = "1" ]] ;then
   clear
-  echo "Running DEVELOPMENT..."
+  echo "Running DEVELOPMENT(STAGING)..."
   echo ""
   docker-compose down
   docker-compose run --service-ports --rm web
@@ -42,7 +42,7 @@ elif [[ $OPTION = "3" ]] ;then
 # docker run -it -u $UID -v $(pwd):$(pwd) -p 4200:4200 --rm $PROJECT_NAME-dev /bin/bash -c 'npm install --quiet && npm run ng build'
 elif [[ $OPTION = "4" ]] ;then
   clear
-  echo "Running DEVELOPMENT..."
+  echo "Running DEVELOPMENT(LOCAL)..."
   docker-compose down
   docker-compose run --service-ports --rm local
 elif [[ $OPTION = "5" ]] ;then

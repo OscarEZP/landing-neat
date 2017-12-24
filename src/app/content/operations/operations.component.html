@@ -1,15 +1,21 @@
-<div id="post-header-container">
-
-    <div id="item-counter-container">
+<div id="operations-container">
+    <div id="historical-search">
         <lsl-search-historical></lsl-search-historical>
     </div>
-
-    <mat-tab-group id="post-header-tab">
-        <mat-tab class="mat-tab-item" label="{{ 'OPERATIONS.AOG_CONTINGENCY' | translate }}">
-            <lsl-contingency-list></lsl-contingency-list>
-        </mat-tab>
-        <mat-tab class="mat-tab-item" label="{{ 'OPERATIONS.PIT_STOP' | translate }}">
-            <p>Pit Stop Content</p>
-        </mat-tab>
-    </mat-tab-group>
+    <nav>
+        <a routerLink="contingencies" routerLinkActive="active" class="mat-tab-item">
+            {{ 'OPERATIONS.AOG_CONTINGENCY' | translate }}
+        </a>
+        <a routerLink="pit-stop" routerLinkActive="active" class="mat-tab-item">
+            {{ 'OPERATIONS.PIT_STOP' | translate }}
+        </a>
+    </nav>
+    <content>
+        <router-outlet></router-outlet>
+        <mat-paginator #contPaginator [hidden]="!historicalSearchService.active"
+                       [length]="infiniteScrollService.length"
+                       [pageSize]="infiniteScrollService.pageSize"
+                       [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
+        </mat-paginator>
+    </content>
 </div>
