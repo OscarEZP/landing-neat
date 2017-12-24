@@ -8,6 +8,7 @@ import { Aircraft } from '../../../shared/_models/aircraft';
 import { LogService } from './log.service';
 import {Contingency} from '../../../shared/_models/contingency';
 import {InfiniteScrollService} from './infinite-scroll.service';
+import {ApiRestService} from "../../../shared/_services/apiRest.service";
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -24,13 +25,21 @@ export class ContingencyService {
     constructor(
         private http: HttpClient,
         private logService: LogService,
-        private _infniteScrollService: InfiniteScrollService
+        private _infiniteScrollService: InfiniteScrollService,
+        private _apiService: ApiRestService,
     ) {
         this.data = [];
     }
 
+    public getContingencies(): Observable<Contingency[]> {
+        return this._apiService
+        .getAll<Contingency[]>('contingencyList')
+        .pipe(
+            tap(contingencies => this.data = contingencies)
+        );
+    }
+
     public getAircrafts(searchSignature: any): Observable<Aircraft[]> {
-        console.log('search', this.searchAircraftPath);
         return this.http.post<Aircraft[]>(this.apiUrl + this.searchAircraftPath, searchSignature, httpOptions)
         .pipe(
             tap(aircrafts => this.log(`fetched aircrafts`)),
@@ -47,7 +56,7 @@ export class ContingencyService {
 
     public postHistoricalSearch(searchSignature): Observable<Contingency[]> {
         this.getTotalRecords(searchSignature).subscribe((data) => {
-            this._infniteScrollService.length = data.length;
+            this._infiniteScrollService.length = data.length;
         });
         return this.http.post<any>(this.apiUrl + this.contingencySearch, searchSignature, httpOptions)
         .pipe(

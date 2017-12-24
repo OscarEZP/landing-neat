@@ -11,6 +11,8 @@ import { DialogService } from '../../_services/dialog.service';
 import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
 import {ActivatedRoute} from '@angular/router';
 import {HistoricalSearchService} from '../_services/historical-search.service';
+import {ContingencyService} from "../_services/contingency.service";
+import {InfiniteScrollService} from "../_services/infinite-scroll.service";
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -29,15 +31,15 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public itemsCount: number;
 
     constructor(
-        private http: HttpClient,
         private messageData: DataService,
         private dialogService: DialogService,
         public translate: TranslateService,
-        private messageService: MessageService,
         public detailsService: DetailsService,
         private _apiService: ApiRestService,
         private route: ActivatedRoute,
-        private _historicalSearchService: HistoricalSearchService
+        private _historicalSearchService: HistoricalSearchService,
+        public contingencyService: ContingencyService,
+        private _infiniteScrollService: InfiniteScrollService
     ) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
@@ -82,16 +84,21 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     private getContingences() {
-        this.messageData.stringMessage('open');
-
-        return this._apiService
-                   .getAll<Contingency[]>('contingencyList')
-                   .subscribe(data => {
-                       this.messageData.stringMessage('close');
-                       this.itemsCount = data.length;
-                       return this.contingencyList = data;
-                   });
-
+        if (!this._historicalSearchService.active) {
+            this.contingencyService.getContingencies().subscribe(data => this.itemsCount = data.length);
+        } else {
+            const search = {
+                from: {
+                    epochTime: this._historicalSearchService.fromTS
+                },
+                to: {
+                    epochTime: this._historicalSearchService.toTS
+                },
+                offSet: this._infiniteScrollService.offset,
+                limit: this._infiniteScrollService.pageSize
+            };
+            this.contingencyService.postHistoricalSearch(search).subscribe(data => this.itemsCount = data.length);
+        }
     }
 
     public getTimeAverage(creationDate: any, duration: any, remain: boolean, limit: number) {
