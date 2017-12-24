@@ -11,12 +11,13 @@ echo "PROJECT -> " $PROJECT_NAME
 echo
 echo "Choose an option:"
 echo
-echo "1.- [Run DEVELOPMENT environment]"
+echo "1.- [Run DEVELOPMENT(STAGING) environment]"
 echo "2.- [Run TESTS]"
 echo "3.- [Run PRODUCTION environment]"
+echo "4.- [Run DEVELOPMENT(LOCAL) environment]"
 echo
-echo "4.- [Build IMAGE]"
-echo "5.- [Run CONTAINER]"
+echo "5.- [Build IMAGE]"
+echo "6.- [Run CONTAINER]"
 echo "[x] [Exit]"
 
 read -n 2 OPTION
@@ -41,9 +42,14 @@ elif [[ $OPTION = "2" ]] ;then
   #docker run -it -u $UID -v $(pwd):$(pwd) -p 4200:4200 --rm $PROJECT_NAME-dev /bin/bash -c 'npm install --quiet && npm run ng build'
 elif [[ $OPTION = "4" ]] ;then
   clear
+  echo "Running DEVELOPMENT..."
+  docker-compose down
+  docker-compose run --service-ports --rm local
+elif [[ $OPTION = "5" ]] ;then
+  clear
   echo "Building IMAGE..."
   docker-compose build
-elif [[ $OPTION = "5" ]] ;then
+elif [[ $OPTION = "6" ]] ;then
   clear
   echo "Running CONTAINER..."
   docker-compose down
