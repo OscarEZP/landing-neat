@@ -1,32 +1,88 @@
 <section id="follow-up">
-    <section class="box">
-        <h2>Tipology</h2>
-        <div fxLayout="row">
-            <span class="tag">NI 2</span>
-            <span class="tag etr">ETR</span>
-        </div>
-        <div fxLayout="row">
-            <aside fxFlex="40" id="interval-select">
-                <mat-form-field>
-                    <mat-select placeholder="Interval">
-                        <mat-option>30 minutes</mat-option>
-                        <mat-option>45 minutes</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </aside>
-            <div fxFlex="30" >
-                <mat-icon>account_circle</mat-icon>
-                OCT.12.2017
+    <section class="box" *ngIf="!validations.isFollowUpDisabled">
+        <form [formGroup]="followUpForm" (ngSubmit)="submitForm(followUpForm.value)">
+            <h2>{{ 'OPERATIONS.CONTINGENCY_FORM.TYPOLOGY' | translate }}</h2>
+            <div fxLayout="row" class="remove-space">
+                <mat-button-toggle-group #group="matButtonToggleGroup" [formControl]="followUpForm.controls['code']">
+                    <ng-container *ngFor="let codes of statusCodes">
+                        <mat-button-toggle class="button-item" [value]="codes.code" *ngIf="codes.isActive" (click)="selectActiveCode(codes.code)">
+                            {{ codes.code }}
+                        </mat-button-toggle>
+                    </ng-container>
+                </mat-button-toggle-group>
             </div>
-            <div fxFlex="30" fxLayout="row" fxLayoutAlign="end">
-                <mat-icon>today</mat-icon>
-                30 min ago
+            <div fxLayout="row" class="remove-space">
+                <mat-error *ngIf="validations.isSubmitted && followUpForm.controls['code'].untouched">{{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.CONTINGENCY_TYPE_REQUIRED' | translate }}</mat-error>
             </div>
-        </div>
-        <form action="">
+
+            <div fxLayout="column" class="safety-container remove-space" *ngIf="currentSafeEventCode === null">
+                <div fxLayout="column" fxLayoutGap="15px">
+                    <mat-checkbox labelPosition="after" fxFlex="20" [formControl]="followUpForm.controls['safety']" [(ngModel)]="validations.optionalIsChecked" (click)="onSelectOptional()">
+                        {{ 'TITLES.SAFETY_EVENTS' | translate }}
+                    </mat-checkbox>
+                </div>
+                <div fxLayout="column" class="remove-space" *ngIf="followUpForm.controls['safety'].value">
+                    <div fxLayout="row">
+                        <mat-form-field fxFlex="70">
+                            <mat-select
+                                    placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.TECHNICAL_TYPE_PLACEHOLDER' | translate }}"
+                                    [formControl]="followUpForm.controls['safetyEventCode']" required>
+                                <mat-option *ngFor="let safety of safetyEventList" [value]="safety.code">{{
+                                    safety.description }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <span class="alert-warning">{{'OPERATIONS.CONTINGENCY_FORM.SAFETY_MESSAGE'|translate}}</span>
+                </div>
+
+            </div>
+
+            <div fxLayout="row" class="remove-space">
+                <aside fxFlex="40" id="interval-select">
+                    <mat-form-field>
+                        <mat-select placeholder="Interval" [formControl]="followUpForm.controls['duration']">
+                            <mat-option [value]="min" *ngFor="let min of durations" (click)="getCurrentTime()">{{ min }} {{'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.MINUTES' | translate }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </aside>
+                <div fxFlexOffset="5" fxFlex="60" fxLayoutAlign="center center">
+                    <div fxLayout="row" fxFlex="60">
+                        <mat-icon>today</mat-icon>
+                        <span fxLayoutAlign="center center">{{ currentUTCTime | date : 'dd.MMM.yyyy'}}</span>
+                    </div>
+                    <div fxLayout="row" fxFlex="40" fxFlexOffset="5">
+                        <mat-icon>access_time</mat-icon>
+                        <span fxLayoutAlign="center center">{{ currentUTCTime + (followUpForm.controls['duration'].value * 60000) | date : 'HH:mm' : '+0'}}</span>
+                    </div>
+                    <span fxFlex=""> UTC</span>
+                </div>
+            </div>
+            <div fxLayout="row" *ngIf="validations.timeAlert" class="validate-warning remove-space">
+                {{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.TIME_AVAILABLE_WARNING' | translate }} {{ validations.delta }} {{'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.MINUTES' | translate }}
+            </div>
             <mat-form-field class="full-width">
-                <input matInput placeholder="Write your comment">
+                    <textarea matInput
+                              placeholder="{{'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.OBSERVATION_TITLE' | translate}}"
+                              [formControl]="followUpForm.controls['observation']" required>
+
+                    </textarea>
+                <mat-error *ngIf="followUpForm.controls['observation'].hasError('required') && followUpForm.controls['observation'].touched">
+                    {{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.OBSERVATION_REQUIRED' | translate }}
+                </mat-error>
             </mat-form-field>
+            <div mat-dialog-actions fxLayoutAlign="end" class="remove-space">
+                <button type="button" mat-button (click)="closeDetails()" [disabled]="validations.isSending">
+                    {{ 'BUTTONS.CANCEL' | translate }}
+                </button>
+                <button type="submit" mat-button mat-raised-button color="primary" [disabled]="validations.isSending">
+                    {{ 'BUTTONS.SAVE' | translate }}
+                </button>
+            </div>
         </form>
+    </section>
+    <section class="box" *ngIf="validations.isFollowUpDisabled">
+        <h2>{{ 'OPERATIONS.CONTINGENCY_FORM.TYPOLOGY' | translate }}</h2>
+        {{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_DISABLED' | translate }}
     </section>
 </section>

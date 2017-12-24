@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 import { AircraftList } from '../_models/aircraft';
+import { Aircraft } from '../../../shared/_models/aircraft';
 import { FlightList } from '../_models/flight';
 import { LogService } from './log.service';
-import { environment} from '../../../../environments/environment';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -16,6 +17,7 @@ const httpOptions = {
 export class ContingencyService {
     private apiUrl = environment.apiUrl;
     private closePath = environment.paths.close;
+    private searchAircraftPath = environment.paths.aircraftsSearch;
 
     constructor(
         private http: HttpClient,
@@ -29,8 +31,9 @@ export class ContingencyService {
         );
     }
 
-    getAircrafts(): Observable<AircraftList[]> {
-        return this.http.get<AircraftList[]>('api/aircrafts')
+    getAircrafts(searchSignature: any): Observable<Aircraft[]> {
+        console.log('search', this.searchAircraftPath);
+        return this.http.post<Aircraft[]>(this.apiUrl + this.searchAircraftPath, searchSignature, httpOptions)
             .pipe(
             tap(aircrafts => this.log(`fetched aircrafts`)),
             catchError(this.handleError('getAircrafts', []))

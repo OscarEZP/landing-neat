@@ -12,14 +12,16 @@ services:
     volumes:    # Volumes (directories) to mount
     - ../../:/var/www/html/
     command: bash -c "npm install && ng serve --env=staging -o --host 0.0.0.0 --port 4200"
-  local:  # Main web service
-    container_name: moc_web
-    build: ./    # Directory containing Dockerfile
-    ports:  # Ports to expose
-    - "4200:4200"
-    volumes:    # Volumes (directories) to mount
-    - ../../:/var/www/html/
-    command: bash -c "npm install && ng serve --env=dev -o --host 0.0.0.0 --port 4200"
+
+  local:  # Local web service
+      container_name: moc_web
+      build: ./    # Directory containing Dockerfile
+      ports:  # Ports to expose
+      - "4200:4200"
+      volumes:    # Volumes (directories) to mount
+      - ../../:/var/www/html/
+      command: bash -c "npm install && ng serve --env=dev -o --host 0.0.0.0 --port 4200"
+
 #  prod:  # Production web service
 #    container_name: moc_prod
 #    build: ./    # Directory containing Dockerfile
@@ -36,19 +38,4 @@ services:
     - "9876:9876"
     volumes:    # Volumes (directories) to mount
     - ../../:/var/www/html/
-    command: bash -c "ng test"
-
-  interactive:  # Interactive service
-    container_name: moc_interactive
-    build: ./    # Directory containing Dockerfile
-    ports:  # Ports to expose
-    - "4201:4201"
-    volumes:    # Volumes (directories) to mount
-    - ../../:/var/www/html/
-    stdin_open: true # Interactive container
-    tty: true # Interactive container
-  #  links:  # Containers on which 'web' depends
-  #  - redis
-  #redis:    # Redis container service
-  #  image: redis    # Specify an existing docker image
-# volumes:    # Create volume using volume parameters (check out official documentation)
+    command: bash -c "npm install && ng test --env=staging -sm=false --cc"

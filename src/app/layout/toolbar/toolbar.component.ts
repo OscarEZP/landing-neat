@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DatetimeService } from '../../shared/_services/datetime.service';
-import { ActualTimeModel } from '../../shared/_models/actual-time-model';
+import { ActualTimeModel } from '../../shared/_models/actualTime';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
 import { DataService } from '../../shared/_services/data.service';

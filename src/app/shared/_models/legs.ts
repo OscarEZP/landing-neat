@@ -4,14 +4,16 @@ export class Legs {
 
     private _origin: string;
     private _destination: string;
-    private _updateDate: TimeInstant;
     private _etd: TimeInstant;
+    private _updateDate: TimeInstant;
+    private _tail: string;
 
-    constructor(origin: string, destination: string, updateDate: TimeInstant, etd: TimeInstant) {
+    constructor(origin: string, destination: string, etd: TimeInstant, updateDate: TimeInstant, tail: string) {
         this._origin = origin;
         this._destination = destination;
-        this._updateDate = updateDate;
         this._etd = etd;
+        this._updateDate = updateDate;
+        this._tail = tail;
     }
 
     get origin(): string {
@@ -30,6 +32,14 @@ export class Legs {
         this._destination = value;
     }
 
+    get etd(): TimeInstant {
+        return this._etd;
+    }
+
+    set etd(value: TimeInstant) {
+        this._etd = value;
+    }
+
     get updateDate(): TimeInstant {
         return this._updateDate;
     }
@@ -38,11 +48,11 @@ export class Legs {
         this._updateDate = value;
     }
 
-    get etd(): TimeInstant {
-        return this._etd;
+    get tail(): string {
+        return this._tail;
     }
 
-    set etd(value: TimeInstant) {
-        this._etd = value;
+    set tail(value: string) {
+        this._tail = value;
     }
 }

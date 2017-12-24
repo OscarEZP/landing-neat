@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import { MAT_DATE_LOCALE } from '@angular/material';
 import {BrowserModule} from '@angular/platform-browser';
 import { ApiRestService } from '../../shared/_services/apiRest.service';
 import {SharedModule} from '../../shared/shared.module';
@@ -13,6 +14,7 @@ import {LogService} from './_services/log.service';
 import {ClockService} from '../../shared/_services/clock.service';
 import {CancelComponent} from './cancel/cancel.component';
 import { CloseContingencyComponent } from './close-contingency/close-contingency.component';
+import { SearchHistoricalComponent } from './search-historical/search-historical.component';
 
 @NgModule({
     imports: [
@@ -25,7 +27,8 @@ import { CloseContingencyComponent } from './close-contingency/close-contingency
         ContingencySimplifiedListComponent,
         ContingencyFormComponent,
         CancelComponent,
-        CloseContingencyComponent
+        CloseContingencyComponent,
+        SearchHistoricalComponent
     ],
     exports: [],
     providers: [
@@ -33,7 +36,8 @@ import { CloseContingencyComponent } from './close-contingency/close-contingency
         ContingencyService,
         LogService,
         ClockService,
-        ApiRestService
+        ApiRestService,
+        {provide: MAT_DATE_LOCALE, useValue: 'es-CL'}
     ],
     entryComponents: [
         CancelComponent,

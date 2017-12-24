@@ -13,7 +13,7 @@ import { AuthService } from '../_services/auth.service';
     styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-    userNameFormControl = new FormControl('', [
+    usernameFormControl = new FormControl('', [
         Validators.required
     ]);
     passwordFormControl = new FormControl('', [
@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
 
         this.authService.reset();
         this.loginForm = this.fb.group({
-            'userNameFormControl': this.userNameFormControl,
+            'usernameFormControl': this.usernameFormControl,
             'passwordFormControl': this.passwordFormControl
         });
         this.routeData = this.route.data.subscribe((data: { logout: string }) => {
@@ -69,7 +69,7 @@ export class LoginComponent implements OnInit {
         if (form.valid && !this.disableButton) {
             this.disableButton = true;
             const data = this.authService.getData();
-            this.authService.logIn(data.userName, data.password).then(value => {
+            this.authService.logIn(data.username, data.password).then(value => {
                 this.storageService.addCurrentUser(value);
                 this.router.navigate([this.authService.getRedirectUrl()]);
                 this.activateLoadingBar(false);

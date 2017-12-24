@@ -16,7 +16,7 @@ export class ApiRestService {
         return this.http.get<T>(this.baseUrl + environment.paths[path]);
     }
 
-    public getSingle<T>(path: string, id: number): Observable<T> {
+    public getSingle<T>(path: string, id: number|string): Observable<T> {
         return this.http.get<T>(this.baseUrl + environment.paths[path] + '/' + id);
     }
 
@@ -28,10 +28,11 @@ export class ApiRestService {
         return this.http.get<T>(this.baseUrl + environment.paths[path], requestOptions);
     }
 
-    public add<T>(path: string, itemToAdd: any): Observable<T> {
+    public add<T>(path: string, itemToAdd: any, id?: string): Observable<T> {
         const toAdd = JSON.stringify(itemToAdd).replace(/\b[_]/g, '');
+        const finalPath = id !== '' ? environment.paths[path] + '/' + id : environment.paths[path];
 
-        return this.http.post<T>(this.baseUrl + environment.paths[path], toAdd);
+        return this.http.post<T>(this.baseUrl + finalPath, toAdd);
     }
 
     public update<T>(path: string, id: number, itemToUpdate: any): Observable<T> {

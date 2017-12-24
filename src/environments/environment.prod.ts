@@ -1,7 +1,7 @@
 export const environment = {
-    production: false,
-    envName: 'staging',
-    apiUrl: 'https://staging.mcp.maintenix.ifs.cloud',
+    production: true,
+    envName: 'prod',
+    apiUrl: 'https://mcp.maintenix.ifs.cloud',
     paths: {
         confirmForgotPassword: '/api/security/users/_confirmforgotpassword',
         contingencyList: '/api/v1/contingencies',
@@ -10,12 +10,10 @@ export const environment = {
         login: '/api/security/users/_login',
         safetyEvent: '/api/v1/contingencies/configurations/safetyEvents',
         aircrafts: '/api/v1/contingencies/configurations/aircrafts',
-        aircraftsSearch: '/api/v1/contingencies/configurations/aircrafts/_search',
         flights: '/api/v1/contingencies/configurations/flights',
         locations: '/api/v1/contingencies/configurations/locations',
         types: '/api/v1/contingencies/configurations/types',
         close: '/api/v1/contingencies/_close',
-        followUp: '/api/v1/contingencies/status/_followUp',
-        configStatus: '/api/v1/contingencies/configurations/status'
+        followUp: '/api/v1/contingencies/_followUp',
     }
 };

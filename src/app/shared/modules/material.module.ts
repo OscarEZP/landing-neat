@@ -19,7 +19,9 @@ import {
     MatAutocompleteModule,
     MatSlideToggleModule,
     MatSnackBarModule,
-    MatMenuModule
+    MatMenuModule,
+    MatButtonToggleModule,
+    MatChipsModule
 
 } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -51,8 +53,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         FormsModule,
         MatTabsModule,
         MatToolbarModule,
-        ReactiveFormsModule
-
+        ReactiveFormsModule,
+        MatButtonToggleModule,
+        MatChipsModule
     ],
     exports: [
         FlexLayoutModule,
@@ -79,8 +82,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         FormsModule,
         MatTabsModule,
         MatToolbarModule,
-        ReactiveFormsModule
-
+        ReactiveFormsModule,
+        MatButtonToggleModule,
+        MatChipsModule
     ],
 
 })

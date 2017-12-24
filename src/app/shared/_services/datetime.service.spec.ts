@@ -1,15 +1,19 @@
-import { TestBed, inject } from '@angular/core/testing';
+import {TestBed, inject} from '@angular/core/testing';
 
-import { DatetimeService } from './datetime.service';
+import {DatetimeService} from './datetime.service';
+import {HttpModule} from "@angular/http";
 
 describe('DatetimeService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [DatetimeService]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                HttpModule
+            ],
+            providers: [DatetimeService]
+        });
     });
-  });
 
-  it('should be created', inject([DatetimeService], (service: DatetimeService) => {
-    expect(service).toBeTruthy();
-  }));
+    it('should be created', inject([DatetimeService], (service: DatetimeService) => {
+        expect(service).toBeTruthy();
+    }));
 });
