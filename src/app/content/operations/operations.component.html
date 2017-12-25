@@ -3,10 +3,10 @@
         <lsl-search-historical></lsl-search-historical>
     </div>
     <nav>
-        <a routerLink="contingencies" routerLinkActive="active" class="mat-tab-item">
+        <a routerLink="contingencies{{historicalSearchService.active ? '/historical' : ''}}" routerLinkActive="active" class="mat-tab-item">
             {{ 'OPERATIONS.AOG_CONTINGENCY' | translate }}
         </a>
-        <a routerLink="pit-stop" routerLinkActive="active" class="mat-tab-item">
+        <a routerLink="pit-stop{{historicalSearchService.active ? '/historical' : ''}}" routerLinkActive="active" class="mat-tab-item">
             {{ 'OPERATIONS.PIT_STOP' | translate }}
         </a>
     </nav>

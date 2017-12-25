@@ -14,6 +14,7 @@ import {ContingencyService} from './_services/contingency.service';
 export class OperationsComponent implements OnInit {
 
     @ViewChild('contPaginator') public paginator: MatPaginator;
+    public arrMenu: { label: string, link: string }[];
 
     constructor(
         private translate: TranslateService,
@@ -40,6 +41,17 @@ export class OperationsComponent implements OnInit {
             };
             this._contingencyService.postHistoricalSearch(search).subscribe();
         });
+
+        this.arrMenu = [
+            {
+                'label': 'AOG / Contingency',
+                'link': '/operations/contingencies',
+            },
+            {
+                'label': 'Pit Stop',
+                'link': '/operations/pit-stop',
+            },
+        ];
     }
 
 }
