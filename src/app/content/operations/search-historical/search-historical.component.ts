@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from '../../../shared/_services/message.service';
@@ -17,9 +16,8 @@ import {InfiniteScrollService} from '../_services/infinite-scroll.service';
 })
 
 export class SearchHistoricalComponent implements OnInit {
-    searchForm: FormGroup;
+    public searchForm: FormGroup;
     public snackbarMessage: string;
-    toppings = new FormControl();
     public aicraftList: Aircraft[];
 
     constructor(
@@ -43,7 +41,7 @@ export class SearchHistoricalComponent implements OnInit {
     private getAircraft(): void {
         const searchSignature = {
             enable: 2
-        }
+        };
         this._contingencyService.getAircrafts(searchSignature).subscribe((data) => {
             this.aicraftList = data as Aircraft[];
         });
@@ -64,7 +62,6 @@ export class SearchHistoricalComponent implements OnInit {
 
     submitForm(value: any) {
         if (this.searchForm.valid) {
-            console.log('valid', value, this._searchHistoricalService.active);
             if (!this._searchHistoricalService.active) {
                 this.router.navigate([this.router.url + '/historical']);
             } else {
@@ -79,7 +76,6 @@ export class SearchHistoricalComponent implements OnInit {
                     limit: this.infiniteScrollService.pageSize
                 };
                 this._contingencyService.postHistoricalSearch(search).subscribe();
-                console.log(search, this._contingencyService.data);
             }
         } else {
             this.translateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');

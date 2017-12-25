@@ -3,11 +3,8 @@
         <lsl-search-historical></lsl-search-historical>
     </div>
     <nav>
-        <a routerLink="contingencies{{historicalSearchService.active ? '/historical' : ''}}" routerLinkActive="active" class="mat-tab-item">
-            {{ 'OPERATIONS.AOG_CONTINGENCY' | translate }}
-        </a>
-        <a routerLink="pit-stop{{historicalSearchService.active ? '/historical' : ''}}" routerLinkActive="active" class="mat-tab-item">
-            {{ 'OPERATIONS.PIT_STOP' | translate }}
+        <a *ngFor="let menu of arrMenu" routerLink="{{menu.link}}" routerLinkActive="active" class="mat-tab-item">
+            {{ menu.label | translate }}
         </a>
     </nav>
     <content>

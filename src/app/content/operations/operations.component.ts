@@ -44,14 +44,13 @@ export class OperationsComponent implements OnInit {
 
         this.arrMenu = [
             {
-                'label': 'AOG / Contingency',
-                'link': '/operations/contingencies',
+                'label': 'OPERATIONS.AOG_CONTINGENCY',
+                'link': '/operations/contingencies' + (this.historicalSearchService.active ? '/historical' : ''),
             },
             {
-                'label': 'Pit Stop',
-                'link': '/operations/pit-stop',
+                'label': 'OPERATIONS.PIT_STOP',
+                'link': '/operations/pit-stop' + (this.historicalSearchService.active ? '/historical' : ''),
             },
         ];
     }
-
 }

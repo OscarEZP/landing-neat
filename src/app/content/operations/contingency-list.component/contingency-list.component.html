@@ -17,8 +17,8 @@
         <div class="block-s">{{ 'OPERATIONS.STATUS' | translate }}</div>
         <div class="block-s">{{ 'OPERATIONS.TYPE' | translate }}</div>
         <div class="block-s">{{ 'OPERATIONS.SAFETY_EVENT' | translate }}</div>
-        <div class="block-m">{{ 'OPERATIONS.PROGRESS' | translate }}</div>
-        <div class="block-m">{{ 'OPERATIONS.TIME_LEFT' | translate }}</div>
+        <div class="block-m">{{ (historicalSearchService.active ? 'OPERATIONS.CONTINGENCY_LIMIT' : 'OPERATIONS.PROGRESS') | translate }}</div>
+        <div class="block-m">{{ (historicalSearchService.active ? 'OPERATIONS.CLOSURE_DATE_HOUR' : 'OPERATIONS.TIME_LEFT') | translate }}</div>
         <div class="block-s">{{ 'OPERATIONS.FOCAL' | translate }}</div>
         <div class="block-xs block-last">&nbsp;</div>
     </mat-list-item>

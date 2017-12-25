@@ -11,8 +11,8 @@ import { DialogService } from '../../_services/dialog.service';
 import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
 import {ActivatedRoute} from '@angular/router';
 import {HistoricalSearchService} from '../_services/historical-search.service';
-import {ContingencyService} from "../_services/contingency.service";
-import {InfiniteScrollService} from "../_services/infinite-scroll.service";
+import {ContingencyService} from '../_services/contingency.service';
+import {InfiniteScrollService} from '../_services/infinite-scroll.service';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -37,7 +37,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         public detailsService: DetailsService,
         private _apiService: ApiRestService,
         private route: ActivatedRoute,
-        private _historicalSearchService: HistoricalSearchService,
+        private historicalSearchService: HistoricalSearchService,
         public contingencyService: ContingencyService,
         private _infiniteScrollService: InfiniteScrollService
     ) {
@@ -52,7 +52,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
         this._reloadSubscription = this.messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.route.data.subscribe((data: any) => {
-            this._historicalSearchService.active = data.historical;
+            this.historicalSearchService.active = data.historical;
         });
         this.getContingences();
     }
@@ -84,15 +84,15 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     private getContingences() {
-        if (!this._historicalSearchService.active) {
+        if (!this.historicalSearchService.active) {
             this.contingencyService.getContingencies().subscribe(data => this.itemsCount = data.length);
         } else {
             const search = {
                 from: {
-                    epochTime: this._historicalSearchService.fromTS
+                    epochTime: this.historicalSearchService.fromTS
                 },
                 to: {
-                    epochTime: this._historicalSearchService.toTS
+                    epochTime: this.historicalSearchService.toTS
                 },
                 offSet: this._infiniteScrollService.offset,
                 limit: this._infiniteScrollService.pageSize
