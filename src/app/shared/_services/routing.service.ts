@@ -2,8 +2,11 @@ import {Injectable} from '@angular/core';
 
 @Injectable()
 export class RoutingService {
-
     public moduleTitle: string;
+
+    constructor() {
+        this.moduleTitle = '';
+    }
 
     public setActiveModule(url: string) {
         switch (url) {

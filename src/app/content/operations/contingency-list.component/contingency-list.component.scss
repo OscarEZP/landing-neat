@@ -1,6 +1,12 @@
 @import '../../../../assets/style/base.scss';
 
+$min-res-table: 1400px;
 $contingency-header: 76px;
+$cell-xs: 5%;
+$cell-s: 6%;
+$cell-m: 8%;
+$cell-l: 10%;
+$cell-xl: 100%;
 
 /deep/
 .moc-items-list.mat-list-item.active{
@@ -10,11 +16,6 @@ $contingency-header: 76px;
 /deep/
 .mat-tab-body-wrapper {
   height: calc(100vh - #{$contingency-header} - #{$navbar-height});
-}
-
-/deep/
-.mat-list-item-content{
-  font-size: $base-font;
 }
 
 .content-mat-list {
@@ -61,40 +62,32 @@ $contingency-header: 76px;
 
   .description {
     text-transform: uppercase;
-    @include generate-font-size(-3);
   }
 
   .block-xs {
-    width: 3%;
-    margin-right: 10px;
+    width: 100%;
+    max-width: $cell-xs;
   }
 
   .block-s {
-    width: 7%;
-    min-width: 80px;
-    margin-right: 10px;
+    width: 100%;
+    max-width: $cell-s;
+    min-width: 55px;
   }
 
   .block-m {
-    width: 10%;
-    min-width: 106px;
-    margin-right: 10px;
+    width: 100%;
+    max-width: $cell-m;
   }
 
   .block-l {
-    width: 15%;
-    min-width: 150px;
-    margin-right: 10px;
+    width: 100%;
+    max-width: $cell-l;
   }
 
   .block-xl {
-    width: 25%;
-    min-width: 278px;
-    margin-right: 10px;
-  }
-
-  .block-last {
-    margin-right: 0;
+    width: 100%;
+    max-width: $cell-xl;
   }
 
   .medium-element {
@@ -141,20 +134,18 @@ $contingency-header: 76px;
   .etr {
     background-color: mat-color($primary, 'A700');
   }
+
+  .historical-bar{
+    span{
+      float: right;
+      margin: 3px 0 0 0;
+    }
+  }
 }
 
 .two-lines {
   width: 100%;
   display: block;
-}
-
-.moc-items-list-title {
-  font-weight: bold;
-  margin-bottom: -10px;
-  text-transform: uppercase;
-  div{
-    @include generate-font-size(-3);
-  }
 }
 
 .moc-items-list.no-bg {
@@ -166,4 +157,65 @@ $contingency-header: 76px;
 .mat-icon-adj {
   display: inline-flex;
   vertical-align: middle;
+}
+
+/deep/
+.mat-list {
+  .moc-items-list.mat-list-item {
+    width: 100%;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .3);
+    height: $list-item-height;
+    box-sizing: border-box;
+
+    div, span {
+      color: mat-color($foreground, 'text');
+      @include generate-font-size(-5);
+    }
+
+    .mat-list-item-content {
+      font-size: $base-font;
+      height: auto;
+
+      > div {
+        margin: 0 3px;
+      }
+    }
+  }
+
+  .moc-items-list.mat-list-item.moc-items-list-title {
+    box-shadow: none;
+    font-weight: bold;
+    margin-bottom: -10px;
+    padding: 0;
+
+    .mat-list-item-content {
+      height: inherit;
+      @include generate-font-size(-3);
+      div {
+        font-weight: lighter;
+      }
+    }
+  }
+
+}
+
+@media screen and (max-width: $min-x-res) {
+  /deep/
+  .compressed {
+    .mat-list {
+      .moc-items-list.mat-list-item {
+        display: inline-block;
+      }
+    }
+  }
+
+}
+
+@media screen and (max-width: $min-res-table) {
+  /deep/
+  .mat-list {
+    .moc-items-list.mat-list-item {
+      display: inline-block;
+    }
+  }
 }
