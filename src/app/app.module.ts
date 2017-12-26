@@ -18,7 +18,6 @@ import { DataService } from './shared/_services/data.service';
 // Services
 import { DatetimeService } from './shared/_services/datetime.service';
 import { SimplifiedLayoutModule } from './simplified-layout/simplified-layout.module';
-import {MomentModule} from "angular2-moment";
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http);
@@ -44,8 +43,7 @@ export function HttpLoaderFactory(http: HttpClient) {
                 useFactory: HttpLoaderFactory,
                 deps: [HttpClient]
             }
-        }),
-        MomentModule
+        })
     ],
     declarations: [
         AppComponent
