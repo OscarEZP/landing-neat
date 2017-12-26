@@ -36,7 +36,12 @@
         <div class="block-s" (click)="openDetails(contingency)">{{ contingency.flight.flightNumber }}</div>
         <div class="block-s" (click)="openDetails(contingency)">{{ contingency.flight.origin }} / {{ contingency.flight.destination }}</div>
         <div class="block-xl description" (click)="openDetails(contingency)">{{ (contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}</div>
-        <div class="block-s" (click)="openDetails(contingency, 'follow-up')"><span class="badge {{ contingency.status.code | lowercase }}">{{ contingency.status.code | uppercase }}</span></div>
+
+        <div class="block-s" (click)="openDetails(contingency, 'follow-up')">
+            <span *ngIf="!historicalSearchService.active" class="badge {{ contingency.status.code | lowercase }}">{{ contingency.status.code | uppercase }}</span>
+            <span *ngIf="historicalSearchService.active" class="badge {{ contingency.close.type | lowercase }}">{{ contingency.close.type | uppercase }}</span>
+        </div>
+
         <div class="block-s" (click)="openDetails(contingency)"><div><strong>CONT</strong></div><div>{{ contingency.type }}</div></div>
         <div class="block-s" (click)="openDetails(contingency)"><span class="badge" *ngIf="contingency.safetyEvent.code?.length > 0">{{ contingency.safetyEvent.code }}</span></div>
 
