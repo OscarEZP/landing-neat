@@ -73,13 +73,27 @@ export class CloseContingencyComponent implements OnInit {
     }
 
     openCancelDialog() {
-        this.translateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
-        this.messageService.openFromComponent(CancelComponent, {
-            data: {message: this.snackBarMessage},
-            horizontalPosition: 'center',
-            verticalPosition: 'top'
-        });
+        if (this.validateFilledItems()) {
+            this.translateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
+            this.messageService.openFromComponent(CancelComponent, {
+                data: {message: this.snackBarMessage},
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+            });
+        } else {
+            this.dismissCloseContigency();
+        }
+    }
 
+    private validateFilledItems(): boolean {
+        let counterFilled = 0;
+        const defaultValid = 1;
+        Object.keys(this.closeForm.controls).forEach(elem => {
+            if (this.closeForm.controls[elem].valid) {
+                counterFilled = counterFilled + 1;
+            }
+        });
+        return counterFilled > defaultValid ? true : false;
     }
 
     dismissCloseContigency(): void {
