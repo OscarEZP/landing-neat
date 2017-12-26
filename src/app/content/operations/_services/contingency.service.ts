@@ -9,6 +9,7 @@ import { LogService } from './log.service';
 import {Contingency} from '../../../shared/_models/contingency';
 import {InfiniteScrollService} from './infinite-scroll.service';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
+import {DetailsService} from '../../../details/_services/details.service';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -27,6 +28,7 @@ export class ContingencyService {
         private logService: LogService,
         private _infiniteScrollService: InfiniteScrollService,
         private _apiService: ApiRestService,
+        private _detailsService: DetailsService
     ) {
         this.data = [];
     }
@@ -35,7 +37,12 @@ export class ContingencyService {
         return this._apiService
         .getAll<Contingency[]>('contingencyList')
         .pipe(
-            tap(contingencies => this.data = contingencies)
+            tap(contingencies => {
+                this.data = contingencies;
+                if (contingencies.length > 0) {
+                    this._detailsService.contingency = this.data[0];
+                }
+            })
         );
     }
 
@@ -62,12 +69,15 @@ export class ContingencyService {
         .pipe(
             tap(contingencies => {
                 this.log(`fetched search`);
-                contingencies.forEach((item, i) => {
-                    const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
-                    const percentage = (diff / 180) * 100;
-                    item.lastInformationPercentage = percentage > 100 ? 100 : percentage;
-                });
                 this.data = contingencies;
+                if (contingencies.length > 0) {
+                    contingencies.forEach((item) => {
+                        const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
+                        const percentage = (diff / 180) * 100;
+                        item.lastInformationPercentage = percentage > 100 ? 100 : percentage;
+                    });
+                    this._detailsService.contingency = this.data[0];
+                }
             }),
             catchError(this.handleError('getContingencies', []))
         );

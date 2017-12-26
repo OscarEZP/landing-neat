@@ -120,19 +120,27 @@ $cell-xl: 100%;
   }
 
   .ni1 {
-    background-color: #ef5350;
+    background-color: mat-color($custom, 'ni1');
   }
 
   .ni2 {
-    background-color: #fb8c00;
+    background-color: mat-color($custom, 'ni2');
   }
 
   .ni3 {
-    background-color: #f3be17;
+    background-color: mat-color($custom, 'ni3');
   }
 
   .etr {
     background-color: mat-color($primary, 'A700');
+  }
+
+  .aog{
+    background-color: mat-color($warn);
+  }
+
+  .rlsd{
+    background-color: mat-color($custom, 'success');
   }
 
   .historical-bar{

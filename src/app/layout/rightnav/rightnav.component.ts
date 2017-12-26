@@ -19,9 +19,7 @@ export class RightnavComponent implements OnInit {
     }
 
     closeDetails() {
-        this.detailsService.closeSidenav().then(() => {
-            this.detailsService.open = false;
-        });
+        this.detailsService.closeSidenav().then();
     }
 
 }

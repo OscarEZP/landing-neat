@@ -60,7 +60,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
 
         this.currentUTCTime = 0;
         this.safetyEventList = [];
-        this.selectedContingency = null;
+        this.selectedContingency = _detailsService.contingency;
         this.currentSafeEventCode = null;
         this.statusCodes = [];
         this.durations = [];
