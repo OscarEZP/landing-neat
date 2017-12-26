@@ -35,7 +35,7 @@
                         </mat-error>
                         <mat-autocomplete #ac="matAutocomplete"
                                           (optionSelected)="onSelectAircraft(searchAircraft.value)">
-                            <mat-option *ngFor="let ac of aircraftList | ObjNgForPipe" (onSelectionChange)="validateAircraft(searchAircraft.value)" [value]="ac.tail">
+                            <mat-option *ngFor="let ac of filteredAircrafts | async" (onSelectionChange)="validateAircraft(searchAircraft.value)" [value]="ac.tail">
                                 {{ ac.tail }}
                             </mat-option>
                         </mat-autocomplete>
@@ -80,7 +80,7 @@
                         </mat-error>
                         <mat-autocomplete #flightNumber="matAutocomplete"
                                           (optionSelected)="onSelectFlight(searchFlight.value)">
-                            <mat-option *ngFor="let fl of flightList" [value]="fl.flightNumber">
+                            <mat-option *ngFor="let fl of filteredFlights | async" [value]="fl.flightNumber">
                                 {{ fl.flightNumber }}
                             </mat-option>
                         </mat-autocomplete>
