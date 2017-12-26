@@ -1,4 +1,4 @@
-import {TimeInstant} from "./timeInstant";
+import {TimeInstant} from './timeInstant';
 export class Close {
     private _closeDate: TimeInstant;
     private _id: number;
