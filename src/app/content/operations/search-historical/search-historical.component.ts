@@ -62,20 +62,20 @@ export class SearchHistoricalComponent implements OnInit {
 
     submitForm(value: any) {
         if (this.searchForm.valid) {
+            const search = {
+                from: {
+                    epochTime: this._searchHistoricalService.fromTS
+                },
+                to: {
+                    epochTime: this._searchHistoricalService.toTS
+                },
+                tails: this._searchHistoricalService.tails,
+                offSet: this.infiniteScrollService.offset,
+                limit: this.infiniteScrollService.pageSize
+            };
+            this._contingencyService.postHistoricalSearch(search).subscribe();
             if (!this._searchHistoricalService.active) {
                 this.router.navigate([this.router.url + '/historical']);
-            } else {
-                const search = {
-                    from: {
-                        epochTime: this._searchHistoricalService.fromTS
-                    },
-                    to: {
-                        epochTime: this._searchHistoricalService.toTS
-                    },
-                    offSet: this.infiniteScrollService.offset,
-                    limit: this.infiniteScrollService.pageSize
-                };
-                this._contingencyService.postHistoricalSearch(search).subscribe();
             }
         } else {
             this.translateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');

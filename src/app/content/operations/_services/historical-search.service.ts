@@ -26,6 +26,14 @@ export class HistoricalSearchService {
         return this._searchForm.value.to ? this._searchForm.value.to.getTime() : Date.now();
     }
 
+    get tails(): any {
+        return this._searchForm.value.tails ? this._searchForm.value.tails : [];
+    }
+
+    set searchForm(value){
+        this._searchForm = value;
+    }
+
     get searchForm(): FormGroup {
         return this._searchForm;
     }

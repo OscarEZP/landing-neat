@@ -10,7 +10,6 @@ import {ActivatedRoute} from '@angular/router';
 import {HistoricalSearchService} from '../_services/historical-search.service';
 import {ContingencyService} from '../_services/contingency.service';
 import {InfiniteScrollService} from '../_services/infinite-scroll.service';
-import {Moment} from "moment";
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -26,7 +25,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public contingencyList: Contingency[];
     public progressBarColor: string;
     public currentUTCTime: number;
-    public itemsCount: number;
 
     constructor(
         private messageData: DataService,
@@ -40,7 +38,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     ) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
-        this.itemsCount = 0;
     }
 
     ngOnInit() {
@@ -81,9 +78,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     private getContingences() {
-        if (!this.historicalSearchService.active) {
-            this.contingencyService.getContingencies().subscribe(data => this.itemsCount = data.length);
-        } else {
+        console.log(this.historicalSearchService.searchForm);
+        if (!this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
+            this.contingencyService.getContingencies().subscribe();
+        } else if(this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
             const search = {
                 from: {
                     epochTime: this.historicalSearchService.fromTS
@@ -94,15 +92,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 offSet: this._infiniteScrollService.offset,
                 limit: this._infiniteScrollService.pageSize
             };
-            this.contingencyService.postHistoricalSearch(search).subscribe(data => {
-                this.itemsCount = data.length;
-                data.forEach((item, i) => {
-                    const diff = (item.close.closeDate.epochTime - item.creationDate.epochTime)/(1000*60);
-                    const percentage = (diff / 180) * 100;
-                    item.closePercentage = percentage > 100 ? 100 : percentage;
-                    console.log(item, item.close.closeDate.label, item.creationDate.label);
-                });
-            });
+            this.contingencyService.postHistoricalSearch(search).subscribe();
         }
     }
 

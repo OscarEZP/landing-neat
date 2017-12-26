@@ -23,6 +23,16 @@ export class OperationsComponent implements OnInit {
         private _contingencyService: ContingencyService
     ) {
         this.translate.setDefaultLang('en');
+        this.arrMenu = [
+            {
+                'label': 'OPERATIONS.AOG_CONTINGENCY',
+                'link': '/operations/contingencies' + (this.historicalSearchService.active ? '/historical' : ''),
+            },
+            {
+                'label': 'OPERATIONS.PIT_STOP',
+                'link': '/operations/pit-stop' + (this.historicalSearchService.active ? '/historical' : ''),
+            }
+        ];
     }
 
     ngOnInit() {
@@ -41,16 +51,5 @@ export class OperationsComponent implements OnInit {
             };
             this._contingencyService.postHistoricalSearch(search).subscribe();
         });
-
-        this.arrMenu = [
-            {
-                'label': 'OPERATIONS.AOG_CONTINGENCY',
-                'link': '/operations/contingencies' + (this.historicalSearchService.active ? '/historical' : ''),
-            },
-            {
-                'label': 'OPERATIONS.PIT_STOP',
-                'link': '/operations/pit-stop' + (this.historicalSearchService.active ? '/historical' : ''),
-            },
-        ];
     }
 }

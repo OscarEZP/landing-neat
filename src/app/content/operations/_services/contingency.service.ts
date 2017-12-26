@@ -62,6 +62,11 @@ export class ContingencyService {
         .pipe(
             tap(contingencies => {
                 this.log(`fetched search`);
+                contingencies.forEach((item, i) => {
+                    const diff = (item.close.closeDate.epochTime - item.creationDate.epochTime)/(1000*60);
+                    const percentage = (diff / 180) * 100;
+                    item.closePercentage = percentage > 100 ? 100 : percentage;
+                });
                 this.data = contingencies;
             }),
             catchError(this.handleError('getContingencies', []))
@@ -73,7 +78,8 @@ export class ContingencyService {
             offSet: 0,
             limit: 100000000,
             from: searchSignature.from,
-            to: searchSignature.to
+            to: searchSignature.to,
+            tails: searchSignature.tails
         };
         return this.http.post<any>(this.apiUrl + this.contingencySearch, countSignature, httpOptions)
         .pipe(
