@@ -19,7 +19,7 @@
         <div class="block-s">{{ 'OPERATIONS.SAFETY_EVENT' | translate }}</div>
         <div class="block-m">{{ (historicalSearchService.active ? 'OPERATIONS.CONTINGENCY_LIMIT' : 'OPERATIONS.PROGRESS') | translate }}</div>
         <div class="block-m">{{ (historicalSearchService.active ? 'OPERATIONS.CLOSURE_DATE_HOUR' : 'OPERATIONS.TIME_LEFT') | translate }}</div>
-        <div class="block-s" *ngIf="!detailsService.open">{{ 'OPERATIONS.FOCAL' | translate }}</div>
+        <div class="block-s" *ngIf="!detailsService.sidenav.opened">{{ 'OPERATIONS.FOCAL' | translate }}</div>
         <div class="block-xs block-last">&nbsp;</div>
     </mat-list-item>
 </mat-list>
