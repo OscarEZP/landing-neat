@@ -52,8 +52,8 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     public safetyEventList: Safety[];
     public aircraftList: Aircraft[];
     public filteredAircrafts: Observable<Aircraft[]>;
-    public filteredFlights: Observable<Flight[]>;
-    public flightList: Flight[];
+    public filteredFlights: Observable<FlightConfiguration[]>;
+    public flightList: FlightConfiguration[];
     public typesList = [{'groupName': null, 'types': [{'code': null, 'description': null}]}];
     public typeListFinal = {
         'CONTINGENCY_TYPE': {'types': [{'code': null, 'description': null}]},
@@ -300,7 +300,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         return this._apiRestService
             .getAll('flights')
             .subscribe(data => {
-                this.flightList = data as Flight[];
+                this.flightList = data as FlightConfiguration[];
                 this.filteredFlights = this.contingencyForm.controls['flightNumber'].valueChanges
                     .startWith('')
                     .map(val => this.filterFlights(val));
@@ -309,7 +309,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             });
     }
 
-    private filterFlights(val: string): Flight[] {
+    private filterFlights(val: string): FlightConfiguration[] {
         return this.flightList.filter(flight =>
             flight.flightNumber.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
     }
