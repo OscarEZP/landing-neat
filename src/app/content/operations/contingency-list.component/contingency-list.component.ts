@@ -1,18 +1,16 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
 import { DetailsService } from '../../../details/_services/details.service';
 import { Contingency } from '../../../shared/_models/contingency';
-import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { DataService } from '../../../shared/_services/data.service';
-import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
 import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
 import {ActivatedRoute} from '@angular/router';
 import {HistoricalSearchService} from '../_services/historical-search.service';
 import {ContingencyService} from '../_services/contingency.service';
 import {InfiniteScrollService} from '../_services/infinite-scroll.service';
+import {Moment} from "moment";
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -35,11 +33,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         private dialogService: DialogService,
         public translate: TranslateService,
         public detailsService: DetailsService,
-        private _apiService: ApiRestService,
         private route: ActivatedRoute,
         private historicalSearchService: HistoricalSearchService,
         public contingencyService: ContingencyService,
-        private _infiniteScrollService: InfiniteScrollService
+        private _infiniteScrollService: InfiniteScrollService,
     ) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
@@ -97,7 +94,15 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 offSet: this._infiniteScrollService.offset,
                 limit: this._infiniteScrollService.pageSize
             };
-            this.contingencyService.postHistoricalSearch(search).subscribe(data => this.itemsCount = data.length);
+            this.contingencyService.postHistoricalSearch(search).subscribe(data => {
+                this.itemsCount = data.length;
+                data.forEach((item, i) => {
+                    const diff = (item.close.closeDate.epochTime - item.creationDate.epochTime)/(1000*60);
+                    const percentage = (diff / 180) * 100;
+                    item.closePercentage = percentage > 100 ? 100 : percentage;
+                    console.log(item, item.close.closeDate.label, item.creationDate.label);
+                });
+            });
         }
     }
 

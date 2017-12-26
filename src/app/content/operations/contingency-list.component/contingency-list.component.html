@@ -19,7 +19,7 @@
         <div class="block-s">{{ 'OPERATIONS.SAFETY_EVENT' | translate }}</div>
         <div class="block-m">{{ (historicalSearchService.active ? 'OPERATIONS.CONTINGENCY_LIMIT' : 'OPERATIONS.PROGRESS') | translate }}</div>
         <div class="block-m">{{ (historicalSearchService.active ? 'OPERATIONS.CLOSURE_DATE_HOUR' : 'OPERATIONS.TIME_LEFT') | translate }}</div>
-        <div class="block-s">{{ 'OPERATIONS.FOCAL' | translate }}</div>
+        <div class="block-s" *ngIf="!detailsService.open">{{ 'OPERATIONS.FOCAL' | translate }}</div>
         <div class="block-xs block-last">&nbsp;</div>
     </mat-list-item>
 </mat-list>
@@ -39,9 +39,13 @@
         <div class="block-s" (click)="openDetails(contingency, 'follow-up')"><span class="badge {{ contingency.status.code | lowercase }}">{{ contingency.status.code | uppercase }}</span></div>
         <div class="block-s" (click)="openDetails(contingency)"><div><strong>CONT</strong></div><div>{{ contingency.type }}</div></div>
         <div class="block-s" (click)="openDetails(contingency)"><span class="badge" *ngIf="contingency.safetyEvent.code?.length > 0">{{ contingency.safetyEvent.code }}</span></div>
-        <div class="block-m" (click)="openDetails(contingency, 'timeline')"><mat-progress-bar mode="determinate" [value]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, false, 0)" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 600000) ? 'warn' : 'primary'" class="mat-progress-bar"  ></mat-progress-bar></div>
-        <div class="block-m" (click)="openDetails(contingency, 'timeline')"><mat-icon class="mat-icon-adj" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 300000) ? 'warn' : 'primary'">timer</mat-icon> <lsl-countdown [creationTime]="contingency.status.requestedInterval.dt.epochTime" [duration]="contingency.status.requestedInterval.duration" [threshold]="5"></lsl-countdown></div>
-        <div class="block-s" (click)="openDetails(contingency)"><mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username | slice:0:2 | uppercase }}</div>
+
+        <div *ngIf="!historicalSearchService.active" class="block-m" (click)="openDetails(contingency, 'timeline')"><mat-progress-bar mode="determinate" [value]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, false, 0)" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 600000) ? 'warn' : 'primary'" class="mat-progress-bar"></mat-progress-bar></div>
+        <div *ngIf="historicalSearchService.active" class="block-m"><mat-progress-bar mode="determinate" [value]="contingency.closePercentage"></mat-progress-bar></div>
+        <div *ngIf="!historicalSearchService.active" class="block-m" (click)="openDetails(contingency, 'timeline')"><mat-icon class="mat-icon-adj" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 300000) ? 'warn' : 'primary'">timer</mat-icon> <lsl-countdown [creationTime]="contingency.status.requestedInterval.dt.epochTime" [duration]="contingency.status.requestedInterval.duration" [threshold]="5"></lsl-countdown></div>
+        <div *ngIf="historicalSearchService.active" class="block-m" (click)="openDetails(contingency, 'timeline')">{{ contingency.close.closeDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }}</div>
+
+        <div class="block-s" *ngIf="!detailsService.open" (click)="openDetails(contingency)"><mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username | slice:0:2 | uppercase }}</div>
         <div class="block-xs block-last">
             <button mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon aria-label="options">more_vert</mat-icon>
