@@ -75,7 +75,7 @@
                 <button type="button" mat-button (click)="closeDetails()" [disabled]="validations.isSending">
                     {{ 'BUTTONS.CANCEL' | translate }}
                 </button>
-                <button type="submit" mat-button mat-raised-button color="primary" [disabled]="validations.isSending">
+                <button type="submit" mat-button mat-raised-button color="primary" [disabled]="validations.isSending || !this.statusCodes.length">
                     {{ 'BUTTONS.SAVE' | translate }}
                 </button>
             </div>

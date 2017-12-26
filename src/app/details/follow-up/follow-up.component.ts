@@ -206,12 +206,15 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this._dataService.stringMessage('open');
         this._apiRestService
             .getSingle('configStatus', this.selectedContingency.status.code)
-            .subscribe((data: StatusCode[]) => this.statusCodes = data,
-                error => () => {
-                    this._dataService.stringMessage('close');
-                }, () => {
-                    this._dataService.stringMessage('close');
-                });
+            .subscribe((data: StatusCode[]) => {
+                this.statusCodes = data;
+                console.log(this.statusCodes);
+            },
+            error => () => {
+                this._dataService.stringMessage('close');
+            }, () => {
+                this._dataService.stringMessage('close');
+            });
 
         return this.statusCodes;
     }
