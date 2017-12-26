@@ -12,7 +12,7 @@ export class Contingency {
     private _barcode: string;
     private _creationDate: TimeInstant;
     private _close: Close;
-    private _closePercentage: number;
+    private _lastInformationPercentage: number;
     private _failure: string;
     private _flight: Flight;
     private _informer: string;
@@ -40,12 +40,12 @@ export class Contingency {
         this._username = username;
     }
 
-    set closePercentage (value: number) {
-        this._closePercentage = value;
+    set lastInformationPercentage (value: number) {
+        this._lastInformationPercentage = value;
     }
 
-    get closePercentage (): number {
-        return this._closePercentage;
+    get lastInformationPercentage (): number {
+        return this._lastInformationPercentage;
     }
 
     get id (): number {

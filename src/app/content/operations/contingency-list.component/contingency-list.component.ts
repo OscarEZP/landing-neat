@@ -48,7 +48,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.route.data.subscribe((data: any) => {
             this.historicalSearchService.active = data.historical;
         });
-        this.getContingences();
+        this.getContingencies();
     }
 
     openDetails(contingency: Contingency, section: string) {
@@ -73,12 +73,11 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     public reloadList(message) {
         if (message === 'reload') {
-            this.getContingences();
+            this.getContingencies();
         }
     }
 
-    private getContingences() {
-        console.log(this.historicalSearchService.searchForm);
+    private getContingencies() {
         if (!this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
             this.contingencyService.getContingencies().subscribe();
         } else if(this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
@@ -89,6 +88,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 to: {
                     epochTime: this.historicalSearchService.toTS
                 },
+                tails: this.historicalSearchService.tails,
                 offSet: this._infiniteScrollService.offset,
                 limit: this._infiniteScrollService.pageSize
             };

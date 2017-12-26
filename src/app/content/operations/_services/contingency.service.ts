@@ -8,7 +8,7 @@ import { Aircraft } from '../../../shared/_models/aircraft';
 import { LogService } from './log.service';
 import {Contingency} from '../../../shared/_models/contingency';
 import {InfiniteScrollService} from './infinite-scroll.service';
-import {ApiRestService} from "../../../shared/_services/apiRest.service";
+import {ApiRestService} from '../../../shared/_services/apiRest.service';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -63,9 +63,9 @@ export class ContingencyService {
             tap(contingencies => {
                 this.log(`fetched search`);
                 contingencies.forEach((item, i) => {
-                    const diff = (item.close.closeDate.epochTime - item.creationDate.epochTime)/(1000*60);
+                    const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
                     const percentage = (diff / 180) * 100;
-                    item.closePercentage = percentage > 100 ? 100 : percentage;
+                    item.lastInformationPercentage = percentage > 100 ? 100 : percentage;
                 });
                 this.data = contingencies;
             }),

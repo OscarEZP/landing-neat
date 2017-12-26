@@ -41,7 +41,10 @@
         <div class="block-s" (click)="openDetails(contingency)"><span class="badge" *ngIf="contingency.safetyEvent.code?.length > 0">{{ contingency.safetyEvent.code }}</span></div>
 
         <div *ngIf="!historicalSearchService.active" class="block-m" (click)="openDetails(contingency, 'timeline')"><mat-progress-bar mode="determinate" [value]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, false, 0)" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 600000) ? 'warn' : 'primary'" class="mat-progress-bar"></mat-progress-bar></div>
-        <div *ngIf="historicalSearchService.active" class="block-m"><mat-progress-bar mode="determinate" [value]="contingency.closePercentage"></mat-progress-bar></div>
+        <div *ngIf="historicalSearchService.active" class="block-m historical-bar">
+            <mat-progress-bar mode="determinate" [value]="contingency.lastInformationPercentage"></mat-progress-bar>
+            <span>LI {{ contingency.status.creationDate.epochTime | utcDate | date: 'HH:mm' }}</span>
+        </div>
         <div *ngIf="!historicalSearchService.active" class="block-m" (click)="openDetails(contingency, 'timeline')"><mat-icon class="mat-icon-adj" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 300000) ? 'warn' : 'primary'">timer</mat-icon> <lsl-countdown [creationTime]="contingency.status.requestedInterval.dt.epochTime" [duration]="contingency.status.requestedInterval.duration" [threshold]="5"></lsl-countdown></div>
         <div *ngIf="historicalSearchService.active" class="block-m" (click)="openDetails(contingency, 'timeline')">{{ contingency.close.closeDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }}</div>
 
