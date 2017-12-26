@@ -3,7 +3,7 @@
         <strong>
             {{contingencyService.data.length}}
             <span *ngIf="contingencyService.data.length === 1"> {{ 'OPERATIONS.CONTINGENCY_ACTIVE' | translate }}</span>
-            <span *ngIf="contingencyService.data.length > 1"> {{ 'OPERATIONS.CONTINGENCIES_ACTIVES' | translate }}</span>
+            <span *ngIf="contingencyService.data.length > 1 || !contingencyService.data.length"> {{ 'OPERATIONS.CONTINGENCIES_ACTIVES' | translate }}</span>
         </strong>
     </mat-list-item>
 </mat-list>
