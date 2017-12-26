@@ -30,7 +30,6 @@ import { DialogService } from '../../_services/dialog.service';
 import { ContingencyService } from '../_services/contingency.service';
 import { CancelComponent } from '../cancel/cancel.component';
 
-
 @Component({
     selector: 'lsl-contingency-form',
     templateUrl: './contingency-form.component.html',
@@ -108,7 +107,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             'tm': [this.timeModel, Validators.required],
             'dt': [this.dateModel, Validators.required],
             'informer': [null, Validators.required],
-            'safety': [null, Validators.required],
+            'safety': [false, Validators.required],
             'showBarcode': [false],
             'barcode': [null],
             'safetyEventCode': [null],
@@ -215,23 +214,22 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                 initials
             );
 
-            let rs;
-
             return this._apiRestService
                 .add<Response>('contingencyList', this.contingency, '')
-                .subscribe((data: Response) => rs = data,
-                    error => () => {
-                        this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
-                        const message: string = error.message !== null ? error.message : this.snackbarMessage;
-                        this.messageService.openSnackBar(message);
-                        this.validations.isSending = false;
-                    }, () => {
-                        this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.SUCCESSFULLY_MESSAGE');
-                        this.messageService.openSnackBar(this.snackbarMessage);
-                        this.dialogService.closeAllDialogs();
-                        this.messageData.stringMessage('reload');
-                        this.validations.isSending = false;
-                    });
+                .subscribe(() => {
+                    this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.SUCCESSFULLY_MESSAGE');
+                    this.messageService.openSnackBar(this.snackbarMessage);
+                    this.dialogService.closeAllDialogs();
+                    this.messageData.stringMessage('reload');
+                    this.validations.isSending = false;
+
+                }, err => {
+                    this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
+                    const message: string = err.error.message !== null ? err.error.message : this.snackbarMessage;
+                    this.messageService.openSnackBar(message);
+                    this.validations.isSending = false;
+
+                });
 
 
         } else {
@@ -403,12 +401,27 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     }
 
     openCancelDialog() {
-        this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
-        this.messageService.openFromComponent(CancelComponent, {
-            data: {message: this.snackbarMessage},
-            horizontalPosition: 'center',
-            verticalPosition: 'top'
+        if (this.validateFilledItems()) {
+            this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
+            this.messageService.openFromComponent(CancelComponent, {
+                data: {message: this.snackbarMessage},
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+            });
+        } else {
+            this.dialogService.closeAllDialogs();
+        }
+    }
+
+    private validateFilledItems(): boolean {
+        let counterFilled = 0;
+        const defaultValid = 6;
+        Object.keys(this.contingencyForm.controls).forEach(elem => {
+            if (this.contingencyForm.controls[elem].valid) {
+                counterFilled = counterFilled + 1;
+            }
         });
+        return counterFilled > defaultValid ? true : false;
     }
 
     public onSelectAircraft(selectedOption: string): void {
@@ -479,14 +492,11 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     public validateAircraft(value: string): Boolean {
         let match = false;
 
-        for (let item of this.aircraftList) {
+        for (const item of this.aircraftList) {
             if (item.tail === value) {
                 match = true;
             }
         }
-
-        //this.contingencyForm.get('aircraft').setErrors('valid', match)
-
         return match;
     }
 }
