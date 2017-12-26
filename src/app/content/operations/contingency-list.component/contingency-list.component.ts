@@ -1,14 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
 import { DetailsService } from '../../../details/_services/details.service';
 import { Contingency } from '../../../shared/_models/contingency';
-import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { DataService } from '../../../shared/_services/data.service';
-import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
 import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
+import {ActivatedRoute} from '@angular/router';
+import {HistoricalSearchService} from '../_services/historical-search.service';
+import {ContingencyService} from '../_services/contingency.service';
+import {InfiniteScrollService} from '../_services/infinite-scroll.service';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -24,17 +25,19 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public contingencyList: Contingency[];
     public progressBarColor: string;
     public currentUTCTime: number;
-    public itemsCount: number;
 
-    constructor(private http: HttpClient, private messageData: DataService, private dialogService: DialogService, public translate: TranslateService, private messageService: MessageService, public detailsService: DetailsService, private _apiService: ApiRestService) {
+    constructor(
+        private messageData: DataService,
+        private dialogService: DialogService,
+        public translate: TranslateService,
+        public detailsService: DetailsService,
+        private route: ActivatedRoute,
+        private historicalSearchService: HistoricalSearchService,
+        public contingencyService: ContingencyService,
+        private _infiniteScrollService: InfiniteScrollService,
+    ) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
-        this.itemsCount = 0;
-    }
-
-    openDetails(contingency: Contingency, section: string) {
-        this.detailsService.contingency = contingency;
-        this.detailsService.openDetails(section);
     }
 
     ngOnInit() {
@@ -42,8 +45,15 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.progressBarColor = 'primary';
         this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
         this._reloadSubscription = this.messageData.currentStringMessage.subscribe(message => this.reloadList(message));
+        this.route.data.subscribe((data: any) => {
+            this.historicalSearchService.active = data.historical;
+        });
+        this.getContingencies();
+    }
 
-        this.getContingences();
+    openDetails(contingency: Contingency, section: string) {
+        this.detailsService.contingency = contingency;
+        this.detailsService.openDetails(section);
     }
 
     ngOnDestroy() {
@@ -63,21 +73,27 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     public reloadList(message) {
         if (message === 'reload') {
-            this.getContingences();
+            this.getContingencies();
         }
     }
 
-    private getContingences() {
-        this.messageData.stringMessage('open');
-
-        return this._apiService
-                   .getAll<Contingency[]>('contingencyList')
-                   .subscribe(data => {
-                       this.messageData.stringMessage('close');
-                       this.itemsCount = data.length;
-                       return this.contingencyList = data;
-                   });
-
+    private getContingencies() {
+        if (!this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
+            this.contingencyService.getContingencies().subscribe();
+        } else if(this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
+            const search = {
+                from: {
+                    epochTime: this.historicalSearchService.fromTS
+                },
+                to: {
+                    epochTime: this.historicalSearchService.toTS
+                },
+                tails: this.historicalSearchService.tails,
+                offSet: this._infiniteScrollService.offset,
+                limit: this._infiniteScrollService.pageSize
+            };
+            this.contingencyService.postHistoricalSearch(search).subscribe();
+        }
     }
 
     public getTimeAverage(creationDate: any, duration: any, remain: boolean, limit: number) {

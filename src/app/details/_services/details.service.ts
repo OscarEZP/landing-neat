@@ -8,7 +8,7 @@ import { ScrollService } from '../../shared/_services/scrolling.service';
 export class DetailsService implements OnInit {
 
     private _sidenav: MatSidenav;
-    private _opened: boolean;
+    private _open: boolean;
     private _active: string;
     private _activeTitle: string;
     private _contingency: Contingency;
@@ -74,20 +74,20 @@ export class DetailsService implements OnInit {
         return this._sidenav.toggle(isOpen);
     }
 
-    public getOpened(): boolean {
-        return this._opened;
+    public get open(): boolean {
+        return this._open;
     }
 
-    public setOpened(value: boolean) {
-        this._opened = value;
+    public set open(value: boolean) {
+        this._open = value;
     }
 
     public openDetails(section: string = 'information') {
         this.setActive(section);
-        if (!this.getOpened()) {
+        if (!this.open) {
             this.openSidenav().then(() => {
                 this._scrollService.scrollTo(section);
-                this.setOpened(true);
+                this.open = true;
             });
         } else {
             this._scrollService.scrollTo(section);

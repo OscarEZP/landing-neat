@@ -10,6 +10,8 @@ import { FindAccountComponent } from './auth/find-account/find-account.component
 import { OperationsComponent } from './content/operations/operations.component';
 import { RecoverPasswordComponent } from './auth/recover-password/recover-password.component';
 import { SimplifiedLayoutComponent } from './simplified-layout/simplified-layout.component';
+import {ContingencyListComponent} from './content/operations/contingency-list.component/contingency-list.component';
+import {PitStopListComponent} from './content/operations/pit-stop-list/pit-stop-list.component';
 
 const ROUTES: Routes = [
     {
@@ -28,19 +30,43 @@ const ROUTES: Routes = [
             },
             {
                 path: 'operations',
-                redirectTo: '/operations/contingencies',
-                pathMatch: 'full',
-                canActivate: [AuthGuardService]
-            },
-            {
-                path: 'operations/contingencies',
+                canActivate: [AuthGuardService],
                 component: OperationsComponent,
-                canActivate: [AuthGuardService]
+                children: [
+                    {
+                        path: '',
+                        redirectTo: '/operations/contingencies',
+                        pathMatch: 'full',
+                    },
+                    {
+                        path: 'contingencies',
+                        component: ContingencyListComponent,
+                        canActivate: [AuthGuardService],
+                    },
+                    {
+                        path: 'contingencies/historical',
+                        component: ContingencyListComponent,
+                        canActivate: [AuthGuardService],
+                        data: { historical: true },
+                    },
+                    {
+                        path: 'pit-stop',
+                        component: PitStopListComponent,
+                        canActivate: [AuthGuardService],
+                    },
+                    {
+                        path: 'pit-stop/historical',
+                        component: PitStopListComponent,
+                        canActivate: [AuthGuardService],
+                        data: { historical: true },
+                    },
+
+                ]
             },
             {
                 path: 'operations/contingency',
                 component: ContingencyFormComponent,
-            }
+            },
         ],
         canActivate: [AuthGuardService]
     },

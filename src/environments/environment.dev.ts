@@ -1,5 +1,6 @@
 export const environment = {
     production: false,
+    envName: 'local',
     apiUrl: 'http://localhost',
     paths: {
         confirmForgotPassword: ':9001/api/security/users/_confirmforgotpassword',
@@ -15,6 +16,7 @@ export const environment = {
         types: ':9002/api/v1/contingencies/configurations/types',
         close: ':9002/api/v1/contingencies/_close',
         followUp: ':9002/api/v1/contingencies/status/_followUp',
-        configStatus: ':9002/api/v1/contingencies/configurations/status'
+        configStatus: ':9002/api/v1/contingencies/configurations/status',
+        contingencySearch: ':9002/api/v1/contingencies/_search'
     }
 };

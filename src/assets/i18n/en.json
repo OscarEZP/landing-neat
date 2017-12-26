@@ -19,6 +19,8 @@
     "TIME_LEFT": "Time Left",
     "FOCAL": "Focal",
     "VALIDATION_ERROR_MESSAGE":"You must fill in all required fields",
+    "CONTINGENCY_LIMIT": "Last 3 hours",
+    "CLOSURE_DATE_HOUR": "Closure Date - Hour",
     "CANCEL_COMPONENT": {
       "MESSAGE": "Are you sure that you want to Cancel? (The filled information will be lost)",
       "NO_BUTTON_LABEL":"No",
