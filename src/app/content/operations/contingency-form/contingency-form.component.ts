@@ -164,6 +164,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     public submitForm(value: any) {
+        console.info(this.contingencyForm.get('safetyEventCode'));
         if (this.contingencyForm.valid) {
             this.validations.isSending = true;
             const user = this.storageService.getCurrentUser();
@@ -471,12 +472,12 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * Method to change form validation depending of selecting or not one checkbox (optional until is selected)
      */
     public onSelectOptional() {
-        if (this.optionalIsChecked) {
+        if (!this.optionalIsChecked) {
             this.contingencyForm.get('safetyEventCode').setValidators(Validators.required);
             this.contingencyForm.get('safetyEventCode').updateValueAndValidity();
         } else {
             this.contingencyForm.get('safetyEventCode').setValue(null);
-            this.contingencyForm.get('safetyEventCode').setValidators(null);
+            this.contingencyForm.get('safetyEventCode').clearValidators();
             this.contingencyForm.get('safetyEventCode').updateValueAndValidity();
         }
     }
