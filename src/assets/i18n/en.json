@@ -19,6 +19,8 @@
     "TIME_LEFT": "Time Left",
     "FOCAL": "Focal",
     "VALIDATION_ERROR_MESSAGE":"You must fill in all required fields",
+    "CONTINGENCY_LIMIT": "Last 3 hours",
+    "CLOSURE_DATE_HOUR": "Closure Date - Hour",
     "CANCEL_COMPONENT": {
       "MESSAGE": "Are you sure that you want to Cancel? (The filled information will be lost)",
       "NO_BUTTON_LABEL":"No",
@@ -35,7 +37,10 @@
       "FLIGHT_REQUIRED": "Flight is required",
       "TIME_REQUIRED": "Time is required",
       "DATE_REQUIRED": "Time is required",
-      "INFORMER_REQUIRED": "Time is required",
+      "INFORMER_REQUIRED": "Informer is required",
+      "CONTINGENCY_TYPE_REQUIRED": "Contingency type is required",
+      "FAILURE_TYPE_REQUIRED": "Failure type is required",
+      "STATUS_CODE_REQUIRED": "Status code is required",
       "SAFETY_MESSAGE": "If the Contingency is due a Safety Event, please follow the Safety protocols of your Company",
       "TYPOLOGY_MESSAGE": "The ETR must be validated by the Maintenance Team",
       "CANCEL_LABEL": "CANCEL",
@@ -49,6 +54,7 @@
       "MAINTENANCE" : "Maintenance",
       "CCO" : "CCO",
       "FLIGHT_TIME" : "Flight Time",
+      "FROM": "From",
       "TO" : "To",
       "FLIGHT" : "Flight",
       "BACKUP" : "Backup",
@@ -88,7 +94,12 @@
     },
     "CONTINGENCY_DETAILS": {
       "FOLLOW_UP": {
-        "OBSERVATION_TITLE": "Write your comment"
+        "OBSERVATION_TITLE": "Write your comment",
+        "TIME_AVAILABLE_WARNING": "Maximum time available:",
+        "MINUTES": "minutes",
+        "OBSERVATION_REQUIRED": "Observation is required",
+        "CONTINGENCY_TYPE_REQUIRED": "Contingency type is required",
+        "FOLLOW_UP_DISABLED": "Sorry follow up is disabled because from creation of contingency past more than 180 minutes"
       }
     }
 
@@ -97,7 +108,12 @@
     "CANCEL": "CANCEL",
     "CLOSE": "CLOSE",
     "CREATE": "CREATE",
-    "SAVE": "SAVE"
+    "SAVE": "SAVE",
+    "SUB_MENUS": {
+      "CLOSE_CONTINGENCY": "Close Contingency",
+      "MEETING": "Meeting",
+      "FOLLOW_UP": "Follow up"
+    }
   },
   "TITLES": {
     "FOLLOW_UP": "Follow up",

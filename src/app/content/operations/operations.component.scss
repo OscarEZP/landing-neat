@@ -1,51 +1,47 @@
 @import '../../../assets/style/base.scss';
 
-#post-header-container {
+#operations-container {
   color: mat-color($foreground, secondary-text);
   width: 100%;
 
-  #item-counter-container {
+  #historical-search {
     font-family: 'Noto Sans', 'Arial', sans-serif;
-    @include generate-font-size(-1);
+    @include generate-font-size(-5);
     position: absolute;
     right: 30px;
-    top: 13px;
+    top: 18px;
     z-index: 100;
-    strong{
+    background-color: mat-color($custom, 'background-grey');
+    strong {
       font-weight: bold;
     }
   }
+
+  nav {
+    background-color: mat-color($custom, 'background-grey');
+    border-bottom: none;
+    padding: 20px 16px;
+    box-sizing: border-box;
+    height: 75px;
+
+    a {
+      @include generate-font-size(-3);
+      font-family: Roboto, "Noto Sans", Tahoma;
+      color: mat-color($primary);
+      padding: 10px 20px;
+      display: inline-block;
+    }
+    a.active{
+      background-color: mat-color($primary);
+      opacity: 1;
+      color: mat-color($primary, 'default-contrast');
+      font-weight: bold;
+    }
+  }
+
 }
 
 /deep/
-#post-header-tab {
-
-  .mat-tab-header {
-    border-bottom: none;
-    padding: 20px 25px
-  }
-
-  .mat-tab-item {
-    margin-right: 10px;
-    display: inline-flex;
-  }
-
-  .mat-tab-label {
-    height: 36px;
-    @include generate-font-size(-3);
-    font-family: Roboto, "Noto Sans", Tahoma;
-    color: mat-color($primary);
-  }
-
-  .mat-tab-label-active {
-    background-color: mat-color($primary);
-    opacity: 1;
-    color: mat-color($primary, 'default-contrast');
-    font-weight: bold;
-  }
-
-  .mat-ink-bar {
-    display: none;
-  }
+#nav-details-container {
+  background-color: #fff;
 }
-

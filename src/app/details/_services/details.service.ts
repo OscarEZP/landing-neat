@@ -7,8 +7,7 @@ import { ScrollService } from '../../shared/_services/scrolling.service';
 @Injectable()
 export class DetailsService implements OnInit {
 
-    private _sidenav: MatSidenav;
-    private _opened: boolean;
+    public sidenav: MatSidenav;
     private _active: string;
     private _activeTitle: string;
     private _contingency: Contingency;
@@ -59,38 +58,32 @@ export class DetailsService implements OnInit {
     }
 
     public setSidenav(sidenav: MatSidenav) {
-        this._sidenav = sidenav;
+        this.sidenav = sidenav;
     }
 
     public openSidenav(): Promise<void> {
-        return this._sidenav.open();
+        return this.sidenav.open();
     }
 
     public closeSidenav(): Promise<void> {
-        return this._sidenav.close();
+        return this.sidenav.close();
     }
 
     public toggleSidenav(isOpen?: boolean): Promise<void> {
-        return this._sidenav.toggle(isOpen);
-    }
-
-    public getOpened(): boolean {
-        return this._opened;
-    }
-
-    public setOpened(value: boolean) {
-        this._opened = value;
+        return this.sidenav.toggle(isOpen);
     }
 
     public openDetails(section: string = 'information') {
         this.setActive(section);
-        if (!this.getOpened()) {
+        if (!this.sidenav.opened) {
+            console.log('open');
             this.openSidenav().then(() => {
                 this._scrollService.scrollTo(section);
-                this.setOpened(true);
+                console.log('scroll');
             });
         } else {
             this._scrollService.scrollTo(section);
+            console.log('scroll');
         }
     }
 

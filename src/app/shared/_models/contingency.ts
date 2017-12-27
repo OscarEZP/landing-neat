@@ -3,6 +3,7 @@ import { Flight } from './flight';
 import { Safety } from './safety';
 import { Status } from './status';
 import { TimeInstant } from './timeInstant';
+import {Close} from './close';
 
 export class Contingency {
 
@@ -10,6 +11,8 @@ export class Contingency {
     private _aircraft: Aircraft;
     private _barcode: string;
     private _creationDate: TimeInstant;
+    private _close: Close;
+    private _lastInformationPercentage: number;
     private _failure: string;
     private _flight: Flight;
     private _informer: string;
@@ -18,6 +21,7 @@ export class Contingency {
     private _safetyEvent: Safety;
     private _status: Status;
     private _type: string;
+
     private _username: string;
 
     constructor (id: number, aircraft: Aircraft, barcode: string, creationDate: TimeInstant, failure: string, flight: Flight, informer: string, isBackup: boolean, reason: string, safetyEvent: Safety, status: Status, type: string, username: string) {
@@ -34,6 +38,14 @@ export class Contingency {
         this._status = status;
         this._type = type;
         this._username = username;
+    }
+
+    set lastInformationPercentage (value: number) {
+        this._lastInformationPercentage = value;
+    }
+
+    get lastInformationPercentage (): number {
+        return this._lastInformationPercentage;
     }
 
     get id (): number {
@@ -138,6 +150,14 @@ export class Contingency {
 
     set username (value: string) {
         this._username = value;
+    }
+
+    get close(): Close {
+        return this._close;
+    }
+
+    set close(value: Close) {
+        this._close = value;
     }
 
     static fromJsonArray(array: Array<Object>): Contingency[] {

@@ -5,7 +5,7 @@
         <p>{{ userArray.username }}</p>
     </header>
     <nav>
-        <a *ngFor="let menu of arrMenu" routerLink="{{menu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
+        <a id="lnk-sidenav-{{menu.link.split('/').join('')}}" *ngFor="let menu of arrMenu" routerLink="{{menu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
             <i class="material-icons" [innerHtml]="menu.icon"></i>
             <span [innerHtml]="menu.label"></span>
         </a>
@@ -13,7 +13,7 @@
     <hr>
     <footer>
         <nav>
-            <a *ngFor="let menu of arrFooterMenu" routerLink="{{menu.link}}" routerLinkActive="active">
+            <a id="lnk-sidenav-{{menu.link.split('/').join('')}}" *ngFor="let menu of arrFooterMenu" routerLink="{{menu.link}}" routerLinkActive="active">
                 <i class="material-icons" [innerHtml]="menu.icon"></i>
                 <span [innerHtml]="menu.label"></span>
             </a>

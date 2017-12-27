@@ -30,8 +30,9 @@ export class ApiRestService {
 
     public add<T>(path: string, itemToAdd: any, id?: string): Observable<T> {
         const toAdd = JSON.stringify(itemToAdd).replace(/\b[_]/g, '');
+        const finalPath = id !== '' ? environment.paths[path] + '/' + id : environment.paths[path];
 
-        return this.http.post<T>(this.baseUrl + environment.paths[path] + '/' + id, toAdd);
+        return this.http.post<T>(this.baseUrl + finalPath, toAdd);
     }
 
     public update<T>(path: string, id: number, itemToUpdate: any): Observable<T> {

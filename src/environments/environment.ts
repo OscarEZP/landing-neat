@@ -10,11 +10,13 @@ export const environment = {
         login: '/api/security/users/_login',
         safetyEvent: '/api/v1/contingencies/configurations/safetyEvents',
         aircrafts: '/api/v1/contingencies/configurations/aircrafts',
+        aircraftsSearch: '/api/v1/contingencies/configurations/aircrafts/_search',
         flights: '/api/v1/contingencies/configurations/flights',
         locations: '/api/v1/contingencies/configurations/locations',
         types: '/api/v1/contingencies/configurations/types',
         close: '/api/v1/contingencies/_close',
         followUp: '/api/v1/contingencies/status/_followUp',
-        configStatus: '/api/v1/contingencies/configurations/status'
+        configStatus: '/api/v1/contingencies/configurations/status',
+        contingencySearch: '/api/v1/contingencies/_search'
     }
 };

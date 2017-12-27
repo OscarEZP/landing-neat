@@ -10,18 +10,18 @@
                     Please enter your username
                 </div>
                 <mat-form-field class="mat-form-field">
-                    <input matInput placeholder="Username" type="text"
+                    <input id="in-find-account-username" matInput placeholder="Username" type="text"
                            [formControl]="findAccountForm.controls['usernameFormControl']"
                            [errorStateMatcher]="matcher"
-                           [(ngModel)]="recoverPasswordService.data.username" id="usernameId">
+                           [(ngModel)]="recoverPasswordService.data.username">
                     <mat-error *ngIf="usernameFormControl.hasError('required')">
                         Please enter your username
                     </mat-error>
                 </mat-form-field>
             </mat-card-content>
             <mat-card-actions class="mat-card-actions">
-                <button mat-button class="button-cancel" routerLink="/login">CANCEL</button>
-                <button mat-raised-button color="primary" class="button-submit">SUBMIT</button>
+                <button id="btn-find-account-cancel" mat-button class="button-cancel" routerLink="/login">CANCEL</button>
+                <button id="btn-find-account-submit" mat-raised-button color="primary" class="button-submit">SUBMIT</button>
             </mat-card-actions>
         </form>
 

@@ -21,8 +21,8 @@ import {
     MatSnackBarModule,
     MatMenuModule,
     MatButtonToggleModule,
-    MatChipsModule
-
+    MatChipsModule,
+    MatPaginatorModule
 } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -55,7 +55,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         MatToolbarModule,
         ReactiveFormsModule,
         MatButtonToggleModule,
-        MatChipsModule
+        MatChipsModule,
+        MatPaginatorModule
     ],
     exports: [
         FlexLayoutModule,
@@ -84,7 +85,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         MatToolbarModule,
         ReactiveFormsModule,
         MatButtonToggleModule,
-        MatChipsModule
+        MatChipsModule,
+        MatPaginatorModule
     ],
 
 })
