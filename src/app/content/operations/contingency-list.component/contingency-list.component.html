@@ -65,7 +65,7 @@
                 <button [disabled]="historicalSearchService.active" mat-menu-item>
                     <span>{{ 'BUTTONS.SUB_MENUS.MEETING' | translate }}</span>
                 </button>
-                <button [disabled]="historicalSearchService.active" mat-menu-item (click)="openDetails(contingency, 'follow-up')">
+                <button mat-menu-item (click)="openDetails(contingency, 'follow-up')" [disabled]="contingency.status.code === 'ETR' || contingency.status.code === 'NI4' || historicalSearchService.active">
                     <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
                 </button>
             </mat-menu>
