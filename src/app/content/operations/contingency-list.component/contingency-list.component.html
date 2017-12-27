@@ -55,17 +55,17 @@
 
         <div class="block-s" *ngIf="!detailsService.open" (click)="openDetails(contingency)"><mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username | slice:0:2 | uppercase }}</div>
         <div class="block-xs block-last">
-            <button *ngIf="!historicalSearchService.active" mat-icon-button [matMenuTriggerFor]="menu">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon aria-label="options">more_vert</mat-icon>
             </button>
-            <mat-menu #menu="matMenu" *ngIf="!historicalSearchService.active">
-                <button mat-menu-item (click)="openCloseContingency(contingency)">
+            <mat-menu #menu="matMenu">
+                <button [disabled]="historicalSearchService.active" mat-menu-item (click)="openCloseContingency(contingency)">
                     <span>{{ 'BUTTONS.SUB_MENUS.CLOSE_CONTINGENCY' | translate }}</span>
                 </button>
-                <button mat-menu-item>
+                <button [disabled]="historicalSearchService.active" mat-menu-item>
                     <span>{{ 'BUTTONS.SUB_MENUS.MEETING' | translate }}</span>
                 </button>
-                <button mat-menu-item (click)="openDetails(contingency, 'follow-up')">
+                <button [disabled]="historicalSearchService.active" mat-menu-item (click)="openDetails(contingency, 'follow-up')">
                     <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
                 </button>
             </mat-menu>
