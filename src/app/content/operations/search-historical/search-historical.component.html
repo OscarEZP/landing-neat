@@ -23,13 +23,13 @@
         </mat-form-field>
         <mat-form-field fxFlex="15">
             <input matInput [matDatepicker]="from" placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.FROM'|translate}}" [formControl]="searchForm.controls['from']"
-                   name="from" required>
+                   [max]="maxDate" [min]="minFrom" (dateChange)="onSelectFrom($event)" name="from" required>
             <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
             <mat-datepicker #from></mat-datepicker>
         </mat-form-field>
         <mat-form-field fxFlex="15">
             <input matInput [matDatepicker]="to" placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.TO'|translate}}" [formControl]="searchForm.controls['to']"
-                   name="to" required>
+                   [max]="maxDate" [min]="minTo" name="to" required>
             <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
             <mat-datepicker #to></mat-datepicker>
         </mat-form-field>

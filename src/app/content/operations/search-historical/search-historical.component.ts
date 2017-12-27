@@ -4,10 +4,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from '../../../shared/_services/message.service';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { Aircraft } from '../../../shared/_models/aircraft';
-import { ContingencyService} from '../_services/contingency.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {HistoricalSearchService} from '../_services/historical-search.service';
-import {InfiniteScrollService} from '../_services/infinite-scroll.service';
+import { ContingencyService } from '../_services/contingency.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HistoricalSearchService } from '../_services/historical-search.service';
+import { InfiniteScrollService } from '../_services/infinite-scroll.service';
+import { MatDatepickerInputEvent } from '@angular/material';
 
 @Component({
     selector: 'lsl-search-historical',
@@ -19,23 +20,39 @@ export class SearchHistoricalComponent implements OnInit {
     public searchForm: FormGroup;
     public snackbarMessage: string;
     public aicraftList: Aircraft[];
+    public maxDate: Date;
+    public minFrom: Date;
+    public minTo: Date;
 
-    constructor(
-        public translate: TranslateService,
-        public messageService: MessageService,
-        public service: ApiRestService,
-        private router: Router,
-        private route: ActivatedRoute,
-        private _contingencyService: ContingencyService,
-        private _searchHistoricalService: HistoricalSearchService,
-        public infiniteScrollService: InfiniteScrollService
-    ) {
+    constructor(public translate: TranslateService,
+                public messageService: MessageService,
+                public service: ApiRestService,
+                private router: Router,
+                private route: ActivatedRoute,
+                private _contingencyService: ContingencyService,
+                private _searchHistoricalService: HistoricalSearchService,
+                public infiniteScrollService: InfiniteScrollService) {
         this.translate.setDefaultLang('en');
         this.searchForm = this._searchHistoricalService.searchForm;
+        this.maxDate = new Date();
+        this.minFrom = new Date();
+        this.minTo = new Date();
     }
 
     ngOnInit() {
         this.getAircraft();
+        this.setMinDate();
+    }
+
+    private setMinDate(): void {
+        const today = new Date();
+        const newDate = new Date(today);
+        newDate.setDate(newDate.getDate() - 60);
+        this.minFrom = new Date(newDate);
+    }
+
+    public onSelectFrom(event: MatDatepickerInputEvent<Date>): void {
+        this.minTo = new Date(event.value);
     }
 
     private getAircraft(): void {
