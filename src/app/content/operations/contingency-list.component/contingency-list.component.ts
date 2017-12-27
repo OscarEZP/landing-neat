@@ -25,6 +25,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public contingencyList: Contingency[];
     public progressBarColor: string;
     public currentUTCTime: number;
+    public loading: boolean;
 
     constructor(
         private messageData: DataService,
@@ -38,6 +39,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     ) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
+        this.loading = false;
     }
 
     ngOnInit() {
@@ -78,8 +80,11 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     private getContingencies() {
+        this.loading = true;
         if (!this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
-            this.contingencyService.getContingencies().subscribe();
+            this.contingencyService.getContingencies().subscribe(() => {
+                this.loading = false;
+            });
         } else if(this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
             const search = {
                 from: {
@@ -92,7 +97,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 offSet: this._infiniteScrollService.offset,
                 limit: this._infiniteScrollService.pageSize
             };
-            this.contingencyService.postHistoricalSearch(search).subscribe();
+            this.contingencyService.postHistoricalSearch(search).subscribe(() => {
+                this.loading = false;
+            });
         }
     }
 
