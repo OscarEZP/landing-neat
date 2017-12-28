@@ -8,13 +8,31 @@ export class HistoricalSearchService {
     private _active: boolean;
     private _fromTS: any;
     private _toTS: any;
+    private _fields: any;
 
     constructor(private fb: FormBuilder) {
         this.active = false;
-        this._searchForm = this.fb.group({
-            'tails': [null, Validators.required],
-            'from': [null, Validators.required],
-            'to': [null, Validators.required]
+        this._fields = {
+            'tails': [ null, Validators.required ],
+            'from': [ null, Validators.required ],
+            'to': [ null, Validators.required ]
+        };
+        this.initForm();
+    }
+
+    public initForm() {
+        this._searchForm = this.fb.group(this._fields);
+    }
+
+    public setValidators() {
+        Object.keys(this._fields).forEach((field) => {
+            this.searchForm.get(field).setValidators(Validators.required);
+        });
+    }
+
+    public clearValidators() {
+        Object.keys(this._fields).forEach((field) => {
+            this.searchForm.get(field).setValidators(null);
         });
     }
 

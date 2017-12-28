@@ -24,14 +24,16 @@ export class SearchHistoricalComponent implements OnInit {
     public minFrom: Date;
     public minTo: Date;
 
-    constructor(public translate: TranslateService,
-                public messageService: MessageService,
-                public service: ApiRestService,
-                private router: Router,
-                private route: ActivatedRoute,
-                private _contingencyService: ContingencyService,
-                private _searchHistoricalService: HistoricalSearchService,
-                public infiniteScrollService: InfiniteScrollService) {
+    constructor(
+        public translate: TranslateService,
+        public messageService: MessageService,
+        public service: ApiRestService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private _contingencyService: ContingencyService,
+        private _searchHistoricalService: HistoricalSearchService,
+        public infiniteScrollService: InfiniteScrollService
+    ) {
         this.translate.setDefaultLang('en');
         this.searchForm = this._searchHistoricalService.searchForm;
         this.maxDate = new Date();
@@ -71,10 +73,13 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     public clearSearch(): void {
-        this.searchForm.controls['tails'].reset();
-        this.searchForm.controls['from'].reset();
-        this.searchForm.controls['to'].reset();
+        this._searchHistoricalService.clearValidators();
+        this._searchHistoricalService.searchForm.reset();
+        this._searchHistoricalService.initForm();
+        // this._searchHistoricalService.setValidators();
+        console.log(this._searchHistoricalService.searchForm);
         this.router.navigate(['../'], {relativeTo: this.route});
+        this._contingencyService.getContingencies().subscribe();
     }
 
     submitForm(value: any) {

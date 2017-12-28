@@ -22,6 +22,7 @@ export class ContingencyService {
     private searchAircraftPath = environment.paths.aircraftsSearch;
     private contingencySearch = environment.paths.contingencySearch;
     public data: Contingency[];
+    private _loading: { getContingencies: boolean, postHistoricalSearch: boolean };
 
     constructor(
         private http: HttpClient,
@@ -31,9 +32,18 @@ export class ContingencyService {
         private _detailsService: DetailsService
     ) {
         this.data = [];
+        this._loading = {
+            getContingencies: false,
+            postHistoricalSearch: false
+        };
+    }
+
+    get loading(): any {
+        return this._loading;
     }
 
     public getContingencies(): Observable<Contingency[]> {
+        this._loading.getContingencies = true;
         return this._apiService
         .getAll<Contingency[]>('contingencyList')
         .pipe(
@@ -42,6 +52,7 @@ export class ContingencyService {
                 if (contingencies.length > 0) {
                     this._detailsService.contingency = this.data[0];
                 }
+                this._loading.getContingencies = false;
             })
         );
     }
@@ -62,6 +73,7 @@ export class ContingencyService {
     }
 
     public postHistoricalSearch(searchSignature): Observable<Contingency[]> {
+        this._loading.postHistoricalSearch = true;
         this.getTotalRecords(searchSignature).subscribe((data) => {
             this._infiniteScrollService.length = data.length;
         });
@@ -72,12 +84,15 @@ export class ContingencyService {
                 this.data = contingencies;
                 if (contingencies.length > 0) {
                     contingencies.forEach((item) => {
+                        // Walkaround until close contingency form update
+                        item.close.type = item.close.type.toLowerCase() === 'release' ? 'rlsd' : item.close.type;
                         const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
                         const percentage = (diff / 180) * 100;
                         item.lastInformationPercentage = percentage > 100 ? 100 : percentage;
                     });
                     this._detailsService.contingency = this.data[0];
                 }
+                this._loading.postHistoricalSearch = false;
             }),
             catchError(this.handleError('getContingencies', []))
         );
