@@ -204,10 +204,10 @@
                     </textarea>
                     <mat-hint align="end">{{reason.value.length}} / 400</mat-hint>
                     <mat-error *ngIf="contingencyForm.controls['reason'].hasError('required') && contingencyForm.controls['reason'].touched">
-                        Observation is required
+                        {{'OPERATIONS.CONTINGENCY_FORM.REASON_REQUIRED_VALIDATION' | translate}}
                     </mat-error>
                     <mat-error *ngIf="contingencyForm.controls['reason'].hasError('maxlength') && contingencyForm.controls['reason'].touched">
-                        Must be less than 400 characters
+                        {{'OPERATIONS.CONTINGENCY_FORM.MAX_LENGTH_VALIDATION' | translate}}
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field class="full-width">
@@ -219,10 +219,10 @@
                     </textarea>
                     <mat-hint align="end">{{observation.value.length}} / 400</mat-hint>
                     <mat-error *ngIf="contingencyForm.controls['observation'].hasError('required') && contingencyForm.controls['observation'].touched">
-                        Observation is required
+                        {{'OPERATIONS.CONTINGENCY_FORM.OBSERVATION_REQUIRED_VALIDATION' | translate}}
                     </mat-error>
                     <mat-error *ngIf="contingencyForm.controls['observation'].hasError('maxlength') && contingencyForm.controls['observation'].touched">
-                        Must be less than 400 characters
+                        {{'OPERATIONS.CONTINGENCY_FORM.MAX_LENGTH_VALIDATION' | translate}}
                     </mat-error>
                 </mat-form-field>
                 <div fxLayout="column" fxLayoutGap="15px">
