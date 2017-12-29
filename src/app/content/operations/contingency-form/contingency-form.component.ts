@@ -109,7 +109,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             'informer': [null, Validators.required],
             'safety': [false, Validators.required],
             'showBarcode': [false],
-            'barcode': [null, [Validators.pattern("^[a-zA-Z0-9]+\\S$"), Validators.maxLength(80)]],
+            'barcode': [null, [Validators.pattern('^[a-zA-Z0-9]+\\S$'), Validators.maxLength(80)]],
             'safetyEventCode': [null],
             'contingencyType': [null, Validators.required],
             'failure': [null, Validators.required],
@@ -165,7 +165,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     public submitForm(value: any) {
-        console.info(this.contingencyForm.get('safetyEventCode'));
         if (this.contingencyForm.valid) {
             this.validations.isSending = true;
             const user = this.storageService.getCurrentUser();
