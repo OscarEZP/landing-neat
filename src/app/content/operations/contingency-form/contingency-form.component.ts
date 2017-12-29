@@ -109,13 +109,14 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             'informer': [null, Validators.required],
             'safety': [false, Validators.required],
             'showBarcode': [false],
-            'barcode': [null],
+            'barcode': [null, [Validators.pattern("^[a-zA-Z0-9]+\\S$"), Validators.maxLength(80)]],
             'safetyEventCode': [null],
             'contingencyType': [null, Validators.required],
             'failure': [null, Validators.required],
-            'observation': [null, Validators.required],
+            'observation': [null, [Validators.required, Validators.maxLength(400)]],
+            'reason': [null, [Validators.required, Validators.maxLength(400)]],
             'statusCode': [null, Validators.required],
-            'duration': [45, Validators.required]
+            'duration': [30, Validators.required]
         });
         this.durations = [];
         this.validations = {'isSending': false};
@@ -191,7 +192,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                 ),
                 value.informer,
                 value.isBackup,
-                value.observation, // temporally here goes reason (not yet in mockups)
+                value.reason,
                 new Safety(
                     value.safetyEventCode,
                     null
