@@ -44,7 +44,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         'isSubmitted': null,
         'timeAlert': null,
         'delta': 0,
-        'defaultTime': 0
+        'defaultTime': null,
+        'lastStatus': null
     };
 
     /**
@@ -71,7 +72,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             'isSending': false,
             'timeAlert': false,
             'delta': 180,
-            'defaultTime': 30
+            'defaultTime': 30,
+            'lastStatus': false
         };
 
         this.followUpForm = fb.group({
@@ -79,7 +81,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             'safetyEventCode': [null],
             'observation': [null, Validators.required],
             'code': [null, Validators.required],
-            'duration': [null, Validators.required]
+            'duration': [30, Validators.required]
         });
     }
 
@@ -132,6 +134,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
 
             this.generateIntervalSelection(this.selectedContingency.creationDate.epochTime);
             this.getStatusCodesAvailable();
+
+            this.validations.lastStatus = this.selectedContingency.status.code === 'ETR' || 'NI4';
         }
     }
 
@@ -268,8 +272,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     private setCurrentTime(currentTimeLong: number) {
         this.currentUTCTime = currentTimeLong;
 
-        if (this.selectedContingency !== null) {
-            this.validations.delta = Math.round(((this.selectedContingency.creationDate.epochTime + 180 * 60000) - this.currentUTCTime) / 60000);
+        if (this.selectedContingency !== undefined) {
+            this.validations.delta = Math.round((this.currentUTCTime - this.selectedContingency.creationDate.epochTime) / 600000);
             this.validations.timeAlert = this.validations.delta < this.followUpForm.get('duration').value;
         }
     }

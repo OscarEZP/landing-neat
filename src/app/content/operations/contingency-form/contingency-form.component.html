@@ -139,6 +139,12 @@
                         <mat-form-field fxFlex="20" *ngIf="contingencyForm.controls['showBarcode'].value">
                             <input id="in-contingency-form-barcode" matInput placeholder="barcode" [formControl]="contingencyForm.controls['barcode']">
                         </mat-form-field>
+                        <mat-error *ngIf="contingencyForm.controls['barcode'].hasError('pattern') && formDir.submitted">
+                            {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_PATTERN'|translate}}
+                        </mat-error>
+                        <mat-error *ngIf="contingencyForm.controls['barcode'].hasError('maxlenght') && formDir.submitted">
+                            {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_MAX'|translate}}
+                        </mat-error>
                     </div>
 
                 </div>
@@ -191,13 +197,32 @@
                 </div>
                 <mat-form-field class="full-width">
                     <textarea matInput
+                              id="txt-contingency-form-reason"
+                              placeholder="{{'OPERATIONS.CONTINGENCY_FORM.REASON_PLACEHOLDER' | translate}}"
+                              [formControl]="contingencyForm.controls['reason']"
+                              #reason>
+                    </textarea>
+                    <mat-hint align="end">{{reason.value.length}} / 400</mat-hint>
+                    <mat-error *ngIf="contingencyForm.controls['reason'].hasError('required') && contingencyForm.controls['reason'].touched">
+                        {{'OPERATIONS.CONTINGENCY_FORM.REASON_REQUIRED_VALIDATION' | translate}}
+                    </mat-error>
+                    <mat-error *ngIf="contingencyForm.controls['reason'].hasError('maxlength') && contingencyForm.controls['reason'].touched">
+                        {{'OPERATIONS.CONTINGENCY_FORM.MAX_LENGTH_VALIDATION' | translate}}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full-width">
+                    <textarea matInput
                               id="txt-contingency-form-observation"
                               placeholder="{{'OPERATIONS.CONTINGENCY_FORM.OBSERVATIONS_PLACEHOLDER' | translate}}"
-                              [formControl]="contingencyForm.controls['observation']" required>
-
+                              [formControl]="contingencyForm.controls['observation']"
+                    #observation>
                     </textarea>
+                    <mat-hint align="end">{{observation.value.length}} / 400</mat-hint>
                     <mat-error *ngIf="contingencyForm.controls['observation'].hasError('required') && contingencyForm.controls['observation'].touched">
-                        Observation is required
+                        {{'OPERATIONS.CONTINGENCY_FORM.OBSERVATION_REQUIRED_VALIDATION' | translate}}
+                    </mat-error>
+                    <mat-error *ngIf="contingencyForm.controls['observation'].hasError('maxlength') && contingencyForm.controls['observation'].touched">
+                        {{'OPERATIONS.CONTINGENCY_FORM.MAX_LENGTH_VALIDATION' | translate}}
                     </mat-error>
                 </mat-form-field>
                 <div fxLayout="column" fxLayoutGap="15px">
