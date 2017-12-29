@@ -2,6 +2,10 @@ export const environment = {
     production: false,
     envName: 'staging',
     apiUrl: 'https://staging.mcp.maintenix.ifs.cloud',
+    hotjarConfig: {
+        id: '728724',
+        enabled: true
+    },
     paths: {
         confirmForgotPassword: '/api/security/users/_confirmforgotpassword',
         contingencyList: '/api/v1/contingencies',

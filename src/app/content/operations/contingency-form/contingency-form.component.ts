@@ -127,7 +127,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this._messageUTCSubscription = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
 
         TimerObservable.create(0, this.interval)
-            .takeWhile(() => this.alive)
+            // .takeWhile(() => this.alive)
             .subscribe(() => {
                 this.datetimeService.getTime()
                     .subscribe((data) => {
