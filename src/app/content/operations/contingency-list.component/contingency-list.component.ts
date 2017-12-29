@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
 import { DetailsService } from '../../../details/_services/details.service';
@@ -10,6 +10,7 @@ import {ActivatedRoute} from '@angular/router';
 import {HistoricalSearchService} from '../_services/historical-search.service';
 import {ContingencyService} from '../_services/contingency.service';
 import {InfiniteScrollService} from '../_services/infinite-scroll.service';
+import {MatPaginator} from '@angular/material';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -19,6 +20,8 @@ import {InfiniteScrollService} from '../_services/infinite-scroll.service';
 })
 
 export class ContingencyListComponent implements OnInit, OnDestroy {
+
+    @ViewChild('contPaginator') public paginator: MatPaginator;
 
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
@@ -35,7 +38,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private historicalSearchService: HistoricalSearchService,
         public contingencyService: ContingencyService,
-        private _infiniteScrollService: InfiniteScrollService,
+        private infiniteScrollService: InfiniteScrollService,
     ) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
@@ -49,15 +52,36 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.route.data.subscribe((data: any) => {
             this.historicalSearchService.active = data.historical;
         });
+
         this.getContingencies();
+        this.paginator.page.subscribe((page) => {
+            this.infiniteScrollService.pageSize = page.pageSize;
+            this.infiniteScrollService.pageIndex = page.pageIndex;
+            const search = {
+                from: {
+                    epochTime: this.historicalSearchService.fromTS
+                },
+                to: {
+                    epochTime: this.historicalSearchService.toTS
+                },
+                offSet: this.infiniteScrollService.offset,
+                limit: this.infiniteScrollService.pageSize
+            };
+            this.contingencyService.postHistoricalSearch(search).subscribe();
+        });
     }
 
-    openDetails(contingency: Contingency, section: string) {
+    public checkDataStatus(): boolean {
+
+        return this.contingencyService.data.length > 0 && !this.contingencyService.loading.getContingencies && !this.contingencyService.loading.postHistoricalSearch;
+    }
+
+    public openDetails(contingency: Contingency, section: string) {
         this.detailsService.contingency = contingency;
         this.detailsService.openDetails(section);
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this._messageSubscriptions.unsubscribe();
         this._reloadSubscription.unsubscribe();
     }
@@ -80,9 +104,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private getContingencies() {
         this.loading = true;
-        if (!this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
+        if (!this.historicalSearchService.active) {
             this.contingencyService.getContingencies().subscribe();
-        } else if(this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
+        } else if(this.historicalSearchService.active) {
             const search = {
                 from: {
                     epochTime: this.historicalSearchService.fromTS
@@ -91,8 +115,8 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                     epochTime: this.historicalSearchService.toTS
                 },
                 tails: this.historicalSearchService.tails,
-                offSet: this._infiniteScrollService.offset,
-                limit: this._infiniteScrollService.pageSize
+                offSet: this.infiniteScrollService.offset,
+                limit: this.infiniteScrollService.pageSize
             };
             this.contingencyService.postHistoricalSearch(search).subscribe();
         }

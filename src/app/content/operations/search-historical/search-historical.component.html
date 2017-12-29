@@ -1,8 +1,8 @@
 <form [formGroup]="searchForm" (ngSubmit)="submitForm(searchForm.value)">
     <div fxLayout="row" fxLayoutGap="20px">
-        <span fxFlex="30" fxLayoutAlign="end center">{{'OPERATIONS.SEARCH_HISTORICAL.TITLE'|translate}}</span>
+        <span fxFlex="20" fxLayoutAlign="end center">{{'OPERATIONS.SEARCH_HISTORICAL.TITLE'|translate}}</span>
         <mat-form-field fxFlex="">
-            <mat-select placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.TAIL'|translate}}" multiple [formControl]="searchForm.controls['tails']" required>
+            <mat-select placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.TAIL'|translate}}" multiple [formControl]="searchForm.controls['tails']" >
 
                 <div id="search">
                     <mat-form-field style="width: 100%">
@@ -23,13 +23,13 @@
         </mat-form-field>
         <mat-form-field fxFlex="15">
             <input matInput [matDatepicker]="from" placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.FROM'|translate}}" [formControl]="searchForm.controls['from']"
-                   [max]="maxDate" [min]="minFrom" (dateChange)="onSelectFrom($event)" name="from" required>
+                   [max]="maxDate" [min]="minFrom" (dateChange)="onSelectFrom($event)" name="from" >
             <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
             <mat-datepicker #from></mat-datepicker>
         </mat-form-field>
         <mat-form-field fxFlex="15">
             <input matInput [matDatepicker]="to" placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.TO'|translate}}" [formControl]="searchForm.controls['to']"
-                   [max]="maxDate" [min]="minTo" name="to" required>
+                   [max]="maxDate" [min]="minTo" name="to" >
             <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
             <mat-datepicker #to></mat-datepicker>
         </mat-form-field>
@@ -38,7 +38,7 @@
             <button type="submit" mat-button color="primary">
                 {{'OPERATIONS.SEARCH_HISTORICAL.FILTER'|translate}}
             </button>
-            <button type="button" mat-button color="primary" (click)="clearSearch()">
+            <button type="reset" mat-button color="primary" (click)="clearSearch()">
                 {{'OPERATIONS.SEARCH_HISTORICAL.CLEAR'|translate}}
             </button>
         </div>

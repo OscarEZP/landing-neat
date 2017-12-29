@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 @Injectable()
 export class HistoricalSearchService {
 
+
     private _searchForm: FormGroup;
     private _active: boolean;
     private _fromTS: any;
@@ -12,21 +13,22 @@ export class HistoricalSearchService {
 
     constructor(private fb: FormBuilder) {
         this.active = false;
-        this._fields = {
-            'tails': [ null, Validators.required ],
-            'from': [ null, Validators.required ],
-            'to': [ null, Validators.required ]
-        };
-        this.initForm();
+        this._fields = {};
     }
 
-    public initForm() {
-        this._searchForm = this.fb.group(this._fields);
+    public initForm(fields: any) {
+        this.fields = fields;
+        // this._searchForm = this.fb.group(this._fields);
+        this._searchForm = new FormGroup(fields);
+    }
+
+    set fields(value: any) {
+        this._fields = value;
     }
 
     public setValidators() {
         Object.keys(this._fields).forEach((field) => {
-            this.searchForm.get(field).setValidators(Validators.required);
+            this.searchForm.get(field).setValidators([Validators.required]);
         });
     }
 

@@ -21,11 +21,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     public value: number;
 
     constructor(private sidenavService: SidenavService,
-                private detailsService: DetailsService,
+                public detailsService: DetailsService,
                 private messageData: DataService,
                 private dialogService: DialogService) {
-        this.sidenavService = sidenavService;
-        this.detailsService = detailsService;
         this.loading = true;
         this.mode = 'determinate';
         this.value = 100;

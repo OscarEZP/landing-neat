@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from '../../../shared/_services/message.service';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
@@ -35,6 +35,22 @@ export class SearchHistoricalComponent implements OnInit {
         public infiniteScrollService: InfiniteScrollService
     ) {
         this.translate.setDefaultLang('en');
+        this._searchHistoricalService.initForm(
+            {
+                tails: new FormControl('', {
+                    validators: Validators.required,
+                    updateOn: 'change'
+                }),
+                from: new FormControl('', {
+                    validators: Validators.required,
+                    updateOn: 'submit'
+                }),
+                to: new FormControl('', {
+                    validators: Validators.required,
+                    updateOn: 'submit'
+                })
+            }
+        );
         this.searchForm = this._searchHistoricalService.searchForm;
         this.maxDate = new Date();
         this.minFrom = new Date();
@@ -73,17 +89,15 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     public clearSearch(): void {
-        this._searchHistoricalService.clearValidators();
         this._searchHistoricalService.searchForm.reset();
-        this._searchHistoricalService.initForm();
-        // this._searchHistoricalService.setValidators();
-        console.log(this._searchHistoricalService.searchForm);
         this.router.navigate(['../'], {relativeTo: this.route});
         this._contingencyService.getContingencies().subscribe();
     }
 
     submitForm(value: any) {
-        if (this.searchForm.valid) {
+        console.log(this._searchHistoricalService.searchForm);
+        this._searchHistoricalService.searchForm.updateValueAndValidity();
+        if (this._searchHistoricalService.searchForm.valid) {
             const search = {
                 from: {
                     epochTime: this._searchHistoricalService.fromTS
