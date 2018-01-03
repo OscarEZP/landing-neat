@@ -92,7 +92,6 @@ export class SearchHistoricalComponent implements OnInit {
                 offSet: this.infiniteScrollService.offset,
                 limit: this.infiniteScrollService.pageSize
             };
-            console.log(search);
             this._contingencyService.postHistoricalSearch(search).subscribe();
             if (!this._searchHistoricalService.active) {
                 this.router.navigate([this.router.url + '/historical']);
