@@ -21,7 +21,7 @@
                         (+{{searchForm.controls['tails'].value.length - 1}} others)
                     </span>
                 </mat-select-trigger>
-                <mat-option #all value="ALL" (click)="onSelect(all)">Select all</mat-option>
+                <mat-option #all value="ALL" (click)="onSelect(all)">{{'OPERATIONS.SELECT_ALL'|translate}}</mat-option>
                 <mat-option *ngFor="let aircraft of aicraftList | filter : term" [value]="aircraft.tail">
                     {{aircraft.tail}}
                 </mat-option>

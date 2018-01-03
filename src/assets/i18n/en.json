@@ -14,6 +14,7 @@
     "ALERT": "Alert",
     "ALERTS": "Alerts",
     "AOG_CONTINGENCY": "AOG / CONTINGENCY",
+    "SELECT_ALL": "SELECT ALL",
     "CANCEL_COMPONENT": {
       "MESSAGE": "Are you sure that you want to Cancel? (The filled information will be lost)",
       "NO_BUTTON_LABEL": "No",
