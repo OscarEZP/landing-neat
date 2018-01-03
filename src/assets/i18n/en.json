@@ -96,7 +96,7 @@
       "YES": "Yes"
     },
     "CONTINGENCY_LIMIT": "Last 3 hours",
-    "DESCRIPTION": "Description",
+    "DESCRIPTION": "Reason",
     "FLIGHT": "Flight",
     "FOCAL": "Focal",
     "FROM_TO": "From/To",

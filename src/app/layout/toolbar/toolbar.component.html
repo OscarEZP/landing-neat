@@ -1,25 +1,25 @@
 <mat-toolbar id="toolbar">
-  <button mat-icon-button (click)="toggleSidenav()">
-    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">menu</mat-icon>
-  </button>
-  <figure id="logo">
-  </figure>
-  <h1 [innerHtml]="routingService.getModuleTitle()"></h1>
-  <aside>
-    <nav>
-        <span *ngIf="display" id="datetime">{{ currentDateString | utcDate | date: 'dd MMM yyyy'}} | {{ time | utcDate | date: 'HH:mm:ss' }} UTC</span>
-      <mat-form-field class="mat-form-field">
-        <input matInput type="text" >
-      </mat-form-field>
-      <button mat-icon-button>
-        <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">search</mat-icon>
-      </button>
-      <button mat-icon-button>
-        <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">notifications</mat-icon>
-      </button>
-      <button mat-icon-button>
-        <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">more_vert</mat-icon>
-      </button>
-    </nav>
-  </aside>
+    <button mat-icon-button (click)="toggleSidenav()">
+        <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">menu</mat-icon>
+    </button>
+    <figure id="logo">
+    </figure>
+    <h1 [innerHtml]="routingService.getModuleTitle()"></h1>
+    <aside>
+        <nav>
+            <span *ngIf="display" id="datetime">{{ currentDateString | utcDate | date: 'dd MMM yyyy'}} | {{ time | utcDate | date: 'HH:mm:ss' }} UTC</span>
+            <mat-form-field class="mat-form-field" *ngIf="false">
+                <input matInput type="text">
+            </mat-form-field>
+            <button mat-icon-button *ngIf="false">
+                <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">search</mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="false">
+                <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">notifications</mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="false">
+                <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">more_vert</mat-icon>
+            </button>
+        </nav>
+    </aside>
 </mat-toolbar>
