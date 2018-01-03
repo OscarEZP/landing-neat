@@ -79,7 +79,6 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     submitForm(value: any) {
-        console.log(value);
         if (this.searchForm.valid) {
             const search = {
                 from: {
