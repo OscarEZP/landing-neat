@@ -1,14 +1,14 @@
 <nav id="details-nav">
     <button id="btn-rightnav-information" mat-icon-button [class.active]="detailsService.getActive() === 'information'"
-            (click)="openDetails()" [disabled]="isDisabled()">
+            (click)="openDetails()" [disabled]="true">
         <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">info</mat-icon>
     </button>
     <button id="btn-rightnav-comments" mat-icon-button [class.active]="detailsService.getActive() === 'comments'"
-            (click)="openDetails('comments')" [disabled]="isDisabled()">
+            (click)="openDetails('comments')" [disabled]="true">
         <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">feedback</mat-icon>
     </button>
     <button id="btn-rightnav-timeline" mat-icon-button [class.active]="detailsService.getActive() === 'timeline'"
-            (click)="openDetails('timeline')" [disabled]="isDisabled()">
+            (click)="openDetails('timeline')" [disabled]="true">
         <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">timeline</mat-icon>
     </button>
     <button id="btn-rightnav-follow-up" mat-icon-button [class.active]="detailsService.getActive() === 'follow-up'"
