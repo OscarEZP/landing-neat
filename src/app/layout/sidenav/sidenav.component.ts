@@ -28,11 +28,11 @@ export class SidenavComponent implements OnInit {
     ngOnInit() {
 
         this.arrMenu = [
-            {
+            /*{
                 'label': 'Dashboard',
                 'link': '/dashboard/',
                 'icon': 'assessment'
-            },
+            },*/
             {
                 'label': 'Operations Module',
                 'link': '/operations/',
