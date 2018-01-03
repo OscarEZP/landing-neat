@@ -23,6 +23,7 @@ export class SearchHistoricalComponent implements OnInit {
     public maxDate: Date;
     public minFrom: Date;
     public minTo: Date;
+    public selectedOptions = [];
 
     constructor(public translate: TranslateService,
                 public messageService: MessageService,
@@ -78,6 +79,7 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     submitForm(value: any) {
+        console.log(value);
         if (this.searchForm.valid) {
             const search = {
                 from: {
@@ -100,4 +102,22 @@ export class SearchHistoricalComponent implements OnInit {
         }
     }
 
+    public onSelect(option: any): void {
+        console.log(option.selected);
+
+        if (option.selected) {
+            console.log('BEFORE', this.selectedOptions);
+            this.selectedOptions = [];
+            this.aicraftList.forEach(ac => {
+                this.selectedOptions.push(ac.tail);
+            });
+            this.selectedOptions.push('ALL')
+            console.log('AFTER', this.selectedOptions);
+        } else {
+            console.log('BEFORE', this.selectedOptions);
+            this.selectedOptions = [];
+            console.log('AFTER', this.selectedOptions);
+        }
+
+    }
 }
