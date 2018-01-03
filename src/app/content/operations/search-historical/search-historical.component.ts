@@ -88,10 +88,11 @@ export class SearchHistoricalComponent implements OnInit {
                 to: {
                     epochTime: this._searchHistoricalService.toTS
                 },
-                tails: this._searchHistoricalService.tails,
+                tails: this.isAllSelected(this._searchHistoricalService.tails) ? null : this._searchHistoricalService.tails,
                 offSet: this.infiniteScrollService.offset,
                 limit: this.infiniteScrollService.pageSize
             };
+            console.log(search);
             this._contingencyService.postHistoricalSearch(search).subscribe();
             if (!this._searchHistoricalService.active) {
                 this.router.navigate([this.router.url + '/historical']);
@@ -103,21 +104,18 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     public onSelect(option: any): void {
-        console.log(option.selected);
-
         if (option.selected) {
-            console.log('BEFORE', this.selectedOptions);
             this.selectedOptions = [];
             this.aicraftList.forEach(ac => {
                 this.selectedOptions.push(ac.tail);
             });
-            this.selectedOptions.push('ALL')
-            console.log('AFTER', this.selectedOptions);
+            this.selectedOptions.push('ALL');
         } else {
-            console.log('BEFORE', this.selectedOptions);
             this.selectedOptions = [];
-            console.log('AFTER', this.selectedOptions);
         }
+    }
 
+    private isAllSelected(selectedOptions): boolean {
+        return selectedOptions.indexOf('ALL') === -1 ? false : true;
     }
 }
