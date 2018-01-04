@@ -8,21 +8,20 @@ import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { map, startWith } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import { Aircraft } from '../../../shared/_models/aircraft';
-import { AircraftSearch } from '../../../shared/_models/configuration/aircraftSearch';
 import { Backup } from '../../../shared/_models/backup';
+import { AircraftSearch } from '../../../shared/_models/configuration/aircraftSearch';
 import { DateModel } from '../../../shared/_models/configuration/dateModel';
-import { Contingency } from '../../../shared/_models/contingency';
-import { Flight } from '../../../shared/_models/flight';
 import { FlightSearch } from '../../../shared/_models/configuration/flightSearch';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 import { Location } from '../../../shared/_models/configuration/location';
+import { StatusCode } from '../../../shared/_models/configuration/statusCode';
+import { Types } from '../../../shared/_models/configuration/types';
+import { Contingency } from '../../../shared/_models/contingency';
+import { Flight } from '../../../shared/_models/flight';
 import { Interval } from '../../../shared/_models/interval';
-import { Legs } from '../../../shared/_models/legs';
 import { Safety } from '../../../shared/_models/safety';
 import { Status } from '../../../shared/_models/status';
-import { StatusCode } from '../../../shared/_models/configuration/statusCode';
 import { TimeInstant } from '../../../shared/_models/timeInstant';
-import { Types } from '../../../shared/_models/configuration/types';
 import { Validation } from '../../../shared/_models/validation';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { ClockService } from '../../../shared/_services/clock.service';
@@ -432,9 +431,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     public submitForm(value: any) {
-        console.log('Station: ' + this.contingencyForm.get('station').valid)
-        console.log('SlotTm: ' + this.contingencyForm.get('slotTm').valid)
-        console.log('SlotDate: ' + this.contingencyForm.get('slotDate').valid)
         if(this.contingencyForm.valid) {
             
             this.isBackupCheck();
@@ -471,7 +467,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private isBackupCheck(): void {
         if (this.contingency.isBackup) {
             const finalDate = this._dateUtil.createEpochFromTwoStrings(this.contingencyDateModel[1].dateObj, this.contingencyDateModel[1].timeString)
-            console.log('finalDate: ' + finalDate);
             this.contingency.backup.slot.epochTime = finalDate;
         }
     }
