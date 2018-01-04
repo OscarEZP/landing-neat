@@ -16,21 +16,27 @@ export class ApiRestService {
         return this.http.get<T>(this.baseUrl + environment.paths[path]);
     }
 
-    public getSingle<T>(path: string, id: number|string): Observable<T> {
+    public getSingle<T>(path: string, id: number | string): Observable<T> {
         return this.http.get<T>(this.baseUrl + environment.paths[path] + '/' + id);
     }
 
     public getPaginated<T>(path: string, page: string, quantity: string): Observable<T> {
         const requestOptions = {
-            headers : new HttpHeaders({'page' : page, 'quantity' : quantity })
+            headers: new HttpHeaders({'page': page, 'quantity': quantity})
         };
 
         return this.http.get<T>(this.baseUrl + environment.paths[path], requestOptions);
     }
 
+    public search<T>(path: string, itemToSearch: any): Observable<T> {
+        const toSearch = JSON.stringify(itemToSearch).replace(/\b[_]/g, '');
+
+        return this.http.post<T>(this.baseUrl + environment.paths[path], toSearch);
+    }
+
     public add<T>(path: string, itemToAdd: any, id?: string): Observable<T> {
         const toAdd = JSON.stringify(itemToAdd).replace(/\b[_]/g, '');
-        const finalPath = id !== '' ? environment.paths[path] + '/' + id : environment.paths[path];
+        const finalPath = id !== undefined ? environment.paths[path] + '/' + id : environment.paths[path];
 
         return this.http.post<T>(this.baseUrl + finalPath, toAdd);
     }
@@ -47,13 +53,14 @@ export class ApiRestService {
 @Injectable()
 export class CustomInterceptor implements HttpInterceptor {
 
+
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
         if (!req.headers.has('Content-Type')) {
-            req = req.clone({ headers: req.headers.set('Content-Type', 'application/json') });
+            req = req.clone({headers: req.headers.set('Content-Type', 'application/json')});
         }
 
-        req = req.clone({ headers: req.headers.set('Accept', 'application/json') });
-        console.log(JSON.stringify(req.headers));
+        req = req.clone({headers: req.headers.set('Accept', 'application/json')});
         return next.handle(req);
     }
 }

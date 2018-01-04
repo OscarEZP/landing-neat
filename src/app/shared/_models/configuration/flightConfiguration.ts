@@ -1,10 +1,10 @@
-import { Legs } from './legs';
+import { Legs } from '../legs';
 
 export class FlightConfiguration {
     private _flightNumber: string;
-    private _legs: Legs[];
+    private _legs: Legs;
 
-    constructor(flightNumber: string, legs: Legs[]) {
+    constructor(flightNumber: string, legs: Legs) {
         this._flightNumber = flightNumber;
         this._legs = legs;
     }
@@ -17,11 +17,11 @@ export class FlightConfiguration {
         this._flightNumber = value;
     }
 
-    get legs(): Legs[] {
+    get legs(): Legs {
         return this._legs;
     }
 
-    set legs(value: Legs[]) {
+    set legs(value: Legs) {
         this._legs = value;
     }
 }
