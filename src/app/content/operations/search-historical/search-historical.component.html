@@ -2,11 +2,14 @@
     <div fxLayout="row" fxLayoutGap="20px">
         <span fxFlex="30" fxLayoutAlign="end center">{{'OPERATIONS.SEARCH_HISTORICAL.TITLE'|translate}}</span>
         <mat-form-field fxFlex="">
-            <mat-select placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.TAIL'|translate}}" multiple [formControl]="searchForm.controls['tails']" required>
+            <mat-select placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.TAIL'|translate}}" multiple
+                        [formControl]="searchForm.controls['tails']" required
+                        [(ngModel)]="selectedOptions">
 
                 <div id="search">
                     <mat-form-field style="width: 100%">
-                        <input matInput placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.SEARCH'|translate}}" autofocus [(ngModel)]="term" [ngModelOptions]="{standalone: true}">
+                        <input matInput placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.SEARCH'|translate}}" autofocus
+                               [(ngModel)]="term" [ngModelOptions]="{standalone: true}">
                         <mat-icon matSuffix>search</mat-icon>
                     </mat-form-field>
                 </div>
@@ -18,17 +21,22 @@
                         (+{{searchForm.controls['tails'].value.length - 1}} others)
                     </span>
                 </mat-select-trigger>
-                <mat-option *ngFor="let aircraft of aicraftList | filter : term" [value]="aircraft.tail">{{aircraft.tail}}</mat-option>
+                <mat-option #all value="ALL" (click)="onSelect(all)">{{'OPERATIONS.SELECT_ALL'|translate}}</mat-option>
+                <mat-option *ngFor="let aircraft of aicraftList | filter : term" [value]="aircraft.tail">
+                    {{aircraft.tail}}
+                </mat-option>
             </mat-select>
         </mat-form-field>
         <mat-form-field fxFlex="15">
-            <input matInput [matDatepicker]="from" placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.FROM'|translate}}" [formControl]="searchForm.controls['from']"
+            <input matInput [matDatepicker]="from" placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.FROM'|translate}}"
+                   [formControl]="searchForm.controls['from']"
                    [max]="maxDate" [min]="minFrom" (dateChange)="onSelectFrom($event)" name="from" required>
             <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
             <mat-datepicker #from></mat-datepicker>
         </mat-form-field>
         <mat-form-field fxFlex="15">
-            <input matInput [matDatepicker]="to" placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.TO'|translate}}" [formControl]="searchForm.controls['to']"
+            <input matInput [matDatepicker]="to" placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.TO'|translate}}"
+                   [formControl]="searchForm.controls['to']"
                    [max]="maxDate" [min]="minTo" name="to" required>
             <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
             <mat-datepicker #to></mat-datepicker>

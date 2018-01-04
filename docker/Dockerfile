@@ -1,6 +1,6 @@
 #Production dockerfile that uses nginx to serve the web static web server.
 
-FROM nginx:1.10-alpine
+FROM nginx:1.13.8-alpine
 MAINTAINER Mxi Technologies
 
 

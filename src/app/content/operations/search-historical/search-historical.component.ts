@@ -23,6 +23,7 @@ export class SearchHistoricalComponent implements OnInit {
     public maxDate: Date;
     public minFrom: Date;
     public minTo: Date;
+    public selectedOptions = [];
 
     constructor(public translate: TranslateService,
                 public messageService: MessageService,
@@ -86,7 +87,7 @@ export class SearchHistoricalComponent implements OnInit {
                 to: {
                     epochTime: this._searchHistoricalService.toTS
                 },
-                tails: this._searchHistoricalService.tails,
+                tails: this.isAllSelected(this._searchHistoricalService.tails) ? null : this._searchHistoricalService.tails,
                 offSet: this.infiniteScrollService.offset,
                 limit: this.infiniteScrollService.pageSize
             };
@@ -100,4 +101,19 @@ export class SearchHistoricalComponent implements OnInit {
         }
     }
 
+    public onSelect(option: any): void {
+        if (option.selected) {
+            this.selectedOptions = [];
+            this.aicraftList.forEach(ac => {
+                this.selectedOptions.push(ac.tail);
+            });
+            this.selectedOptions.push('ALL');
+        } else {
+            this.selectedOptions = [];
+        }
+    }
+
+    private isAllSelected(selectedOptions): boolean {
+        return selectedOptions.indexOf('ALL') === -1 ? false : true;
+    }
 }
