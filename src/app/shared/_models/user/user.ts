@@ -11,7 +11,12 @@ export class User {
     private _username: string;
     private _password: string;
     private _idToken: string;
+
     private _groupList: Group[];
+    private _principalGroup: string;
+
+    private _accessToken: string;
+    private _refreshToken: string;
 
     constructor() {
         this.firstName = '';
@@ -96,5 +101,29 @@ export class User {
 
     set groupList(value: Group[]) {
         this._groupList = value;
+    }
+
+    get principalGroup(): string {
+        return this._principalGroup;
+    }
+
+    set principalGroup(value: string) {
+        this._principalGroup = value;
+    }
+
+    get accessToken(): string {
+        return this._accessToken;
+    }
+
+    set accessToken(value: string) {
+        this._accessToken = value;
+    }
+
+    get refreshToken(): string {
+        return this._refreshToken;
+    }
+
+    set refreshToken(value: string) {
+        this._refreshToken = value;
     }
 }

@@ -3,6 +3,8 @@ import { MAT_DATE_LOCALE } from '@angular/material';
 import {BrowserModule} from '@angular/platform-browser';
 import { ApiRestService } from '../../shared/_services/apiRest.service';
 import {SharedModule} from '../../shared/shared.module';
+import { DateUtil } from '../../shared/util/dateUtil';
+import { ContingencyConfigService } from './_services/contingency.config.service';
 import { ContingencySimplifiedListComponent } from './contingency-simplified-list.component/contingency-simplified-list.component';
 
 import {OperationsComponent} from './operations.component';
@@ -40,12 +42,14 @@ import {HistoricalSearchService} from './_services/historical-search.service';
     providers: [
         DialogService,
         ContingencyService,
+        ContingencyConfigService,
         LogService,
         ClockService,
         ApiRestService,
         InfiniteScrollService,
         HistoricalSearchService,
-        {provide: MAT_DATE_LOCALE, useValue: 'es-CL'}
+        {provide: MAT_DATE_LOCALE, useValue: 'es-CL'},
+        DateUtil
     ],
     entryComponents: [
         CancelComponent,
