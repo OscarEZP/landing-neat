@@ -6,10 +6,10 @@ import { Contingency } from '../../../shared/_models/contingency';
 import { DataService } from '../../../shared/_services/data.service';
 import { DialogService } from '../../_services/dialog.service';
 import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
-import {ActivatedRoute} from '@angular/router';
-import {HistoricalSearchService} from '../_services/historical-search.service';
-import {ContingencyService} from '../_services/contingency.service';
-import {InfiniteScrollService} from '../_services/infinite-scroll.service';
+import { ActivatedRoute } from '@angular/router';
+import { HistoricalSearchService } from '../_services/historical-search.service';
+import { ContingencyService } from '../_services/contingency.service';
+import { InfiniteScrollService } from '../_services/infinite-scroll.service';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -26,16 +26,14 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public progressBarColor: string;
     public currentUTCTime: number;
 
-    constructor(
-        private messageData: DataService,
-        private dialogService: DialogService,
-        public translate: TranslateService,
-        public detailsService: DetailsService,
-        private route: ActivatedRoute,
-        private historicalSearchService: HistoricalSearchService,
-        public contingencyService: ContingencyService,
-        private _infiniteScrollService: InfiniteScrollService,
-    ) {
+    constructor(private messageData: DataService,
+                private dialogService: DialogService,
+                public translate: TranslateService,
+                public detailsService: DetailsService,
+                private route: ActivatedRoute,
+                private historicalSearchService: HistoricalSearchService,
+                public contingencyService: ContingencyService,
+                private _infiniteScrollService: InfiniteScrollService,) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
     }
@@ -80,7 +78,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private getContingencies() {
         if (!this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
             this.contingencyService.getContingencies().subscribe();
-        } else if(this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
+        } else if (this.historicalSearchService.active && !this.historicalSearchService.searchForm.valid) {
             const search = {
                 from: {
                     epochTime: this.historicalSearchService.fromTS

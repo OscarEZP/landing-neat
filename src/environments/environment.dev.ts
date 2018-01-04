@@ -17,6 +17,7 @@ export const environment = {
         locations: ':9002/api/v1/contingencies/configurations/locations',
         login: ':9001/api/security/users/_login',
         safetyEvent: ':9002/api/v1/contingencies/configurations/safetyEvents',
-        types: ':9002/api/v1/contingencies/configurations/types'
+        types: ':9002/api/v1/contingencies/configurations/types',
+        closeType: ':9002/api/v1/contingencies/configurations/types/groupNames'
     }
 };

@@ -8,6 +8,7 @@ import { ContingencyService } from '../_services/contingency.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DataService } from '../../../shared/_services/data.service';
 import { CancelComponent } from '../cancel/cancel.component';
+import { ApiRestService } from '../../../shared/_services/apiRest.service';
 
 
 @Component({
@@ -20,6 +21,8 @@ export class CloseContingencyComponent implements OnInit {
     public closeForm: FormGroup;
     public closeSignature;
     public snackBarMessage;
+    public typeCloseList;
+
 
     constructor(private dialogService: DialogService,
                 private translate: TranslateService,
@@ -27,20 +30,29 @@ export class CloseContingencyComponent implements OnInit {
                 private contingencyService: ContingencyService,
                 private messageService: MessageService,
                 private dataService: DataService,
+                private apiRestService: ApiRestService,
                 private fb: FormBuilder,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
         this.translate.setDefaultLang('en');
 
         this.closeForm = fb.group({
-            'status': ['aog'],
+            'type': [null, Validators.required],
             'observation': [null, Validators.required]
         });
 
         this.closeSignature = {};
         this.snackBarMessage = '';
+        this.typeCloseList = [];
     }
 
     ngOnInit() {
+        this.getConfigurationClose();
+    }
+
+    private getConfigurationClose(): void {
+        this.apiRestService.getSingle('closeType', 'CLOSE_TYPE').subscribe(rs => {
+            this.typeCloseList = rs.types;
+        });
     }
 
     translateString(toTranslate: string): void {
@@ -54,7 +66,7 @@ export class CloseContingencyComponent implements OnInit {
             const user = this.storageService.getCurrentUser();
             this.closeSignature.id = this.data.id;
             this.closeSignature.username = user.userId;
-            this.closeSignature.type = value.status;
+            this.closeSignature.type = value.type;
             this.closeSignature.observation = value.observation;
             this.contingencyService.closeContingency(this.closeSignature).subscribe(
                 res => {
@@ -87,7 +99,7 @@ export class CloseContingencyComponent implements OnInit {
 
     private validateFilledItems(): boolean {
         let counterFilled = 0;
-        const defaultValid = 1;
+        const defaultValid = 0;
         Object.keys(this.closeForm.controls).forEach(elem => {
             if (this.closeForm.controls[elem].valid) {
                 counterFilled = counterFilled + 1;

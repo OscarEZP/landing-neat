@@ -1,4 +1,4 @@
-<form id="close-form" [formGroup]="closeForm" (ngSubmit)="submitForm(closeForm.value)">
+<form id="close-form" [formGroup]="closeForm" #formClose="ngForm" (ngSubmit)="submitForm(closeForm.value)">
     <div mat-dialog-title>
         <span class="title-dialog" fxFlex>{{'OPERATIONS.CLOSE_COMPONENT.TITLE'|translate}}</span>
     </div>
@@ -6,7 +6,7 @@
     <mat-divider class="add-margin"></mat-divider>
 
     <div mat-dialog-content fxLayoutGap="" fxLayout="column">
-        <div fxLayout="column" fxLayoutGap="20px">
+        <div fxLayout="column" fxLayoutGap="15px">
             <div>
                 <span class="subtitles">{{'OPERATIONS.CLOSE_COMPONENT.CONTINGENCY_INFO'|translate}}</span>
             </div>
@@ -31,25 +31,25 @@
 
         </div>
         <mat-divider class="add-margin"></mat-divider>
-        <div fxLayout="column" fxLayoutGap="20px">
+        <div fxLayout="column" fxLayoutGap="15px">
             <div>
                 <span class="subtitles">{{'OPERATIONS.CLOSE_COMPONENT.CLOSURE_INFO'|translate}}</span>
             </div>
             <div fxLayout="row" fxLayoutGap="15px">
                 <label fxFlex="20" class="label-item">{{'OPERATIONS.CLOSE_COMPONENT.AC_STATUS'|translate}}</label>
-                <mat-radio-group fxLayoutGap="10px" [formControl]="closeForm.controls['status']">
-                    <mat-radio-button labelPosition="after" value="release">
-                        {{'OPERATIONS.CLOSE_COMPONENT.RELEASED'|translate}}
-                    </mat-radio-button>
-                    <mat-radio-button labelPosition="after" value="aog">
-                        {{'OPERATIONS.CLOSE_COMPONENT.AOG'|translate}}
+                <mat-radio-group fxLayoutGap="10px" [formControl]="closeForm.controls['type']">
+                    <mat-radio-button labelPosition="after" *ngFor="let closeType of typeCloseList" value="{{closeType.code}}">
+                        {{closeType.description}}
                     </mat-radio-button>
                 </mat-radio-group>
             </div>
+            <mat-error *ngIf="closeForm.controls['type'].hasError('required') && closeForm.controls['type'].value === null && formClose.submitted">
+                {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_TYPE_REQUIRED'|translate}}
+            </mat-error>
 
         </div>
         <mat-divider class="add-margin"></mat-divider>
-        <div fxLayout="column" fxLayoutGap="20px">
+        <div fxLayout="column" fxLayoutGap="15px">
             <div>
                 <span class="subtitles">{{'OPERATIONS.CLOSE_COMPONENT.OBS'|translate}}</span>
             </div>

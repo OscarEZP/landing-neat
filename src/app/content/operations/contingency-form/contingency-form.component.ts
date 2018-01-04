@@ -109,7 +109,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             'informer': [null, Validators.required],
             'safety': [false, Validators.required],
             'showBarcode': [false],
-            'barcode': [null, [Validators.pattern("^[a-zA-Z0-9]+\\S$"), Validators.maxLength(80)]],
+            'barcode': [null, [Validators.pattern('^[a-zA-Z0-9]+\\S$'), Validators.maxLength(80)]],
             'safetyEventCode': [null],
             'contingencyType': [null, Validators.required],
             'failure': [null, Validators.required],

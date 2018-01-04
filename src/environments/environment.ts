@@ -14,6 +14,7 @@ export const environment = {
         flights: '/api/v1/contingencies/configurations/flights',
         locations: '/api/v1/contingencies/configurations/locations',
         types: '/api/v1/contingencies/configurations/types',
+        closeType: '/api/v1/contingencies/configurations/types/groupNames',
         close: '/api/v1/contingencies/_close',
         followUp: '/api/v1/contingencies/status/_followUp',
         configStatus: '/api/v1/contingencies/configurations/status',
