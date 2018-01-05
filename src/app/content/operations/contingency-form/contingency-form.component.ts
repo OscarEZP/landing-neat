@@ -688,6 +688,8 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
                 this.contingencyDateModel[0].updateFromEpoch(this.contingency.flight.etd.epochTime);
 
+                this.contingencyForm.get('operator').setValue(this.contingency.aircraft.operator);
+                this.contingencyForm.get('operator').updateValueAndValidity();
                 this.contingencyForm.get('flightNumber').setValue(this.contingency.flight.flightNumber);
                 this.contingencyForm.get('flightNumber').updateValueAndValidity();
             }
@@ -799,8 +801,10 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @return {Location[]}
      */
     private locationFilter(val: string): Location[] {
-        return this.stations.filter( location =>
-            location.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+        if (val !== null) {
+            return this.stations.filter( location =>
+                location.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+        }
     }
     
     /**
