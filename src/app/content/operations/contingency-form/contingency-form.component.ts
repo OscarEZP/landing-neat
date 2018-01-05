@@ -84,7 +84,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                 private _messageData: DataService,
                 private _messageService: MessageService,
                 private _storageService: StorageService,
-                private _configService: ApiRestService,
                 private _apiRestService: ApiRestService,
                 private _dateUtil: DateUtil,
                 private _translate: TranslateService) {
@@ -438,7 +437,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             this.validations.isSending = true;
 
             let res: Response;
-
             this._apiRestService
                 .add<Response>('contingencyList', this.contingency)
                 .subscribe(response => res = response,
@@ -564,7 +562,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     private getSelectedGroupType(): void {
         let variableName: string;
-        let i: number;
+        const i: number;
         this.groupTypeList.forEach(function (value) {
             variableName = value.groupName.toLowerCase().replace(/(\_\w)/g, function (m) {
                 return m[1].toUpperCase();
