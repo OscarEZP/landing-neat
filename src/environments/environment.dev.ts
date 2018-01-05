@@ -19,6 +19,7 @@ export const environment = {
         login: ':9001/api/security/users/_login',
         refreshToken: ':9001/api/v1/security/users/_refresh',
         safetyEvent: ':9002/api/v1/contingencies/configurations/safetyEvents',
-        types: ':9002/api/v1/contingencies/configurations/types'
+        types: ':9002/api/v1/contingencies/configurations/types',
+        closeType: ':9002/api/v1/contingencies/configurations/types/groupNames'
     }
 };
