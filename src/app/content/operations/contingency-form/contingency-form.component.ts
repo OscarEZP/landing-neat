@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angunusedre';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/add/operator/map';
@@ -729,18 +729,12 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private newMessage(): void {
         this._messageData.changeTimeUTCMessage(this.utcModel.epochTime);
     }
-
-    public validateAircraft(value: string): Boolean {
-        let match = false;
-
-        for (const item of this.aircraftList) {
-            if (item.tail === value) {
-                match = true;
-            }
-        }
-        return match;
-    }
     
+    /**
+     * Custom validation for Aircraft Tail
+     * @param {FormControl} control
+     * @return {Observable<any>}
+     */
     public tailDomainValidator(control: FormControl): Observable<any> {
         let tail = control.value;
 
@@ -757,6 +751,11 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         })
     }
     
+    /**
+     * Custom validation for Operator
+     * @param {FormControl} control
+     * @return {Observable<any>}
+     */
     public operatorDomainValidator(control: FormControl) {
         let operator = control.value;
         
