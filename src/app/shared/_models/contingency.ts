@@ -1,4 +1,5 @@
 import { Aircraft } from './aircraft';
+import { Backup } from './backup';
 import { Flight } from './flight';
 import { Safety } from './safety';
 import { Status } from './status';
@@ -17,14 +18,14 @@ export class Contingency {
     private _flight: Flight;
     private _informer: string;
     private _isBackup: boolean;
+    private _backup: Backup;
     private _reason: string;
     private _safetyEvent: Safety;
     private _status: Status;
     private _type: string;
-
     private _username: string;
 
-    constructor (id: number, aircraft: Aircraft, barcode: string, creationDate: TimeInstant, failure: string, flight: Flight, informer: string, isBackup: boolean, reason: string, safetyEvent: Safety, status: Status, type: string, username: string) {
+    constructor (id: number, aircraft: Aircraft, barcode: string, creationDate: TimeInstant, failure: string, flight: Flight, informer: string, isBackup: boolean, backup: Backup, reason: string, safetyEvent: Safety, status: Status, type: string, username: string) {
         this._id = id;
         this._aircraft = aircraft;
         this._barcode = barcode;
@@ -33,6 +34,7 @@ export class Contingency {
         this._flight = flight;
         this._informer = informer;
         this._isBackup = isBackup;
+        this._backup = backup;
         this._reason = reason;
         this._safetyEvent = safetyEvent;
         this._status = status;
@@ -160,7 +162,15 @@ export class Contingency {
         this._close = value;
     }
 
+    get backup(): Backup {
+        return this._backup;
+    }
+
+    set backup(value: Backup) {
+        this._backup = value;
+    }
+
     static fromJsonArray(array: Array<Object>): Contingency[] {
-        return array.map(obj => new Contingency(obj['id'], obj['aircraft'], obj['barcode'], obj['creationDate'], obj['failure'], obj['flight'], obj['informer'], obj['isBackup'], obj['reason'], obj['safetyEvent'], obj['status'], obj['type'], obj['username']));
+        return array.map(obj => new Contingency(obj['id'], obj['aircraft'], obj['barcode'], obj['creationDate'], obj['failure'], obj['flight'], obj['informer'], obj['isBackup'], obj['backup'], obj['reason'], obj['safetyEvent'], obj['status'], obj['type'], obj['username']));
     }
 }
