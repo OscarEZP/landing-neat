@@ -75,6 +75,8 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     
     private _observableFlightList: Observable<Flight[]>;
     private _observableAircraftList: Observable<Aircraft[]>;
+    private _observableLocationList: Observable<Location[]>;
+    private _observableOperatorList: Observable<Types[]>;
     
     constructor(private _dialogService: DialogService,
                 private _contingencyService: ContingencyService,
@@ -374,6 +376,22 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this._observableAircraftList = value;
     }
     
+    get observableLocationList(): Observable<Location[]> {
+        return this._observableLocationList;
+    }
+    
+    set observableLocationList(value: Observable<Location[]>) {
+        this._observableLocationList = value;
+    }
+    
+    get observableOperatorList(): Observable<Types[]> {
+        return this._observableOperatorList;
+    }
+    
+    set observableOperatorList(value: Observable<Types[]>) {
+        this._observableOperatorList = value;
+    }
+    
     public ngOnInit() {
         
         this._messageUTCSubscription = this._messageData.currentNumberMessage.subscribe(message => this.utcModel.epochTime = message);
@@ -397,6 +415,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this.getSafetyEventList();
         this.getGroupTypes();
         this.getLocationsList();
+        this.getOperatorList();
         this.generateIntervalSelection();
     }
     
@@ -484,6 +503,26 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         }
         
         return this.durationArray;
+    }
+    
+    /**
+     * Get operator list configuration
+     * @return {Subscription}
+     */
+    private getOperatorList(): Subscription {
+        return this._apiRestService
+            .getAll<Types[]>('operator')
+            .subscribe(response => {
+                this.operator = response;
+                
+                this.observableOperatorList = this.contingencyForm
+                    .controls['operator']
+                    .valueChanges
+                    .pipe(
+                        startWith(''),
+                        map(val => this.operatorFilter(val))
+                    )
+            })
     }
     
     /**
@@ -583,6 +622,14 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                    .getAll<Location[]>('locations')
                    .subscribe((response: Location[]) => {
                        this.stations = response;
+    
+                       this.observableLocationList = this.contingencyForm
+                           .controls['station']
+                           .valueChanges
+                           .pipe(
+                               startWith(''),
+                               map(val => this.locationFilter(val))
+                           );
                    });
     }
     
@@ -712,5 +759,25 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private flightFilter(val: string): Flight[] {
         return this.flightList.filter(flight =>
             flight.flightNumber.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+    }
+    
+    /**
+     * Filter for location observable list in view
+     * @param {string} val
+     * @return {Location[]}
+     */
+    private locationFilter(val: string): Location[] {
+        return this.stations.filter( location =>
+            location.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+    }
+    
+    /**
+     * Filter for operator observable list in view
+     * @param {string} val
+     * @return {Types[]}
+     */
+    private operatorFilter(val: string): Types[] {
+        return this.operator.filter( operator =>
+            operator.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
     }
 }
