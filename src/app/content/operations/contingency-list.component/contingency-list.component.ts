@@ -34,14 +34,30 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         private messageData: DataService,
         private dialogService: DialogService,
         public translate: TranslateService,
-        public detailsService: DetailsService,
         private route: ActivatedRoute,
-        private historicalSearchService: HistoricalSearchService,
-        public contingencyService: ContingencyService,
-        private infiniteScrollService: InfiniteScrollService,
+        private _detailsService: DetailsService,
+        private _historicalSearchService: HistoricalSearchService,
+        private _contingencyService: ContingencyService,
+        private _infiniteScrollService: InfiniteScrollService,
     ) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
+    }
+
+    get infiniteScrollService(): InfiniteScrollService {
+        return this._infiniteScrollService;
+    }
+
+    get detailsService(): DetailsService {
+        return this._detailsService;
+    }
+
+    get historicalSearchService(): HistoricalSearchService {
+        return this._historicalSearchService;
+    }
+
+    get contingencyService(): ContingencyService {
+        return this._contingencyService;
     }
 
     ngOnInit() {
@@ -50,35 +66,34 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
         this._reloadSubscription = this.messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.route.data.subscribe((data: any) => {
-            this.historicalSearchService.active = data.historical;
+            this._historicalSearchService.active = data.historical;
         });
 
         this.getContingencies();
         this.paginator.page.subscribe((page) => {
-            this.infiniteScrollService.pageSize = page.pageSize;
-            this.infiniteScrollService.pageIndex = page.pageIndex;
+            this._infiniteScrollService.pageSize = page.pageSize;
+            this._infiniteScrollService.pageIndex = page.pageIndex;
             const search = {
                 from: {
-                    epochTime: this.historicalSearchService.fromTS
+                    epochTime: this._historicalSearchService.fromTS
                 },
                 to: {
-                    epochTime: this.historicalSearchService.toTS
+                    epochTime: this._historicalSearchService.toTS
                 },
-                offSet: this.infiniteScrollService.offset,
-                limit: this.infiniteScrollService.pageSize
+                offSet: this._infiniteScrollService.offset,
+                limit: this._infiniteScrollService.pageSize
             };
-            this.contingencyService.postHistoricalSearch(search).subscribe();
+            this._contingencyService.postHistoricalSearch(search).subscribe();
         });
     }
 
     public checkDataStatus(): boolean {
-
-        return this.contingencyService.data.length > 0 && !this.contingencyService.loading.getContingencies && !this.contingencyService.loading.postHistoricalSearch;
+        return this._contingencyService.data.length > 0 && !this._contingencyService.loading.getContingencies && !this._contingencyService.loading.postHistoricalSearch;
     }
 
     public openDetails(contingency: Contingency, section: string) {
-        this.detailsService.contingency = contingency;
-        this.detailsService.openDetails(section);
+        this._detailsService.contingency = contingency;
+        this._detailsService.openDetails(section);
     }
 
     public ngOnDestroy() {
@@ -104,21 +119,21 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private getContingencies() {
         this.loading = true;
-        if (!this.historicalSearchService.active) {
-            this.contingencyService.getContingencies().subscribe();
-        } else if(this.historicalSearchService.active) {
+        if (!this._historicalSearchService.active) {
+            this._contingencyService.getContingencies().subscribe();
+        } else if (this._historicalSearchService.active) {
             const search = {
                 from: {
-                    epochTime: this.historicalSearchService.fromTS
+                    epochTime: this._historicalSearchService.fromTS
                 },
                 to: {
-                    epochTime: this.historicalSearchService.toTS
+                    epochTime: this._historicalSearchService.toTS
                 },
-                tails: this.historicalSearchService.tails,
-                offSet: this.infiniteScrollService.offset,
-                limit: this.infiniteScrollService.pageSize
+                tails: this._historicalSearchService.tails,
+                offSet: this._infiniteScrollService.offset,
+                limit: this._infiniteScrollService.pageSize
             };
-            this.contingencyService.postHistoricalSearch(search).subscribe();
+            this._contingencyService.postHistoricalSearch(search).subscribe();
         }
     }
 

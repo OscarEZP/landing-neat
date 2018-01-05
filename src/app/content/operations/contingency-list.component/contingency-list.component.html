@@ -81,7 +81,7 @@
         </mat-list-item>
     </mat-list>
 </div>
-<mat-paginator #contPaginator [hidden]="!checkDataStatus()"
+<mat-paginator #contPaginator [hidden]="!checkDataStatus() || !historicalSearchService.active"
     [length]="infiniteScrollService.length"
     [pageSize]="infiniteScrollService.pageSize"
     [pageSizeOptions]="infiniteScrollService.pageSizeOptions">

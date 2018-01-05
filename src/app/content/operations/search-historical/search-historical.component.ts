@@ -96,7 +96,6 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     submitForm(value: any) {
-        console.log(this._searchHistoricalService.searchForm);
         this._searchHistoricalService.searchForm.updateValueAndValidity();
         if (this._searchHistoricalService.searchForm.valid) {
             const search = {
