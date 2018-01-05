@@ -562,7 +562,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     private getSelectedGroupType(): void {
         let variableName: string;
-        const i: number;
         this.groupTypeList.forEach(function (value) {
             variableName = value.groupName.toLowerCase().replace(/(\_\w)/g, function (m) {
                 return m[1].toUpperCase();
