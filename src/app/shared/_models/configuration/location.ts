@@ -1,6 +1,6 @@
-import { TimeInstant } from './timeInstant';
+import { TimeInstant } from '../timeInstant';
 
-export class Types {
+export class Location {
 
     private _code: string;
     private _description: string;

@@ -28,10 +28,10 @@ export class OperationsComponent implements OnInit {
                 'label': 'OPERATIONS.AOG_CONTINGENCY',
                 'link': '/operations/contingencies' + (this.historicalSearchService.active ? '/historical' : ''),
             },
-            {
+            /*{
                 'label': 'OPERATIONS.PIT_STOP',
                 'link': '/operations/pit-stop' + (this.historicalSearchService.active ? '/historical' : ''),
-            }
+            }*/
         ];
     }
 

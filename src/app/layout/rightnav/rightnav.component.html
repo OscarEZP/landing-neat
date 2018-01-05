@@ -1,18 +1,22 @@
 <nav id="details-nav">
-  <button id="btn-rightnav-information" mat-icon-button [class.active]="detailsService.getActive() === 'information'"  (click)="openDetails()">
-    <mat-icon  class="mat-icon material-icons" role="img" aria-hidden="true">info</mat-icon>
-  </button>
-  <button id="btn-rightnav-comments" mat-icon-button [class.active]="detailsService.getActive() === 'comments'" (click)="openDetails('comments')">
-    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">feedback</mat-icon>
-  </button>
-  <button id="btn-rightnav-timeline" mat-icon-button [class.active]="detailsService.getActive() === 'timeline'" (click)="openDetails('timeline')">
-    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">timeline</mat-icon>
-  </button>
-  <button id="btn-rightnav-follow-up" mat-icon-button [class.active]="detailsService.getActive() === 'follow-up'" (click)="openDetails('follow-up')">
-    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">update</mat-icon>
-  </button>
-  <hr>
-  <button id="btn-rightnav-close-details" mat-icon-button (click)="closeDetails()">
-    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">navigate_next</mat-icon>
-  </button>
+    <button id="btn-rightnav-information" mat-icon-button [class.active]="detailsService.getActive() === 'information'"
+            (click)="openDetails()" [disabled]="true">
+        <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">info</mat-icon>
+    </button>
+    <button id="btn-rightnav-comments" mat-icon-button [class.active]="detailsService.getActive() === 'comments'"
+            (click)="openDetails('comments')" [disabled]="true">
+        <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">feedback</mat-icon>
+    </button>
+    <button id="btn-rightnav-timeline" mat-icon-button [class.active]="detailsService.getActive() === 'timeline'"
+            (click)="openDetails('timeline')" [disabled]="true">
+        <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">timeline</mat-icon>
+    </button>
+    <button id="btn-rightnav-follow-up" mat-icon-button [class.active]="detailsService.getActive() === 'follow-up'"
+            (click)="openDetails('follow-up')" [disabled]="isDisabled()">
+        <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">update</mat-icon>
+    </button>
+    <hr>
+    <button id="btn-rightnav-close-details" mat-icon-button (click)="closeDetails()">
+        <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">navigate_next</mat-icon>
+    </button>
 </nav>

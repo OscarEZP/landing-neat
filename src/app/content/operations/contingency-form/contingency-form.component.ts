@@ -1,31 +1,36 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Http } from '@angular/http';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
+import { map, startWith } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
-import { environment } from '../../../../environments/environment';
-import { ActualTimeModel } from '../../../shared/_models/actualTime';
 import { Aircraft } from '../../../shared/_models/aircraft';
+import { Backup } from '../../../shared/_models/backup';
+import { AircraftSearch } from '../../../shared/_models/configuration/aircraftSearch';
+import { DateModel } from '../../../shared/_models/configuration/dateModel';
+import { FlightSearch } from '../../../shared/_models/configuration/flightSearch';
+import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
+import { Location } from '../../../shared/_models/configuration/location';
+import { StatusCode } from '../../../shared/_models/configuration/statusCode';
+import { Types } from '../../../shared/_models/configuration/types';
 import { Contingency } from '../../../shared/_models/contingency';
 import { Flight } from '../../../shared/_models/flight';
-import { FlightConfiguration } from '../../../shared/_models/flightConfiguration';
-import { GroupTypes } from '../../../shared/_models/groupTypes';
 import { Interval } from '../../../shared/_models/interval';
-import { Legs } from '../../../shared/_models/legs';
 import { Safety } from '../../../shared/_models/safety';
 import { Status } from '../../../shared/_models/status';
 import { TimeInstant } from '../../../shared/_models/timeInstant';
-import { Types } from '../../../shared/_models/types';
+import { Validation } from '../../../shared/_models/validation';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { ClockService } from '../../../shared/_services/clock.service';
 import { DataService } from '../../../shared/_services/data.service';
 import { DatetimeService } from '../../../shared/_services/datetime.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { StorageService } from '../../../shared/_services/storage.service';
+import { DateUtil } from '../../../shared/util/dateUtil';
 import { DialogService } from '../../_services/dialog.service';
 import { ContingencyService } from '../_services/contingency.service';
 import { CancelComponent } from '../cancel/cancel.component';
@@ -36,125 +41,408 @@ import { CancelComponent } from '../cancel/cancel.component';
     styleUrls: ['./contingency-form.component.scss']
 })
 
-
 export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _messageUTCSubscription: Subscription;
-    private alive: boolean;
-    private data: ActualTimeModel;
-    private interval: number;
-    public contingencyForm: FormGroup;
-    public currentUTCTime: number;
-    public currentDateString: string;
-    public display: boolean;
-    public time: Date;
-    public contingency: Contingency;
-    public safetyEventList: Safety[];
-    public aircraftList: Aircraft[];
-    public filteredAircrafts: Observable<Aircraft[]>;
-    public filteredFlights: Observable<FlightConfiguration[]>;
-    public flightList: FlightConfiguration[];
-    public typesList = [{'groupName': null, 'types': [{'code': null, 'description': null}]}];
-    public typeListFinal = {
-        'CONTINGENCY_TYPE': {'types': [{'code': null, 'description': null}]},
-        'FAILURE_TYPE': {'types': [{'code': null, 'description': null}]},
-        'INFORMER': {'types': [{'code': null, 'description': null}]}
-    };
-    public aircraftTempModel: Aircraft;
-    public legsArrayModel = [];
-    public timeModel: string;
-    public dateModel: Date;
-    public snackbarMessage: string;
-    public optionalIsChecked = false;
-    public originDestinationModel: Legs;
+    private _aircraftList: Aircraft[];
+    private _flightList: Flight[];
+    private _statusCodes: StatusCode[];
+    private _safetyEventList: Safety[];
+    private _maxStatusCodes: StatusCode[];
+    private _groupTypeList: GroupTypes[];
+    private _contingencyType: Types[];
+    private _operatorList: Types[];
+    private _failureType: Types[];
+    private _informer: Types[];
+    private _contingencyForm: FormGroup;
+    private _contingency: Contingency;
+    private _stations: Location[];
 
-    public validations = {'isSending': null};
+    private _durationArray: number[];
+    private _contingencyDateModel: DateModel[];
+    private _dateModel: Date;
+    private _timeModel: string;
+    private _utcModel: TimeInstant;
+    private _minDate: Date;
+    private _maxDate: Date;
 
-    private apiTypes = environment.apiUrl + environment.paths.types;
+    private _alive: boolean;
+    private _interval: number;
+    private _snackbarMessage: string;
 
-    public durations: number[];
+    private _isSafetyEvent: boolean;
+    private _timeClock: Date;
 
-    constructor(private  dialogService: DialogService,
-                private contingencyService: ContingencyService,
-                private fb: FormBuilder,
-                private datetimeService: DatetimeService,
-                private clockService: ClockService,
-                private messageData: DataService,
-                private http: Http,
-                private messageService: MessageService,
-                public translate: TranslateService,
-                private storageService: StorageService,
-                private _configService: ApiRestService,
-                private _apiRestService: ApiRestService) {
-        this.display = true;
+    private _validations: Validation;
+
+    private _observableFlightList: Observable<Flight[]>;
+    private _observableAircraftList: Observable<Aircraft[]>;
+    private _observableLocationList: Observable<Location[]>;
+    private _observableOperatorList: Observable<Types[]>;
+    
+    constructor(private _dialogService: DialogService,
+                private _contingencyService: ContingencyService,
+                private _fb: FormBuilder,
+                private _datetimeService: DatetimeService,
+                private _clockService: ClockService,
+                private _messageData: DataService,
+                private _messageService: MessageService,
+                private _storageService: StorageService,
+                private _apiRestService: ApiRestService,
+                private _dateUtil: DateUtil,
+                private _translate: TranslateService) {
+
+        const initFakeDate = new Date().getTime();
+
         this.alive = true;
-        this.interval = 60000;
-        this.currentUTCTime = 0;
-        this.currentDateString = '';
-        this.translate.setDefaultLang('en');
-        this.safetyEventList = [];
-        this.aircraftTempModel = new Aircraft(null, null, null);
-        this.originDestinationModel = new Legs(null, null, null, null, null);
-        this.aircraftList = [new Aircraft('', '', '')];
+        this.isSafetyEvent = false;
+        this.utcModel = new TimeInstant(initFakeDate, null);
+        this.durationArray = [];
 
-        this.contingencyForm = fb.group({
-            'tail': [null, Validators.required],
-            'fleet': [null, Validators.required],
-            'operator': [null, Validators.required],
-            'flightNumber': [null, Validators.required],
-            'isBackup': [false],
-            'origin': [this.originDestinationModel.origin, Validators.required],
-            'destination': [this.originDestinationModel.destination, Validators.required],
-            'tm': [this.timeModel, Validators.required],
-            'dt': [this.dateModel, Validators.required],
-            'informer': [null, Validators.required],
+        this.contingency = new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, new TimeInstant(initFakeDate, null), null, new Interval(null, null), new Interval(null, 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username);
+
+        this.contingencyType = [];
+        this.operatorList = [];
+        this.failureType = [];
+        this.informer = [];
+
+        this.stations = [new Location(null, null, null)];
+
+        this.contingencyDateModel = [
+            new DateModel(null),
+            new DateModel(null),
+            new DateModel(null),
+            new DateModel(null)
+        ];
+        
+        this.aircraftList = [];
+
+        this._contingencyForm = _fb.group({
+            'tail': [this.contingency.aircraft.tail, Validators.required, this.tailDomainValidator.bind(this)],
+            'fleet': [this.contingency.aircraft.fleet, Validators.required],
+            'operator': [this.contingency.aircraft.operator, Validators.required, this.operatorDomainValidator.bind(this)],
+            'isBackup': [false, this.contingency.isBackup],
+            'station': [this.contingency.backup.location],
+            'slotTm': [this.contingencyDateModel[1].timeString],
+            'slotDate': [this.contingencyDateModel[1].dateString],
+            'flightNumber': [this.contingency.flight.flightNumber, Validators.required],
+            'origin': [this.contingency.flight.origin, Validators.required],
+            'destination': [this.contingency.flight.destination, Validators.required],
+            'tm': [this.contingencyDateModel[0].timeString, Validators.required],
+            'dt': [this.contingencyDateModel[0].dateString, Validators.required],
+            'informer': [this.contingency.informer, Validators.required],
             'safety': [false, Validators.required],
             'showBarcode': [false],
-            'barcode': [null],
-            'safetyEventCode': [null],
-            'contingencyType': [null, Validators.required],
-            'failure': [null, Validators.required],
-            'observation': [null, Validators.required],
-            'statusCode': [null, Validators.required],
-            'duration': [45, Validators.required]
+            'barcode': [this.contingency.barcode, [Validators.pattern('^[a-zA-Z0-9]+\\S$'), Validators.maxLength(80)]],
+            'safetyEventCode': [this.contingency.safetyEvent.code],
+            'contingencyType': [this.contingency.type, Validators.required],
+            'failure': [this.contingency.failure, Validators.required],
+            'observation': [this.contingency.status.observation, [Validators.required, Validators.maxLength(400)]],
+            'reason': [this.contingency.reason, [Validators.required, Validators.maxLength(400)]],
+            'statusCode': [this.contingency.status.code, Validators.required],
+            'duration': [this.contingency.status.requestedInterval.duration, Validators.required]
         });
-        this.durations = [];
-        this.validations = {'isSending': false};
+
+        this.validations = new Validation();
     }
 
-    ngOnInit() {
 
-        this._messageUTCSubscription = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
+    get messageUTCSubscription(): Subscription {
+        return this._messageUTCSubscription;
+    }
 
-        TimerObservable.create(0, this.interval)
+    set messageUTCSubscription(value: Subscription) {
+        this._messageUTCSubscription = value;
+    }
+
+    get aircraftList(): Aircraft[] {
+        return this._aircraftList;
+    }
+
+    set aircraftList(value: Aircraft[]) {
+        this._aircraftList = value;
+    }
+
+    get flightList(): Flight[] {
+        return this._flightList;
+    }
+
+    set flightList(value: Flight[]) {
+        this._flightList = value;
+    }
+
+    get statusCodes(): StatusCode[] {
+        return this._statusCodes;
+    }
+
+    set statusCodes(value: StatusCode[]) {
+        this._statusCodes = value;
+    }
+
+    get safetyEventList(): Safety[] {
+        return this._safetyEventList;
+    }
+
+    set safetyEventList(value: Safety[]) {
+        this._safetyEventList = value;
+    }
+
+    get maxStatusCodes(): StatusCode[] {
+        return this._maxStatusCodes;
+    }
+
+    set maxStatusCodes(value: StatusCode[]) {
+        this._maxStatusCodes = value;
+    }
+
+    get groupTypeList(): GroupTypes[] {
+        return this._groupTypeList;
+    }
+
+    set groupTypeList(value: GroupTypes[]) {
+        this._groupTypeList = value;
+    }
+
+    get contingencyType(): Types[] {
+        return this._contingencyType;
+    }
+
+    set contingencyType(value: Types[]) {
+        this._contingencyType = value;
+    }
+
+    get operatorList(): Types[] {
+        return this._operatorList;
+    }
+
+    set operatorList(value: Types[]) {
+        this._operatorList = value;
+    }
+
+    get failureType(): Types[] {
+        return this._failureType;
+    }
+
+    set failureType(value: Types[]) {
+        this._failureType = value;
+    }
+
+    get informer(): Types[] {
+        return this._informer;
+    }
+
+    set informer(value: Types[]) {
+        this._informer = value;
+    }
+
+    get contingencyForm(): FormGroup {
+        return this._contingencyForm;
+    }
+
+    set contingencyForm(value: FormGroup) {
+        this._contingencyForm = value;
+    }
+
+    get contingency(): Contingency {
+        return this._contingency;
+    }
+
+    set contingency(value: Contingency) {
+        this._contingency = value;
+    }
+
+    get stations(): Location[] {
+        return this._stations;
+    }
+
+    set stations(value: Location[]) {
+        this._stations = value;
+    }
+
+    get durationArray(): number[] {
+        return this._durationArray;
+    }
+
+    set durationArray(value: number[]) {
+        this._durationArray = value;
+    }
+
+    get dateModel(): Date {
+        return this._dateModel;
+    }
+
+    set dateModel(value: Date) {
+        this._dateModel = value;
+    }
+
+    get timeModel(): string {
+        return this._timeModel;
+    }
+
+    set timeModel(value: string) {
+        this._timeModel = value;
+    }
+
+    get utcModel(): TimeInstant {
+        return this._utcModel;
+    }
+
+    set utcModel(value: TimeInstant) {
+        this._utcModel = value;
+    }
+
+    get minDate(): Date {
+        return this._minDate;
+    }
+
+    set minDate(value: Date) {
+        this._minDate = value;
+    }
+
+    get maxDate(): Date {
+        return this._maxDate;
+    }
+
+    set maxDate(value: Date) {
+        this._maxDate = value;
+    }
+
+    get alive(): boolean {
+        return this._alive;
+    }
+
+    set alive(value: boolean) {
+        this._alive = value;
+    }
+
+    get interval(): number {
+        return this._interval;
+    }
+
+    set interval(value: number) {
+        this._interval = value;
+    }
+
+    get snackbarMessage(): string {
+        return this._snackbarMessage;
+    }
+
+    set snackbarMessage(value: string) {
+        this._snackbarMessage = value;
+    }
+
+    get isSafetyEvent(): boolean {
+        return this._isSafetyEvent;
+    }
+
+    set isSafetyEvent(value: boolean) {
+        this._isSafetyEvent = value;
+    }
+
+    get timeClock(): Date {
+        return this._timeClock;
+    }
+
+    set timeClock(value: Date) {
+        this._timeClock = value;
+    }
+
+    get validations(): Validation {
+        return this._validations;
+    }
+
+    set validations(value: Validation) {
+        this._validations = value;
+    }
+
+    get contingencyDateModel(): DateModel[] {
+        return this._contingencyDateModel;
+    }
+
+    set contingencyDateModel(value: DateModel[]) {
+        this._contingencyDateModel = value;
+    }
+
+    get observableFlightList(): Observable<Flight[]> {
+        return this._observableFlightList;
+    }
+    
+    set observableFlightList(value: Observable<Flight[]>) {
+        this._observableFlightList = value;
+    }
+
+    get observableAircraftList(): Observable<Aircraft[]> {
+        return this._observableAircraftList;
+    }
+
+    set observableAircraftList(value: Observable<Aircraft[]>) {
+        this._observableAircraftList = value;
+    }
+    
+    get observableLocationList(): Observable<Location[]> {
+        return this._observableLocationList;
+    }
+    
+    set observableLocationList(value: Observable<Location[]>) {
+        this._observableLocationList = value;
+    }
+    
+    get observableOperatorList(): Observable<Types[]> {
+        return this._observableOperatorList;
+    }
+    
+    set observableOperatorList(value: Observable<Types[]>) {
+        this._observableOperatorList = value;
+    }
+    
+    public ngOnInit() {
+
+        this._messageUTCSubscription = this._messageData.currentNumberMessage.subscribe(message => this.utcModel.epochTime = message);
+
+        TimerObservable.create(0, this._interval)
             .takeWhile(() => this.alive)
             .subscribe(() => {
-                this.datetimeService.getTime()
+                this._datetimeService.getTime()
                     .subscribe((data) => {
-                        this.data = data;
-                        this.currentUTCTime = this.data.currentTimeLong;
-                        this.currentDateString = this.data.currentTime;
+                        this.utcModel = new TimeInstant(data.currentTimeLong, data.currentTime);
                         this.newMessage();
-                        this.clockService.setClock(this.currentUTCTime);
-                        if (!this.display) {
-                            this.display = true;
-                        }
+                        this.initDateModels(this.utcModel.epochTime);
+                        this._clockService.setClock(this.utcModel.epochTime);
                     });
             });
 
-        this.clockService.getClock().subscribe(time => this.time = time);
+        this._clockService.getClock().subscribe(time => this.timeClock = time);
 
+        this.getAircraftList();
+        this.getFlightList();
         this.getSafetyEventList();
-        this.getAircraftConfiguration();
-        this.getFligthsList();
-        this.retrieveTypesConfiguration();
+        this.getGroupTypes();
+        this.getLocationsList();
+        this.getOperatorList();
         this.generateIntervalSelection();
+    }
+
+    /**
+     * Method to init date model for contingency creation, there will be 4 values:
+     * 1) Flight Contingency date model
+     * 2) Backup date model
+     * 3) Minimum date model
+     * 4) Maximum date model
+     * @return {DateModel[]}
+     */
+    private initDateModels(epochDate: number): DateModel[] {
+        return this.contingencyDateModel = [
+            new DateModel(null),
+            new DateModel(null),
+            new DateModel(epochDate, -24),
+            new DateModel(epochDate, 24)
+        ];
     }
 
     /**
      * Unsubscribe messages when the component is destroyed
      * @return {void}
      */
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this._messageUTCSubscription.unsubscribe();
     }
 
@@ -165,77 +453,41 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     public submitForm(value: any) {
         if (this.contingencyForm.valid) {
+
+            this.isBackupCheck();
+
             this.validations.isSending = true;
-            const user = this.storageService.getCurrentUser();
-            const initials = user.firstName.substring(0, 1).toUpperCase() + user.lastName.substring(0, 1).toUpperCase();
 
-            this.contingency = new Contingency(
-                null,
-                new Aircraft(
-                    value.tail,
-                    value.fleet,
-                    value.operator
-                ),
-                value.barcode,
-                null,
-                value.failure,
-                new Flight(
-                    value.flightNumber,
-                    value.origin,
-                    value.destination,
-                    new TimeInstant(
-                        this.originDestinationModel.etd.epochTime,
-                        null
-                    )
-                ),
-                value.informer,
-                value.isBackup,
-                value.observation, // temporally here goes reason (not yet in mockups)
-                new Safety(
-                    value.safetyEventCode,
-                    null
-                ),
-                new Status(
-                    value.statusCode,
-                    null,
-                    null,
-                    value.observation,
-                    null,
-                    new Interval(
-                        new TimeInstant(
-                            null,
-                            null
-                        ),
-                        value.duration
-                    ),
-                    initials
-                ),
-                value.contingencyType,
-                initials
-            );
-
-            return this._apiRestService
-                .add<Response>('contingencyList', this.contingency, '')
-                .subscribe(() => {
-                    this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.SUCCESSFULLY_MESSAGE');
-                    this.messageService.openSnackBar(this.snackbarMessage);
-                    this.dialogService.closeAllDialogs();
-                    this.messageData.stringMessage('reload');
-                    this.validations.isSending = false;
-
-                }, err => {
-                    this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
-                    const message: string = err.error.message !== null ? err.error.message : this.snackbarMessage;
-                    this.messageService.openSnackBar(message);
-                    this.validations.isSending = false;
-
-                });
-
-
+            let res: Response;
+            this._apiRestService
+                .add<Response>('contingencyList', this.contingency)
+                .subscribe(response => res = response,
+                    err => {
+                        this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
+                        const message: string = err.error.message !== null ? err.error.message : this.snackbarMessage;
+                        this._messageService.openSnackBar(message);
+                        this.validations.isSending = false;
+                    }, () => {
+                        this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.SUCCESSFULLY_MESSAGE');
+                        this._messageService.openSnackBar(this.snackbarMessage);
+                        this._dialogService.closeAllDialogs();
+                        this._messageData.stringMessage('reload');
+                        this.validations.isSending = false;
+                    });
         } else {
             this.getTranslateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
-            this.messageService.openSnackBar(this.snackbarMessage);
+            this._messageService.openSnackBar(this.snackbarMessage);
             this.validations.isSending = false;
+        }
+    }
+
+    /**
+     * Method to take values from slot time, slot date and set value of slot date in contingency model
+     */
+    private isBackupCheck(): void {
+        if (this.contingency.isBackup) {
+            const finalDate = this._dateUtil.createEpochFromTwoStrings(this.contingencyDateModel[1].dateObj, this.contingencyDateModel[1].timeString);
+            this.contingency.backup.slot.epochTime = finalDate;
         }
     }
 
@@ -243,260 +495,325 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * Generate value array for combo box of time at intervals of 5 minutes to 180.
      * @return {number[]}
      */
-    private generateIntervalSelection() {
+    private generateIntervalSelection(): number[] {
         let i: number;
         const quantity = 36;
 
         for (i = 0; i < quantity; i++) {
-            this.durations.push(i * 5 + 5);
+            this.durationArray.push(i * 5 + 5);
         }
 
-        return this.durations;
+        return this.durationArray;
     }
-
+    
+    /**
+     * Get operator list configuration
+     * @return {Subscription}
+     */
+    private getOperatorList(): Subscription {
+        return this._apiRestService
+            .getAll<Types[]>('operator')
+            .subscribe(response => {
+                this.operatorList = response;
+                
+                this.observableOperatorList = this.contingencyForm
+                    .controls['operator']
+                    .valueChanges
+                    .pipe(
+                        startWith(''),
+                        map(val => this.operatorFilter(val))
+                    )
+            })
+    }
+    
     /**
      * Get Safety Event List Configuration
      * @return {Subscription}
      */
-    private getSafetyEventList() {
+
+    private getSafetyEventList(): Subscription {
         return this._apiRestService
             .getAll<Safety[]>('safetyEvent')
             .subscribe(data => this.safetyEventList = data,
                 error => () => {
-                    this.messageService.openSnackBar(error.message);
+                    this._messageService.openSnackBar(error.message);
                 });
     }
 
     /**
-     * Get aircraft configuration array
+     * Get aircraft list and create an observable list of fligths will be consumed in the view
      * @return {Subscription}
      */
-    private getAircraftConfiguration() {
-        const searchAircraftsSignature = {
-            enable: 1
-        };
-        this.contingencyService.getAircrafts(searchAircraftsSignature).subscribe(rs => {
-            this.aircraftList = rs as Aircraft[];
-            this.filteredAircrafts = this.contingencyForm.controls['tail'].valueChanges
-                .startWith('')
-                .map(val => this.filterAircrafts(val));
-        }, err => {
-            console.log(err);
-        });
-    }
 
-    private filterAircrafts(val: string): Aircraft[] {
-        return this.aircraftList.filter(aircraft =>
-            aircraft.tail.toLocaleLowerCase().replace('-', '').search(val.toLocaleLowerCase().replace('-', '')) !== -1);
-    }
+    private getAircraftList() {
 
-    /**
-     * Get Flight List Configuration
-     * @return {Subscription}
-     */
-    private getFligthsList() {
         return this._apiRestService
-            .getAll('flights')
-            .subscribe(data => {
-                this.flightList = data as FlightConfiguration[];
-                this.filteredFlights = this.contingencyForm.controls['flightNumber'].valueChanges
-                    .startWith('')
-                    .map(val => this.filterFlights(val));
-            }, error => {
-                this.messageService.openSnackBar(error.message);
+            .search<Aircraft[]>('aircraftsSearch', new AircraftSearch(1))
+            .subscribe((response: Aircraft[]) => {
+                this.aircraftList = response;
+
+                this.observableAircraftList = this.contingencyForm
+                    .controls['tail']
+                    .valueChanges
+                    .pipe(
+                        startWith(''),
+                        map(val => this.aircraftFilter(val))
+                    );
             });
     }
 
-    private filterFlights(val: string): FlightConfiguration[] {
-        return this.flightList.filter(flight =>
-            flight.flightNumber.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+    /**
+     * Get Flight List and create an observable list of fligths will be consumed in the view
+     * @return {Subscription}
+     */
+    private getFlightList(): Subscription {
+        const actualTime = new TimeInstant(this.utcModel.epochTime, null);
+        const defaultFlightSearch = new FlightSearch(actualTime);
+
+        return this._apiRestService
+            .search<Flight[]>('flights', defaultFlightSearch)
+            .subscribe((response: Flight[]) => {
+                this.flightList = response;
+
+                this.observableFlightList = this.contingencyForm
+                    .controls['flightNumber']
+                    .valueChanges
+                    .pipe(
+                        startWith(''),
+                        map(val => this.flightFilter(val))
+                    );
+            });
     }
 
-    retrieveTypesConfiguration() {
-        return new Promise((resolve, reject) => {
-            this.http
-                .get(this.apiTypes)
-                .toPromise()
-                .then(data => {
-                    this.typesList.pop();
-                    const jsonData = data.json();
-                    for (let i = 0; i < jsonData.length; i++) {
-                        const typeList = [];
-                        for (let j = 0; j < jsonData[i].types.length; j++) {
-                            const typeItem = new Types(
-                                jsonData[i].types[j].code,
-                                jsonData[i].types[j].description,
-                                new TimeInstant(
-                                    jsonData[i].types[j].updateDate.epochTime,
-                                    jsonData[i].types[j].updateDate.label
-                                )
-                            );
-                            typeList.push(typeItem);
-                        }
-                        const typeGroup = new GroupTypes(
-                            jsonData[i].groupName,
-                            typeList
-                        );
-                        this.typesList.push(typeGroup);
-                    }
+    /**
+     * Get all group types
+     * @return {Subscription}
+     */
+    private getGroupTypes(): Subscription {
 
-                    this.separateTypes(this.typesList);
-                    resolve();
-                }, reason => {
-                    this.messageService.openSnackBar(reason);
-                    reject(reason);
-                });
-        });
+        return this._apiRestService
+            .getAll<GroupTypes[]>('types')
+            .subscribe((response: GroupTypes[]) => {
+                this.groupTypeList = response;
+                this.getSelectedGroupType();
+            });
     }
 
-    private separateTypes(typeList) {
-        for (let h = 0; h < typeList.length; h++) {
-            const groupName = typeList[h].groupName;
-            this.typeListFinal[groupName] = {'types': []};
+    /**
+     * Split the groups accord to they purpose and init they instances variables
+     */
+    private getSelectedGroupType(): void {
+        let variableName: string;
+        this.groupTypeList.forEach(function (value) {
+            variableName = value.groupName.toLowerCase().replace(/(\_\w)/g, function (m) {
+                return m[1].toUpperCase();
+            });
+            this[variableName] = value.types;
 
-            for (let i = 0; i < typeList[h].types.length; i++) {
-                this.typeListFinal[groupName]['types'][i] = {
-                    'code': typeList[h].types[i].code,
-                    'description': typeList[h].types[i].description
-                };
-            }
-        }
+        }, this);
+    }
+
+    /**
+     * Get the location list from server
+     * @return {Subscription}
+     */
+    private getLocationsList(): Subscription {
+        return this._apiRestService
+                   .getAll<Location[]>('locations')
+                   .subscribe((response: Location[]) => {
+                       this.stations = response;
+    
+                       this.observableLocationList = this.contingencyForm
+                           .controls['station']
+                           .valueChanges
+                           .pipe(
+                               startWith(''),
+                               map(val => this.locationFilter(val))
+                           );
+                   });
     }
 
     private getTranslateString(toTranslate: string) {
-        this.translate.get(toTranslate).subscribe((res: string) => {
+        this._translate.get(toTranslate).subscribe((res: string) => {
             this.snackbarMessage = res;
         });
     }
 
-    /**
-     * Format date to show hour and date in UTC format, this method is only to show information because the real value
-     * sended with form is the time retrieved from service of flights
-     * @param {number} value
-     */
-    public formatDate(value: number): void {
-        const date = new Date(value);
-        const utcDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
-
-        this.timeModel = this.addZero(utcDate.getHours()) + ':' + this.addZero(utcDate.getMinutes());
-        this.dateModel = utcDate;
-    }
-
-    /**
-     * Add zero to hour and minutes when the number is lower than 10
-     * @param {number} time
-     * @return {string}
-     *
-     * @example
-     * this.addZero(9) will return <string> 09
-     */
-    private addZero(time: number): string {
-        let stringHour = String(time);
-
-        if (time < 10) {
-            stringHour = '0' + time;
-        }
-
-        return stringHour;
-    }
-
-    openCancelDialog() {
+    public openCancelDialog(): void {
         if (this.validateFilledItems()) {
             this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
-            this.messageService.openFromComponent(CancelComponent, {
+            this._messageService.openFromComponent(CancelComponent, {
                 data: {message: this.snackbarMessage},
                 horizontalPosition: 'center',
                 verticalPosition: 'top'
             });
         } else {
-            this.dialogService.closeAllDialogs();
+            this._dialogService.closeAllDialogs();
         }
     }
 
+    /**
+     *
+     * @return {boolean}
+     */
     private validateFilledItems(): boolean {
         let counterFilled = 0;
         const defaultValid = 6;
-        Object.keys(this.contingencyForm.controls).forEach(elem => {
-            if (this.contingencyForm.controls[elem].valid) {
+        Object.keys(this._contingencyForm.controls).forEach(elem => {
+            if (this._contingencyForm.controls[elem].valid) {
                 counterFilled = counterFilled + 1;
             }
         });
         return counterFilled > defaultValid ? true : false;
     }
 
+    /**
+     * Method triggered when aircraft tail is selected, populate the fields and the model in contingency aircraft & flight
+     * Also force selection of first flight in the form and recalculate the flight etd
+     * @param {string} selectedOption
+     */
     public onSelectAircraft(selectedOption: string): void {
 
         for (const item of this.aircraftList) {
             if (item.tail === selectedOption) {
-                this.aircraftTempModel = new Aircraft(item.tail, item.fleet, item.operator);
+                this.contingency.aircraft = new Aircraft(item.tail, item.fleet, item.operator);
+                this.contingency.flight = new Flight(
+                    this.flightList[0].flightNumber,
+                    this.flightList[0].origin,
+                    this.flightList[0].destination,
+                    new TimeInstant(
+                        this.flightList[0].etd.epochTime,
+                        this.flightList[0].etd.label
+                    ));
+
+                this.contingencyDateModel[0].updateFromEpoch(this.contingency.flight.etd.epochTime);
+
+                this.contingencyForm.get('operator').setValue(this.contingency.aircraft.operator);
+                this.contingencyForm.get('operator').updateValueAndValidity();
+                this.contingencyForm.get('flightNumber').setValue(this.contingency.flight.flightNumber);
+                this.contingencyForm.get('flightNumber').updateValueAndValidity();
             }
         }
     }
 
     /**
-     * Method to retrieve the legs array from flight configuration when the flight selected match
-     * @param {string} selectedOption
+     * Method triggered when a flight is selected and populate selected values in the contingency.flight model
+     * @param {Event} event
+     * @param {Flight} fl
      */
-    public onSelectFlight(selectedOption: string): void {
+    public onSelectFlight(event: Event, fl: Flight): void {
 
-        let flights: FlightConfiguration;
-        let legs: Legs;
-
-        for (flights of this.flightList) {
-            if (flights.flightNumber === selectedOption) {
-                for (legs of flights.legs) {
-                    this.legsArrayModel.push(legs);
-                }
-            }
-        }
-    }
-
-    /**
-     * Method to create origin-destination model from selected flight + origin in Legs
-     * @param {string} selectedOption
-     */
-    public onSelectOrigin(selectedOption: string): void {
-
-        let selectedLeg: Legs;
-
-        for (selectedLeg of this.legsArrayModel) {
-            if (selectedLeg.origin === selectedOption) {
-                this.originDestinationModel = new Legs(selectedLeg.origin, selectedLeg.destination, selectedLeg.etd, selectedLeg.updateDate, selectedLeg.tail);
-                this.formatDate(selectedLeg.etd.epochTime);
-            }
-        }
+        this.contingency.flight.flightNumber = fl.flightNumber;
+        this.contingency.flight.origin = fl.origin;
+        this.contingency.flight.destination = fl.destination;
+        this.contingency.flight.etd.epochTime = fl.etd.epochTime;
+        this.contingency.flight.etd.label = fl.etd.label;
+        this.contingencyDateModel[0].updateFromEpoch(fl.etd.epochTime);
     }
 
     /**
      * Method to change form validation depending of selecting or not one checkbox (optional until is selected)
      */
-    public onSelectOptional() {
-        if (this.optionalIsChecked) {
-            this.contingencyForm.get('safetyEventCode').setValidators(Validators.required);
-            this.contingencyForm.get('safetyEventCode').updateValueAndValidity();
-        } else {
-            this.contingencyForm.get('safetyEventCode').setValue(null);
-            this.contingencyForm.get('safetyEventCode').setValidators(null);
-            this.contingencyForm.get('safetyEventCode').updateValueAndValidity();
+    public onSelectOptional(checkboxName: string, itemsToValidate: string[]) {
+        let i: number;
+
+        for (i = 0; i < itemsToValidate.length; i++) {
+            this.contingencyForm.get(itemsToValidate[i]).setValue(null);
+            !this.contingencyForm.get(checkboxName).value ? this.contingencyForm.get(itemsToValidate[i]).setValidators(Validators.required) : this.contingencyForm.get(itemsToValidate[i]).clearValidators();
+            this.contingencyForm.get(itemsToValidate[i]).updateValueAndValidity();
         }
     }
 
-    onCloseCreationContingencyForm(): void {
-        this.dialogService.closeAllDialogs();
+    private onCloseCreationContingencyForm(): void {
+        this._dialogService.closeAllDialogs();
     }
 
-    newMessage() {
-        this.messageData.changeTimeUTCMessage(this.currentUTCTime);
+    private newMessage(): void {
+        this._messageData.changeTimeUTCMessage(this.utcModel.epochTime);
     }
+    
+    /**
+     * Custom validation for Aircraft Tail
+     * @param {FormControl} control
+     * @return {Observable<any>}
+     */
+    public tailDomainValidator(control: FormControl): Observable<any> {
+        let tail = control.value;
 
-    public validateAircraft(value: string): Boolean {
-        let match = false;
-
-        for (const item of this.aircraftList) {
-            if (item.tail === value) {
-                match = true;
+        return Observable.of(this.aircraftList).map(res => {
+            for (const item of res) {
+                if (item.tail === tail) {
+                    return null
+                }
             }
+            
+            return {
+                tailDomain: true
+            };
+        })
+    }
+    
+    /**
+     * Custom validation for Operator
+     * @param {FormControl} control
+     * @return {Observable<any>}
+     */
+    public operatorDomainValidator(control: FormControl) {
+        let operator = control.value;
+        
+    
+        return Observable.of(this.operatorList).map(res => {
+            for (const item of res) {
+                if (operator === item.code) {
+                    return null
+                }
+            }
+    
+            return {
+                operatorDomain: true
+            }
+        })
+    }
+
+    /**
+     * Filter for aircraft observable list in view
+     * @param {string} val
+     * @return {Aircraft[]}
+     */
+    private aircraftFilter(val: string): Aircraft[] {
+        return this.aircraftList.filter(aircraft =>
+            aircraft.tail.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+    }
+
+    /**
+     * Filter for flights observable list in view
+     * @param {string} val
+     * @return {Flight[]}
+     */
+    private flightFilter(val: string): Flight[] {
+        return this.flightList.filter(flight =>
+            flight.flightNumber.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+    }
+    
+    /**
+     * Filter for location observable list in view
+     * @param {string} val
+     * @return {Location[]}
+     */
+    private locationFilter(val: string): Location[] {
+        if (val !== null) {
+            return this.stations.filter( location =>
+                location.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
         }
-        return match;
+    }
+    
+    /**
+     * Filter for operatorList observable list in view
+     * @param {string} val
+     * @return {Types[]}
+     */
+    private operatorFilter(val: string): Types[] {
+        return this.operatorList.filter(operator =>
+            operator.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
     }
 }

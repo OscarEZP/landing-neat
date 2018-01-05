@@ -83,6 +83,6 @@
     </section>
     <section class="box" *ngIf="validations.isFollowUpDisabled">
         <h2>{{ 'OPERATIONS.CONTINGENCY_FORM.TYPOLOGY' | translate }}</h2>
-        {{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_DISABLED' | translate }}
+        {{ validations.lastStatus ? ('OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_LAST_STATUS' | translate)  : ('OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_DISABLED' | translate) }}
     </section>
 </section>
