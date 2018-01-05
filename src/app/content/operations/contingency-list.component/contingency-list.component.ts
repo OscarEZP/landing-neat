@@ -121,7 +121,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.loading = true;
         if (!this._historicalSearchService.active) {
             this._contingencyService.getContingencies().subscribe();
-        } else if (this._historicalSearchService.active) {
+        } else if (this._historicalSearchService.active && this._historicalSearchService.searchForm.valid) {
             const search = {
                 from: {
                     epochTime: this._historicalSearchService.fromTS

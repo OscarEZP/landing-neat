@@ -37,6 +37,8 @@
       "BTN_SAVE": "SAVE",
       "CLOSE_SUCCESS": "Contingency has been closed successfully"
     },
+    "CLOSED_CONTINGENCY": "Closed contingency",
+    "CLOSED_CONTINGENCIES": "Closed contingencies",
     "CLOSURE_DATE_HOUR": "Closure Date - Hour",
     "CONTINGENCIES_ACTIVES": "Actives Contingencies",
     "CONTINGENCY_ACTIVE": "Active Contingency",
@@ -99,16 +101,16 @@
       "TYPOLOGY_MESSAGE": "The ETR must be validated by the Maintenance Team",
       "YES": "Yes"
     },
+
     "CONTINGENCY_LIMIT": "Last 3 hours",
     "DESCRIPTION": "Reason",
     "FLIGHT": "Flight",
     "FOCAL": "Focal",
-    "FROM": "from",
     "FROM_TO": "From/To",
     "OPERATOR": "Operator",
+    "OF": "of",
     "PIT_STOP": "PIT STOP",
     "PROGRESS": "Progress",
-    "RECORDS": "records",
     "SAFETY_EVENT": "Safety Event",
     "SEARCH_HISTORICAL": {
       "CLEAR": "CLEAR",
