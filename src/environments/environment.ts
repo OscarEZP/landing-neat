@@ -6,7 +6,7 @@ export const environment = {
         aircrafts: '/api/v1/contingencies/configurations/aircrafts',
         aircraftsSearch: '/api/v1/contingencies/configurations/aircrafts/_search',
         close: '/api/v1/contingencies/_close',
-        configMaxStatus: ':9002/api/v1/contingencies/configurations/status/max',
+        configMaxStatus: '/api/v1/contingencies/configurations/status/max',
         configStatus: '/api/v1/contingencies/configurations/status/_search',
         confirmForgotPassword: '/api/security/users/_confirmforgotpassword',
         contingencyList: '/api/v1/contingencies',
@@ -17,7 +17,7 @@ export const environment = {
         forgotPassword: '/api/security/users/_forgotpassword',
         locations: '/api/v1/contingencies/configurations/locations',
         login: '/api/security/users/_login',
-        refreshToken: '/api/v1/security/users/_refresh',
+        operator: '/api/v1/contingencies/configurations/operators/',
         safetyEvent: '/api/v1/contingencies/configurations/safetyEvents',
         types: '/api/v1/contingencies/configurations/types',
         closeType: '/api/v1/contingencies/configurations/types/groupNames'
