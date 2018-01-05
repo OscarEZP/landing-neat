@@ -20,6 +20,7 @@ export const environment = {
         operator: ':9002/api/v1/contingencies/configurations/operators/',
         refreshToken: ':9001/api/v1/security/users/_refresh',
         safetyEvent: ':9002/api/v1/contingencies/configurations/safetyEvents',
-        types: ':9002/api/v1/contingencies/configurations/types'
+        types: ':9002/api/v1/contingencies/configurations/types',
+        closeType: ':9002/api/v1/contingencies/configurations/types/groupNames'
     }
 };
