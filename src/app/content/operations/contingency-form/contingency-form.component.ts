@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { map, startWith } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
@@ -49,7 +50,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _maxStatusCodes: StatusCode[];
     private _groupTypeList: GroupTypes[];
     private _contingencyType: Types[];
-    private _operator: Types[];
+    private _operatorList: Types[];
     private _failureType: Types[];
     private _informer: Types[];
     private _contingencyForm: FormGroup;
@@ -100,7 +101,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this.contingency = new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, new TimeInstant(initFakeDate, null), null, new Interval(null, null), new Interval(null, 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username);
 
         this.contingencyType = [];
-        this.operator = [];
+        this.operatorList = [];
         this.failureType = [];
         this.informer = [];
 
@@ -112,11 +113,13 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             new DateModel(null),
             new DateModel(null)
         ];
+        
+        this.aircraftList = [];
 
         this._contingencyForm = _fb.group({
-            'tail': [this.contingency.aircraft.tail, Validators.required],
+            'tail': [this.contingency.aircraft.tail, Validators.required, this.tailDomainValidator.bind(this)],
             'fleet': [this.contingency.aircraft.fleet, Validators.required],
-            'operator': [this.contingency.aircraft.operator, Validators.required],
+            'operator': [this.contingency.aircraft.operator, Validators.required, this.operatorDomainValidator.bind(this)],
             'isBackup': [false, this.contingency.isBackup],
             'station': [this.contingency.backup.location],
             'slotTm': [this.contingencyDateModel[1].timeString],
@@ -207,12 +210,12 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this._contingencyType = value;
     }
 
-    get operator(): Types[] {
-        return this._operator;
+    get operatorList(): Types[] {
+        return this._operatorList;
     }
 
-    set operator(value: Types[]) {
-        this._operator = value;
+    set operatorList(value: Types[]) {
+        this._operatorList = value;
     }
 
     get failureType(): Types[] {
@@ -511,7 +514,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         return this._apiRestService
             .getAll<Types[]>('operator')
             .subscribe(response => {
-                this.operator = response;
+                this.operatorList = response;
                 
                 this.observableOperatorList = this.contingencyForm
                     .controls['operator']
@@ -726,16 +729,48 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private newMessage(): void {
         this._messageData.changeTimeUTCMessage(this.utcModel.epochTime);
     }
+    
+    /**
+     * Custom validation for Aircraft Tail
+     * @param {FormControl} control
+     * @return {Observable<any>}
+     */
+    public tailDomainValidator(control: FormControl): Observable<any> {
+        let tail = control.value;
 
-    public validateAircraft(value: string): Boolean {
-        let match = false;
-
-        for (const item of this.aircraftList) {
-            if (item.tail === value) {
-                match = true;
+        return Observable.of(this.aircraftList).map(res => {
+            for (const item of res) {
+                if (item.tail === tail) {
+                    return null
+                }
             }
-        }
-        return match;
+            
+            return {
+                tailDomain: true
+            };
+        })
+    }
+    
+    /**
+     * Custom validation for Operator
+     * @param {FormControl} control
+     * @return {Observable<any>}
+     */
+    public operatorDomainValidator(control: FormControl) {
+        let operator = control.value;
+        
+    
+        return Observable.of(this.operatorList).map(res => {
+            for (const item of res) {
+                if (operator === item.code) {
+                    return null
+                }
+        
+                return {
+                    operatorDomain: true
+                }
+            }
+        })
     }
 
     /**
@@ -769,12 +804,12 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     }
     
     /**
-     * Filter for operator observable list in view
+     * Filter for operatorList observable list in view
      * @param {string} val
      * @return {Types[]}
      */
     private operatorFilter(val: string): Types[] {
-        return this.operator.filter( operator =>
+        return this.operatorList.filter(operator =>
             operator.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
     }
 }
