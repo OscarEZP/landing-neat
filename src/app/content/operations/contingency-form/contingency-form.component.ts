@@ -765,10 +765,10 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                 if (operator === item.code) {
                     return null
                 }
-        
-                return {
-                    operatorDomain: true
-                }
+            }
+    
+            return {
+                operatorDomain: true
             }
         })
     }
