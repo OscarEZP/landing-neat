@@ -38,7 +38,7 @@
             <div fxLayout="row" fxLayoutGap="15px">
                 <label fxFlex="20" class="label-item">{{'OPERATIONS.CLOSE_COMPONENT.AC_STATUS'|translate}}</label>
                 <mat-radio-group fxLayoutGap="10px" [formControl]="closeForm.controls['type']">
-                    <mat-radio-button labelPosition="after" *ngFor="let closeType of typeCloseList" value="{{closeType.code}}">
+                    <mat-radio-button labelPosition="after" *ngFor="let closeType of typeCloseList.types" value="{{closeType.code}}">
                         {{closeType.description}}
                     </mat-radio-button>
                 </mat-radio-group>

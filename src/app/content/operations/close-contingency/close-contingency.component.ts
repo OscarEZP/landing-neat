@@ -51,7 +51,8 @@ export class CloseContingencyComponent implements OnInit {
 
     private getConfigurationClose(): void {
         this.apiRestService.getSingle('closeType', 'CLOSE_TYPE').subscribe(rs => {
-            this.typeCloseList = rs.types;
+            console.log(rs);
+            this.typeCloseList = rs;
         });
     }
 
