@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DetailsService } from '../../details/_services/details.service';
+import { ContingencyService } from '../../content/operations/_services/contingency.service';
 
 @Component({
     selector: 'lsl-rightnav',
@@ -8,7 +9,8 @@ import { DetailsService } from '../../details/_services/details.service';
 })
 export class RightnavComponent implements OnInit {
 
-    constructor(public detailsService: DetailsService) {
+    constructor(public detailsService: DetailsService,
+                public contingencyService: ContingencyService) {
     }
 
     ngOnInit() {
@@ -22,4 +24,7 @@ export class RightnavComponent implements OnInit {
         this.detailsService.closeSidenav().then();
     }
 
+    public isDisabled(): boolean {
+        return this.contingencyService.data.length === 0 ? true : false;
+    }
 }

@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { forEach } from '@angular/router/src/utils/collection';
 import { Subscription } from 'rxjs/Subscription';
 import { ActualTimeModel } from '../../shared/_models/actualTime';
 import { Contingency } from '../../shared/_models/contingency';
 import { Interval } from '../../shared/_models/interval';
 import { Safety } from '../../shared/_models/safety';
 import { Status } from '../../shared/_models/status';
-import { StatusCode } from '../../shared/_models/statusCode';
+import { StatusCode } from '../../shared/_models/configuration/statusCode';
 import { TimeInstant } from '../../shared/_models/timeInstant';
 import { User } from '../../shared/_models/user/user';
 import { ApiRestService } from '../../shared/_services/apiRest.service';
@@ -36,6 +37,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     public selectedContingency: Contingency;
     public currentSafeEventCode: string;
     public statusCodes: StatusCode[];
+    public maxStatusCodes: StatusCode[];
     public durations: number[];
     public validations = {
         'optionalIsChecked': null,
@@ -135,7 +137,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             this.generateIntervalSelection(this.selectedContingency.creationDate.epochTime);
             this.getStatusCodesAvailable();
 
-            this.validations.lastStatus = this.selectedContingency.status.code === 'ETR' || 'NI4';
+            this.getMaxConfigStatuses();
         }
     }
 
@@ -366,6 +368,28 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             this.followUpForm.get('safetyEventCode').setValidators(null);
             this.followUpForm.get('safetyEventCode').updateValueAndValidity();
         }
+    }
+
+    /**
+     * Method to get the max level status configurations and wildcards
+     */
+    private getMaxConfigStatuses() {
+        this._apiRestService
+            .getAll<StatusCode[]>('configMaxStatus')
+            .subscribe(data => this.maxStatusCodes = data,
+                error => () => {
+                    return null;
+                }, () => {
+                    this.validations.lastStatus = false;
+                    let i: number;
+                    for (i = 0; i < this.maxStatusCodes.length; i++) {
+                        if (this.maxStatusCodes[i].code === this.selectedContingency.status.code) {
+                            this.validations.isFollowUpDisabled = true;
+                            this.validations.lastStatus = true;
+                            break;
+                        }
+                    }
+                });
     }
 
 }

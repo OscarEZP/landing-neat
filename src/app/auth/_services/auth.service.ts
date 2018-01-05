@@ -1,11 +1,10 @@
-import {Injectable} from '@angular/core';
-import { Group } from '../../shared/_models/user/group';
-import {Http} from '@angular/http';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
+import { environment } from '../../../environments/environment';
 import { User } from '../../shared/_models/user/user';
-import {StatusError} from '../_models/statusError.model';
-import {StorageService} from '../../shared/_services/storage.service';
-import {environment} from '../../../environments/environment';
+import { StorageService } from '../../shared/_services/storage.service';
+import { StatusError } from '../_models/statusError.model';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +15,7 @@ export class AuthService {
     public data: { username: string, password: string };
 
 
-    constructor(private http: Http, private storageService: StorageService) {
+    constructor(private http: HttpClient, private storageService: StorageService) {
         this.isLoggedIn = this.getIsLoggedIn();
         this.redirectUrl = '/operations';
         this.loginUrl = '/login';
@@ -25,38 +24,25 @@ export class AuthService {
 
     logIn(username: string, password: string): Promise<User> {
 
-        const user: User = new User();
+        let user: User = new User();
         user.username = username;
         user.password = password;
 
         return this.http
-            .post(environment.apiUrl + environment.paths.login, JSON.stringify(user).replace(/\b[_]/g, ''))
+            .post<User>(environment.apiUrl + environment.paths.login, JSON.stringify(user).replace(/\b[_]/g, ''))
             .toPromise()
-            .then(value => {
-                const response = value.json();
+            .then((value: User) => {
 
                 let i: number;
-                const groups = [];
 
-                user.username = response.username;
-                user.email = response.email;
-                user.firstName = response.firstName;
-                user.givenName = response.givenName;
-                user.idToken = response.idToken;
-                user.lastName = response.lastName;
-                user.phoneNumber = response.phoneNumber;
-                user.userId = response.userId;
-                user.username = response.username;
-                user.password = null;
+                user = value;
 
-                for (i = 0; i < response.groupList.length; i++) {
-                    if (response.groupList[i].name === 'MOC_Hemicycle') {
+                for (i = 0; i < user.groupList.length; i++) {
+                    if (user.groupList[i].name === 'MOC_Hemicycle') {
                         this.redirectUrl = '/hemicycle/contingencies';
                     }
-                    groups.push(new Group(response.groupList[i].description, response.groupList[i].level, response.groupList[i].name));
+                    user.principalGroup = user.groupList[i].name;
                 }
-
-                user.groupList = groups;
 
                 return Promise.resolve(user);
             }).catch(reason => {

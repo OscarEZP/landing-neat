@@ -1,6 +1,8 @@
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { PipesModule } from './_pipes/pipes.module';
+import { CustomInterceptor } from './_services/apiRest.service';
 import { CountdownComponent } from './components/countdown.component/countdown.component';
 import { MaterialModule } from './modules/material.module';
 
@@ -20,6 +22,11 @@ import { MaterialModule } from './modules/material.module';
         TranslateModule,
     ],
     providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: CustomInterceptor,
+            multi: true
+        }
     ]
 })
 

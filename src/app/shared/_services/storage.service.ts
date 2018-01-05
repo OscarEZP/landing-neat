@@ -43,11 +43,19 @@ export class StorageService {
 
     public hasCurrentUser(): boolean {
         return !!localStorage.getItem(StorageService.CURRENT_USER);
-
     }
 
     public getCurrentUser(): User {
         return Object.assign(new User(), JSON.parse(localStorage.getItem(StorageService.CURRENT_USER)));
+    }
+
+    public updateCurrentUserTokens(accessToken: string, idToken: string): void {
+        const user = this.getCurrentUser();
+        user.accessToken = accessToken;
+        user.idToken = idToken;
+
+        this.removeCurrentUser();
+        this.addCurrentUser(user);
     }
 
     public addRecoverPassword(username: string, destination: string) {
