@@ -33,10 +33,12 @@
                                 *ngIf="contingencyForm.controls['tail'].hasError('required') && contingencyForm.controls['tail'].touched">
                             {{'OPERATIONS.CONTINGENCY_FORM.AIRCRAFT_REQUIRED'|translate}}
                         </mat-error>
+                        <mat-error *ngIf="contingencyForm.controls['tail'].touched && contingencyForm.get('tail').hasError('tailDomain')">
+                            {{'OPERATIONS.CONTINGENCY_FORM.AIRCRAFT_OUT_DOMAIN'|translate}}
+                        </mat-error>
                         <mat-autocomplete #ac="matAutocomplete"
                                           (optionSelected)="onSelectAircraft(searchAircraft.value)">
-                            <mat-option *ngFor="let ac of observableAircraftList | async"
-                                        (onSelectionChange)="validateAircraft(searchAircraft.value)" [value]="ac.tail">
+                            <mat-option *ngFor="let ac of observableAircraftList | async" [value]="ac.tail">
                                 {{ ac.tail }}
                             </mat-option>
                         </mat-autocomplete>
@@ -55,15 +57,24 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="20">
-                        <input id="in-contingency-form-operator" matInput
-                               placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.OPERATOR' | translate }}"
-                               [formControl]="contingencyForm.controls['operator']"
-                               [(ngModel)]="contingency.aircraft.operator"
-                               name="operator">
+                        <input id="in-contingency-form-operator"
+                               #searchOperator type="text"
+                               placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.OPERATOR' | translate }}" matInput
+                               [formControl]="contingencyForm.controls['operator']" [matAutocomplete]="operatorString">
                         <mat-error
                                 *ngIf="contingencyForm.controls['operator'].hasError('required') && contingencyForm.controls['operator'].touched">
                             {{'OPERATIONS.CONTINGENCY_FORM.OPERATOR_REQUIRED'|translate}}
                         </mat-error>
+                        <mat-error
+                                *ngIf="contingencyForm.controls['operator'].hasError('operatorDomain') && contingencyForm.controls['operator'].touched">
+                            {{'OPERATIONS.CONTINGENCY_FORM.OPERATOR_OUT_DOMAIN'|translate}}
+                        </mat-error>
+                        <mat-autocomplete #operatorString="matAutocomplete"
+                                          (optionSelected)="contingency.aircraft.operator = searchOperator.value">
+                            <mat-option *ngFor="let op of observableOperatorList | async" [value]="op.code">
+                                {{ op.code }}
+                            </mat-option>
+                        </mat-autocomplete>
                     </mat-form-field>
 
                 </div>
@@ -73,18 +84,17 @@
                         'OPERATIONS.CONTINGENCY_FORM.BACKUP' | translate }}
                     </mat-checkbox>
                     <mat-form-field fxFlex="15" *ngIf="contingency.isBackup">
-                        <input id="in-contingency-form-backup-sta"
+                        <input id="in-contingency-form-backup-station"
                                #searchStation type="text"
                                placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.STATION' | translate }}" matInput
-                               [formControl]="contingencyForm.controls['station']" [matAutocomplete]="stationString"
-                        [(ngModel)]="contingency.backup.location">
+                               [formControl]="contingencyForm.controls['station']" [matAutocomplete]="stationString">
                         <mat-error
                                 *ngIf="contingencyForm.controls['station'].hasError('required') && contingencyForm.controls['station'].touched">
                             {{'OPERATIONS.CONTINGENCY_FORM.STATION_REQUIRED'|translate}}
                         </mat-error>
                         <mat-autocomplete #stationString="matAutocomplete"
                                           (optionSelected)="contingency.backup.location = searchStation.value">
-                            <mat-option *ngFor="let st of stations" [value]="st.code">
+                            <mat-option *ngFor="let st of observableLocationList | async" [value]="st.code">
                                 {{ st.code }}
                             </mat-option>
                         </mat-autocomplete>

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
 import { DetailsService } from '../../../details/_services/details.service';
@@ -6,11 +6,11 @@ import { Contingency } from '../../../shared/_models/contingency';
 import { DataService } from '../../../shared/_services/data.service';
 import { DialogService } from '../../_services/dialog.service';
 import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
-import {ActivatedRoute} from '@angular/router';
-import {HistoricalSearchService} from '../_services/historical-search.service';
-import {ContingencyService} from '../_services/contingency.service';
-import {InfiniteScrollService} from '../_services/infinite-scroll.service';
-import {MatPaginator} from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
+import { HistoricalSearchService } from '../_services/historical-search.service';
+import { ContingencyService } from '../_services/contingency.service';
+import { InfiniteScrollService } from '../_services/infinite-scroll.service';
+import { MatPaginator } from '@angular/material';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -28,7 +28,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public contingencyList: Contingency[];
     public progressBarColor: string;
     public currentUTCTime: number;
-    public loading: boolean;
 
     constructor(
         private messageData: DataService,
@@ -118,7 +117,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     private getContingencies() {
-        this.loading = true;
         if (!this._historicalSearchService.active) {
             this._contingencyService.getContingencies().subscribe();
         } else if (this._historicalSearchService.active && this._historicalSearchService.searchForm.valid) {
