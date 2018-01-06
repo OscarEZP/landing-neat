@@ -88,7 +88,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     public checkDataStatus(): boolean {
-        return this._contingencyService.data.length > 0 && !this._contingencyService.loading.getContingencies && !this._contingencyService.loading.postHistoricalSearch;
+        return this._contingencyService.data.length > 0 && !this._contingencyService.loading;
     }
 
     public openDetails(contingency: Contingency, section: string) {

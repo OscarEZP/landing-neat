@@ -8,7 +8,7 @@ import {DataService} from '../../../shared/_services/data.service';
 import {MessageService} from '../../../shared/_services/message.service';
 import {DetailsService} from '../../../details/_services/details.service';
 import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 describe('ContingencyListComponent', () => {
     let component: ContingencyListComponent;

@@ -107,3 +107,5 @@
     [pageSize]="infiniteScrollService.pageSize"
     [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
 </mat-paginator>
+
+<lsl-ess message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.data.length === 0 && !contingencyService.loading"></lsl-ess>

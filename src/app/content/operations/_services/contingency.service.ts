@@ -22,7 +22,7 @@ export class ContingencyService {
     private searchAircraftPath = environment.paths.aircraftsSearch;
     private contingencySearch = environment.paths.contingencySearch;
     public data: Contingency[];
-    private _loading: { getContingencies: boolean, postHistoricalSearch: boolean };
+    private _loading: boolean;
 
     constructor(
         private http: HttpClient,
@@ -32,10 +32,7 @@ export class ContingencyService {
         private _detailsService: DetailsService
     ) {
         this.data = [];
-        this._loading = {
-            getContingencies: false,
-            postHistoricalSearch: false
-        };
+        this._loading = false;
     }
 
     get loading(): any {
@@ -43,7 +40,7 @@ export class ContingencyService {
     }
 
     public getContingencies(): Observable<Contingency[]> {
-        this._loading.getContingencies = true;
+        this._loading = true;
         return this._apiService
         .getAll<Contingency[]>('contingencyList')
         .pipe(
@@ -52,7 +49,7 @@ export class ContingencyService {
                 if (contingencies.length > 0) {
                     this._detailsService.contingency = this.data[0];
                 }
-                this._loading.getContingencies = false;
+                this._loading = false;
                 this._infiniteScrollService.length = contingencies.length;
             })
         );
@@ -74,7 +71,7 @@ export class ContingencyService {
     }
 
     public postHistoricalSearch(searchSignature): Observable<Contingency[]> {
-        this._loading.postHistoricalSearch = true;
+        this._loading = true;
         this.getTotalRecords(searchSignature).subscribe((data) => {
             this._infiniteScrollService.length = data.length;
         });
@@ -95,7 +92,7 @@ export class ContingencyService {
                     });
                     this._detailsService.contingency = this.data[0];
                 }
-                this._loading.postHistoricalSearch = false;
+                this._loading = false;
             }),
             catchError(this.handleError('getContingencies', []))
         );

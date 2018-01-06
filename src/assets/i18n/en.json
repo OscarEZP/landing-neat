@@ -10,6 +10,9 @@
       "FOLLOW_UP": "Follow up"
     }
   },
+  "ESS":{
+    "NO_CONTINGENCIES_FOUND": "No Contingencies found. Change your settings or filters"
+  },
   "OPERATIONS": {
     "ALERT": "Alert",
     "ALERTS": "Alerts",
@@ -101,9 +104,9 @@
       "TYPOLOGY_MESSAGE": "The ETR must be validated by the Maintenance Team",
       "YES": "Yes"
     },
-
     "CONTINGENCY_LIMIT": "Last 3 hours",
     "DESCRIPTION": "Reason",
+
     "FLIGHT": "Flight",
     "FOCAL": "Focal",
     "FROM_TO": "From/To",
