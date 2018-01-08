@@ -277,7 +277,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this.currentUTCTime = currentTimeLong;
 
         if (this.selectedContingency !== undefined) {
-            this.validations.delta = Math.round((this.currentUTCTime - this.selectedContingency.creationDate.epochTime) / 600000);
+            this.validations.delta = Math.round(((this.selectedContingency.creationDate.epochTime + 180 * 60 * 1000) - this.currentUTCTime) / 60000);
             this.validations.timeAlert = this.validations.delta < this.followUpForm.get('duration').value;
         }
     }
