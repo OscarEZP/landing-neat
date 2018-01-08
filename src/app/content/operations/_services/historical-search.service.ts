@@ -14,7 +14,7 @@ export class HistoricalSearchService {
 
     public initForm(fields: any) {
         this.fields = fields;
-        this._searchForm = new FormGroup(fields);
+        this.searchForm = new FormGroup(fields);
     }
 
     set fields(value: any) {
@@ -38,23 +38,23 @@ export class HistoricalSearchService {
     }
 
     get fromTS(): any {
-        return this._searchForm.value.from ? this._searchForm.value.from.getTime() : 0;
+        return this.searchForm.value.from ? this.searchForm.value.from.getTime() : 0;
     }
 
     get toTS(): any {
-        return this._searchForm.value.to ? this._searchForm.value.to.getTime() : Date.now();
+        return this.searchForm.value.to ? this.searchForm.value.to.getTime() : Date.now();
     }
 
     get tails(): any {
-        return this._searchForm.value.tails ? this._searchForm.value.tails : [];
+        return this.searchForm.value.tails ? this.searchForm.value.tails : [];
     }
 
     set searchForm(value){
-        this._searchForm = value;
+        this.searchForm = value;
     }
 
     get searchForm(): FormGroup {
-        return this._searchForm;
+        return this.searchForm;
     }
 
     get active(): boolean {
