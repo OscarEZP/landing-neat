@@ -11,7 +11,7 @@
     }
   },
   "ESS":{
-    "NO_CONTINGENCIES_FOUND": "No Contingencies found. Change your settings or filters."
+    "NO_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters."
   },
   "OPERATIONS": {
     "ALERT": "Alert",

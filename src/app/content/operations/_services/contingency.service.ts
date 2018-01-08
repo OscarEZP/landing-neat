@@ -82,10 +82,6 @@ export class ContingencyService {
                 this.data = contingencies;
                 if (contingencies.length > 0) {
                     contingencies.forEach((item) => {
-
-                        // Walkaround until close contingency form update
-                        item.close.type = item.close.type.toLowerCase() === 'release' ? 'rlsd' : item.close.type;
-
                         const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
                         const percentage = (diff / 180) * 100;
                         item.lastInformationPercentage = percentage > 100 ? 100 : percentage;
