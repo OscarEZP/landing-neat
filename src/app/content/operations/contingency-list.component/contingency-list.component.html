@@ -34,7 +34,8 @@
             {{ contingency.aircraft.operator }}
         </div>
         <div class="block-s" (click)="openDetails(contingency)">{{ contingency.flight.flightNumber }}</div>
-        <div class="block-s" (click)="openDetails(contingency)">{{ contingency.flight.origin }} / {{ contingency.flight.destination }}</div>
+        <div class="block-s" (click)="openDetails(contingency)" *ngIf="!contingency.isBackup">{{ contingency.flight.origin }} / {{ contingency.flight.destination }}</div>
+        <div class="block-s" (click)="openDetails(contingency)" *ngIf="contingency.isBackup">{{ contingency.backup.location }}</div>
         <div class="block-xl description" (click)="openDetails(contingency)">{{ (contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}</div>
 
         <div class="block-s" (click)="openDetails(contingency, 'follow-up')">
