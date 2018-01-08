@@ -21,6 +21,7 @@ export const environment = {
         forgotPassword: '/api/security/users/_forgotpassword',
         locations: '/api/v1/contingencies/configurations/locations',
         login: '/api/security/users/_login',
+	operator: '/api/v1/contingencies/configurations/operators/',
         safetyEvent: '/api/v1/contingencies/configurations/safetyEvents',
         types: '/api/v1/contingencies/configurations/types',
         closeType: '/api/v1/contingencies/configurations/types/groupNames'
