@@ -77,7 +77,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                     epochTime: this.historicalSearchService.fromTS
                 },
                 to: {
-                    epochTime: this._historicalSearchService.toTS
+                    epochTime: this.historicalSearchService.toTS
                 },
                 offSet: this.infiniteScrollService.offset,
                 limit: this.infiniteScrollService.pageSize
@@ -117,17 +117,17 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     private getContingencies() {
-        if (!this._historicalSearchService.active) {
+        if (!this.historicalSearchService.active) {
             this.contingencyService.getContingencies().subscribe();
-        } else if (this._historicalSearchService.active && this._historicalSearchService.searchForm.valid) {
+        } else if (this.historicalSearchService.active && this.historicalSearchService.searchForm.valid) {
             const search = {
                 from: {
-                    epochTime: this._historicalSearchService.fromTS
+                    epochTime: this.historicalSearchService.fromTS
                 },
                 to: {
-                    epochTime: this._historicalSearchService.toTS
+                    epochTime: this.historicalSearchService.toTS
                 },
-                tails: this._historicalSearchService.tails,
+                tails: this.historicalSearchService.tails,
                 offSet: this.infiniteScrollService.offset,
                 limit: this.infiniteScrollService.pageSize
             };
