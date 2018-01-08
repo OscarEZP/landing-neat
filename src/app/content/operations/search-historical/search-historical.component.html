@@ -1,6 +1,6 @@
 <form [formGroup]="searchForm" (ngSubmit)="submitForm(searchForm.value)">
     <div fxLayout="row" fxLayoutGap="20px">
-        <span fxFlex="30" fxLayoutAlign="end center">{{'OPERATIONS.SEARCH_HISTORICAL.TITLE'|translate}}</span>
+        <span fxFlex="20" fxLayoutAlign="end center">{{'OPERATIONS.SEARCH_HISTORICAL.TITLE'|translate}}</span>
         <mat-form-field fxFlex="">
             <mat-select placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.TAIL'|translate}}" multiple
                         [formControl]="searchForm.controls['tails']" required
@@ -46,7 +46,7 @@
             <button type="submit" mat-button color="primary">
                 {{'OPERATIONS.SEARCH_HISTORICAL.FILTER'|translate}}
             </button>
-            <button type="button" mat-button color="primary" (click)="clearSearch()">
+            <button type="reset" mat-button color="primary" (click)="clearSearch()">
                 {{'OPERATIONS.SEARCH_HISTORICAL.CLEAR'|translate}}
             </button>
         </div>

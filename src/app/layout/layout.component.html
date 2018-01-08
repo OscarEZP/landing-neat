@@ -7,7 +7,7 @@
 
   <lsl-toolbar></lsl-toolbar>
 
-  <section id="main-container">
+  <section id="main-container" [ngClass]="{'expanded': detailsService.sidenav.opened }">
     <div class="main-panel">
       <mat-sidenav-container id="nav-details-container">
         <router-outlet></router-outlet>
