@@ -50,11 +50,11 @@ export class HistoricalSearchService {
     }
 
     set searchForm(value){
-        this.searchForm = value;
+        this._searchForm = value;
     }
 
     get searchForm(): FormGroup {
-        return this.searchForm;
+        return this._searchForm;
     }
 
     get active(): boolean {
