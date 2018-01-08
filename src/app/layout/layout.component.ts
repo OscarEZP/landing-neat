@@ -20,13 +20,21 @@ export class LayoutComponent implements OnInit, OnDestroy {
     public mode: string;
     public value: number;
 
-    constructor(private sidenavService: SidenavService,
-                public detailsService: DetailsService,
+    constructor(private _sidenavService: SidenavService,
+                private _detailsService: DetailsService,
                 private messageData: DataService,
                 private dialogService: DialogService) {
         this.loading = true;
         this.mode = 'determinate';
         this.value = 100;
+    }
+
+    get sidenavService(): SidenavService {
+        return this._sidenavService;
+    }
+
+    get detailsService(): DetailsService {
+        return this._detailsService;
     }
 
     ngOnInit() {

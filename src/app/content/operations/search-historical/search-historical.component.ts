@@ -17,6 +17,7 @@ import { MatDatepickerInputEvent } from '@angular/material';
 })
 
 export class SearchHistoricalComponent implements OnInit {
+
     public searchForm: FormGroup;
     public snackbarMessage: string;
     public aicraftList: Aircraft[];
@@ -33,10 +34,10 @@ export class SearchHistoricalComponent implements OnInit {
         private route: ActivatedRoute,
         private _contingencyService: ContingencyService,
         private _searchHistoricalService: HistoricalSearchService,
-        public infiniteScrollService: InfiniteScrollService
+        private _infiniteScrollService: InfiniteScrollService
     ) {
         this.translate.setDefaultLang('en');
-        this._searchHistoricalService.initForm(
+        this.searchHistoricalService.initForm(
             {
                 tails: new FormControl('', {
                     validators: Validators.required,
@@ -52,10 +53,22 @@ export class SearchHistoricalComponent implements OnInit {
                 })
             }
         );
-        this.searchForm = this._searchHistoricalService.searchForm;
+        this.searchForm = this.searchHistoricalService.searchForm;
         this.maxDate = new Date();
         this.minFrom = new Date();
         this.minTo = new Date();
+    }
+
+    get contingencyService(): ContingencyService {
+        return this._contingencyService;
+    }
+
+    get searchHistoricalService(): HistoricalSearchService {
+        return this._searchHistoricalService;
+    }
+
+    get infiniteScrollService(): InfiniteScrollService {
+        return this._infiniteScrollService;
     }
 
     ngOnInit() {
@@ -78,7 +91,7 @@ export class SearchHistoricalComponent implements OnInit {
         const searchSignature = {
             enable: 2
         };
-        this._contingencyService.getAircrafts(searchSignature).subscribe((data) => {
+        this.contingencyService.getAircrafts(searchSignature).subscribe((data) => {
             this.aicraftList = data as Aircraft[];
         });
     }
@@ -90,27 +103,27 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     public clearSearch(): void {
-        this._searchHistoricalService.searchForm.reset();
+        this.searchHistoricalService.searchForm.reset();
         this.router.navigate(['../'], {relativeTo: this.route});
-        this._contingencyService.getContingencies().subscribe();
+        this.contingencyService.getContingencies().subscribe();
     }
 
     submitForm(value: any) {
-        this._searchHistoricalService.searchForm.updateValueAndValidity();
-        if (this._searchHistoricalService.searchForm.valid) {
+        this.searchHistoricalService.searchForm.updateValueAndValidity();
+        if (this.searchHistoricalService.searchForm.valid) {
             const search = {
                 from: {
-                    epochTime: this._searchHistoricalService.fromTS
+                    epochTime: this.searchHistoricalService.fromTS
                 },
                 to: {
-                    epochTime: this._searchHistoricalService.toTS
+                    epochTime: this.searchHistoricalService.toTS
                 },
-                tails: this.isAllSelected(this._searchHistoricalService.tails) ? null : this._searchHistoricalService.tails,
+                tails: this.isAllSelected(this.searchHistoricalService.tails) ? null : this.searchHistoricalService.tails,
                 offSet: this.infiniteScrollService.offset,
                 limit: this.infiniteScrollService.pageSize
             };
-            this._contingencyService.postHistoricalSearch(search).subscribe();
-            if (!this._searchHistoricalService.active) {
+            this.contingencyService.postHistoricalSearch(search).subscribe();
+            if (!this.searchHistoricalService.active) {
                 this.router.navigate([this.router.url + '/historical']);
             }
         } else {

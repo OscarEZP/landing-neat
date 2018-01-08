@@ -65,34 +65,34 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
         this._reloadSubscription = this.messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.route.data.subscribe((data: any) => {
-            this._historicalSearchService.active = data.historical;
+            this.historicalSearchService.active = data.historical;
         });
 
         this.getContingencies();
         this.paginator.page.subscribe((page) => {
-            this._infiniteScrollService.pageSize = page.pageSize;
-            this._infiniteScrollService.pageIndex = page.pageIndex;
+            this.infiniteScrollService.pageSize = page.pageSize;
+            this.infiniteScrollService.pageIndex = page.pageIndex;
             const search = {
                 from: {
-                    epochTime: this._historicalSearchService.fromTS
+                    epochTime: this.historicalSearchService.fromTS
                 },
                 to: {
                     epochTime: this._historicalSearchService.toTS
                 },
-                offSet: this._infiniteScrollService.offset,
-                limit: this._infiniteScrollService.pageSize
+                offSet: this.infiniteScrollService.offset,
+                limit: this.infiniteScrollService.pageSize
             };
-            this._contingencyService.postHistoricalSearch(search).subscribe();
+            this.contingencyService.postHistoricalSearch(search).subscribe();
         });
     }
 
     public checkDataStatus(): boolean {
-        return this._contingencyService.data.length > 0 && !this._contingencyService.loading;
+        return this.contingencyService.data.length > 0 && !this.contingencyService.loading;
     }
 
     public openDetails(contingency: Contingency, section: string) {
-        this._detailsService.contingency = contingency;
-        this._detailsService.openDetails(section);
+        this.detailsService.contingency = contingency;
+        this.detailsService.openDetails(section);
     }
 
     public ngOnDestroy() {
@@ -118,7 +118,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private getContingencies() {
         if (!this._historicalSearchService.active) {
-            this._contingencyService.getContingencies().subscribe();
+            this.contingencyService.getContingencies().subscribe();
         } else if (this._historicalSearchService.active && this._historicalSearchService.searchForm.valid) {
             const search = {
                 from: {
@@ -128,10 +128,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                     epochTime: this._historicalSearchService.toTS
                 },
                 tails: this._historicalSearchService.tails,
-                offSet: this._infiniteScrollService.offset,
-                limit: this._infiniteScrollService.pageSize
+                offSet: this.infiniteScrollService.offset,
+                limit: this.infiniteScrollService.pageSize
             };
-            this._contingencyService.postHistoricalSearch(search).subscribe();
+            this.contingencyService.postHistoricalSearch(search).subscribe();
         }
     }
 

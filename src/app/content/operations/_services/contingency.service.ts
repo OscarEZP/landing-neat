@@ -17,6 +17,7 @@ const httpOptions = {
 
 @Injectable()
 export class ContingencyService {
+
     private apiUrl = environment.apiUrl;
     private closePath = environment.paths.close;
     private searchAircraftPath = environment.paths.aircraftsSearch;
@@ -32,15 +33,19 @@ export class ContingencyService {
         private _detailsService: DetailsService
     ) {
         this.data = [];
-        this._loading = false;
+        this.loading = false;
     }
 
-    get loading(): any {
+    get loading(): boolean {
         return this._loading;
     }
 
+    set loading(value: boolean) {
+        this._loading = value;
+    }
+
     public getContingencies(): Observable<Contingency[]> {
-        this._loading = true;
+        this.loading = true;
         return this._apiService
         .getAll<Contingency[]>('contingencyList')
         .pipe(
@@ -49,7 +54,7 @@ export class ContingencyService {
                 if (contingencies.length > 0) {
                     this._detailsService.contingency = this.data[0];
                 }
-                this._loading = false;
+                this.loading = false;
                 this._infiniteScrollService.length = contingencies.length;
             })
         );
@@ -71,7 +76,7 @@ export class ContingencyService {
     }
 
     public postHistoricalSearch(searchSignature): Observable<Contingency[]> {
-        this._loading = true;
+        this.loading = true;
         this.getTotalRecords(searchSignature).subscribe((data) => {
             this._infiniteScrollService.length = data.length;
         });
@@ -88,7 +93,7 @@ export class ContingencyService {
                     });
                     this._detailsService.contingency = this.data[0];
                 }
-                this._loading = false;
+                this.loading = false;
             }),
             catchError(this.handleError('getContingencies', []))
         );
