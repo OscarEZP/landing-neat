@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable()
 export class InfiniteScrollService {
@@ -7,11 +7,17 @@ export class InfiniteScrollService {
     private _pageIndex: number;
     private _length: number;
     private _offset: number;
+
     constructor() {
         this.pageSize = 10;
         this.length = 0;
         this.pageIndex = 0;
         this._pageSizeOptions = [1, 10, 25, 50, 100];
+    }
+
+    get viewedRecords(): number {
+        const viewedRecords = this.pageSize * (this.pageIndex + 1);
+        return viewedRecords < this._length ? viewedRecords : this.length;
     }
 
     get offset(): number {
@@ -42,6 +48,7 @@ export class InfiniteScrollService {
     get pageSize(): number {
         return this._pageSize;
     }
+
     set pageSize(value: number) {
         this._pageSize = value;
     }

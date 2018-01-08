@@ -1,18 +1,13 @@
 <div id="operations-container">
-    <div id="historical-search">
-        <lsl-search-historical></lsl-search-historical>
-    </div>
     <nav>
         <a *ngFor="let menu of arrMenu" routerLink="{{menu.link}}" routerLinkActive="active" class="mat-tab-item">
             {{ menu.label | translate }}
         </a>
     </nav>
+    <div id="historical-search">
+        <lsl-search-historical></lsl-search-historical>
+    </div>
     <content>
         <router-outlet></router-outlet>
-        <mat-paginator #contPaginator [hidden]="!historicalSearchService.active"
-                       [length]="infiniteScrollService.length"
-                       [pageSize]="infiniteScrollService.pageSize"
-                       [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
-        </mat-paginator>
     </content>
 </div>

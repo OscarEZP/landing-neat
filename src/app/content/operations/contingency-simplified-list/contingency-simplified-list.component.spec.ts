@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {ContingencySimplifiedListComponent} from "./contingency-simplified-list.component";
+import {ContingencySimplifiedListComponent} from './contingency-simplified-list.component';
 
 describe('ContingencySimplifiedListComponent', () => {
   let component: ContingencySimplifiedListComponent;
