@@ -3,7 +3,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {OperationsComponent} from './operations.component';
 import {TranslateModule} from '@ngx-translate/core';
 import {SharedModule} from '../../shared/shared.module';
-import {ContingencyListComponent} from './contingency-list.component/contingency-list.component';
+import {ContingencyListComponent} from './list-contingency/contingency-list.component';
 import {HttpModule} from '@angular/http';
 import {HttpClientModule} from '@angular/common/http';
 import {DataService} from '../../shared/_services/data.service';

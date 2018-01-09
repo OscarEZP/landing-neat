@@ -5,12 +5,12 @@ import { DashboardComponent } from './content/dashboard/dashboard.component';
 import { ContingencySimplifiedListComponent } from './content/operations/contingency-simplified-list.component/contingency-simplified-list.component';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuardService } from './auth/_services/authGuard.service';
-import { ContingencyFormComponent } from './content/operations/contingency-form/contingency-form.component';
+import { ContingencyFormComponent } from './content/operations/create-contingency/create-contingency.component';
 import { FindAccountComponent } from './auth/find-account/find-account.component';
 import { OperationsComponent } from './content/operations/operations.component';
 import { RecoverPasswordComponent } from './auth/recover-password/recover-password.component';
 import { SimplifiedLayoutComponent } from './simplified-layout/simplified-layout.component';
-import {ContingencyListComponent} from './content/operations/contingency-list.component/contingency-list.component';
+import {ContingencyListComponent} from './content/operations/list-contingency/contingency-list.component';
 import {PitStopListComponent} from './content/operations/pit-stop-list/pit-stop-list.component';
 
 const ROUTES: Routes = [

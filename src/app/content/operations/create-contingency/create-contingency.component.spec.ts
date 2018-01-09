@@ -1,5 +1,5 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {ContingencyFormComponent} from './contingency-form.component';
+import {ContingencyFormComponent} from './create-contingency.component';
 import {SharedModule} from "../../../shared/shared.module";
 import {DialogService} from "../../_services/dialog.service";
 import {ContingencyService} from "../_services/contingency.service";
