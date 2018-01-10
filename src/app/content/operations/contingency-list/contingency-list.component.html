@@ -22,8 +22,11 @@
         <div fxFlex="5" fxLayoutAlign="start center">{{ 'OPERATIONS.STATUS' | translate }}</div>
         <div fxFlex="5" fxLayoutAlign="start center">{{ 'OPERATIONS.TYPE' | translate }}</div>
         <div fxFlex="8" fxLayoutAlign="start center">{{ 'OPERATIONS.SAFETY_EVENT' | translate }}</div>
-        <div fxFlex="7" fxLayoutAlign="start center">{{ (historicalSearchService.active ? 'OPERATIONS.CONTINGENCY_LIMIT' : 'OPERATIONS.PROGRESS') | translate }}</div>
-        <div fxFlex="8" fxLayoutAlign="center center">{{ (historicalSearchService.active ? 'OPERATIONS.CLOSURE_DATE_HOUR' : 'OPERATIONS.TIME_LEFT') | translate }}</div>
+        <div fxFlex="8" fxLayoutAlign="start center">{{ (historicalSearchService.active ? 'OPERATIONS.CONTINGENCY_LIMIT' : 'OPERATIONS.PROGRESS') | translate }}</div>
+        <div fxFlex="8" fxLayout="row">
+            <div fxFlex="10"></div>
+            <span fxLayoutAlign="start center">{{ (historicalSearchService.active ? 'OPERATIONS.CLOSURE_DATE_HOUR' : 'OPERATIONS.TIME_LEFT') | translate }}</span>
+        </div>
         <div fxFlex="" *ngIf="!detailsService.sidenav.opened"><!-- {{ 'OPERATIONS.FOCAL' | translate }} --></div>
         <div fxFlex="">&nbsp;</div>
     </header>
@@ -76,7 +79,7 @@
             </div>
 
             <!-- PROGRESS BAR -->
-            <div *ngIf="!historicalSearchService.active" fxFlex="7" fxLayoutAlign="start center"
+            <div *ngIf="!historicalSearchService.active" fxFlex="8" fxLayoutAlign="start center"
                  (click)="openDetails(contingency, 'timeline')">
                 <mat-progress-bar mode="determinate"
                                   [value]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, false, 0)"
@@ -90,23 +93,22 @@
             </div>
 
             <!-- TIMER -->
-            <div *ngIf="!historicalSearchService.active" fxFlex="7" fxLayoutAlign="center center"
-                 (click)="openDetails(contingency, 'timeline')">
-                <mat-icon class="mat-icon-adj"
-                          [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 300000) ? 'warn' : 'primary'">
-                    timer
-                </mat-icon>
-                <lsl-countdown [creationTime]="contingency.status.requestedInterval.dt.epochTime"
-                               [duration]="contingency.status.requestedInterval.duration"
-                               [threshold]="5"></lsl-countdown>
+            <div *ngIf="!historicalSearchService.active" fxLayout="row" fxFlex="8" (click)="openDetails(contingency, 'timeline')">
+                <div fxFlex="10"></div>
+                <div fxLayoutAlign="start center">
+                    <mat-icon class="mat-icon-adj" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 300000) ? 'warn' : 'primary'">
+                        timer
+                    </mat-icon>
+                    <lsl-countdown [creationTime]="contingency.status.requestedInterval.dt.epochTime" [duration]="contingency.status.requestedInterval.duration" [threshold]="5"></lsl-countdown>
+                </div>
             </div>
-            <div *ngIf="historicalSearchService.active" fxFlex="8" fxLayoutAlign="center center"
-                 (click)="openDetails(contingency, 'timeline')">
-                {{ contingency.close.closeDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }}
+            <div *ngIf="historicalSearchService.active" fxFlex="8"  (click)="openDetails(contingency, 'timeline')">
+                <div fxFlex="10"></div>
+                <span fxLayoutAlign="start center">{{ contingency.close.closeDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }}</span>
             </div>
 
             <!-- FOCAL -->
-            <div fxFlex="5" fxLayoutAlign="start center" *ngIf="!detailsService.open"
+            <div fxFlex="3" fxLayoutAlign="start center" *ngIf="!detailsService.open"
                  (click)="openDetails(contingency)">
                 <!-- <mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username | slice:0:2 | uppercase }} --></div>
 
