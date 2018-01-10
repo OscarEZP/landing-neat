@@ -10,6 +10,12 @@
     position: fixed;
     z-index: 30;
 
+    .mat-icon-button{
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+    }
+
     h1{
         font-size: 15px;
         font-family: 'Noto Sans', 'Tahoma', 'Arial', sans-serif;

@@ -54,7 +54,7 @@
                 <span class="subtitles">{{'OPERATIONS.CLOSE_COMPONENT.OBS'|translate}}</span>
             </div>
             <mat-form-field class="full-width">
-                <textarea matInput #observation placeholder="Observations to Maintenance" maxlength="400"
+                <textarea id="in-close-contingency-observation" matInput #observation placeholder="Observations to Maintenance" maxlength="400"
                           [formControl]="closeForm.controls['observation']"
                           required></textarea>
                 <mat-hint align="end">{{observation.value.length}} / 400</mat-hint>
@@ -68,10 +68,10 @@
     </div>
     <mat-divider class="add-margin-last"></mat-divider>
     <div mat-dialog-actions fxLayoutAlign="end">
-        <button type="button" mat-button (click)="openCancelDialog()">
+        <button id="btn-close-contingency-cancel" type="button" mat-button (click)="openCancelDialog()">
             {{'OPERATIONS.CLOSE_COMPONENT.BTN_CANCEL'|translate}}
         </button>
-        <button type="submit" mat-button mat-raised-button color="primary">
+        <button id="btn-close-contingency-save" type="submit" mat-button mat-raised-button color="primary">
             {{'OPERATIONS.CLOSE_COMPONENT.BTN_SAVE'|translate}}
         </button>
     </div>
