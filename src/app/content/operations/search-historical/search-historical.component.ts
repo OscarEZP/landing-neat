@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from '../../../shared/_services/message.service';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HistoricalSearchService } from '../_services/historical-search.service';
 import { InfiniteScrollService } from '../_services/infinite-scroll.service';
 import { MatDatepickerInputEvent } from '@angular/material';
+import { DateUtil } from '../../../shared/util/dateUtil';
 
 @Component({
     selector: 'lsl-search-historical',
@@ -17,7 +18,7 @@ import { MatDatepickerInputEvent } from '@angular/material';
 })
 
 export class SearchHistoricalComponent implements OnInit {
-
+    static dateUtil: DateUtil = new DateUtil();
     public searchForm: FormGroup;
     public snackbarMessage: string;
     public aicraftList: Aircraft[];
@@ -26,16 +27,14 @@ export class SearchHistoricalComponent implements OnInit {
     public minTo: Date;
     public selectedOptions = [];
 
-    constructor(
-        public translate: TranslateService,
-        public messageService: MessageService,
-        public service: ApiRestService,
-        private router: Router,
-        private route: ActivatedRoute,
-        private _contingencyService: ContingencyService,
-        private _searchHistoricalService: HistoricalSearchService,
-        private _infiniteScrollService: InfiniteScrollService
-    ) {
+    constructor(public translate: TranslateService,
+                public messageService: MessageService,
+                public service: ApiRestService,
+                private router: Router,
+                private route: ActivatedRoute,
+                private _contingencyService: ContingencyService,
+                private _searchHistoricalService: HistoricalSearchService,
+                private _infiniteScrollService: InfiniteScrollService) {
         this.translate.setDefaultLang('en');
         this.searchHistoricalService.initForm(
             {
@@ -78,9 +77,8 @@ export class SearchHistoricalComponent implements OnInit {
 
     private setMinDate(): void {
         const today = new Date();
-        const newDate = new Date(today);
-        newDate.setDate(newDate.getDate() - 60);
-        this.minFrom = new Date(newDate);
+        const todayUtil = SearchHistoricalComponent.dateUtil.getUTCDate(today.getTime(), -(24 * 60));
+        this.minFrom = new Date(todayUtil);
     }
 
     public onSelectFrom(event: MatDatepickerInputEvent<Date>): void {
