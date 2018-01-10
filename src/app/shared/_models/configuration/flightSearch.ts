@@ -7,8 +7,10 @@ export class FlightSearch {
     private _limit: number;
     private _from: TimeInstant;
 
-
-    constructor(from: TimeInstant) {
+    constructor(tail: string, offSet: number, limit: number, from: TimeInstant) {
+        this._tail = tail;
+        this._offSet = offSet;
+        this._limit = limit;
         this._from = from;
     }
 
