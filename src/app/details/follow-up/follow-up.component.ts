@@ -212,12 +212,14 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this._dataService.stringMessage('open');
         this._apiRestService
             .getSingle('configStatus', this.selectedContingency.status.code)
-            .subscribe((data: StatusCode[]) => this.statusCodes = data,
-                error => () => {
-                    this._dataService.stringMessage('close');
-                }, () => {
-                    this._dataService.stringMessage('close');
-                });
+            .subscribe((data: StatusCode[]) => {
+                this.statusCodes = data;
+            },
+            error => () => {
+                this._dataService.stringMessage('close');
+            }, () => {
+                this._dataService.stringMessage('close');
+            });
 
         return this.statusCodes;
     }
@@ -275,7 +277,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this.currentUTCTime = currentTimeLong;
 
         if (this.selectedContingency !== undefined) {
-            this.validations.delta = Math.round((this.currentUTCTime - this.selectedContingency.creationDate.epochTime) / 600000);
+            this.validations.delta = Math.round(((this.selectedContingency.creationDate.epochTime + 180 * 60 * 1000) - this.currentUTCTime) / 60000);
             this.validations.timeAlert = this.validations.delta < this.followUpForm.get('duration').value;
         }
     }

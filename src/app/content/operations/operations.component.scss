@@ -1,5 +1,6 @@
 @import '../../../assets/style/base.scss';
 
+/deep/
 #operations-container {
   color: mat-color($foreground, secondary-text);
   width: 100%;
@@ -17,6 +18,24 @@
     }
   }
 
+  content {
+
+    figure {
+      text-align: center;
+      padding: 150px 20px;
+
+      i {
+        font-size: 280px;
+        color: rgba(0, 0, 0, .26);
+      }
+      p {
+        font-size: 14px;
+
+      }
+    }
+
+  }
+
   nav {
     background-color: mat-color($custom, 'background-grey');
     border-bottom: none;
@@ -31,7 +50,7 @@
       padding: 10px 20px;
       display: inline-block;
     }
-    a.active{
+    a.active {
       background-color: mat-color($primary);
       opacity: 1;
       color: mat-color($primary, 'default-contrast');

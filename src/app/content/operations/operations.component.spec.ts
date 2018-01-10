@@ -9,9 +9,9 @@ import {HttpClientModule} from '@angular/common/http';
 import {DataService} from '../../shared/_services/data.service';
 import {MessageService} from '../../shared/_services/message.service';
 import {DetailsService} from '../../details/_services/details.service';
-import {ScrollService} from "../../shared/_services/scrolling.service";
-import {ScrollToService} from "@nicky-lenaers/ngx-scroll-to";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {ScrollService} from '../../shared/_services/scrolling.service';
+import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 describe('OperationsComponent', () => {
     let component: OperationsComponent;

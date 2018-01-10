@@ -8,6 +8,7 @@ import {environment} from '../environments/environment';
 
 })
 export class AppComponent {
+
     constructor() {
         if (environment.hotjarConfig.enabled) {
             this.initHotJar();
@@ -32,3 +33,5 @@ export class AppComponent {
         a.appendChild(r);
     }
 }
+
+

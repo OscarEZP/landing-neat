@@ -76,14 +76,11 @@ export class DetailsService implements OnInit {
     public openDetails(section: string = 'information') {
         this.setActive(section);
         if (!this.sidenav.opened) {
-            console.log('open');
             this.openSidenav().then(() => {
                 this._scrollService.scrollTo(section);
-                console.log('scroll');
             });
         } else {
             this._scrollService.scrollTo(section);
-            console.log('scroll');
         }
     }
 

@@ -10,6 +10,9 @@
       "FOLLOW_UP": "Follow up"
     }
   },
+  "ESS":{
+    "NO_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters."
+  },
   "OPERATIONS": {
     "ALERT": "Alert",
     "ALERTS": "Alerts",
@@ -37,6 +40,8 @@
       "BTN_SAVE": "SAVE",
       "CLOSE_SUCCESS": "Contingency has been closed successfully"
     },
+    "CLOSED_CONTINGENCY": "Closed contingency",
+    "CLOSED_CONTINGENCIES": "Closed contingencies",
     "CLOSURE_DATE_HOUR": "Closure Date - Hour",
     "CONTINGENCIES_ACTIVES": "Actives Contingencies",
     "CONTINGENCY_ACTIVE": "Active Contingency",
@@ -103,10 +108,12 @@
     },
     "CONTINGENCY_LIMIT": "Last 3 hours",
     "DESCRIPTION": "Reason",
+
     "FLIGHT": "Flight",
     "FOCAL": "Focal",
     "FROM_TO": "From/To",
     "OPERATOR": "Operator",
+    "OF": "of",
     "PIT_STOP": "PIT STOP",
     "PROGRESS": "Progress",
     "SAFETY_EVENT": "Safety Event",
@@ -119,6 +126,7 @@
       "TITLE": "Historical Search:",
       "TO": "To Date"
     },
+    "SHOWING": "Showing",
     "STATUS": "Status",
     "TAIL_FLEET": "Tail/Fleet",
     "THIS_MOMENT": "at this moment on Contingency",

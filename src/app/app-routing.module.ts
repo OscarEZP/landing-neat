@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { DashboardComponent } from './content/dashboard/dashboard.component';
-import { ContingencySimplifiedListComponent } from './content/operations/contingency-simplified-list.component/contingency-simplified-list.component';
+import { ContingencySimplifiedListComponent } from './content/operations/contingency-simplified-list/contingency-simplified-list.component';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuardService } from './auth/_services/authGuard.service';
 import { ContingencyFormComponent } from './content/operations/create-contingency/create-contingency.component';

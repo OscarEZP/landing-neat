@@ -8,14 +8,14 @@ $cell-m: 8%;
 $cell-l: 10%;
 $cell-xl: 100%;
 .counter-container{
-  height: 40px;
-  padding: 0 16px;
+  height: 55px;
+  padding: 5px 16px;
   color: mat-color($foreground, 'text');
   margin: auto 25px;
 }
 
 .list-contingency{
-  @include generate-font-size(-6);
+  @include generate-font-size(-5);
   color: mat-color($foreground, 'text');
   margin: auto 25px;
   header{
@@ -26,16 +26,13 @@ $cell-xl: 100%;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .12), 0 0 2px 0 rgba(0, 0, 0, .14);
     margin-bottom: 10px;
     background: rgba(236, 239, 241, .35);
-    padding: 0 16px;
+    padding: 5px 16px;
     font-family: 'Noto Sans', 'Arial', sans-serif;
     min-width: 20px;
     cursor: pointer;
-    height: 40px;
 
-    .mat-icon{
-      height: 20px;
-      width: 20px;
-      margin-right: 3px;
+    .active{
+
     }
 
     strong {
@@ -43,12 +40,12 @@ $cell-xl: 100%;
     }
 
     .flag-icon {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       display: inline-flex;
       vertical-align: middle;
       background-image: url('https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/2.8.0/flags/1x1/cl.svg');
-      background-size: 20px;
+      background-size: 24px;
       border-radius: 50%;
     }
 
@@ -102,9 +99,7 @@ $cell-xl: 100%;
     }
   }
   .contingency-item.active{
-    background-color: #eee;
+    background-color: #eaf2f5;
   }
 
 }
-
-
