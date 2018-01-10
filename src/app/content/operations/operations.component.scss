@@ -10,7 +10,7 @@
     @include generate-font-size(-5);
     position: absolute;
     right: 30px;
-    top: 18px;
+    top: 8px;
     z-index: 100;
     background-color: mat-color($custom, 'background-grey');
     strong {
@@ -39,9 +39,9 @@
   nav {
     background-color: mat-color($custom, 'background-grey');
     border-bottom: none;
-    padding: 20px 16px;
+    padding: 13px 16px;
     box-sizing: border-box;
-    height: 75px;
+    height: 57px;
 
     a {
       @include generate-font-size(-3);

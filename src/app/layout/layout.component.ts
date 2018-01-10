@@ -3,7 +3,7 @@ import { MatSidenav } from '@angular/material';
 import { SidenavService } from './_services/sidenav.service';
 import { DataService } from '../shared/_services/data.service';
 import { Subscription } from 'rxjs/Subscription';
-import { ContingencyFormComponent } from '../content/operations/contingency-form/contingency-form.component';
+import { ContingencyFormComponent } from '../content/operations/create-contingency/create-contingency.component';
 import { DialogService } from '../content/_services/dialog.service';
 import { DetailsService } from '../details/_services/details.service';
 

@@ -37,8 +37,8 @@ import { CancelComponent } from '../cancel/cancel.component';
 
 @Component({
     selector: 'lsl-contingency-form',
-    templateUrl: './contingency-form.component.html',
-    styleUrls: ['./contingency-form.component.scss']
+    templateUrl: './create-contingency.component.html',
+    styleUrls: ['./create-contingency.component.scss']
 })
 
 export class ContingencyFormComponent implements OnInit, OnDestroy {
@@ -59,11 +59,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
     private _durationArray: number[];
     private _contingencyDateModel: DateModel[];
-    private _dateModel: Date;
-    private _timeModel: string;
     private _utcModel: TimeInstant;
-    private _minDate: Date;
-    private _maxDate: Date;
 
     private _alive: boolean;
     private _interval: number;
@@ -78,7 +74,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _observableAircraftList: Observable<Aircraft[]>;
     private _observableLocationList: Observable<Location[]>;
     private _observableOperatorList: Observable<Types[]>;
-    
+
     constructor(private _dialogService: DialogService,
                 private _contingencyService: ContingencyService,
                 private _fb: FormBuilder,
@@ -94,6 +90,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         const initFakeDate = new Date().getTime();
 
         this.alive = true;
+        this.interval = 1000 * 60;
         this.isSafetyEvent = false;
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.durationArray = [];
@@ -113,7 +110,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             new DateModel(null),
             new DateModel(null)
         ];
-        
+
         this.aircraftList = [];
 
         this._contingencyForm = _fb.group({
@@ -266,44 +263,12 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this._durationArray = value;
     }
 
-    get dateModel(): Date {
-        return this._dateModel;
-    }
-
-    set dateModel(value: Date) {
-        this._dateModel = value;
-    }
-
-    get timeModel(): string {
-        return this._timeModel;
-    }
-
-    set timeModel(value: string) {
-        this._timeModel = value;
-    }
-
     get utcModel(): TimeInstant {
         return this._utcModel;
     }
 
     set utcModel(value: TimeInstant) {
         this._utcModel = value;
-    }
-
-    get minDate(): Date {
-        return this._minDate;
-    }
-
-    set minDate(value: Date) {
-        this._minDate = value;
-    }
-
-    get maxDate(): Date {
-        return this._maxDate;
-    }
-
-    set maxDate(value: Date) {
-        this._maxDate = value;
     }
 
     get alive(): boolean {
@@ -365,7 +330,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     get observableFlightList(): Observable<Flight[]> {
         return this._observableFlightList;
     }
-    
+
     set observableFlightList(value: Observable<Flight[]>) {
         this._observableFlightList = value;
     }
@@ -377,28 +342,28 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     set observableAircraftList(value: Observable<Aircraft[]>) {
         this._observableAircraftList = value;
     }
-    
+
     get observableLocationList(): Observable<Location[]> {
         return this._observableLocationList;
     }
-    
+
     set observableLocationList(value: Observable<Location[]>) {
         this._observableLocationList = value;
     }
-    
+
     get observableOperatorList(): Observable<Types[]> {
         return this._observableOperatorList;
     }
-    
+
     set observableOperatorList(value: Observable<Types[]>) {
         this._observableOperatorList = value;
     }
-    
+
     public ngOnInit() {
 
         this._messageUTCSubscription = this._messageData.currentNumberMessage.subscribe(message => this.utcModel.epochTime = message);
 
-        TimerObservable.create(0, this._interval)
+        TimerObservable.create(0, this.interval)
             .takeWhile(() => this.alive)
             .subscribe(() => {
                 this._datetimeService.getTime()
@@ -413,7 +378,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this._clockService.getClock().subscribe(time => this.timeClock = time);
 
         this.getAircraftList();
-        this.getFlightList();
         this.getSafetyEventList();
         this.getGroupTypes();
         this.getLocationsList();
@@ -505,7 +469,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
         return this.durationArray;
     }
-    
+
     /**
      * Get operator list configuration
      * @return {Subscription}
@@ -515,17 +479,17 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             .getAll<Types[]>('operator')
             .subscribe(response => {
                 this.operatorList = response;
-                
+
                 this.observableOperatorList = this.contingencyForm
                     .controls['operator']
                     .valueChanges
                     .pipe(
                         startWith(''),
                         map(val => this.operatorFilter(val))
-                    )
-            })
+                    );
+            });
     }
-    
+
     /**
      * Get Safety Event List Configuration
      * @return {Subscription}
@@ -545,7 +509,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
 
-    private getAircraftList() {
+    private getAircraftList(): Subscription {
 
         return this._apiRestService
             .search<Aircraft[]>('aircraftsSearch', new AircraftSearch(1))
@@ -558,29 +522,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                     .pipe(
                         startWith(''),
                         map(val => this.aircraftFilter(val))
-                    );
-            });
-    }
-
-    /**
-     * Get Flight List and create an observable list of fligths will be consumed in the view
-     * @return {Subscription}
-     */
-    private getFlightList(): Subscription {
-        const actualTime = new TimeInstant(this.utcModel.epochTime, null);
-        const defaultFlightSearch = new FlightSearch(actualTime);
-
-        return this._apiRestService
-            .search<Flight[]>('flights', defaultFlightSearch)
-            .subscribe((response: Flight[]) => {
-                this.flightList = response;
-
-                this.observableFlightList = this.contingencyForm
-                    .controls['flightNumber']
-                    .valueChanges
-                    .pipe(
-                        startWith(''),
-                        map(val => this.flightFilter(val))
                     );
             });
     }
@@ -619,18 +560,18 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     private getLocationsList(): Subscription {
         return this._apiRestService
-                   .getAll<Location[]>('locations')
-                   .subscribe((response: Location[]) => {
-                       this.stations = response;
-    
-                       this.observableLocationList = this.contingencyForm
-                           .controls['station']
-                           .valueChanges
-                           .pipe(
-                               startWith(''),
-                               map(val => this.locationFilter(val))
-                           );
-                   });
+            .getAll<Location[]>('locations')
+            .subscribe((response: Location[]) => {
+                this.stations = response;
+
+                this.observableLocationList = this.contingencyForm
+                    .controls['station']
+                    .valueChanges
+                    .pipe(
+                        startWith(''),
+                        map(val => this.locationFilter(val))
+                    );
+            });
     }
 
     private getTranslateString(toTranslate: string) {
@@ -657,14 +598,16 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @return {boolean}
      */
     private validateFilledItems(): boolean {
-        let counterFilled = 0;
-        const defaultValid = 6;
-        Object.keys(this._contingencyForm.controls).forEach(elem => {
-            if (this._contingencyForm.controls[elem].valid) {
-                counterFilled = counterFilled + 1;
+        let counterPristine = 0;
+        let counterItems = 0;
+        Object.keys(this.contingencyForm.controls).forEach(elem => {
+            counterItems += 1;
+            if (this.contingencyForm.controls[elem].pristine) {
+                counterPristine += 1;
             }
         });
-        return counterFilled > defaultValid ? true : false;
+
+        return counterPristine < counterItems;
     }
 
     /**
@@ -674,26 +617,47 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     public onSelectAircraft(selectedOption: string): void {
 
-        for (const item of this.aircraftList) {
-            if (item.tail === selectedOption) {
-                this.contingency.aircraft = new Aircraft(item.tail, item.fleet, item.operator);
-                this.contingency.flight = new Flight(
-                    this.flightList[0].flightNumber,
-                    this.flightList[0].origin,
-                    this.flightList[0].destination,
-                    new TimeInstant(
-                        this.flightList[0].etd.epochTime,
-                        this.flightList[0].etd.label
-                    ));
+        const flightSearch = new FlightSearch(selectedOption, 0, 5, new TimeInstant(this.utcModel.epochTime, null));
+        this.flightList = [null];
 
-                this.contingencyDateModel[0].updateFromEpoch(this.contingency.flight.etd.epochTime);
+        this._apiRestService
+            .search<Flight[]>('flights', flightSearch)
+            .subscribe((response: Flight[]) => {
+                this.flightList = response;
 
-                this.contingencyForm.get('operator').setValue(this.contingency.aircraft.operator);
-                this.contingencyForm.get('operator').updateValueAndValidity();
-                this.contingencyForm.get('flightNumber').setValue(this.contingency.flight.flightNumber);
-                this.contingencyForm.get('flightNumber').updateValueAndValidity();
-            }
-        }
+                for (const item of this.aircraftList) {
+                    if (item.tail === selectedOption) {
+                        this.contingency.aircraft = new Aircraft(item.tail, item.fleet, item.operator);
+                        if (this.flightList.length > 0) {
+                            this.contingency.flight = new Flight(
+                                this.flightList[0].flightNumber,
+                                this.flightList[0].origin,
+                                this.flightList[0].destination,
+                                new TimeInstant(
+                                    this.flightList[0].etd.epochTime,
+                                    this.flightList[0].etd.label
+                                ));
+                        } else {
+                            this.contingency.flight = new Flight(null, null, null, new TimeInstant(null, null));
+                        }
+
+                        this.contingencyDateModel[0].updateFromEpoch(this.contingency.flight.etd.epochTime);
+
+                        this.contingencyForm.get('operator').setValue(this.contingency.aircraft.operator);
+                        this.contingencyForm.get('operator').updateValueAndValidity();
+                        this.contingencyForm.get('flightNumber').setValue(this.contingency.flight.flightNumber);
+                        this.contingencyForm.get('flightNumber').updateValueAndValidity();
+                    }
+                }
+
+                this.observableFlightList = this.contingencyForm
+                    .controls['flightNumber']
+                    .valueChanges
+                    .pipe(
+                        startWith(''),
+                        map(val => this.flightFilter(val))
+                    );
+            });
     }
 
     /**
@@ -731,48 +695,48 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private newMessage(): void {
         this._messageData.changeTimeUTCMessage(this.utcModel.epochTime);
     }
-    
+
     /**
      * Custom validation for Aircraft Tail
      * @param {FormControl} control
      * @return {Observable<any>}
      */
     public tailDomainValidator(control: FormControl): Observable<any> {
-        let tail = control.value;
+        const tail = control.value;
 
         return Observable.of(this.aircraftList).map(res => {
             for (const item of res) {
                 if (item.tail === tail) {
-                    return null
+                    return null;
                 }
             }
-            
+
             return {
                 tailDomain: true
             };
-        })
+        });
     }
-    
+
     /**
      * Custom validation for Operator
      * @param {FormControl} control
      * @return {Observable<any>}
      */
     public operatorDomainValidator(control: FormControl) {
-        let operator = control.value;
-        
-    
+        const operator = control.value;
+
+
         return Observable.of(this.operatorList).map(res => {
             for (const item of res) {
                 if (operator === item.code) {
-                    return null
+                    return null;
                 }
             }
-    
+
             return {
                 operatorDomain: true
-            }
-        })
+            };
+        });
     }
 
     /**
@@ -794,7 +758,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         return this.flightList.filter(flight =>
             flight.flightNumber.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
     }
-    
+
     /**
      * Filter for location observable list in view
      * @param {string} val
@@ -802,11 +766,11 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     private locationFilter(val: string): Location[] {
         if (val !== null) {
-            return this.stations.filter( location =>
+            return this.stations.filter(location =>
                 location.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
         }
     }
-    
+
     /**
      * Filter for operatorList observable list in view
      * @param {string} val

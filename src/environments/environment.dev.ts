@@ -2,6 +2,10 @@ export const environment = {
     production: false,
     envName: 'local',
     apiUrl: 'http://localhost',
+    hotjarConfig: {
+        id: '000000',
+        enabled: false
+    },
     paths: {
         aircrafts: ':9002/api/v1/contingencies/configurations/aircrafts',
         aircraftsSearch: ':9005/api/v1/configurations/aircrafts/_search',
