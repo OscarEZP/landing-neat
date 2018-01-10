@@ -10,7 +10,7 @@ import { FindAccountComponent } from './auth/find-account/find-account.component
 import { OperationsComponent } from './content/operations/operations.component';
 import { RecoverPasswordComponent } from './auth/recover-password/recover-password.component';
 import { SimplifiedLayoutComponent } from './simplified-layout/simplified-layout.component';
-import {ContingencyListComponent} from './content/operations/list-contingency/contingency-list.component';
+import {ContingencyListComponent} from './content/operations/contingency-list/contingency-list.component';
 import {PitStopListComponent} from './content/operations/pit-stop-list/pit-stop-list.component';
 
 const ROUTES: Routes = [
