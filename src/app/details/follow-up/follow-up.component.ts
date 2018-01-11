@@ -331,7 +331,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             this._followUp.username = this.user.username;
             this._followUp.creationDate = null;
             const safetyCode = this.followUpForm.get('safetyEventCode').value;
-            console.log('followUp', this._followUp);
+
             this._apiRestService
                 .add<Response>('followUp', this._followUp, safetyCode)
                 .subscribe(() => {
