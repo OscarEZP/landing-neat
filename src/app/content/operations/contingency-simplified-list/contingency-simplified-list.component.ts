@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
@@ -65,9 +65,9 @@ export class ContingencySimplifiedListComponent implements OnInit, OnDestroy {
         this._apiService
             .getAll<Contingency[]>('contingencyList')
             .subscribe((response: Contingency[]) => this.contingencyList = response,
-                error => () => {
+                (response: HttpErrorResponse) => () => {
                     this.messageData.stringMessage('close');
-                    this.messageService.openSnackBar(error);
+                    this.messageService.openSnackBar(response.error.message);
                 },
                 () => {
                     this.messageData.stringMessage('close');

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaderResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import { environment } from '../../../environments/environment';
@@ -8,6 +8,8 @@ import { StatusError } from '../_models/statusError.model';
 
 @Injectable()
 export class AuthService {
+
+    static HEMICYCLE_GROUP_NAME = 'mcp_hemicycle';
 
     private isLoggedIn: boolean;
     private redirectUrl: string;
@@ -38,16 +40,16 @@ export class AuthService {
                 user = value;
 
                 for (i = 0; i < user.groupList.length; i++) {
-                    if (user.groupList[i].name === 'MOC_Hemicycle') {
+                    if (user.groupList[i].name.toLocaleLowerCase() === AuthService.HEMICYCLE_GROUP_NAME.toLocaleLowerCase()) {
                         this.redirectUrl = '/hemicycle/contingencies';
                     }
+
                     user.principalGroup = user.groupList[i].name;
                 }
 
                 return Promise.resolve(user);
-            }).catch(reason => {
-                const error: StatusError = reason.json();
-                return Promise.reject(error.message);
+            }).catch((reason: HttpErrorResponse) => {
+                return Promise.reject(reason.error.message);
             });
 
     }
