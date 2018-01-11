@@ -28,7 +28,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private _contingencyList: Contingency[];
     private _progressBarColor: string;
     private _currentUTCTime: number;
-    private _searchSignature: { from: { epochTime: number }, to: { epochTime: number }, offSet: number, limit: number };
 
     constructor(private _messageData: DataService,
                 private _dialogService: DialogService,
@@ -51,20 +50,20 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             this.historicalSearchService.active = data.historical;
         });
         this.getContingencies();
-        this._searchSignature = {
-            from: {
-                epochTime: this.historicalSearchService.fromTS
-            },
-            to: {
-                epochTime: this.historicalSearchService.toTS
-            },
-            offSet: this.infiniteScrollService.offset,
-            limit: this.infiniteScrollService.pageSize
-        };
         this.paginator.page.subscribe((page) => {
+            const search = {
+                from: {
+                    epochTime: this.historicalSearchService.fromTS
+                },
+                to: {
+                    epochTime: this.historicalSearchService.toTS
+                },
+                offSet: this.infiniteScrollService.offset,
+                limit: this.infiniteScrollService.pageSize
+            };
             this.infiniteScrollService.pageSize = page.pageSize;
             this.infiniteScrollService.pageIndex = page.pageIndex;
-            this.contingencyService.postHistoricalSearch(this._searchSignature).subscribe();
+            this.contingencyService.postHistoricalSearch(search).subscribe();
         });
     }
 
