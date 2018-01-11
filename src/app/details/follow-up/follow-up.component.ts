@@ -237,14 +237,9 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     public selectActiveCode(code: StatusCode) {
         this._followUp.level = code.level;
-        let i: number;
-        for (i = 0; i < this.statusCodes.length; i++) {
-            if (this.statusCodes[i].code === code.code) {
-                this.validations.defaultTime = this.statusCodes[i].defaultTime;
-                this.followUpForm.get('duration').setValue(this.validations.defaultTime);
-                this.followUpForm.get('duration').updateValueAndValidity();
-            }
-        }
+        this.validations.defaultTime = code.defaultTime;
+        this.followUpForm.get('duration').setValue(this.validations.defaultTime);
+        this.followUpForm.get('duration').updateValueAndValidity();
     }
 
     /**
