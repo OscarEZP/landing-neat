@@ -25,9 +25,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
-    public contingencyList: Contingency[];
-    public progressBarColor: string;
-    public currentUTCTime: number;
+    private _contingencyList: Contingency[];
+    private _progressBarColor: string;
+    private _currentUTCTime: number;
     private _searchSignature: { from: { epochTime: number }, to: { epochTime: number }, offSet: number, limit: number };
 
     constructor(private _messageData: DataService,
@@ -66,6 +66,30 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             this.infiniteScrollService.pageIndex = page.pageIndex;
             this.contingencyService.postHistoricalSearch(this._searchSignature).subscribe();
         });
+    }
+
+    get contingencyList(): Contingency[] {
+        return this._contingencyList;
+    }
+
+    set contingencyList(value: Contingency[]) {
+        this._contingencyList = value;
+    }
+
+    get progressBarColor(): string {
+        return this._progressBarColor;
+    }
+
+    set progressBarColor(value: string) {
+        this._progressBarColor = value;
+    }
+
+    get currentUTCTime(): number {
+        return this._currentUTCTime;
+    }
+
+    set currentUTCTime(value: number) {
+        this._currentUTCTime = value;
     }
 
     get translate(): TranslateService {
