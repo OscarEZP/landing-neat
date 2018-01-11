@@ -123,6 +123,7 @@ export class SearchHistoricalComponent implements OnInit {
                 limit: this.infiniteScrollService.pageSize
             };
             this.contingencyService.postHistoricalSearch(search).subscribe();
+            this.contingencyService.getTotalRecords(search).subscribe();
             if (!this.searchHistoricalService.active) {
                 this.router.navigate([this.router.url + '/historical']);
             }

@@ -1,16 +1,16 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs/Subscription';
-import { DetailsService } from '../../../details/_services/details.service';
-import { Contingency } from '../../../shared/_models/contingency';
-import { DataService } from '../../../shared/_services/data.service';
-import { DialogService } from '../../_services/dialog.service';
-import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
-import { ActivatedRoute } from '@angular/router';
-import { HistoricalSearchService } from '../_services/historical-search.service';
-import { ContingencyService } from '../_services/contingency.service';
-import { InfiniteScrollService } from '../_services/infinite-scroll.service';
-import { MatPaginator } from '@angular/material';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {Subscription} from 'rxjs/Subscription';
+import {DetailsService} from '../../../details/_services/details.service';
+import {Contingency} from '../../../shared/_models/contingency';
+import {DataService} from '../../../shared/_services/data.service';
+import {DialogService} from '../../_services/dialog.service';
+import {CloseContingencyComponent} from '../close-contingency/close-contingency.component';
+import {ActivatedRoute} from '@angular/router';
+import {HistoricalSearchService} from '../_services/historical-search.service';
+import {ContingencyService} from '../_services/contingency.service';
+import {InfiniteScrollService} from '../_services/infinite-scroll.service';
+import {MatPaginator} from '@angular/material';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -28,17 +28,16 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public contingencyList: Contingency[];
     public progressBarColor: string;
     public currentUTCTime: number;
+    private _searchSignature: { from: { epochTime: number }, to: { epochTime: number }, offSet: number, limit: number };
 
-    constructor(
-        private messageData: DataService,
-        private dialogService: DialogService,
-        public translate: TranslateService,
-        private route: ActivatedRoute,
-        private _detailsService: DetailsService,
-        private _historicalSearchService: HistoricalSearchService,
-        private _contingencyService: ContingencyService,
-        private _infiniteScrollService: InfiniteScrollService,
-    ) {
+    constructor(private messageData: DataService,
+                private dialogService: DialogService,
+                public translate: TranslateService,
+                private route: ActivatedRoute,
+                private _detailsService: DetailsService,
+                private _historicalSearchService: HistoricalSearchService,
+                private _contingencyService: ContingencyService,
+                private _infiniteScrollService: InfiniteScrollService) {
         translate.setDefaultLang('en');
         this.contingencyList = [];
     }
@@ -69,20 +68,20 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         });
 
         this.getContingencies();
+        this._searchSignature = {
+            from: {
+                epochTime: this.historicalSearchService.fromTS
+            },
+            to: {
+                epochTime: this.historicalSearchService.toTS
+            },
+            offSet: this.infiniteScrollService.offset,
+            limit: this.infiniteScrollService.pageSize
+        };
         this.paginator.page.subscribe((page) => {
             this.infiniteScrollService.pageSize = page.pageSize;
             this.infiniteScrollService.pageIndex = page.pageIndex;
-            const search = {
-                from: {
-                    epochTime: this.historicalSearchService.fromTS
-                },
-                to: {
-                    epochTime: this.historicalSearchService.toTS
-                },
-                offSet: this.infiniteScrollService.offset,
-                limit: this.infiniteScrollService.pageSize
-            };
-            this.contingencyService.postHistoricalSearch(search).subscribe();
+            this.contingencyService.postHistoricalSearch(this._searchSignature).subscribe();
         });
     }
 
@@ -119,19 +118,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private getContingencies() {
         if (!this.historicalSearchService.active) {
             this.contingencyService.getContingencies().subscribe();
-        } else if (this.historicalSearchService.active && this.historicalSearchService.searchForm.valid) {
-            const search = {
-                from: {
-                    epochTime: this.historicalSearchService.fromTS
-                },
-                to: {
-                    epochTime: this.historicalSearchService.toTS
-                },
-                tails: this.historicalSearchService.tails,
-                offSet: this.infiniteScrollService.offset,
-                limit: this.infiniteScrollService.pageSize
-            };
-            this.contingencyService.postHistoricalSearch(search).subscribe();
         }
     }
 
