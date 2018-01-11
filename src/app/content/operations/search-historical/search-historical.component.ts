@@ -18,7 +18,7 @@ import { DateUtil } from '../../../shared/util/dateUtil';
 })
 
 export class SearchHistoricalComponent implements OnInit {
-    static dateUtil: DateUtil = new DateUtil();
+
     public searchForm: FormGroup;
     public snackbarMessage: string;
     public aicraftList: Aircraft[];
@@ -77,7 +77,7 @@ export class SearchHistoricalComponent implements OnInit {
 
     private setMinDate(): void {
         const today = new Date();
-        const todayUtil = SearchHistoricalComponent.dateUtil.getUTCDate(today.getTime(), -(24 * 60));
+        const todayUtil = DateUtil.getUTCDate(today.getTime(), -(24 * 60));
         this.minFrom = new Date(todayUtil);
     }
 
@@ -143,6 +143,6 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     private isAllSelected(selectedOptions): boolean {
-        return selectedOptions.indexOf('ALL') === -1 ? false : true;
+        return selectedOptions.indexOf('ALL') === -1;
     }
 }

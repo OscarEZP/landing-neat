@@ -6,10 +6,8 @@ export class DateModel {
     private _timeString: string;
     private _dateObj: Date;
     private _epochTime: number;
-    private _dateUtil: DateUtil;
 
     constructor(epochDate: number, modifier?: number) {
-        this.dateUtil = new DateUtil();
         this.updateFromEpoch(epochDate, modifier);
     }
 
@@ -45,14 +43,6 @@ export class DateModel {
         this._epochTime = value;
     }
 
-    get dateUtil(): DateUtil {
-        return this._dateUtil;
-    }
-
-    set dateUtil(value: DateUtil) {
-        this._dateUtil = value;
-    }
-
     /**
      * Method to update values of the instance from epoch value
      * @param {number} epochDate
@@ -60,9 +50,9 @@ export class DateModel {
      */
     public updateFromEpoch(epochDate: number, modifier?: number): void {
         const isEpochValid = epochDate !== null && epochDate !== undefined;
-        this.dateString = isEpochValid ? this.dateUtil.getStringDate(epochDate, modifier) : '';
-        this.timeString = isEpochValid ? this.dateUtil.getFormatedTime(epochDate) : '';
-        this.dateObj = isEpochValid ? this.dateUtil.getUTCDate(epochDate, modifier) : null;
-        this.epochTime = isEpochValid ? this.dateUtil.getUTCEpoch(this.dateObj, modifier) : 0;
+        this.dateString = isEpochValid ? DateUtil.getStringDate(epochDate, modifier) : '';
+        this.timeString = isEpochValid ? DateUtil.getFormatedTime(epochDate) : '';
+        this.dateObj = isEpochValid ? DateUtil.getUTCDate(epochDate, modifier) : null;
+        this.epochTime = isEpochValid ? DateUtil.getUTCEpoch(this.dateObj, modifier) : 0;
     }
 }
