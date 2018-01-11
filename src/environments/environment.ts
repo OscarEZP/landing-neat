@@ -24,6 +24,6 @@ export const environment = {
         operator: '/api/v1/configurations/operators/',
         safetyEvent: '/api/v1/configurations/safetyEvents',
         types: '/api/v1/configurations/types',
-        closeType: '/api/v1/configurations/types/groupNames'
+        configTypes: '/api/v1/configurations/types/groupNames'
     }
 };
