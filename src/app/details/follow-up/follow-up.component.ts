@@ -235,16 +235,11 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      *
      * @return {void} nothing to return
      */
-    public selectActiveCode(code: any) {
+    public selectActiveCode(code: StatusCode) {
         this._followUp.level = code.level;
-        let i: number;
-        for (i = 0; i < this.statusCodes.length; i++) {
-            if (this.statusCodes[i].code === code.code) {
-                this.validations.defaultTime = this.statusCodes[i].defaultTime;
-                this.followUpForm.get('duration').setValue(this.validations.defaultTime);
-                this.followUpForm.get('duration').updateValueAndValidity();
-            }
-        }
+        this.validations.defaultTime = code.defaultTime;
+        this.followUpForm.get('duration').setValue(this.validations.defaultTime);
+        this.followUpForm.get('duration').updateValueAndValidity();
     }
 
     /**
@@ -343,9 +338,9 @@ export class FollowUpComponent implements OnInit, OnDestroy {
                     this.validations.isSending = false;
                     this.followUpForm.reset();
 
-                }, error => {
+                }, err => {
                     this._dataService.stringMessage('close');
-                    this._messageService.openSnackBar(error.message);
+                    this._messageService.openSnackBar(err.error.message);
                     this.validations.isSubmitted = false;
                     this.validations.isSending = false;
 

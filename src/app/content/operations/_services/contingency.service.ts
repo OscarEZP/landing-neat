@@ -10,7 +10,7 @@ import {Contingency} from '../../../shared/_models/contingency';
 import {InfiniteScrollService} from './infinite-scroll.service';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {DetailsService} from '../../../details/_services/details.service';
-import {Count} from '../_models/count';
+import {Count} from '../../../shared/_models/configuration/count';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

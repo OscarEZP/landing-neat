@@ -15,7 +15,7 @@ export const environment = {
         confirmForgotPassword: ':9001/api/security/users/_confirmforgotpassword',
         contingencyList: ':9002/api/v1/contingencies',
         contingencySearch: ':9002/api/v1/contingencies/_search',
-        contingencySearchCount: '/api/v1/contingencies/_search/count',
+        contingencySearchCount: ':9002/api/v1/contingencies/_search/count',
         dateTime: ':9001/api/security/currentdatetime',
         flights: ':9005/api/v1/configurations/flights/_search',
         followUp: ':9002/api/v1/contingencies/status/_followUp',
