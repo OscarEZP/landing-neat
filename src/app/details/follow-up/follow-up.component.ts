@@ -59,7 +59,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      * @param {DataService} _dataService - Service to transport data message between components subscribed
      */
     constructor(private _detailsService: DetailsService, private _apiRestService: ApiRestService, private _messageService: MessageService, private fb: FormBuilder, private _storageService: StorageService, private _dataService: DataService) {
-        this._followUp = new Status(null, null, null, null, null, new Interval(null, null), null);
+        this._followUp = new Status(null, null, null, null, null, null, new Interval(null, null), null);
 
         this.currentUTCTime = 0;
         this.safetyEventList = [];
@@ -212,7 +212,9 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this._dataService.stringMessage('open');
         this._apiRestService
             .getSingle('configStatus', this.selectedContingency.status.code)
-            .subscribe((data: StatusCode[]) => this.statusCodes = data,
+            .subscribe((data: StatusCode[]) => {
+                    this.statusCodes = data;
+                },
                 error => () => {
                     this._dataService.stringMessage('close');
                 }, () => {
@@ -233,15 +235,11 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      *
      * @return {void} nothing to return
      */
-    public selectActiveCode(code: string) {
-        let i: number;
-        for (i = 0; i < this.statusCodes.length; i++) {
-            if (this.statusCodes[i].code === code) {
-                this.validations.defaultTime = this.statusCodes[i].defaultTime;
-                this.followUpForm.get('duration').setValue(this.validations.defaultTime);
-                this.followUpForm.get('duration').updateValueAndValidity();
-            }
-        }
+    public selectActiveCode(code: StatusCode) {
+        this._followUp.level = code.level;
+        this.validations.defaultTime = code.defaultTime;
+        this.followUpForm.get('duration').setValue(this.validations.defaultTime);
+        this.followUpForm.get('duration').updateValueAndValidity();
     }
 
     /**
@@ -275,7 +273,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this.currentUTCTime = currentTimeLong;
 
         if (this.selectedContingency !== undefined) {
-            this.validations.delta = Math.round((this.currentUTCTime - this.selectedContingency.creationDate.epochTime) / 600000);
+            this.validations.delta = Math.round(((this.selectedContingency.creationDate.epochTime + 180 * 60 * 1000) - this.currentUTCTime) / 60000);
             this.validations.timeAlert = this.validations.delta < this.followUpForm.get('duration').value;
         }
     }
@@ -320,8 +318,6 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             this.validations.isSending = true;
             this._dataService.stringMessage('open');
 
-            let rs;
-
             this._followUp.contingencyId = this.selectedContingency.id;
             this._followUp.code = value.code;
             this._followUp.observation = value.observation;
@@ -333,21 +329,22 @@ export class FollowUpComponent implements OnInit, OnDestroy {
 
             this._apiRestService
                 .add<Response>('followUp', this._followUp, safetyCode)
-                .subscribe((data: Response) => rs = data,
-                    error => () => {
-                        this._dataService.stringMessage('close');
-                        this._messageService.openSnackBar(error);
-                        this.validations.isSubmitted = false;
-                        this.validations.isSending = false;
-                    },
-                    () => {
-                        this._detailsService.closeSidenav();
-                        this._dataService.stringMessage('reload');
-                        this._messageService.openSnackBar('created');
-                        this._dataService.stringMessage('close');
-                        this.validations.isSubmitted = false;
-                        this.validations.isSending = false;
-                    });
+                .subscribe(() => {
+
+                    this._detailsService.closeSidenav();
+                    this._dataService.stringMessage('reload');
+                    this._messageService.openSnackBar('created');
+                    this._dataService.stringMessage('close');
+                    this.validations.isSubmitted = false;
+                    this.validations.isSending = false;
+
+                }, err => {
+                    this._dataService.stringMessage('close');
+                    this._messageService.openSnackBar(err.error.message);
+                    this.validations.isSubmitted = false;
+                    this.validations.isSending = false;
+
+                });
         }
     }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from '../../../shared/_services/message.service';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HistoricalSearchService } from '../_services/historical-search.service';
 import { InfiniteScrollService } from '../_services/infinite-scroll.service';
 import { MatDatepickerInputEvent } from '@angular/material';
+import { DateUtil } from '../../../shared/util/dateUtil';
 
 @Component({
     selector: 'lsl-search-historical',
@@ -17,6 +18,7 @@ import { MatDatepickerInputEvent } from '@angular/material';
 })
 
 export class SearchHistoricalComponent implements OnInit {
+
     public searchForm: FormGroup;
     public snackbarMessage: string;
     public aicraftList: Aircraft[];
@@ -32,12 +34,40 @@ export class SearchHistoricalComponent implements OnInit {
                 private route: ActivatedRoute,
                 private _contingencyService: ContingencyService,
                 private _searchHistoricalService: HistoricalSearchService,
-                public infiniteScrollService: InfiniteScrollService) {
+                private _infiniteScrollService: InfiniteScrollService) {
         this.translate.setDefaultLang('en');
-        this.searchForm = this._searchHistoricalService.searchForm;
+        this.searchHistoricalService.initForm(
+            {
+                tails: new FormControl('', {
+                    validators: Validators.required,
+                    updateOn: 'change'
+                }),
+                from: new FormControl('', {
+                    validators: Validators.required,
+                    updateOn: 'submit'
+                }),
+                to: new FormControl('', {
+                    validators: Validators.required,
+                    updateOn: 'submit'
+                })
+            }
+        );
+        this.searchForm = this.searchHistoricalService.searchForm;
         this.maxDate = new Date();
         this.minFrom = new Date();
         this.minTo = new Date();
+    }
+
+    get contingencyService(): ContingencyService {
+        return this._contingencyService;
+    }
+
+    get searchHistoricalService(): HistoricalSearchService {
+        return this._searchHistoricalService;
+    }
+
+    get infiniteScrollService(): InfiniteScrollService {
+        return this._infiniteScrollService;
     }
 
     ngOnInit() {
@@ -47,9 +77,8 @@ export class SearchHistoricalComponent implements OnInit {
 
     private setMinDate(): void {
         const today = new Date();
-        const newDate = new Date(today);
-        newDate.setDate(newDate.getDate() - 60);
-        this.minFrom = new Date(newDate);
+        const todayUtil = DateUtil.getUTCDate(today.getTime(), -(24 * 60));
+        this.minFrom = new Date(todayUtil);
     }
 
     public onSelectFrom(event: MatDatepickerInputEvent<Date>): void {
@@ -60,7 +89,7 @@ export class SearchHistoricalComponent implements OnInit {
         const searchSignature = {
             enable: 2
         };
-        this._contingencyService.getAircrafts(searchSignature).subscribe((data) => {
+        this.contingencyService.getAircrafts(searchSignature).subscribe((data) => {
             this.aicraftList = data as Aircraft[];
         });
     }
@@ -72,27 +101,27 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     public clearSearch(): void {
-        this.searchForm.controls['tails'].reset();
-        this.searchForm.controls['from'].reset();
-        this.searchForm.controls['to'].reset();
+        this.searchHistoricalService.searchForm.reset();
         this.router.navigate(['../'], {relativeTo: this.route});
     }
 
     submitForm(value: any) {
-        if (this.searchForm.valid) {
+        this.searchHistoricalService.searchForm.updateValueAndValidity();
+        if (this.searchHistoricalService.searchForm.valid) {
             const search = {
                 from: {
-                    epochTime: this._searchHistoricalService.fromTS
+                    epochTime: this.searchHistoricalService.fromTS
                 },
                 to: {
-                    epochTime: this._searchHistoricalService.toTS
+                    epochTime: this.searchHistoricalService.toTS
                 },
-                tails: this.isAllSelected(this._searchHistoricalService.tails) ? null : this._searchHistoricalService.tails,
+                tails: this.isAllSelected(this.searchHistoricalService.tails) ? null : this.searchHistoricalService.tails,
                 offSet: this.infiniteScrollService.offset,
                 limit: this.infiniteScrollService.pageSize
             };
-            this._contingencyService.postHistoricalSearch(search).subscribe();
-            if (!this._searchHistoricalService.active) {
+            this.contingencyService.postHistoricalSearch(search).subscribe();
+            this.contingencyService.getTotalRecords(search).subscribe();
+            if (!this.searchHistoricalService.active) {
                 this.router.navigate([this.router.url + '/historical']);
             }
         } else {
@@ -114,6 +143,6 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     private isAllSelected(selectedOptions): boolean {
-        return selectedOptions.indexOf('ALL') === -1 ? false : true;
+        return selectedOptions.indexOf('ALL') === -1;
     }
 }

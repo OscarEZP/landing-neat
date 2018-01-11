@@ -1,0 +1,140 @@
+<div class="counter-container" fxLayout="column" fxLayoutAlign="center" *ngIf="checkDataStatus()">
+    <div *ngIf="historicalSearchService.active">
+        {{ 'OPERATIONS.SHOWING' | translate }}
+        {{infiniteScrollService.viewedRecords}}
+        {{ 'OPERATIONS.OF' | translate }}
+        {{infiniteScrollService.length}}
+        {{ 'OPERATIONS.CLOSED_CONTINGENCIES' | translate }}
+    </div>
+    <div *ngIf="!historicalSearchService.active">
+        {{contingencyService.data.length}}
+        {{ 'OPERATIONS.CONTINGENCIES_ACTIVES' | translate }}
+    </div>
+</div>
+
+<div class="list-contingency" *ngIf="checkDataStatus()">
+    <header fxLayout="row" class="">
+        <div fxFlex="7" fxLayoutAlign="start center">{{ 'OPERATIONS.TAIL_FLEET' | translate }}</div>
+        <div fxFlex="5" fxLayoutAlign="start center">{{ 'OPERATIONS.OPERATOR' | translate }}</div>
+        <div fxFlex="7" fxLayoutAlign="start center">{{ 'OPERATIONS.FLIGHT' | translate }}</div>
+        <div fxFlex="8" fxLayoutAlign="start center">{{ 'OPERATIONS.FROM_TO' | translate }}</div>
+        <div fxFlex="30" fxLayoutAlign="start center">{{ 'OPERATIONS.DESCRIPTION' | translate }}</div>
+        <div fxFlex="5" fxLayoutAlign="start center">{{ 'OPERATIONS.STATUS' | translate }}</div>
+        <div fxFlex="5" fxLayoutAlign="start center">{{ 'OPERATIONS.TYPE' | translate }}</div>
+        <div fxFlex="8" fxLayoutAlign="start center">{{ 'OPERATIONS.SAFETY_EVENT' | translate }}</div>
+        <div fxFlex="8" fxLayoutAlign="start center">{{ (historicalSearchService.active ? 'OPERATIONS.CONTINGENCY_LIMIT' : 'OPERATIONS.PROGRESS') | translate }}</div>
+        <div fxFlex="8" fxLayout="row">
+            <div fxFlex="10"></div>
+            <span fxLayoutAlign="start center">{{ (historicalSearchService.active ? 'OPERATIONS.CLOSURE_DATE_HOUR' : 'OPERATIONS.TIME_LEFT') | translate }}</span>
+        </div>
+        <div fxFlex="" *ngIf="!detailsService.sidenav.opened"><!-- {{ 'OPERATIONS.FOCAL' | translate }} --></div>
+        <div fxFlex="">&nbsp;</div>
+    </header>
+    <main>
+        <div fxLayout="row"
+             [class.active]="contingency === detailsService.contingency"
+             *ngFor="let contingency of contingencyService.data"
+             class="contingency-item">
+
+            <!--TAIL/FLEET-->
+            <div fxLayout="column" fxLayoutAlign="center" fxFlex="7" (click)="openDetails(contingency)">
+                <span>{{ contingency.aircraft.tail }}</span>
+                <span>{{ contingency.aircraft.fleet }}</span>
+            </div>
+
+            <!-- OPERATOR -->
+            <div fxLayout="row" fxFlex="5" fxLayoutAlign="start center" (click)="openDetails(contingency)">
+                <span class="flag-icon">&nbsp;</span>
+                <span fxFlexOffset="10">{{ contingency.aircraft.operator }}</span>
+            </div>
+
+            <!-- FLIGHT -->
+            <div fxFlex="7" fxLayoutAlign="start center" (click)="openDetails(contingency)">{{
+                contingency.flight.flightNumber }}
+            </div>
+
+            <!-- FROM / TO -->
+            <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency)" *ngIf="!contingency.isBackup">{{ contingency.flight.origin }} / {{ contingency.flight.destination }}</div>
+            <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency)" *ngIf="contingency.isBackup">{{ contingency.backup.location }}</div>
+
+            <!-- REASON -->
+            <div fxFlex="30" fxLayoutAlign="start center" class="description" (click)="openDetails(contingency)">{{(contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}</div>
+
+            <!-- STATUS -->
+            <div fxFlex="5" fxLayoutAlign="start center">
+                <span (click)="openDetails(contingency, 'follow-up')" *ngIf="!historicalSearchService.active" class="badge {{ contingency.status.code | lowercase }}">{{ contingency.status.code | uppercase }}</span>
+                <span *ngIf="historicalSearchService.active" class="badge {{ contingency.close.type | lowercase }}">{{ contingency.close.type | uppercase }}</span>
+            </div>
+
+            <!-- TYPE -->
+            <div fxLayout="column" fxFlex="5" fxLayoutAlign="center" (click)="openDetails(contingency)">
+                <div><strong>CONT</strong></div>
+                <div>{{ contingency.type }}</div>
+            </div>
+
+            <!-- SAFETY EVENT -->
+            <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency)">
+                <span class="badge"
+                      *ngIf="contingency.safetyEvent.code?.length > 0">{{ contingency.safetyEvent.code }}</span>
+            </div>
+
+            <!-- PROGRESS BAR -->
+            <div *ngIf="!historicalSearchService.active" fxFlex="8" fxLayoutAlign="start center"
+                 (click)="openDetails(contingency, 'timeline')">
+                <mat-progress-bar mode="determinate"
+                                  [value]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, false, 0)"
+                                  [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 600000) ? 'warn' : 'primary'"
+                                  class="mat-progress-bar"></mat-progress-bar>
+            </div>
+            <div fxLayout="column" *ngIf="historicalSearchService.active" fxFlex="8" fxLayoutAlign="center"
+                 class="historical-bar">
+                <mat-progress-bar mode="determinate" [value]="contingency.lastInformationPercentage"></mat-progress-bar>
+                <span fxLayoutAlign="end">LI {{ contingency.status.creationDate.epochTime | utcDate | date: 'HH:mm' }}</span>
+            </div>
+
+            <!-- TIMER -->
+            <div *ngIf="!historicalSearchService.active" fxLayout="row" fxFlex="8" (click)="openDetails(contingency, 'timeline')">
+                <div fxFlex="10"></div>
+                <div fxLayoutAlign="start center">
+                    <mat-icon class="mat-icon-adj" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 300000) ? 'warn' : 'primary'">
+                        timer
+                    </mat-icon>
+                    <lsl-countdown [creationTime]="contingency.status.requestedInterval.dt.epochTime" [duration]="contingency.status.requestedInterval.duration" [threshold]="5"></lsl-countdown>
+                </div>
+            </div>
+            <div *ngIf="historicalSearchService.active" fxFlex="8"  (click)="openDetails(contingency, 'timeline')">
+                <div fxFlex="10"></div>
+                <span fxLayoutAlign="start center">{{ contingency.close.closeDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }}</span>
+            </div>
+
+            <!-- FOCAL -->
+            <div fxFlex="3" fxLayoutAlign="start center" *ngIf="!detailsService.open"
+                 (click)="openDetails(contingency)">
+                <!-- <mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username | slice:0:2 | uppercase }} --></div>
+
+            <div fxFlex="5" fxLayoutAlign="start center">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon aria-label="options">more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="openCloseContingency(contingency)" [disabled]="historicalSearchService.active">
+                        <span>{{ 'BUTTONS.SUB_MENUS.CLOSE_CONTINGENCY' | translate }}</span>
+                    </button>
+                    <button mat-menu-item>
+                        <span>{{ 'BUTTONS.SUB_MENUS.MEETING' | translate }}</span>
+                    </button>
+                    <button mat-menu-item (click)="openDetails(contingency, 'follow-up')" [disabled]="contingency.status.code === 'ETR' || contingency.status.code === 'NI4' || historicalSearchService.active">
+                        <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
+                    </button>
+                </mat-menu>
+            </div>
+        </div>
+    </main>
+</div>
+<mat-paginator #contPaginator [hidden]="!checkDataStatus() || !historicalSearchService.active"
+    [length]="infiniteScrollService.length"
+    [pageSize]="infiniteScrollService.pageSize"
+    [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
+</mat-paginator>
+
+<lsl-ess message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.data.length === 0 && !contingencyService.loading"></lsl-ess>

@@ -3,7 +3,7 @@ import { MatSidenav } from '@angular/material';
 import { SidenavService } from './_services/sidenav.service';
 import { DataService } from '../shared/_services/data.service';
 import { Subscription } from 'rxjs/Subscription';
-import { ContingencyFormComponent } from '../content/operations/contingency-form/contingency-form.component';
+import { ContingencyFormComponent } from '../content/operations/create-contingency/create-contingency.component';
 import { DialogService } from '../content/_services/dialog.service';
 import { DetailsService } from '../details/_services/details.service';
 
@@ -20,15 +20,21 @@ export class LayoutComponent implements OnInit, OnDestroy {
     public mode: string;
     public value: number;
 
-    constructor(private sidenavService: SidenavService,
-                private detailsService: DetailsService,
+    constructor(private _sidenavService: SidenavService,
+                private _detailsService: DetailsService,
                 private messageData: DataService,
                 private dialogService: DialogService) {
-        this.sidenavService = sidenavService;
-        this.detailsService = detailsService;
         this.loading = true;
         this.mode = 'determinate';
         this.value = 100;
+    }
+
+    get sidenavService(): SidenavService {
+        return this._sidenavService;
+    }
+
+    get detailsService(): DetailsService {
+        return this._detailsService;
     }
 
     ngOnInit() {

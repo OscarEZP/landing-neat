@@ -8,7 +8,7 @@
     height: 33px;
     font-size: 24px;
     text-align: left;
-    color: #546e7a;
+    color: #7d7d7d;
   }
   .button-submit {
     width: 103px;
@@ -22,7 +22,7 @@
     width: 103px;
     height: 40px;
     margin-top: 20px;
-    color: #607d8b;
+    color: #7d7d7d;
   }
   .mat-card-content {
     margin-top: 15px;
@@ -40,15 +40,15 @@
   .mat-form-field{
     width: 100%;
     margin-top: 30px;
-    font-size: 14px;
+    font-size: 16px;
   }
   div:first-child {
     margin-top: 0;
     width: 100%;
     height: 19px;
-    font-size: 15px;
+    font-size: 16px;
     text-align: left;
-    color: #37474f;
+    color: rgba(0,0,0,.87);
   }
 
 }

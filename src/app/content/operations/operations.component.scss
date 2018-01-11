@@ -1,5 +1,6 @@
 @import '../../../assets/style/base.scss';
 
+/deep/
 #operations-container {
   color: mat-color($foreground, secondary-text);
   width: 100%;
@@ -9,7 +10,7 @@
     @include generate-font-size(-5);
     position: absolute;
     right: 30px;
-    top: 18px;
+    top: 8px;
     z-index: 100;
     background-color: mat-color($custom, 'background-grey');
     strong {
@@ -17,12 +18,30 @@
     }
   }
 
+  content {
+
+    figure {
+      text-align: center;
+      padding: 150px 20px;
+
+      i {
+        font-size: 280px;
+        color: rgba(0, 0, 0, .26);
+      }
+      p {
+        font-size: 14px;
+
+      }
+    }
+
+  }
+
   nav {
     background-color: mat-color($custom, 'background-grey');
     border-bottom: none;
-    padding: 20px 16px;
+    padding: 13px 16px;
     box-sizing: border-box;
-    height: 75px;
+    height: 57px;
 
     a {
       @include generate-font-size(-3);
@@ -31,7 +50,7 @@
       padding: 10px 20px;
       display: inline-block;
     }
-    a.active{
+    a.active {
       background-color: mat-color($primary);
       opacity: 1;
       color: mat-color($primary, 'default-contrast');

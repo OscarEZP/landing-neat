@@ -10,6 +10,7 @@ import {Contingency} from '../../../shared/_models/contingency';
 import {InfiniteScrollService} from './infinite-scroll.service';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {DetailsService} from '../../../details/_services/details.service';
+import {Count} from '../../../shared/_models/configuration/count';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -17,11 +18,14 @@ const httpOptions = {
 
 @Injectable()
 export class ContingencyService {
+
     private apiUrl = environment.apiUrl;
     private closePath = environment.paths.close;
     private searchAircraftPath = environment.paths.aircraftsSearch;
     private contingencySearch = environment.paths.contingencySearch;
+    private contingencySearchCount = environment.paths.contingencySearchCount;
     public data: Contingency[];
+    private _loading: boolean;
 
     constructor(
         private http: HttpClient,
@@ -31,9 +35,19 @@ export class ContingencyService {
         private _detailsService: DetailsService
     ) {
         this.data = [];
+        this.loading = false;
+    }
+
+    get loading(): boolean {
+        return this._loading;
+    }
+
+    set loading(value: boolean) {
+        this._loading = value;
     }
 
     public getContingencies(): Observable<Contingency[]> {
+        this.loading = true;
         return this._apiService
         .getAll<Contingency[]>('contingencyList')
         .pipe(
@@ -42,6 +56,7 @@ export class ContingencyService {
                 if (contingencies.length > 0) {
                     this._detailsService.contingency = this.data[0];
                 }
+                this.loading = false;
             })
         );
     }
@@ -62,9 +77,7 @@ export class ContingencyService {
     }
 
     public postHistoricalSearch(searchSignature): Observable<Contingency[]> {
-        this.getTotalRecords(searchSignature).subscribe((data) => {
-            this._infiniteScrollService.length = data.length;
-        });
+        this.loading = true;
         return this.http.post<any>(this.apiUrl + this.contingencySearch, searchSignature, httpOptions)
         .pipe(
             tap(contingencies => {
@@ -78,23 +91,18 @@ export class ContingencyService {
                     });
                     this._detailsService.contingency = this.data[0];
                 }
+                this.loading = false;
             }),
             catchError(this.handleError('getContingencies', []))
         );
     }
 
     public getTotalRecords(searchSignature): Observable<any> {
-        const countSignature = {
-            offSet: 0,
-            limit: 100000000,
-            from: searchSignature.from,
-            to: searchSignature.to,
-            tails: searchSignature.tails
-        };
-        return this.http.post<any>(this.apiUrl + this.contingencySearch, countSignature, httpOptions)
+        return this.http.post<Count>(this.apiUrl + this.contingencySearchCount, searchSignature, httpOptions)
         .pipe(
-            tap(contingencies => {
+            tap(count => {
                 this.log(`fetched count search`);
+                this._infiniteScrollService.length = count.items;
             }),
             catchError(this.handleError('getContingencies', []))
         );

@@ -10,6 +10,9 @@
       "FOLLOW_UP": "Follow up"
     }
   },
+  "ESS":{
+    "NO_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters."
+  },
   "OPERATIONS": {
     "ALERT": "Alert",
     "ALERTS": "Alerts",
@@ -37,6 +40,8 @@
       "BTN_SAVE": "SAVE",
       "CLOSE_SUCCESS": "Contingency has been closed successfully"
     },
+    "CLOSED_CONTINGENCY": "Closed contingency",
+    "CLOSED_CONTINGENCIES": "Closed contingencies",
     "CLOSURE_DATE_HOUR": "Closure Date - Hour",
     "CONTINGENCIES_ACTIVES": "Actives Contingencies",
     "CONTINGENCY_ACTIVE": "Active Contingency",
@@ -79,13 +84,13 @@
       "MAINTENANCE": "Maintenance",
       "MAX_LENGTH_VALIDATION": "Must be less than 400 characters",
       "NO": "No",
-      "OBSERVATION_REQUIRED_VALIDATION": "Observations is required",
-      "OBSERVATIONS_PLACEHOLDER": "Observations to Maintenance",
+      "OBSERVATION_REQUIRED_VALIDATION": "Status is required",
+      "OBSERVATIONS_PLACEHOLDER": "Status",
       "OPERATION_INFO": "Operation",
       "OPERATOR": "Operator",
       "OPERATOR_OUT_DOMAIN": "Operator out of domain",
       "OPERATOR_REQUIRED": "Operator is required",
-      "REASON_PLACEHOLDER": "Status of Maintenance",
+      "REASON_PLACEHOLDER": "Reason",
       "REASON_REQUIRED_VALIDATION": "Reason is required",
       "REQUIRE_FIELDS": "All fields with (*) are required",
       "SAFETY_MESSAGE": "If the Contingency is due a Safety Event, please follow the Safety protocols of your Company",
@@ -103,10 +108,12 @@
     },
     "CONTINGENCY_LIMIT": "Last 3 hours",
     "DESCRIPTION": "Reason",
+
     "FLIGHT": "Flight",
     "FOCAL": "Focal",
     "FROM_TO": "From/To",
     "OPERATOR": "Operator",
+    "OF": "of",
     "PIT_STOP": "PIT STOP",
     "PROGRESS": "Progress",
     "SAFETY_EVENT": "Safety Event",
@@ -119,6 +126,7 @@
       "TITLE": "Historical Search:",
       "TO": "To Date"
     },
+    "SHOWING": "Showing",
     "STATUS": "Status",
     "TAIL_FLEET": "Tail/Fleet",
     "THIS_MOMENT": "at this moment on Contingency",

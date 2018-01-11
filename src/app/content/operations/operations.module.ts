@@ -13,13 +13,13 @@ import { InfiniteScrollService } from './_services/infinite-scroll.service';
 import { LogService } from './_services/log.service';
 import { CancelComponent } from './cancel/cancel.component';
 import { CloseContingencyComponent } from './close-contingency/close-contingency.component';
-import { ContingencyFormComponent } from './contingency-form/contingency-form.component';
-import { ContingencyListComponent } from './contingency-list.component/contingency-list.component';
-import { ContingencySimplifiedListComponent } from './contingency-simplified-list.component/contingency-simplified-list.component';
-
+import { ContingencyFormComponent } from './create-contingency/create-contingency.component';
+import { ContingencyListComponent } from './contingency-list/contingency-list.component';
+import { ContingencySimplifiedListComponent } from './contingency-simplified-list/contingency-simplified-list.component';
 import { OperationsComponent } from './operations.component';
 import { PitStopListComponent } from './pit-stop-list/pit-stop-list.component';
 import { SearchHistoricalComponent } from './search-historical/search-historical.component';
+import { EssComponent } from './ess/ess.component';
 
 @NgModule({
     imports: [
@@ -35,7 +35,8 @@ import { SearchHistoricalComponent } from './search-historical/search-historical
         CancelComponent,
         CloseContingencyComponent,
         SearchHistoricalComponent,
-        PitStopListComponent
+        PitStopListComponent,
+        EssComponent
     ],
     exports: [],
     providers: [
