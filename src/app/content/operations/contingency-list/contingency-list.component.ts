@@ -51,6 +51,8 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         });
         this.getContingencies();
         this.paginator.page.subscribe((page) => {
+            this.infiniteScrollService.pageSize = page.pageSize;
+            this.infiniteScrollService.pageIndex = page.pageIndex;
             const search = {
                 from: {
                     epochTime: this.historicalSearchService.fromTS
@@ -61,8 +63,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 offSet: this.infiniteScrollService.offset,
                 limit: this.infiniteScrollService.pageSize
             };
-            this.infiniteScrollService.pageSize = page.pageSize;
-            this.infiniteScrollService.pageIndex = page.pageIndex;
             this.contingencyService.postHistoricalSearch(search).subscribe();
         });
     }
