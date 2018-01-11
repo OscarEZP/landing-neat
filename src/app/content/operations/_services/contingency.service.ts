@@ -50,6 +50,7 @@ export class ContingencyService {
         .getAll<Contingency[]>('contingencyList')
         .pipe(
             tap(contingencies => {
+                console.log('list', contingencies);
                 this.data = contingencies;
                 if (contingencies.length > 0) {
                     this._detailsService.contingency = this.data[0];
@@ -83,6 +84,7 @@ export class ContingencyService {
         return this.http.post<any>(this.apiUrl + this.contingencySearch, searchSignature, httpOptions)
         .pipe(
             tap(contingencies => {
+                console.log('his', contingencies);
                 this.log(`fetched search`);
                 this.data = contingencies;
                 if (contingencies.length > 0) {

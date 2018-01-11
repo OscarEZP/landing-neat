@@ -117,14 +117,13 @@
                     <mat-icon aria-label="options">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="openCloseContingency(contingency)">
+                    <button mat-menu-item (click)="openCloseContingency(contingency)" [disabled]="historicalSearchService.active">
                         <span>{{ 'BUTTONS.SUB_MENUS.CLOSE_CONTINGENCY' | translate }}</span>
                     </button>
                     <button mat-menu-item>
                         <span>{{ 'BUTTONS.SUB_MENUS.MEETING' | translate }}</span>
                     </button>
-                    <button mat-menu-item (click)="openDetails(contingency, 'follow-up')"
-                            [disabled]="contingency.status.code === 'ETR' || contingency.status.code === 'NI4'">
+                    <button mat-menu-item (click)="openDetails(contingency, 'follow-up')" [disabled]="contingency.status.code === 'ETR' || contingency.status.code === 'NI4' || historicalSearchService.active">
                         <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
                     </button>
                 </mat-menu>

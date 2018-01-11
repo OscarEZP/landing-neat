@@ -213,13 +213,13 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this._apiRestService
             .getSingle('configStatus', this.selectedContingency.status.code)
             .subscribe((data: StatusCode[]) => {
-                this.statusCodes = data;
-            },
-            error => () => {
-                this._dataService.stringMessage('close');
-            }, () => {
-                this._dataService.stringMessage('close');
-            });
+                    this.statusCodes = data;
+                },
+                error => () => {
+                    this._dataService.stringMessage('close');
+                }, () => {
+                    this._dataService.stringMessage('close');
+                });
 
         return this.statusCodes;
     }
@@ -235,7 +235,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      *
      * @return {void} nothing to return
      */
-    public selectActiveCode(code: string) {
+    public selectActiveCode(code: any) {
+        console.log('code', code);
         let i: number;
         for (i = 0; i < this.statusCodes.length; i++) {
             if (this.statusCodes[i].code === code) {
