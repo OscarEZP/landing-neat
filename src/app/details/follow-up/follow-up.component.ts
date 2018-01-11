@@ -318,7 +318,6 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     public submitForm(value: any) {
         this.validations.isSubmitted = true;
-
         if (this.followUpForm.valid) {
             this.validations.isSending = true;
             this._dataService.stringMessage('open');
