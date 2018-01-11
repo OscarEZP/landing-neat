@@ -84,7 +84,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             'observation': [null, Validators.required],
             'code': [null, Validators.required],
             'duration': [30, Validators.required]
-        });
+        }, { updateOn: 'submit' });
     }
 
     /**
@@ -342,6 +342,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
                     this._dataService.stringMessage('close');
                     this.validations.isSubmitted = false;
                     this.validations.isSending = false;
+                    this.followUpForm.reset();
 
                 }, error => {
                     this._dataService.stringMessage('close');
