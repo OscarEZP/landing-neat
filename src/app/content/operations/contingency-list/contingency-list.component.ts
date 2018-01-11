@@ -30,43 +30,26 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public currentUTCTime: number;
     private _searchSignature: { from: { epochTime: number }, to: { epochTime: number }, offSet: number, limit: number };
 
-    constructor(private messageData: DataService,
-                private dialogService: DialogService,
-                public translate: TranslateService,
-                private route: ActivatedRoute,
+    constructor(private _messageData: DataService,
+                private _dialogService: DialogService,
+                private _translate: TranslateService,
+                private _route: ActivatedRoute,
                 private _detailsService: DetailsService,
                 private _historicalSearchService: HistoricalSearchService,
                 private _contingencyService: ContingencyService,
                 private _infiniteScrollService: InfiniteScrollService) {
-        translate.setDefaultLang('en');
+        this.translate.setDefaultLang('en');
         this.contingencyList = [];
-    }
-
-    get infiniteScrollService(): InfiniteScrollService {
-        return this._infiniteScrollService;
-    }
-
-    get detailsService(): DetailsService {
-        return this._detailsService;
-    }
-
-    get historicalSearchService(): HistoricalSearchService {
-        return this._historicalSearchService;
-    }
-
-    get contingencyService(): ContingencyService {
-        return this._contingencyService;
     }
 
     ngOnInit() {
         this.currentUTCTime = 0;
         this.progressBarColor = 'primary';
-        this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
-        this._reloadSubscription = this.messageData.currentStringMessage.subscribe(message => this.reloadList(message));
-        this.route.data.subscribe((data: any) => {
+        this._messageSubscriptions = this._messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
+        this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
+        this._route.data.subscribe((data: any) => {
             this.historicalSearchService.active = data.historical;
         });
-
         this.getContingencies();
         this._searchSignature = {
             from: {
@@ -85,6 +68,26 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         });
     }
 
+    get translate(): TranslateService {
+        return this._translate;
+    }
+
+    get infiniteScrollService(): InfiniteScrollService {
+        return this._infiniteScrollService;
+    }
+
+    get detailsService(): DetailsService {
+        return this._detailsService;
+    }
+
+    get historicalSearchService(): HistoricalSearchService {
+        return this._historicalSearchService;
+    }
+
+    get contingencyService(): ContingencyService {
+        return this._contingencyService;
+    }
+
     public checkDataStatus(): boolean {
         return this.contingencyService.data.length > 0 && !this.contingencyService.loading;
     }
@@ -100,7 +103,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     public openCloseContingency(contingency: any) {
-        this.dialogService.openDialog(CloseContingencyComponent, {
+        this._dialogService.openDialog(CloseContingencyComponent, {
             data: contingency,
             hasBackdrop: true,
             disableClose: true,
