@@ -103,7 +103,6 @@ export class SearchHistoricalComponent implements OnInit {
     public clearSearch(): void {
         this.searchHistoricalService.searchForm.reset();
         this.router.navigate(['../'], {relativeTo: this.route});
-        this.contingencyService.getContingencies().subscribe();
     }
 
     submitForm(value: any) {
@@ -121,6 +120,7 @@ export class SearchHistoricalComponent implements OnInit {
                 limit: this.infiniteScrollService.pageSize
             };
             this.contingencyService.postHistoricalSearch(search).subscribe();
+            this.contingencyService.getTotalRecords(search).subscribe();
             if (!this.searchHistoricalService.active) {
                 this.router.navigate([this.router.url + '/historical']);
             }

@@ -1,16 +1,16 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs/Subscription';
-import { DetailsService } from '../../../details/_services/details.service';
-import { Contingency } from '../../../shared/_models/contingency';
-import { DataService } from '../../../shared/_services/data.service';
-import { DialogService } from '../../_services/dialog.service';
-import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
-import { ActivatedRoute } from '@angular/router';
-import { HistoricalSearchService } from '../_services/historical-search.service';
-import { ContingencyService } from '../_services/contingency.service';
-import { InfiniteScrollService } from '../_services/infinite-scroll.service';
-import { MatPaginator } from '@angular/material';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {Subscription} from 'rxjs/Subscription';
+import {DetailsService} from '../../../details/_services/details.service';
+import {Contingency} from '../../../shared/_models/contingency';
+import {DataService} from '../../../shared/_services/data.service';
+import {DialogService} from '../../_services/dialog.service';
+import {CloseContingencyComponent} from '../close-contingency/close-contingency.component';
+import {ActivatedRoute} from '@angular/router';
+import {HistoricalSearchService} from '../_services/historical-search.service';
+import {ContingencyService} from '../_services/contingency.service';
+import {InfiniteScrollService} from '../_services/infinite-scroll.service';
+import {MatPaginator} from '@angular/material';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -25,49 +25,30 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
-    public contingencyList: Contingency[];
-    public progressBarColor: string;
-    public currentUTCTime: number;
+    private _contingencyList: Contingency[];
+    private _progressBarColor: string;
+    private _currentUTCTime: number;
 
-    constructor(
-        private messageData: DataService,
-        private dialogService: DialogService,
-        public translate: TranslateService,
-        private route: ActivatedRoute,
-        private _detailsService: DetailsService,
-        private _historicalSearchService: HistoricalSearchService,
-        private _contingencyService: ContingencyService,
-        private _infiniteScrollService: InfiniteScrollService,
-    ) {
-        translate.setDefaultLang('en');
+    constructor(private _messageData: DataService,
+                private _dialogService: DialogService,
+                private _translate: TranslateService,
+                private _route: ActivatedRoute,
+                private _detailsService: DetailsService,
+                private _historicalSearchService: HistoricalSearchService,
+                private _contingencyService: ContingencyService,
+                private _infiniteScrollService: InfiniteScrollService) {
+        this.translate.setDefaultLang('en');
         this.contingencyList = [];
-    }
-
-    get infiniteScrollService(): InfiniteScrollService {
-        return this._infiniteScrollService;
-    }
-
-    get detailsService(): DetailsService {
-        return this._detailsService;
-    }
-
-    get historicalSearchService(): HistoricalSearchService {
-        return this._historicalSearchService;
-    }
-
-    get contingencyService(): ContingencyService {
-        return this._contingencyService;
     }
 
     ngOnInit() {
         this.currentUTCTime = 0;
         this.progressBarColor = 'primary';
-        this._messageSubscriptions = this.messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
-        this._reloadSubscription = this.messageData.currentStringMessage.subscribe(message => this.reloadList(message));
-        this.route.data.subscribe((data: any) => {
+        this._messageSubscriptions = this._messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
+        this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
+        this._route.data.subscribe((data: any) => {
             this.historicalSearchService.active = data.historical;
         });
-
         this.getContingencies();
         this.paginator.page.subscribe((page) => {
             this.infiniteScrollService.pageSize = page.pageSize;
@@ -86,6 +67,50 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         });
     }
 
+    get contingencyList(): Contingency[] {
+        return this._contingencyList;
+    }
+
+    set contingencyList(value: Contingency[]) {
+        this._contingencyList = value;
+    }
+
+    get progressBarColor(): string {
+        return this._progressBarColor;
+    }
+
+    set progressBarColor(value: string) {
+        this._progressBarColor = value;
+    }
+
+    get currentUTCTime(): number {
+        return this._currentUTCTime;
+    }
+
+    set currentUTCTime(value: number) {
+        this._currentUTCTime = value;
+    }
+
+    get translate(): TranslateService {
+        return this._translate;
+    }
+
+    get infiniteScrollService(): InfiniteScrollService {
+        return this._infiniteScrollService;
+    }
+
+    get detailsService(): DetailsService {
+        return this._detailsService;
+    }
+
+    get historicalSearchService(): HistoricalSearchService {
+        return this._historicalSearchService;
+    }
+
+    get contingencyService(): ContingencyService {
+        return this._contingencyService;
+    }
+
     public checkDataStatus(): boolean {
         return this.contingencyService.data.length > 0 && !this.contingencyService.loading;
     }
@@ -101,7 +126,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     public openCloseContingency(contingency: any) {
-        this.dialogService.openDialog(CloseContingencyComponent, {
+        this._dialogService.openDialog(CloseContingencyComponent, {
             data: contingency,
             hasBackdrop: true,
             disableClose: true,
@@ -119,19 +144,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private getContingencies() {
         if (!this.historicalSearchService.active) {
             this.contingencyService.getContingencies().subscribe();
-        } else if (this.historicalSearchService.active && this.historicalSearchService.searchForm.valid) {
-            const search = {
-                from: {
-                    epochTime: this.historicalSearchService.fromTS
-                },
-                to: {
-                    epochTime: this.historicalSearchService.toTS
-                },
-                tails: this.historicalSearchService.tails,
-                offSet: this.infiniteScrollService.offset,
-                limit: this.infiniteScrollService.pageSize
-            };
-            this.contingencyService.postHistoricalSearch(search).subscribe();
         }
     }
 
