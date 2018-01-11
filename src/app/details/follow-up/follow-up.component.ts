@@ -59,7 +59,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      * @param {DataService} _dataService - Service to transport data message between components subscribed
      */
     constructor(private _detailsService: DetailsService, private _apiRestService: ApiRestService, private _messageService: MessageService, private fb: FormBuilder, private _storageService: StorageService, private _dataService: DataService) {
-        this._followUp = new Status(null, null, null, null, null, new Interval(null, null), null);
+        this._followUp = new Status(null, null,null, null, null, null, new Interval(null, null), null);
 
         this.currentUTCTime = 0;
         this.safetyEventList = [];

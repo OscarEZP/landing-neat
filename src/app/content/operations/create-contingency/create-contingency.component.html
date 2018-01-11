@@ -323,8 +323,7 @@
 
                         <mat-radio-group id="rad-contingency-form-statuscode" fxLayoutGap="10px"
                                          [formControl]="contingencyForm.controls['statusCode']" [(ngModel)]="contingency.status.code">
-                            <mat-radio-button labelPosition="after" value="NI1" fxFlex="">NI</mat-radio-button>
-                            <mat-radio-button labelPosition="after" value="ETR" fxFlex="">ETR</mat-radio-button>
+                            <mat-radio-button *ngFor="let status of statusCodes" labelPosition="after" [value]="status.code" (change)="statusSelection(status.level)" fxFlex="">{{ status.code }}</mat-radio-button>
                         </mat-radio-group>
 
                         <mat-error
