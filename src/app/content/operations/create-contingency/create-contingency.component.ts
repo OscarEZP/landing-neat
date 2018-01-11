@@ -47,7 +47,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _flightList: Flight[];
     private _statusCodes: StatusCode[];
     private _safetyEventList: Safety[];
-    private _maxStatusCodes: StatusCode[];
     private _groupTypeList: GroupTypes[];
     private _contingencyType: Types[];
     private _operatorList: Types[];
@@ -95,7 +94,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.durationArray = [];
 
-        this.contingency = new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, new TimeInstant(initFakeDate, null), null, new Interval(null, null), new Interval(null, 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username);
+        this.contingency = new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(initFakeDate, null), null, new Interval(null, null), new Interval(null, 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username);
 
         this.contingencyType = [];
         this.operatorList = [];
@@ -181,14 +180,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
     set safetyEventList(value: Safety[]) {
         this._safetyEventList = value;
-    }
-
-    get maxStatusCodes(): StatusCode[] {
-        return this._maxStatusCodes;
-    }
-
-    set maxStatusCodes(value: StatusCode[]) {
-        this._maxStatusCodes = value;
     }
 
     get groupTypeList(): GroupTypes[] {
@@ -382,6 +373,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this.getGroupTypes();
         this.getLocationsList();
         this.getOperatorList();
+        this.getMaxStatusCodes();
         this.generateIntervalSelection();
     }
 
@@ -572,6 +564,26 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                         map(val => this.locationFilter(val))
                     );
             });
+    }
+
+    /**
+     * Call the config to get min and max status codes availables
+     * @return {Subscription}
+     */
+    private getMaxStatusCodes(): Subscription {
+        return this._apiRestService
+            .getSingle<StatusCode[]>('configStatus', null)
+            .subscribe((response: StatusCode[]) => {
+                this.statusCodes = response;
+            });
+    }
+
+    /**
+     * Method to set level of status selected (between NI1 and ETR)
+     * @param {number} statusLevel
+     */
+    public statusSelection(statusLevel: number): void {
+        this.contingency.status.level = statusLevel;
     }
 
     private getTranslateString(toTranslate: string) {
