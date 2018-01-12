@@ -47,7 +47,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         'timeAlert': null,
         'delta': 0,
         'defaultTime': null,
-        'lastStatus': null
+        'lastStatus': null,
+        'isClosed': null
     };
 
     /**
@@ -75,7 +76,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             'timeAlert': false,
             'delta': 180,
             'defaultTime': 30,
-            'lastStatus': false
+            'lastStatus': false,
+            'isClosed': this.selectedContingency ? this.selectedContingency.isClose : false
         };
 
         this.followUpForm = fb.group({
@@ -136,8 +138,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             this.selectedContingency = contingency;
             this.generateIntervalSelection(this.selectedContingency.creationDate.epochTime);
             this.getStatusCodesAvailable();
-
             this.getMaxConfigStatuses();
+            this.validations.isClosed = contingency.isClose;
         }
     }
 

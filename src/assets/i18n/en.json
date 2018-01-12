@@ -50,6 +50,7 @@
         "CONTINGENCY_TYPE_REQUIRED": "Contingency type is required",
         "FOLLOW_UP_DISABLED": "Sorry follow up is disabled because from creation of contingency past more than 180 minutes",
         "FOLLOW_UP_LAST_STATUS": "Sorry is not possible to create a follow up for the current status",
+        "FOLLOW_UP_CLOSED_STATUS": "This contingency is already closed",
         "MINUTES": "minutes",
         "OBSERVATION_REQUIRED": "Observation is required",
         "OBSERVATION_TITLE": "Write your comment",
