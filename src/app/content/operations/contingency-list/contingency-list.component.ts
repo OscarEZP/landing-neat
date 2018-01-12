@@ -112,7 +112,8 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Method for check list status with two variables, data loaded and loading process
+     * Method for check list status with two variables, data loaded and loading process,
+     * if there is not data and the list is not loading, return false
      * @return {boolean}
      */
     public checkDataStatus(): boolean {
@@ -156,7 +157,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Method for get list
+     * Method for get data list when is not a historical search
      */
     private getContingencies() {
         if (!this.historicalSearchService.active) {
