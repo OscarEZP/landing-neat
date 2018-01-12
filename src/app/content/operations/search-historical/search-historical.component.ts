@@ -10,6 +10,7 @@ import { HistoricalSearchService } from '../_services/historical-search.service'
 import { InfiniteScrollService } from '../_services/infinite-scroll.service';
 import { MatDatepickerInputEvent } from '@angular/material';
 import { DateUtil } from '../../../shared/util/dateUtil';
+import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 
 @Component({
     selector: 'lsl-search-historical',
@@ -29,7 +30,7 @@ export class SearchHistoricalComponent implements OnInit {
 
     constructor(public translate: TranslateService,
                 public messageService: MessageService,
-                public service: ApiRestService,
+                public apiRestService: ApiRestService,
                 private router: Router,
                 private route: ActivatedRoute,
                 private _contingencyService: ContingencyService,
@@ -75,10 +76,14 @@ export class SearchHistoricalComponent implements OnInit {
         this.setMinDate();
     }
 
-    private setMinDate(): void {
-        const today = new Date();
-        const todayUtil = SearchHistoricalComponent.dateUtil.getUTCDate(today.getTime(), -(24 * 60));
-        this.minFrom = new Date(todayUtil);
+    private setMinDate() {
+        this.apiRestService.getSingle('configTypes', 'RANGE_DATE_HISTORICAL').subscribe(rs => {
+            const res = rs as GroupTypes;
+            const day = Number(res.types[0].code);
+            const today = new Date();
+            const todayUtil = SearchHistoricalComponent.dateUtil.getUTCDate(today.getTime(), -(24 * day));
+            this.minFrom = new Date(todayUtil);
+        });
     }
 
     public onSelectFrom(event: MatDatepickerInputEvent<Date>): void {
