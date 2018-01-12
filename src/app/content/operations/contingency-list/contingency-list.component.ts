@@ -156,7 +156,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Method for get data
+     * Method for get list
      */
     private getContingencies() {
         if (!this.historicalSearchService.active) {
