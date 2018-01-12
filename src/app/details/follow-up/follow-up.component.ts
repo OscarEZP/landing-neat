@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { forEach } from '@angular/router/src/utils/collection';
 import { Subscription } from 'rxjs/Subscription';
 import { ActualTimeModel } from '../../shared/_models/actualTime';
 import { Contingency } from '../../shared/_models/contingency';
@@ -15,6 +14,7 @@ import { DataService } from '../../shared/_services/data.service';
 import { MessageService } from '../../shared/_services/message.service';
 import { StorageService } from '../../shared/_services/storage.service';
 import { DetailsService } from '../_services/details.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * Follow up component
@@ -84,7 +84,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             'observation': [null, Validators.required],
             'code': [null, Validators.required],
             'duration': [30, Validators.required]
-        });
+        }, { updateOn: 'submit' });
     }
 
     /**
@@ -131,9 +131,9 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      * @return {void} nothing to return
      */
     private contingencyChanged(contingency: Contingency) {
-        if (contingency !== null) {
+        if (contingency !== null && this.selectedContingency !== contingency) {
+            this.followUpForm.reset();
             this.selectedContingency = contingency;
-
             this.generateIntervalSelection(this.selectedContingency.creationDate.epochTime);
             this.getStatusCodesAvailable();
 
@@ -301,6 +301,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      * @return {void} nothing to return
      */
     public closeDetails() {
+        this.followUpForm.reset();
         this._detailsService.closeSidenav();
     }
 
@@ -313,7 +314,6 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     public submitForm(value: any) {
         this.validations.isSubmitted = true;
-
         if (this.followUpForm.valid) {
             this.validations.isSending = true;
             this._dataService.stringMessage('open');
@@ -330,20 +330,19 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             this._apiRestService
                 .add<Response>('followUp', this._followUp, safetyCode)
                 .subscribe(() => {
-
                     this._detailsService.closeSidenav();
                     this._dataService.stringMessage('reload');
                     this._messageService.openSnackBar('created');
                     this._dataService.stringMessage('close');
                     this.validations.isSubmitted = false;
                     this.validations.isSending = false;
+                    this.followUpForm.reset();
 
-                }, err => {
+                }, (err: HttpErrorResponse) => {
                     this._dataService.stringMessage('close');
                     this._messageService.openSnackBar(err.error.message);
                     this.validations.isSubmitted = false;
                     this.validations.isSending = false;
-
                 });
         }
     }
