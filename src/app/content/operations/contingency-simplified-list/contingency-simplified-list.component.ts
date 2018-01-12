@@ -8,6 +8,7 @@ import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { DataService } from '../../../shared/_services/data.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
+import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 
 @Component({
     selector: 'lsl-contingency-simplified-list',
@@ -21,6 +22,7 @@ export class ContingencySimplifiedListComponent implements OnInit, OnDestroy {
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
     private _alive: boolean;
+    private _period: number;
     public contingencyList;
     public progressBarColor: string;
     public currentUTCTime: number;
@@ -31,6 +33,7 @@ export class ContingencySimplifiedListComponent implements OnInit, OnDestroy {
         translate.setDefaultLang('en');
         this.contingencyList = [];
         this._alive = true;
+        this._period = 0;
     }
 
     ngOnInit() {
@@ -40,12 +43,15 @@ export class ContingencySimplifiedListComponent implements OnInit, OnDestroy {
         this._reloadSubscription = this.messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.getContingences();
 
-        IntervalObservable.create(60000)
-            .takeWhile(() => this._alive)
-            .subscribe(() => {
-                this.reloadList('reload');
-            });
-
+        this._apiService.getSingle('configTypes', 'HEMICYCLE_PERIOD').subscribe(rs => {
+            const res = rs as GroupTypes;
+            this._period = Number(res.types[0].code);
+            IntervalObservable.create(this._period * 60000)
+                .takeWhile(() => this._alive)
+                .subscribe(() => {
+                    this.reloadList('reload');
+                });
+        });
     }
 
     ngOnDestroy() {
