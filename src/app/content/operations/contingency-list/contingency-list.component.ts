@@ -121,8 +121,8 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     /**
      * Method for opening contingency details component
-     * @param contingency
-     * @param section
+     * @param contingency, object with contingency basic information
+     * @param section, #id for scrolling movement
      */
     public openDetails(contingency: Contingency, section: string) {
         this.detailsService.contingency = contingency;
