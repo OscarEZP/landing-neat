@@ -47,7 +47,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         'timeAlert': null,
         'delta': 0,
         'defaultTime': null,
-        'lastStatus': null
+        'lastStatus': null,
+        'isClosed': null
     };
 
     /**
@@ -75,7 +76,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             'timeAlert': false,
             'delta': 180,
             'defaultTime': 30,
-            'lastStatus': false
+            'lastStatus': false,
+            'isClosed': this.selectedContingency ? this.selectedContingency.isClose : false
         };
 
         this.followUpForm = fb.group({
@@ -133,11 +135,12 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     private contingencyChanged(contingency: Contingency) {
         if (contingency !== null && this.selectedContingency !== contingency) {
             this.followUpForm.reset();
+            this.validations.isSubmitted = false;
             this.selectedContingency = contingency;
             this.generateIntervalSelection(this.selectedContingency.creationDate.epochTime);
             this.getStatusCodesAvailable();
-
             this.getMaxConfigStatuses();
+            this.validations.isClosed = contingency.isClose;
         }
     }
 
@@ -302,6 +305,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     public closeDetails() {
         this.followUpForm.reset();
+        this.validations.isSubmitted = false;
         this._detailsService.closeSidenav();
     }
 
