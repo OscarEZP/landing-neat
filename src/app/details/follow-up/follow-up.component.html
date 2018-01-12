@@ -1,5 +1,5 @@
 <section id="follow-up">
-    <section class="box" *ngIf="!validations.isFollowUpDisabled">
+    <section class="box" *ngIf="!validations.isFollowUpDisabled && !validations.isClosed">
         <form [formGroup]="followUpForm" (ngSubmit)="submitForm(followUpForm.value)">
             <h2>{{ 'OPERATIONS.CONTINGENCY_FORM.TYPOLOGY' | translate }}</h2>
             <div fxLayout="row" class="remove-space">
@@ -80,8 +80,15 @@
             </div>
         </form>
     </section>
-    <section class="box" *ngIf="validations.isFollowUpDisabled">
+    <section class="box">
         <h2>{{ 'OPERATIONS.CONTINGENCY_FORM.TYPOLOGY' | translate }}</h2>
-        {{ validations.lastStatus ? ('OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_LAST_STATUS' | translate)  : ('OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_DISABLED' | translate) }}
+        <p *ngIf="validations.isFollowUpDisabled && !validations.isClosed">
+            {{ validations.lastStatus ? ('OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_LAST_STATUS' | translate)  : ('OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_DISABLED' | translate) }}
+        </p>
+        <p *ngIf="validations.isClosed">
+            {{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_CLOSED_STATUS' | translate }}
+        </p>
     </section>
+
+
 </section>
