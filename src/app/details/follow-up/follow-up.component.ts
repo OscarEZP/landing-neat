@@ -135,6 +135,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     private contingencyChanged(contingency: Contingency) {
         if (contingency !== null && this.selectedContingency !== contingency) {
             this.followUpForm.reset();
+            this.validations.isSubmitted = false;
             this.selectedContingency = contingency;
             this.generateIntervalSelection(this.selectedContingency.creationDate.epochTime);
             this.getStatusCodesAvailable();
@@ -304,6 +305,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     public closeDetails() {
         this.followUpForm.reset();
+        this.validations.isSubmitted = false;
         this._detailsService.closeSidenav();
     }
 
