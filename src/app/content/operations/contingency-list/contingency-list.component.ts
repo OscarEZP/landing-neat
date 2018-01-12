@@ -111,15 +111,30 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         return this._contingencyService;
     }
 
+    /**
+     * Method for check list status with two variables, data loaded and loading process,
+     * if there is not data and the list is not loading, return false
+     * @return {boolean}
+     */
     public checkDataStatus(): boolean {
         return this.contingencyService.data.length > 0 && !this.contingencyService.loading;
     }
 
+    /**
+     * Method for opening contingency details component
+     * @param contingency, object with contingency basic information
+     * @param section, #id for scrolling movement
+     */
     public openDetails(contingency: Contingency, section: string) {
         this.detailsService.contingency = contingency;
+        // Walk around until release more sections
+        section = 'follow-up';
         this.detailsService.openDetails(section);
     }
 
+    /**
+     * Event when component is destroyed
+     */
     public ngOnDestroy() {
         this._messageSubscriptions.unsubscribe();
         this._reloadSubscription.unsubscribe();
@@ -141,6 +156,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Method for get data list when is not a historical search
+     */
     private getContingencies() {
         if (!this.historicalSearchService.active) {
             this.contingencyService.getContingencies().subscribe();

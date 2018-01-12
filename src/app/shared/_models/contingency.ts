@@ -4,7 +4,7 @@ import { Flight } from './flight';
 import { Safety } from './safety';
 import { Status } from './status';
 import { TimeInstant } from './timeInstant';
-import {Close} from './close';
+import { Close } from './close';
 
 export class Contingency {
 
@@ -18,6 +18,7 @@ export class Contingency {
     private _flight: Flight;
     private _informer: string;
     private _isBackup: boolean;
+    private _isClose: boolean;
     private _backup: Backup;
     private _reason: string;
     private _safetyEvent: Safety;
@@ -25,7 +26,7 @@ export class Contingency {
     private _type: string;
     private _username: string;
 
-    constructor (id: number, aircraft: Aircraft, barcode: string, creationDate: TimeInstant, failure: string, flight: Flight, informer: string, isBackup: boolean, backup: Backup, reason: string, safetyEvent: Safety, status: Status, type: string, username: string) {
+    constructor(id: number, aircraft: Aircraft, barcode: string, creationDate: TimeInstant, failure: string, flight: Flight, informer: string, isBackup: boolean, isClose: boolean, backup: Backup, reason: string, safetyEvent: Safety, status: Status, type: string, username: string) {
         this._id = id;
         this._aircraft = aircraft;
         this._barcode = barcode;
@@ -34,6 +35,7 @@ export class Contingency {
         this._flight = flight;
         this._informer = informer;
         this._isBackup = isBackup;
+        this._isClose = isClose;
         this._backup = backup;
         this._reason = reason;
         this._safetyEvent = safetyEvent;
@@ -42,115 +44,123 @@ export class Contingency {
         this._username = username;
     }
 
-    set lastInformationPercentage (value: number) {
+    set lastInformationPercentage(value: number) {
         this._lastInformationPercentage = value;
     }
 
-    get lastInformationPercentage (): number {
+    get lastInformationPercentage(): number {
         return this._lastInformationPercentage;
     }
 
-    get id (): number {
+    get id(): number {
         return this._id;
     }
 
-    set id (value: number) {
+    set id(value: number) {
         this._id = value;
     }
 
-    get aircraft (): Aircraft {
+    get aircraft(): Aircraft {
         return this._aircraft;
     }
 
-    set aircraft (value: Aircraft) {
+    set aircraft(value: Aircraft) {
         this._aircraft = value;
     }
 
-    get barcode (): string {
+    get barcode(): string {
         return this._barcode;
     }
 
-    set barcode (value: string) {
+    set barcode(value: string) {
         this._barcode = value;
     }
 
-    get creationDate (): TimeInstant {
+    get creationDate(): TimeInstant {
         return this._creationDate;
     }
 
-    set creationDate (value: TimeInstant) {
+    set creationDate(value: TimeInstant) {
         this._creationDate = value;
     }
 
-    get failure (): string {
+    get failure(): string {
         return this._failure;
     }
 
-    set failure (value: string) {
+    set failure(value: string) {
         this._failure = value;
     }
 
-    get flight (): Flight {
+    get flight(): Flight {
         return this._flight;
     }
 
-    set flight (value: Flight) {
+    set flight(value: Flight) {
         this._flight = value;
     }
 
-    get informer (): string {
+    get informer(): string {
         return this._informer;
     }
 
-    set informer (value: string) {
+    set informer(value: string) {
         this._informer = value;
     }
 
-    get isBackup (): boolean {
+    get isBackup(): boolean {
         return this._isBackup;
     }
 
-    set isBackup (value: boolean) {
+    set isBackup(value: boolean) {
         this._isBackup = value;
     }
 
-    get reason (): string {
+    get isClose(): boolean {
+        return this._isClose;
+    }
+
+    set isClose(value: boolean) {
+        this._isClose = value;
+    }
+
+    get reason(): string {
         return this._reason;
     }
 
-    set reason (value: string) {
+    set reason(value: string) {
         this._reason = value;
     }
 
-    get safetyEvent (): Safety {
+    get safetyEvent(): Safety {
         return this._safetyEvent;
     }
 
-    set safetyEvent (value: Safety) {
+    set safetyEvent(value: Safety) {
         this._safetyEvent = value;
     }
 
-    get status (): Status {
+    get status(): Status {
         return this._status;
     }
 
-    set status (value: Status) {
+    set status(value: Status) {
         this._status = value;
     }
 
-    get type (): string {
+    get type(): string {
         return this._type;
     }
 
-    set type (value: string) {
+    set type(value: string) {
         this._type = value;
     }
 
-    get username (): string {
+    get username(): string {
         return this._username;
     }
 
-    set username (value: string) {
+    set username(value: string) {
         this._username = value;
     }
 
@@ -171,6 +181,6 @@ export class Contingency {
     }
 
     static fromJsonArray(array: Array<Object>): Contingency[] {
-        return array.map(obj => new Contingency(obj['id'], obj['aircraft'], obj['barcode'], obj['creationDate'], obj['failure'], obj['flight'], obj['informer'], obj['isBackup'], obj['backup'], obj['reason'], obj['safetyEvent'], obj['status'], obj['type'], obj['username']));
+        return array.map(obj => new Contingency(obj['id'], obj['aircraft'], obj['barcode'], obj['creationDate'], obj['failure'], obj['flight'], obj['informer'], obj['isBackup'], obj['isClose'], obj['backup'], obj['reason'], obj['safetyEvent'], obj['status'], obj['type'], obj['username']));
     }
 }

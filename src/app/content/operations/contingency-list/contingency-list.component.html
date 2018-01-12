@@ -18,8 +18,8 @@
         <div fxFlex="5" fxLayoutAlign="start center">{{ 'OPERATIONS.OPERATOR' | translate }}</div>
         <div fxFlex="7" fxLayoutAlign="start center">{{ 'OPERATIONS.FLIGHT' | translate }}</div>
         <div fxFlex="8" fxLayoutAlign="start center">{{ 'OPERATIONS.FROM_TO' | translate }}</div>
-        <div fxFlex="30" fxLayoutAlign="start center">{{ 'OPERATIONS.DESCRIPTION' | translate }}</div>
-        <div fxFlex="5" fxLayoutAlign="start center">{{ 'OPERATIONS.STATUS' | translate }}</div>
+        <div fxFlex="28" fxLayoutAlign="start center">{{ 'OPERATIONS.DESCRIPTION' | translate }}</div>
+        <div fxFlex="7" fxLayoutAlign="start center">{{ 'OPERATIONS.STATUS' | translate }}</div>
         <div fxFlex="5" fxLayoutAlign="start center">{{ 'OPERATIONS.TYPE' | translate }}</div>
         <div fxFlex="8" fxLayoutAlign="start center">{{ 'OPERATIONS.SAFETY_EVENT' | translate }}</div>
         <div fxFlex="8" fxLayoutAlign="start center">{{ (historicalSearchService.active ? 'OPERATIONS.CONTINGENCY_LIMIT' : 'OPERATIONS.PROGRESS') | translate }}</div>
@@ -58,10 +58,10 @@
             <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency)" *ngIf="contingency.isBackup">{{ contingency.backup.location }}</div>
 
             <!-- REASON -->
-            <div fxFlex="30" fxLayoutAlign="start center" class="description" (click)="openDetails(contingency)">{{(contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}</div>
+            <div fxFlex="28" fxLayoutAlign="start center" class="description" (click)="openDetails(contingency)">{{(contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}</div>
 
             <!-- STATUS -->
-            <div fxFlex="5" fxLayoutAlign="start center">
+            <div fxFlex="7" fxLayoutAlign="start center">
                 <span (click)="openDetails(contingency, 'follow-up')" *ngIf="!historicalSearchService.active" class="badge {{ contingency.status.code | lowercase }}">{{ contingency.status.code | uppercase }}</span>
                 <span *ngIf="historicalSearchService.active" class="badge {{ contingency.close.type | lowercase }}">{{ contingency.close.type | uppercase }}</span>
             </div>
@@ -117,13 +117,13 @@
                     <mat-icon aria-label="options">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="openCloseContingency(contingency)" [disabled]="historicalSearchService.active">
+                    <button mat-menu-item (click)="openCloseContingency(contingency)" [disabled]="contingency.isClose">
                         <span>{{ 'BUTTONS.SUB_MENUS.CLOSE_CONTINGENCY' | translate }}</span>
                     </button>
                     <button mat-menu-item>
                         <span>{{ 'BUTTONS.SUB_MENUS.MEETING' | translate }}</span>
                     </button>
-                    <button mat-menu-item (click)="openDetails(contingency, 'follow-up')" [disabled]="contingency.status.code === 'ETR' || contingency.status.code === 'NI4' || historicalSearchService.active">
+                    <button mat-menu-item (click)="openDetails(contingency, 'follow-up')" [disabled]="contingency.status.code === 'ETR' || contingency.status.code === 'NI4' || contingency.isClose">
                         <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
                     </button>
                 </mat-menu>
