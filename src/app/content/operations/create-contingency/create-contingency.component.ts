@@ -83,7 +83,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                 private _messageService: MessageService,
                 private _storageService: StorageService,
                 private _apiRestService: ApiRestService,
-                private _dateUtil: DateUtil,
                 private _translate: TranslateService) {
 
         const initFakeDate = new Date().getTime();
@@ -442,7 +441,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     private isBackupCheck(): void {
         if (this.contingency.isBackup) {
-            const finalDate = this._dateUtil.createEpochFromTwoStrings(this.contingencyDateModel[1].dateObj, this.contingencyDateModel[1].timeString);
+            const finalDate = DateUtil.createEpochFromTwoStrings(this.contingencyDateModel[1].dateObj, this.contingencyDateModel[1].timeString);
             this.contingency.backup.slot.epochTime = finalDate;
         }
     }

@@ -10,6 +10,7 @@ import { Contingency } from '../../../shared/_models/contingency';
 import { InfiniteScrollService } from './infinite-scroll.service';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { DetailsService } from '../../../details/_services/details.service';
+import { Count } from '../../../shared/_models/configuration/count';
 
 const httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -22,6 +23,7 @@ export class ContingencyService {
     private closePath = environment.paths.close;
     private searchAircraftPath = environment.paths.aircraftsSearch;
     private contingencySearch = environment.paths.contingencySearch;
+    private contingencySearchCount = environment.paths.contingencySearchCount;
     public data: Contingency[];
     private _loading: boolean;
 
@@ -53,7 +55,6 @@ export class ContingencyService {
                         this._detailsService.contingency = this.data[0];
                     }
                     this.loading = false;
-                    this._infiniteScrollService.length = contingencies.length;
                 })
             );
     }
@@ -75,9 +76,6 @@ export class ContingencyService {
 
     public postHistoricalSearch(searchSignature): Observable<Contingency[]> {
         this.loading = true;
-        this.getTotalRecords(searchSignature).subscribe((data) => {
-            this._infiniteScrollService.length = data.length;
-        });
         return this.http.post<any>(this.apiUrl + this.contingencySearch, searchSignature, httpOptions)
             .pipe(
                 tap(contingencies => {
@@ -98,17 +96,11 @@ export class ContingencyService {
     }
 
     public getTotalRecords(searchSignature): Observable<any> {
-        const countSignature = {
-            offSet: 0,
-            limit: 100000000,
-            from: searchSignature.from,
-            to: searchSignature.to,
-            tails: searchSignature.tails
-        };
-        return this.http.post<any>(this.apiUrl + this.contingencySearch, countSignature, httpOptions)
+        return this.http.post<Count>(this.apiUrl + this.contingencySearchCount, searchSignature, httpOptions)
             .pipe(
-                tap(contingencies => {
+                tap(count => {
                     this.log(`fetched count search`);
+                    this._infiniteScrollService.length = count.items;
                 }),
                 catchError(this.handleError('getContingencies', []))
             );

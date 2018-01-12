@@ -19,7 +19,7 @@ import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 })
 
 export class SearchHistoricalComponent implements OnInit {
-    static dateUtil: DateUtil = new DateUtil();
+
     public searchForm: FormGroup;
     public snackbarMessage: string;
     public aicraftList: Aircraft[];
@@ -81,7 +81,7 @@ export class SearchHistoricalComponent implements OnInit {
             const res = rs as GroupTypes;
             const day = Number(res.types[0].code);
             const today = new Date();
-            const todayUtil = SearchHistoricalComponent.dateUtil.getUTCDate(today.getTime(), -(24 * day));
+            const todayUtil = DateUtil.getUTCDate(today.getTime(), -(24 * day));
             this.minFrom = new Date(todayUtil);
         });
     }
@@ -108,7 +108,6 @@ export class SearchHistoricalComponent implements OnInit {
     public clearSearch(): void {
         this.searchHistoricalService.searchForm.reset();
         this.router.navigate(['../'], {relativeTo: this.route});
-        this.contingencyService.getContingencies().subscribe();
     }
 
     submitForm(value: any) {
@@ -126,6 +125,7 @@ export class SearchHistoricalComponent implements OnInit {
                 limit: this.infiniteScrollService.pageSize
             };
             this.contingencyService.postHistoricalSearch(search).subscribe();
+            this.contingencyService.getTotalRecords(search).subscribe();
             if (!this.searchHistoricalService.active) {
                 this.router.navigate([this.router.url + '/historical']);
             }
@@ -148,6 +148,6 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     private isAllSelected(selectedOptions): boolean {
-        return selectedOptions.indexOf('ALL') === -1 ? false : true;
+        return selectedOptions.indexOf('ALL') === -1;
     }
 }
