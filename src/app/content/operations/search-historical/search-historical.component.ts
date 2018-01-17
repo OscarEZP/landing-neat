@@ -120,7 +120,7 @@ export class SearchHistoricalComponent implements OnInit {
                 to: {
                     epochTime: this.searchHistoricalService.toTS
                 },
-                tails: this.isAllSelected(this.searchHistoricalService.tails) ? this.searchHistoricalService.tails : null,
+                tails: this.isAllSelected(this.searchHistoricalService.tails) ? null : this.searchHistoricalService.tails,
                 offSet: this.infiniteScrollService.offset,
                 limit: this.infiniteScrollService.pageSize
             };
@@ -148,6 +148,6 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     private isAllSelected(selectedOptions): boolean {
-        return selectedOptions.indexOf('ALL') === -1;
+        return selectedOptions.indexOf('ALL') !== -1;
     }
 }
