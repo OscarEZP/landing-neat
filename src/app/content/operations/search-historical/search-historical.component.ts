@@ -120,7 +120,7 @@ export class SearchHistoricalComponent implements OnInit {
                 to: {
                     epochTime: this.searchHistoricalService.toTS
                 },
-                tails: this.isAllSelected(this.searchHistoricalService.tails) ? null : this.searchHistoricalService.tails,
+                tails: this.isAllSelected(this.searchHistoricalService.tails) ? this.searchHistoricalService.tails : null,
                 offSet: this.infiniteScrollService.offset,
                 limit: this.infiniteScrollService.pageSize
             };
