@@ -148,6 +148,6 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     private isAllSelected(selectedOptions): boolean {
-        return selectedOptions.indexOf('ALL') === -1;
+        return selectedOptions.indexOf('ALL') !== -1;
     }
 }
