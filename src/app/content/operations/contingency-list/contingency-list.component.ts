@@ -142,6 +142,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public openDetails(contingency: Contingency, section: string) {
         this.detailsService.activeContingencyChanged(contingency);
         this.detailsService.openDetails(section);
+        this.selectedContingency = contingency;
     }
 
     /**
