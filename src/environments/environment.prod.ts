@@ -3,8 +3,8 @@ export const environment = {
     envName: 'prod',
     apiUrl: 'https://mcp.maintenix.ifs.cloud',
     hotjarConfig: {
-        id: '000000',
-        enabled: false
+        id: '750858',
+        enabled: true
     },
     paths: {
         aircrafts: '/api/v1/configurations/aircrafts',
