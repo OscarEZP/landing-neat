@@ -32,7 +32,7 @@
     </header>
     <main>
         <div fxLayout="row"
-             [class.active]="contingency === selectedContingency"
+             [class.active]="contingency.id === selectedContingency.id"
              *ngFor="let contingency of contingencyService.contingencyList"
              class="contingency-item">
             <!--TAIL/FLEET-->
