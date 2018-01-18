@@ -120,7 +120,6 @@ export class ContingencyService implements OnInit {
                             const percentage = (diff / 180) * 100;
                             item.lastInformationPercentage = percentage > 100 ? 100 : percentage;
                         });
-                        // this._detailsService.contingency = this._contingencyList[0];
                     }
                     this.loading = false;
                 }),
