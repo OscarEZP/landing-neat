@@ -206,8 +206,9 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
 
-        this.contingencySubcription = this._detailsService.selectedContingencyChange.subscribe(contingency => this.selectedContingencyChanged(contingency));
+        this.generateIntervalSelection();
 
+        this.contingencySubcription = this._detailsService.selectedContingencyChange.subscribe(contingency => this.selectedContingencyChanged(contingency));
         this.detailServiceSubscription = this._detailsService.sidenavVisibilityChange.subscribe(message => this.isDetailVisibleChange(message));
     }
 
