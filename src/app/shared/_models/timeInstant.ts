@@ -24,3 +24,4 @@ export class TimeInstant {
         this._label = value;
     }
 }
+

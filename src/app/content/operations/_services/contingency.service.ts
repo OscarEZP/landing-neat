@@ -1,39 +1,55 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { catchError, tap } from 'rxjs/operators';
+import { Subject } from 'rxjs/Subject';
 import { environment } from '../../../../environments/environment';
 import { Aircraft } from '../../../shared/_models/aircraft';
-import { LogService } from './log.service';
-import { Contingency } from '../../../shared/_models/contingency';
-import { InfiniteScrollService } from './infinite-scroll.service';
-import { ApiRestService } from '../../../shared/_services/apiRest.service';
-import { DetailsService } from '../../../details/_services/details.service';
 import { Count } from '../../../shared/_models/configuration/count';
+import { Contingency } from '../../../shared/_models/contingency';
+import { ApiRestService } from '../../../shared/_services/apiRest.service';
+import { InfiniteScrollService } from './infinite-scroll.service';
+import { LogService } from './log.service';
 
 const httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
 };
 
 @Injectable()
-export class ContingencyService {
+export class ContingencyService implements OnInit {
 
-    private apiUrl = environment.apiUrl;
-    private closePath = environment.paths.close;
-    private searchAircraftPath = environment.paths.aircraftsSearch;
-    private contingencySearch = environment.paths.contingencySearch;
-    private contingencySearchCount = environment.paths.contingencySearchCount;
-    public data: Contingency[];
+    private static apiUrl = environment.apiUrl;
+    private static closePath = environment.paths.close;
+    private static searchAircraftPath = environment.paths.aircraftsSearch;
+    private static contingencySearch = environment.paths.contingencySearch;
+    private static contingencySearchCount = environment.paths.contingencySearchCount;
+
+    private _contingencyList: Contingency[];
     private _loading: boolean;
+    private _contingencyListChanged: Subject<Contingency[]> = new Subject<Contingency[]>();
+    private _apiService: ApiRestService;
 
     constructor(private http: HttpClient,
                 private logService: LogService,
-                private _infiniteScrollService: InfiniteScrollService,
-                private _apiService: ApiRestService,
-                private _detailsService: DetailsService) {
-        this.data = [];
+                private _infiniteScrollService: InfiniteScrollService) {
+
+        this.contingencyList = [];
+
         this.loading = false;
+        this.apiService = new ApiRestService(this.http);
+
+        this.contingencyListChanged.subscribe((value: Contingency[]) => {
+            this.contingencyList = value;
+        });
+    }
+
+    get contingencyList(): Contingency[] {
+        return this._contingencyList;
+    }
+
+    set contingencyList(value: Contingency[]) {
+        this._contingencyList = value;
     }
 
     get loading(): boolean {
@@ -44,23 +60,40 @@ export class ContingencyService {
         this._loading = value;
     }
 
+    get contingencyListChanged(): Subject<Contingency[]> {
+        return this._contingencyListChanged;
+    }
+
+    set contingencyListChanged(value: Subject<Contingency[]>) {
+        this._contingencyListChanged = value;
+    }
+
+    get apiService(): ApiRestService {
+        return this._apiService;
+    }
+
+    set apiService(value: ApiRestService) {
+        this._apiService = value;
+    }
+
+    ngOnInit() {
+        this.getContingencies();
+    }
+
     public getContingencies(): Observable<Contingency[]> {
         this.loading = true;
-        return this._apiService
+        return this.apiService
             .getAll<Contingency[]>('contingencyList')
             .pipe(
-                tap(contingencies => {
-                    this.data = contingencies;
-                    if (contingencies.length > 0) {
-                        this._detailsService.contingency = this.data[0];
-                    }
+                tap((contingencies: Contingency[]) => {
                     this.loading = false;
+                    this.contingencyListChanged.next(contingencies);
                 })
             );
     }
 
     public getAircrafts(searchSignature: any): Observable<Aircraft[]> {
-        return this.http.post<Aircraft[]>(this.apiUrl + this.searchAircraftPath, searchSignature, httpOptions)
+        return this.http.post<Aircraft[]>(ContingencyService.apiUrl + ContingencyService.searchAircraftPath, searchSignature, httpOptions)
             .pipe(
                 tap(aircrafts => this.log(`fetched aircrafts`)),
                 catchError(this.handleError('getAircrafts', []))
@@ -68,7 +101,7 @@ export class ContingencyService {
     }
 
     public closeContingency(closeSignature: any): Observable<any> {
-        return this.http.post<any>(this.apiUrl + this.closePath, closeSignature, httpOptions).pipe(
+        return this.http.post<any>(ContingencyService.apiUrl + ContingencyService.closePath, closeSignature, httpOptions).pipe(
             tap((signature: any) => this.log(`close contingency w/ id=${signature.id}`)),
             catchError(this.handleError<any>('closeContingency'))
         );
@@ -76,18 +109,17 @@ export class ContingencyService {
 
     public postHistoricalSearch(searchSignature): Observable<Contingency[]> {
         this.loading = true;
-        return this.http.post<any>(this.apiUrl + this.contingencySearch, searchSignature, httpOptions)
+        return this.http.post<any>(ContingencyService.apiUrl + ContingencyService.contingencySearch, searchSignature, httpOptions)
             .pipe(
                 tap(contingencies => {
                     this.log(`fetched search`);
-                    this.data = contingencies;
+                    this._contingencyList = contingencies;
                     if (contingencies.length > 0) {
                         contingencies.forEach((item) => {
                             const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
                             const percentage = (diff / 180) * 100;
                             item.lastInformationPercentage = percentage > 100 ? 100 : percentage;
                         });
-                        this._detailsService.contingency = this.data[0];
                     }
                     this.loading = false;
                 }),
@@ -96,7 +128,7 @@ export class ContingencyService {
     }
 
     public getTotalRecords(searchSignature): Observable<any> {
-        return this.http.post<Count>(this.apiUrl + this.contingencySearchCount, searchSignature, httpOptions)
+        return this.http.post<Count>(ContingencyService.apiUrl + ContingencyService.contingencySearchCount, searchSignature, httpOptions)
             .pipe(
                 tap(count => {
                     this.log(`fetched count search`);

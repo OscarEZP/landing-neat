@@ -1,30 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import { DetailsService } from '../../details/_services/details.service';
+import { Component } from '@angular/core';
 import { ContingencyService } from '../../content/operations/_services/contingency.service';
+import { DetailsService } from '../../details/_services/details.service';
 
 @Component({
     selector: 'lsl-rightnav',
     templateUrl: './rightnav.component.html',
     styleUrls: ['./rightnav.component.scss']
 })
-export class RightnavComponent implements OnInit {
+export class RightnavComponent {
 
-    constructor(public detailsService: DetailsService,
-                public contingencyService: ContingencyService) {
+    private _activeSection: string;
+
+    constructor(private _detailsService: DetailsService, private _contingencyService: ContingencyService) {
+        this.activeSection = null;
     }
 
-    ngOnInit() {
+    get activeSection(): string {
+        return this._activeSection;
     }
 
-    openDetails(section: string = 'information') {
-        this.detailsService.openDetails(section);
+    set activeSection(value: string) {
+        this._activeSection = value;
     }
 
-    closeDetails() {
-        this.detailsService.closeSidenav().then();
+    public openDetails(section: string = 'information') {
+        this._detailsService.openDetails(section);
+        return this.activeSection = section;
+    }
+
+    public closeDetails() {
+        this._detailsService.closeSidenav().then();
     }
 
     public isDisabled(): boolean {
-        return this.contingencyService.data.length === 0 ? true : false;
+        return this._contingencyService.contingencyList.length === 0;
     }
 }

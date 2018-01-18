@@ -1,20 +1,25 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
+import { ContingencyService } from '../../content/operations/_services/contingency.service';
 import { ActualTimeModel } from '../../shared/_models/actualTime';
+import { Aircraft } from '../../shared/_models/aircraft';
+import { Backup } from '../../shared/_models/backup';
+import { StatusCode } from '../../shared/_models/configuration/statusCode';
 import { Contingency } from '../../shared/_models/contingency';
+import { Flight } from '../../shared/_models/flight';
 import { Interval } from '../../shared/_models/interval';
 import { Safety } from '../../shared/_models/safety';
 import { Status } from '../../shared/_models/status';
-import { StatusCode } from '../../shared/_models/configuration/statusCode';
 import { TimeInstant } from '../../shared/_models/timeInstant';
 import { User } from '../../shared/_models/user/user';
+import { Validation } from '../../shared/_models/validation';
 import { ApiRestService } from '../../shared/_services/apiRest.service';
 import { DataService } from '../../shared/_services/data.service';
 import { MessageService } from '../../shared/_services/message.service';
 import { StorageService } from '../../shared/_services/storage.service';
 import { DetailsService } from '../_services/details.service';
-import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * Follow up component
@@ -27,66 +32,165 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class FollowUpComponent implements OnInit, OnDestroy {
 
-    private contingencySubcription: Subscription;
-    private safetyEventSubcription: Subscription;
+    public static FOLLOW_UP_CLOSED_STATUS = 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_CLOSED_STATUS';
+    public static FOLLOW_UP_LAST_STATUS = 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_LAST_STATUS';
+    public static FOLLOW_UP_DISABLED = 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_DISABLED';
+
+    @ViewChild('f') followUpFormChild;
+    private _contingencySubcription: Subscription;
+    private _detailServiceSubscription: Subscription;
+
     private _followUp: Status;
-    public currentUTCTime: number;
-    public followUpForm: FormGroup;
-    public safetyEventList: Safety[];
-    private user: User;
-    public selectedContingency: Contingency;
-    public currentSafeEventCode: string;
-    public statusCodes: StatusCode[];
-    public maxStatusCodes: StatusCode[];
-    public durations: number[];
-    public validations = {
-        'optionalIsChecked': null,
-        'isFollowUpDisabled': null,
-        'isSending': null,
-        'isSubmitted': null,
-        'timeAlert': null,
-        'delta': 0,
-        'defaultTime': null,
-        'lastStatus': null,
-        'isClosed': null
-    };
+
+    private _currentUTCTime: number;
+    private _followUpForm: FormGroup;
+    private _safetyEventList: Safety[];
+    private _user: User;
+    private _selectedContingency: Contingency;
+    private _statusCodes: StatusCode[];
+
+    private _durations: number[];
+    private _validations: Validation;
+    private _apiRestService: ApiRestService;
+    private _delta: number;
 
     /**
      * @param {DetailsService} _detailsService - Shared service of the detail sidebar
-     * @param {ApiRestService} _apiRestService - Generic service to communicate with API
      * @param {MessageService} _messageService - Shared service to call loading and other services
      * @param {FormBuilder} fb - Form builder creator to validate and init the form
      * @param {StorageService} _storageService - Service to retrieve and save data in local storage
      * @param {DataService} _dataService - Service to transport data message between components subscribed
+     * @param {HttpClient} http Generic service to communicate with API
      */
-    constructor(private _detailsService: DetailsService, private _apiRestService: ApiRestService, private _messageService: MessageService, private fb: FormBuilder, private _storageService: StorageService, private _dataService: DataService) {
-        this._followUp = new Status(null, null, null, null, null, null, new Interval(null, null), null);
+    constructor(
+        private _detailsService: DetailsService,
+        private _messageService: MessageService,
+        private fb: FormBuilder,
+        private _storageService: StorageService,
+        private _dataService: DataService,
+        private http: HttpClient) {
+        this.followUp = new Status(null, null, null, new TimeInstant(null, null), null, new Interval(new TimeInstant(null, null), null), new Interval(new TimeInstant(null, null), null), this._storageService.getCurrentUser().userId);
+
+        this.apiRestService = new ApiRestService(http);
 
         this.currentUTCTime = 0;
-        this.safetyEventList = [];
-        this.selectedContingency = _detailsService.contingency;
-        this.currentSafeEventCode = null;
-        this.statusCodes = [];
-        this.durations = [];
-        this.validations = {
-            'optionalIsChecked': false,
-            'isFollowUpDisabled': false,
-            'isSubmitted': false,
-            'isSending': false,
-            'timeAlert': false,
-            'delta': 180,
-            'defaultTime': 30,
-            'lastStatus': false,
-            'isClosed': this.selectedContingency ? this.selectedContingency.isClose : false
-        };
+        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null);
+
+        this.validations = new Validation(false, true, true, false);
+
+        this.user = this._storageService.getCurrentUser();
 
         this.followUpForm = fb.group({
-            'safety': [null],
+            'safety': [false],
             'safetyEventCode': [null],
-            'observation': [null, Validators.required],
-            'code': [null, Validators.required],
-            'duration': [30, Validators.required]
-        }, { updateOn: 'submit' });
+            'observation': [this.followUp.observation, Validators.required],
+            'code': [this.followUp.code, Validators.required],
+            'duration': [this.followUp.requestedInterval.duration, Validators.required]
+        });
+    }
+
+    get contingencySubcription(): Subscription {
+        return this._contingencySubcription;
+    }
+
+    set contingencySubcription(value: Subscription) {
+        this._contingencySubcription = value;
+    }
+
+    get detailServiceSubscription(): Subscription {
+        return this._detailServiceSubscription;
+    }
+
+    set detailServiceSubscription(value: Subscription) {
+        this._detailServiceSubscription = value;
+    }
+
+    get followUp(): Status {
+        return this._followUp;
+    }
+
+    set followUp(value: Status) {
+        this._followUp = value;
+    }
+
+    get currentUTCTime(): number {
+        return this._currentUTCTime;
+    }
+
+    set currentUTCTime(value: number) {
+        this._currentUTCTime = value;
+    }
+
+    get followUpForm(): FormGroup {
+        return this._followUpForm;
+    }
+
+    set followUpForm(value: FormGroup) {
+        this._followUpForm = value;
+    }
+
+    get safetyEventList(): Safety[] {
+        return this._safetyEventList;
+    }
+
+    set safetyEventList(value: Safety[]) {
+        this._safetyEventList = value;
+    }
+
+    get user(): User {
+        return this._user;
+    }
+
+    set user(value: User) {
+        this._user = value;
+    }
+
+    get selectedContingency(): Contingency {
+        return this._selectedContingency;
+    }
+
+    set selectedContingency(value: Contingency) {
+        this._selectedContingency = value;
+    }
+
+    get statusCodes(): StatusCode[] {
+        return this._statusCodes;
+    }
+
+    set statusCodes(value: StatusCode[]) {
+        this._statusCodes = value;
+    }
+
+    get durations(): number[] {
+        return this._durations;
+    }
+
+    set durations(value: number[]) {
+        this._durations = value;
+    }
+
+    get validations(): Validation {
+        return this._validations;
+    }
+
+    set validations(value: Validation) {
+        this._validations = value;
+    }
+
+    get apiRestService(): ApiRestService {
+        return this._apiRestService;
+    }
+
+    set apiRestService(value: ApiRestService) {
+        this._apiRestService = value;
+    }
+
+    get delta(): number {
+        return this._delta;
+    }
+
+    set delta(value: number) {
+        this._delta = value;
     }
 
     /**
@@ -101,13 +205,12 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      * @return {void} nothing to return
      */
     ngOnInit() {
-        this.getCurrentTime();
-        this.getSafetyEventList();
-        this.generateIntervalSelection();
 
-        this.user = this._storageService.getCurrentUser();
-        this.contingencySubcription = this._dataService.currentSelectedContingency.subscribe(message => this.contingencyChanged(message));
-        this.safetyEventSubcription = this._dataService.currentSafeEventMessage.subscribe(message => this.currentSafeEventCode = message);
+        this.generateIntervalSelection();
+        this.getSafetyEventList();
+
+        this.contingencySubcription = this._detailsService.selectedContingencyChange.subscribe(contingency => this.selectedContingencyChanged(contingency));
+        this.detailServiceSubscription = this._detailsService.sidenavVisibilityChange.subscribe(message => this.isDetailVisibleChange(message));
     }
 
     /**
@@ -117,7 +220,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     ngOnDestroy() {
         this.contingencySubcription.unsubscribe();
-        this.safetyEventSubcription.unsubscribe();
+        this.detailServiceSubscription.unsubscribe();
     }
 
     /**
@@ -132,15 +235,32 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      *
      * @return {void} nothing to return
      */
-    private contingencyChanged(contingency: Contingency) {
-        if (contingency !== null && this.selectedContingency !== contingency) {
+    private selectedContingencyChanged(contingency: Contingency): void {
+        this.selectedContingency = contingency;
+        this.disabledComponent();
+
+        this.getCurrentTime();
+        this.getStatusCodesAvailable();
+        this.generateIntervalSelection(this.selectedContingency.creationDate.epochTime);
+
+        this.followUp.contingencyId = this.selectedContingency.id;
+    }
+
+    /**
+     * Method called everytime the subscripted boolean change is value, but only apply when is false
+     * @param {boolean} isVisible
+     */
+    private isDetailVisibleChange(isVisible: boolean): void {
+        if (!isVisible) {
+            this.validations.isSubmited = false;
+            this.followUpForm.get('safety').setValue(false);
+            this.followUpForm.get('safety').updateValueAndValidity();
+            this.onSelectOptional(isVisible);
             this.followUpForm.reset();
-            this.validations.isSubmitted = false;
-            this.selectedContingency = contingency;
-            this.generateIntervalSelection(this.selectedContingency.creationDate.epochTime);
-            this.getStatusCodesAvailable();
-            this.getMaxConfigStatuses();
-            this.validations.isClosed = contingency.isClose;
+
+            if (this.followUpFormChild !== undefined) {
+                this.followUpFormChild.resetForm();
+            }
         }
     }
 
@@ -164,13 +284,13 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      *
      * @return {void} nothing to return
      */
-    private generateIntervalSelection(creationDate?: number) {
+    private generateIntervalSelection(creationDate?: number): number[] {
         let i: number;
         let quantity = 36;
 
         this.durations = [];
 
-        this._apiRestService.getAll<ActualTimeModel>('dateTime')
+        this.apiRestService.getAll<ActualTimeModel>('dateTime')
             .subscribe(response => this.currentUTCTime = response.currentTimeLong);
 
         if (creationDate) {
@@ -181,10 +301,9 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             for (i = 0; i < quantity; i++) {
                 this.durations.push(i * 5 + 5);
             }
-            this.validations.isFollowUpDisabled = false;
-        } else {
-            this.validations.isFollowUpDisabled = true;
         }
+
+        return this.durations;
     }
 
     /**
@@ -213,7 +332,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     private getStatusCodesAvailable(): StatusCode[] {
         this._dataService.stringMessage('open');
-        this._apiRestService
+        this.apiRestService
             .getSingle('configStatus', this.selectedContingency.status.code)
             .subscribe((data: StatusCode[]) => {
                     this.statusCodes = data;
@@ -231,18 +350,20 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      * Public method called when a status code is selected in the view and select the default value of time
      * defined for the status.
      *
-     * @param {string} code - String code from safety event list
+     * @param {StatusCode} statusCode - String code from safety event list
      *
      * @example
      * this.selectActiveCode("FT3");
      *
      * @return {void} nothing to return
      */
-    public selectActiveCode(code: StatusCode) {
-        this._followUp.level = code.level;
-        this.validations.defaultTime = code.defaultTime;
-        this.followUpForm.get('duration').setValue(this.validations.defaultTime);
+    public selectActiveCode(statusCode: StatusCode) {
+        this.followUp.requestedInterval.duration = statusCode.defaultTime;
+        this.followUpForm.get('duration').setValue(statusCode.defaultTime);
         this.followUpForm.get('duration').updateValueAndValidity();
+
+        this.followUp.code = statusCode.code;
+        this.followUp.level = statusCode.level;
     }
 
     /**
@@ -252,15 +373,20 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     public getCurrentTime() {
         this._dataService.stringMessage('open');
-        this._apiRestService
+        this.apiRestService
             .getAll('dateTime')
-            .subscribe((data: ActualTimeModel) => this.setCurrentTime(data.currentTimeLong),
-                error => () => {
-                    this._dataService.stringMessage('close');
-                },
-                () => {
-                    this._dataService.stringMessage('close');
-                });
+            .subscribe((data: ActualTimeModel) => {
+                this.currentUTCTime = data.currentTimeLong;
+
+                this.setActualDelta();
+            },
+                    error => () => {
+                        this._dataService.stringMessage('close');
+                    },
+                    () => {
+                        this._dataService.stringMessage('close');
+                    }
+            );
     }
 
     /**
@@ -272,13 +398,15 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      *
      * @return {void} nothing to return
      */
-    private setCurrentTime(currentTimeLong: number) {
-        this.currentUTCTime = currentTimeLong;
+    private setActualDelta(): number {
 
-        if (this.selectedContingency !== undefined) {
-            this.validations.delta = Math.round(((this.selectedContingency.creationDate.epochTime + 180 * 60 * 1000) - this.currentUTCTime) / 60000);
-            this.validations.timeAlert = this.validations.delta < this.followUpForm.get('duration').value;
+        this.delta = -1;
+
+        if (this.selectedContingency.creationDate.epochTime !== null) {
+            this.delta = Math.round(((this.selectedContingency.creationDate.epochTime + 180 * 60 * 1000) - this.currentUTCTime) / 60000);
         }
+
+        return this.delta;
     }
 
     /**
@@ -286,7 +414,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     public getSafetyEventList() {
         this._dataService.stringMessage('open');
-        this._apiRestService
+        this.apiRestService
             .getAll<Safety[]>('safetyEvent')
             .subscribe(data => this.safetyEventList = data,
                 error => () => {
@@ -304,8 +432,6 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      * @return {void} nothing to return
      */
     public closeDetails() {
-        this.followUpForm.reset();
-        this.validations.isSubmitted = false;
         this._detailsService.closeSidenav();
     }
 
@@ -317,35 +443,30 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      * @return {void} nothing to return
      */
     public submitForm(value: any) {
-        this.validations.isSubmitted = true;
+
+        this.validations.isSubmited = true;
+
         if (this.followUpForm.valid) {
             this.validations.isSending = true;
             this._dataService.stringMessage('open');
 
-            this._followUp.contingencyId = this.selectedContingency.id;
-            this._followUp.code = value.code;
-            this._followUp.observation = value.observation;
-            this._followUp.requestedInterval = new Interval(new TimeInstant(null, null), value.duration);
-            this._followUp.realInterval = new Interval(new TimeInstant(null, null), null);
-            this._followUp.username = this.user.username;
-            this._followUp.creationDate = null;
             const safetyCode = this.followUpForm.get('safetyEventCode').value;
 
-            this._apiRestService
-                .add<Response>('followUp', this._followUp, safetyCode)
+            this.apiRestService
+                .add<Status>('followUp', this.followUp, safetyCode)
                 .subscribe(() => {
                     this._detailsService.closeSidenav();
                     this._dataService.stringMessage('reload');
                     this._messageService.openSnackBar('created');
                     this._dataService.stringMessage('close');
-                    this.validations.isSubmitted = false;
+                    this.validations.isSubmited = false;
                     this.validations.isSending = false;
-                    this.followUpForm.reset();
+                    this._followUpForm.reset();
 
                 }, (err: HttpErrorResponse) => {
                     this._dataService.stringMessage('close');
                     this._messageService.openSnackBar(err.error.message);
-                    this.validations.isSubmitted = false;
+                    this.validations.isSubmited = false;
                     this.validations.isSending = false;
                 });
         }
@@ -356,38 +477,42 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      *
      * @return {void} nothing to return
      */
-    public onSelectOptional() {
-        if (!this.validations.optionalIsChecked) {
-            this.followUpForm.get('safetyEventCode').setValidators(Validators.required);
-            this.followUpForm.get('safetyEventCode').updateValueAndValidity();
-        } else {
+    public onSelectOptional(checkValue: boolean) {
+        const safetyEventCodeFormInput = this.followUpForm.get('safetyEventCode');
 
-            this.followUpForm.get('safetyEventCode').setValue(null);
-            this.followUpForm.get('safetyEventCode').setValidators(null);
-            this.followUpForm.get('safetyEventCode').updateValueAndValidity();
-        }
+        safetyEventCodeFormInput.setValidators(checkValue ? Validators.required : null);
+        safetyEventCodeFormInput.setValue(checkValue ? safetyEventCodeFormInput.value : null);
+        safetyEventCodeFormInput.updateValueAndValidity();
     }
 
     /**
-     * Method to get the max level status configurations and wildcards
+     * Private method to disable form view if any of the conditions are fulfilled
+     * @return {boolean}
      */
-    private getMaxConfigStatuses() {
-        this._apiRestService
-            .getAll<StatusCode[]>('configMaxStatus')
-            .subscribe(data => this.maxStatusCodes = data,
-                error => () => {
-                    return null;
-                }, () => {
-                    this.validations.lastStatus = false;
-                    let i: number;
-                    for (i = 0; i < this.maxStatusCodes.length; i++) {
-                        if (this.maxStatusCodes[i].code === this.selectedContingency.status.code) {
-                            this.validations.isFollowUpDisabled = true;
-                            this.validations.lastStatus = true;
-                            break;
-                        }
-                    }
-                });
+    private disabledComponent(): boolean {
+        let isComponentDisabled = false;
+
+        if (this.selectedContingency.isClose || this.selectedContingency.status.level === null || this.delta <= 0) {
+            isComponentDisabled = true;
+        }
+
+        return this.validations.isComponentDisabled = isComponentDisabled;
+    }
+
+    /**
+     * Public method to get the disabled message when one the conditions are meet in priority order
+     * @return {string}
+     */
+    public disabledMensage(): string {
+        if (this.selectedContingency.isClose) {
+            return FollowUpComponent.FOLLOW_UP_CLOSED_STATUS;
+        } else if (this.selectedContingency.status.level === null) {
+            return FollowUpComponent.FOLLOW_UP_LAST_STATUS;
+        } else if (this.delta <= 0) {
+            return FollowUpComponent.FOLLOW_UP_DISABLED;
+        }
+
+        return null;
     }
 
 }

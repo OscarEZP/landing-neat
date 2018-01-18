@@ -1,6 +1,6 @@
 <section id="follow-up">
-    <section class="box" *ngIf="!validations.isFollowUpDisabled && !validations.isClosed">
-        <form [formGroup]="followUpForm" (ngSubmit)="submitForm(followUpForm.value)">
+    <section class="box" *ngIf="!validations.isComponentDisabled">
+        <form [formGroup]="followUpForm" (ngSubmit)="submitForm(followUpForm.value)" #f="ngForm">
             <h2>{{ 'OPERATIONS.CONTINGENCY_FORM.TYPOLOGY' | translate }}</h2>
             <div fxLayout="row" class="remove-space">
                 <mat-button-toggle-group #group="matButtonToggleGroup" [formControl]="followUpForm.controls['code']">
@@ -12,12 +12,12 @@
                 </mat-button-toggle-group>
             </div>
             <div fxLayout="row" class="remove-space">
-                <mat-error *ngIf="validations.isSubmitted && followUpForm.controls['code'].untouched">{{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.CONTINGENCY_TYPE_REQUIRED' | translate }}</mat-error>
+                <mat-error *ngIf="validations.isSubmited && followUpForm.controls['code'].untouched">{{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.CONTINGENCY_TYPE_REQUIRED' | translate }}</mat-error>
             </div>
 
-            <div fxLayout="column" class="safety-container remove-space" *ngIf="currentSafeEventCode === null">
+            <div fxLayout="column" class="safety-container remove-space" *ngIf="selectedContingency.safetyEvent.code === null">
                 <div fxLayout="column" fxLayoutGap="15px">
-                    <mat-checkbox labelPosition="after" fxFlex="20" [formControl]="followUpForm.controls['safety']" [(ngModel)]="validations.optionalIsChecked" (click)="onSelectOptional()">
+                    <mat-checkbox labelPosition="after" fxFlex="20" [formControl]="followUpForm.controls['safety']" [(ngModel)]="followUpForm.controls['safety'].value" (click)="onSelectOptional(!followUpForm.controls['safety'].value)">
                         {{ 'TITLES.SAFETY_EVENTS' | translate }}
                     </mat-checkbox>
                 </div>
@@ -26,7 +26,7 @@
                         <mat-form-field fxFlex="70">
                             <mat-select
                                     placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.TECHNICAL_TYPE_PLACEHOLDER' | translate }}"
-                                    [formControl]="followUpForm.controls['safetyEventCode']" required>
+                                    [formControl]="followUpForm.controls['safetyEventCode']" >
                                 <mat-option *ngFor="let safety of safetyEventList" [value]="safety.code">{{
                                     safety.description }}
                                 </mat-option>
@@ -40,8 +40,8 @@
             <div fxLayout="row" class="remove-space">
                 <aside fxFlex="40" id="interval-select">
                     <mat-form-field>
-                        <mat-select placeholder="Interval" [formControl]="followUpForm.controls['duration']">
-                            <mat-option [value]="min" *ngFor="let min of durations" (click)="getCurrentTime()">{{ min }} {{'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.MINUTES' | translate }}</mat-option>
+                        <mat-select placeholder="Interval" [formControl]="followUpForm.controls['duration']" [(ngModel)]="followUp.requestedInterval.duration">
+                            <mat-option *ngFor="let min of durations" (click)="getCurrentTime()" [value]="min">{{ min }} {{'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.MINUTES' | translate }}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </aside>
@@ -57,13 +57,13 @@
                     <span fxFlex=""> UTC</span>
                 </div>
             </div>
-            <div fxLayout="row" *ngIf="validations.timeAlert" class="validate-warning remove-space">
-                {{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.TIME_AVAILABLE_WARNING' | translate }} {{ validations.delta }} {{'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.MINUTES' | translate }}
+            <div fxLayout="row" *ngIf="delta < followUp.requestedInterval.duration" class="validate-warning remove-space">
+                {{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.TIME_AVAILABLE_WARNING' | translate }} {{ delta }} {{'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.MINUTES' | translate }}
             </div>
             <mat-form-field class="full-width">
                     <textarea matInput
                               placeholder="{{'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.OBSERVATION_TITLE' | translate}}"
-                              [formControl]="followUpForm.controls['observation']" required>
+                              [formControl]="followUpForm.controls['observation']" [(ngModel)]="followUp.observation">
 
                     </textarea>
                 <mat-error *ngIf="followUpForm.controls['observation'].hasError('required') && followUpForm.controls['observation'].touched">
@@ -80,13 +80,9 @@
             </div>
         </form>
     </section>
-    <section class="box" *ngIf="validations.isFollowUpDisabled && !validations.isClosed">
+    <section class="box" *ngIf="validations.isComponentDisabled">
         <h2>{{ 'OPERATIONS.CONTINGENCY_FORM.TYPOLOGY' | translate }}</h2>
-        {{ validations.lastStatus ? ('OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_LAST_STATUS' | translate)  : ('OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_DISABLED' | translate) }}
-    </section>
-    <section class="box" *ngIf="validations.isClosed">
-        <h2>{{ 'OPERATIONS.CONTINGENCY_FORM.TYPOLOGY' | translate }}</h2>
-        {{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_CLOSED_STATUS' | translate }}
+        {{ disabledMensage() | translate }}
     </section>
 
 </section>
