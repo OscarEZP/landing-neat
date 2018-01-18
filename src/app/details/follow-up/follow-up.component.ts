@@ -207,7 +207,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     ngOnInit() {
 
         this.generateIntervalSelection();
-        this.safetyEventList = this.getSafetyEventList();
+        this.getSafetyEventList();
 
         this.contingencySubcription = this._detailsService.selectedContingencyChange.subscribe(contingency => this.selectedContingencyChanged(contingency));
         this.detailServiceSubscription = this._detailsService.sidenavVisibilityChange.subscribe(message => this.isDetailVisibleChange(message));
@@ -412,7 +412,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     /**
      * Method to obtain the safety event list and populate a combo box.
      */
-    public getSafetyEventList(): Safety[] {
+    public getSafetyEventList() {
         this._dataService.stringMessage('open');
         this.apiRestService
             .getAll<Safety[]>('safetyEvent')
@@ -424,8 +424,6 @@ export class FollowUpComponent implements OnInit, OnDestroy {
                 () => {
                     this._dataService.stringMessage('close');
                 });
-
-        return this.safetyEventList;
     }
 
     /**
