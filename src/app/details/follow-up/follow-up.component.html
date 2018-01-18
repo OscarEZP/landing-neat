@@ -15,7 +15,7 @@
                 <mat-error *ngIf="validations.isSubmited && followUpForm.controls['code'].untouched">{{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.CONTINGENCY_TYPE_REQUIRED' | translate }}</mat-error>
             </div>
 
-            <div fxLayout="column" class="safety-container remove-space">
+            <div fxLayout="column" class="safety-container remove-space" *ngIf="selectedContingency.safetyEvent.code === null">
                 <div fxLayout="column" fxLayoutGap="15px">
                     <mat-checkbox labelPosition="after" fxFlex="20" [formControl]="followUpForm.controls['safety']" [(ngModel)]="followUpForm.controls['safety'].value" (click)="onSelectOptional(!followUpForm.controls['safety'].value)">
                         {{ 'TITLES.SAFETY_EVENTS' | translate }}
