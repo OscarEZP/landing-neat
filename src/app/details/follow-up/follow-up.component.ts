@@ -206,10 +206,6 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
 
-        this.getSafetyEventList();
-        this.generateIntervalSelection();
-
-        // this.contingencySubcription = this._dataService.currentSelectedContingency.subscribe(message => this.selectedContingencyChanged(message));
         this.contingencySubcription = this._detailsService.selectedContingencyChange.subscribe(contingency => this.selectedContingencyChanged(contingency));
 
         this.detailServiceSubscription = this._detailsService.sidenavVisibilityChange.subscribe(message => this.isDetailVisibleChange(message));
@@ -259,7 +255,10 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             this.followUpForm.get('safety').updateValueAndValidity();
             this.onSelectOptional(isVisible);
             this.followUpForm.reset();
-            this.followUpFormChild.resetForm();
+
+            if (this.followUpFormChild !== undefined) {
+                this.followUpFormChild.resetForm();
+            }
         }
     }
 

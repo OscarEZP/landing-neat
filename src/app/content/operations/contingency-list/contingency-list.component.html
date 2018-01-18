@@ -35,7 +35,6 @@
              [class.active]="contingency === selectedContingency"
              *ngFor="let contingency of contingencyService.contingencyList"
              class="contingency-item">
-            {{contingency.id}}
             <!--TAIL/FLEET-->
             <div fxLayout="column" fxLayoutAlign="center" fxFlex="7" (click)="openDetails(contingency, 'follow-up')">
                 <span>{{ contingency.aircraft.tail }}</span>

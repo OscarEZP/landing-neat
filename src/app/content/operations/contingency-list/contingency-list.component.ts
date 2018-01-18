@@ -141,8 +141,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
      */
     public openDetails(contingency: Contingency, section: string) {
         this.detailsService.activeContingencyChanged(contingency);
-        // Walk around until release more sections
-        // section = 'follow-up';
         this.detailsService.openDetails(section);
     }
 
@@ -177,7 +175,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         if (!this.historicalSearchService.active) {
             this.contingencyService.getContingencies().subscribe((contingencyList: Contingency[]) => {
                 this.selectedContingency = contingencyList[0];
-                // this.detailsService.activeContingencyChanged(this.selectedContingency);
             });
         }
     }
