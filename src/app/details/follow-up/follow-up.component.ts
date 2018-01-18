@@ -207,6 +207,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     ngOnInit() {
 
         this.generateIntervalSelection();
+        this.safetyEventList = this.getSafetyEventList();
 
         this.contingencySubcription = this._detailsService.selectedContingencyChange.subscribe(contingency => this.selectedContingencyChanged(contingency));
         this.detailServiceSubscription = this._detailsService.sidenavVisibilityChange.subscribe(message => this.isDetailVisibleChange(message));
@@ -349,7 +350,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      * Public method called when a status code is selected in the view and select the default value of time
      * defined for the status.
      *
-     * @param {string} code - String code from safety event list
+     * @param {StatusCode} statusCode - String code from safety event list
      *
      * @example
      * this.selectActiveCode("FT3");
@@ -362,6 +363,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this.followUpForm.get('duration').updateValueAndValidity();
 
         this.followUp.code = statusCode.code;
+        this.followUp.level = statusCode.level;
     }
 
     /**
