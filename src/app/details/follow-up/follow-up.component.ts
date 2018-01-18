@@ -80,6 +80,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
 
         this.user = this._storageService.getCurrentUser();
 
+        this.statusCodes = [];
+
         this.followUpForm = fb.group({
             'safety': [false],
             'safetyEventCode': [null],
@@ -208,6 +210,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
 
         this.generateIntervalSelection();
         this.getSafetyEventList();
+        this.getStatusCodesAvailable();
 
         this.contingencySubcription = this._detailsService.selectedContingencyChange.subscribe(contingency => this.selectedContingencyChanged(contingency));
         this.detailServiceSubscription = this._detailsService.sidenavVisibilityChange.subscribe(message => this.isDetailVisibleChange(message));
@@ -336,6 +339,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             .getSingle('configStatus', this.selectedContingency.status.code)
             .subscribe((data: StatusCode[]) => {
                     this.statusCodes = data;
+                    this.disabledComponent();
                 },
                 error => () => {
                     this._dataService.stringMessage('close');
@@ -492,7 +496,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     private disabledComponent(): boolean {
         let isComponentDisabled = false;
 
-        if (this.selectedContingency.isClose || this.selectedContingency.status.level === null || this.delta <= 0) {
+        if (this.selectedContingency.isClose || this.selectedContingency.status.level === null || this.delta <= 0 || this.statusCodes.length === 0) {
             isComponentDisabled = true;
         }
 
@@ -506,7 +510,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     public disabledMensage(): string {
         if (this.selectedContingency.isClose) {
             return FollowUpComponent.FOLLOW_UP_CLOSED_STATUS;
-        } else if (this.selectedContingency.status.level === null) {
+        } else if (this.selectedContingency.status.level === null || this.statusCodes.length === 0) {
             return FollowUpComponent.FOLLOW_UP_LAST_STATUS;
         } else if (this.delta <= 0) {
             return FollowUpComponent.FOLLOW_UP_DISABLED;
