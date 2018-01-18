@@ -5,11 +5,12 @@ export class Validation {
     private _isComponentDisabled: boolean;
     private _isSending: boolean;
 
-    constructor() {
-        this.isSubmited = false;
-        this.isButtonDisabled = false;
-        this.isComponentDisabled = false;
-        this.isSending = false;
+
+    constructor(isSubmited: boolean, isButtonDisabled: boolean, isComponentDisabled: boolean, isSending: boolean) {
+        this._isSubmited = isSubmited;
+        this._isButtonDisabled = isButtonDisabled;
+        this._isComponentDisabled = isComponentDisabled;
+        this._isSending = isSending;
     }
 
     get isSubmited(): boolean {

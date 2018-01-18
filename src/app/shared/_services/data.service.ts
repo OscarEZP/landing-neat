@@ -6,11 +6,9 @@ import { Contingency } from '../_models/contingency';
 export class DataService {
 
     private messageSourceString = new BehaviorSubject<string>('default message');
-    private messageSafetyEventString = new BehaviorSubject<string>(null);
     private messageSourceContingency = new BehaviorSubject<Contingency>(null);
     private messageSourceNumber = new BehaviorSubject<number>(0);
     currentStringMessage = this.messageSourceString.asObservable();
-    currentSafeEventMessage = this.messageSafetyEventString.asObservable();
     currentNumberMessage = this.messageSourceNumber.asObservable();
     currentSelectedContingency = this.messageSourceContingency.asObservable();
 
@@ -18,10 +16,6 @@ export class DataService {
 
     stringMessage(message: string) {
         this.messageSourceString.next(message);
-    }
-
-    changeSafeEventMessage(message: string) {
-        this.messageSafetyEventString.next(message);
     }
 
     changeSelectedContingency(message: Contingency) {
