@@ -39,7 +39,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.sidenavService.setSidenav(this.sidenav);
-        this.detailsService.setSidenav(this.details);
+        this.detailsService.sidenav = this.details;
         this._messageDataSubscription = this.messageData
             .currentStringMessage
             .subscribe(message => setTimeout(() => this.activateLoadingBar(message), 0));

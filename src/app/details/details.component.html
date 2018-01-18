@@ -1,9 +1,9 @@
 <header>
   <div fxLayout="row">
     <mat-icon>info</mat-icon>
-    <h1 [innerHtml]="detailsService.getActiveTitle()"></h1>
+    <h1>{{activeTitle}}</h1>
   </div>
-  <h2 [innerHtml]="detailsService.contingency ? detailsService.contingency.aircraft.tail : ''">PT-MZU</h2>
+  <h2>{{selectedContingency.aircraft.tail}}</h2>
 </header>
 <content>
   <!--<lsl-information></lsl-information>

@@ -7,7 +7,7 @@
         {{ 'OPERATIONS.CLOSED_CONTINGENCIES' | translate }}
     </div>
     <div *ngIf="!historicalSearchService.active">
-        {{contingencyService.data.length}}
+        {{contingencyService.contingencyList.length}}
         {{ 'OPERATIONS.CONTINGENCIES_ACTIVES' | translate }}
     </div>
 </div>
@@ -32,33 +32,32 @@
     </header>
     <main>
         <div fxLayout="row"
-             [class.active]="contingency === detailsService.contingency"
-             *ngFor="let contingency of contingencyService.data"
+             [class.active]="contingency === selectedContingency"
+             *ngFor="let contingency of contingencyService.contingencyList"
              class="contingency-item">
-
             <!--TAIL/FLEET-->
-            <div fxLayout="column" fxLayoutAlign="center" fxFlex="7" (click)="openDetails(contingency)">
+            <div fxLayout="column" fxLayoutAlign="center" fxFlex="7" (click)="openDetails(contingency, 'follow-up')">
                 <span>{{ contingency.aircraft.tail }}</span>
                 <span>{{ contingency.aircraft.fleet }}</span>
             </div>
 
             <!-- OPERATOR -->
-            <div fxLayout="row" fxFlex="5" fxLayoutAlign="start center" (click)="openDetails(contingency)">
+            <div fxLayout="row" fxFlex="5" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">
                 <span class="flag-icon">&nbsp;</span>
                 <span fxFlexOffset="10">{{ contingency.aircraft.operator }}</span>
             </div>
 
             <!-- FLIGHT -->
-            <div fxFlex="7" fxLayoutAlign="start center" (click)="openDetails(contingency)">{{
+            <div fxFlex="7" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">{{
                 contingency.flight.flightNumber }}
             </div>
 
             <!-- FROM / TO -->
-            <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency)" *ngIf="!contingency.isBackup">{{ contingency.flight.origin }} / {{ contingency.flight.destination }}</div>
-            <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency)" *ngIf="contingency.isBackup">{{ contingency.backup.location }}</div>
+            <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')" *ngIf="!contingency.isBackup">{{ contingency.flight.origin }} / {{ contingency.flight.destination }}</div>
+            <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')" *ngIf="contingency.isBackup">{{ contingency.backup.location }}</div>
 
             <!-- REASON -->
-            <div fxFlex="28" fxLayoutAlign="start center" class="description" (click)="openDetails(contingency)">{{(contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}</div>
+            <div fxFlex="28" fxLayoutAlign="start center" class="description" (click)="openDetails(contingency, 'follow-up')">{{(contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}</div>
 
             <!-- STATUS -->
             <div fxFlex="7" fxLayoutAlign="start center">
@@ -67,13 +66,13 @@
             </div>
 
             <!-- TYPE -->
-            <div fxLayout="column" fxFlex="5" fxLayoutAlign="center" (click)="openDetails(contingency)">
+            <div fxLayout="column" fxFlex="5" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
                 <div><strong>CONT</strong></div>
                 <div>{{ contingency.type }}</div>
             </div>
 
             <!-- SAFETY EVENT -->
-            <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency)">
+            <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">
                 <span class="badge"
                       *ngIf="contingency.safetyEvent.code?.length > 0">{{ contingency.safetyEvent.code }}</span>
             </div>
@@ -109,7 +108,7 @@
 
             <!-- FOCAL -->
             <div fxFlex="3" fxLayoutAlign="start center" *ngIf="!detailsService.open"
-                 (click)="openDetails(contingency)">
+                 (click)="openDetails(contingency, 'follow-up')">
                 <!-- <mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username | slice:0:2 | uppercase }} --></div>
 
             <div fxFlex="5" fxLayoutAlign="start center">
@@ -137,4 +136,4 @@
     [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
 </mat-paginator>
 
-<lsl-ess message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.data.length === 0 && !contingencyService.loading"></lsl-ess>
+<lsl-ess message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading"></lsl-ess>

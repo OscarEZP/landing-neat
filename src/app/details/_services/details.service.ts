@@ -1,86 +1,169 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { MatSidenav } from '@angular/material';
+import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { Subject } from 'rxjs/Subject';
+import { Aircraft } from '../../shared/_models/aircraft';
+import { Backup } from '../../shared/_models/backup';
 import { Contingency } from '../../shared/_models/contingency';
+import { Flight } from '../../shared/_models/flight';
+import { Interval } from '../../shared/_models/interval';
+import { Safety } from '../../shared/_models/safety';
+import { Status } from '../../shared/_models/status';
+import { TimeInstant } from '../../shared/_models/timeInstant';
 import { DataService } from '../../shared/_services/data.service';
-import { ScrollService } from '../../shared/_services/scrolling.service';
 
 @Injectable()
-export class DetailsService implements OnInit {
+export class DetailsService {
 
-    public sidenav: MatSidenav;
-    private _active: string;
+    private _sidenav: MatSidenav;
     private _activeTitle: string;
-    private _contingency: Contingency;
-    public safetyEvent: string;
+    private _selectedContingency: Contingency;
+    private _section: string;
+    private _scrollToConfig: ScrollToConfigOptions;
+    private _isOpen: boolean;
 
-    constructor(private _scrollService: ScrollService, private _dataMessage: DataService) {
+    private _sidenavVisibilityChange: Subject<boolean> = new Subject<boolean>();
+    private _selectedContingencyChange: Subject<Contingency> = new Subject<Contingency>();
+
+    constructor(private _dataMessage: DataService, private _scrollToService: ScrollToService) {
+        this.scrollToConfig = {
+            target: this.section,
+            duration: 650,
+            easing: 'easeInOutQuint',
+            offset: -20
+        };
+
+        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null);
+
+        this.isOpen = false;
+        this.activeTitle = 'Follow Up';
+
+        this.sidenavVisibilityChange.subscribe((value: boolean) => {
+            this.isOpen = value;
+        });
     }
 
-    ngOnInit() {
-        this._dataMessage.currentSelectedContingency.subscribe(message => this._contingency = message);
-        this._dataMessage.currentSafeEventMessage.subscribe(message => this.safetyEvent = message);
+    get sidenav(): MatSidenav {
+        return this._sidenav;
     }
 
-    public get contingency(): Contingency {
-        return this._contingency;
+    set sidenav(value: MatSidenav) {
+        this._sidenav = value;
     }
 
-    public set contingency(value: Contingency) {
-        this._contingency = value;
-        this._dataMessage.changeSelectedContingency(value);
-        this._dataMessage.changeSafeEventMessage(value.safetyEvent.code);
-    }
-
-    public getActiveTitle(): string {
+    get activeTitle(): string {
         return this._activeTitle;
     }
 
-    public getActive() {
-        return this._active;
+    set activeTitle(value: string) {
+        this._activeTitle = value;
     }
 
-    public setActive(value) {
+    get selectedContingency(): Contingency {
+        return this._selectedContingency;
+    }
+
+    set selectedContingency(value: Contingency) {
+        this._selectedContingency = value;
+    }
+
+    get section(): string {
+        return this._section;
+    }
+
+    set section(value: string) {
+        this._section = value;
+        this.setActiveTitle(value);
+    }
+
+    get scrollToConfig(): ScrollToConfigOptions {
+        return this._scrollToConfig;
+    }
+
+    set scrollToConfig(value: ScrollToConfigOptions) {
+        this._scrollToConfig = value;
+    }
+
+    get isOpen(): boolean {
+        return this._isOpen;
+    }
+
+    set isOpen(value: boolean) {
+        this._isOpen = value;
+    }
+
+    get sidenavVisibilityChange(): Subject<boolean> {
+        return this._sidenavVisibilityChange;
+    }
+
+    set sidenavVisibilityChange(value: Subject<boolean>) {
+        this._sidenavVisibilityChange = value;
+    }
+
+    get selectedContingencyChange(): Subject<Contingency> {
+        return this._selectedContingencyChange;
+    }
+
+    set selectedContingencyChange(value: Subject<Contingency>) {
+        this._selectedContingencyChange = value;
+    }
+
+    public activeContingencyChanged(contingency: Contingency) {
+        if (contingency.id !== null) {
+            this.selectedContingencyChange.next(contingency);
+            this.selectedContingency = contingency;
+        }
+    }
+
+    /**
+     * Set the active title from section selected
+     * @param value
+     */
+    private setActiveTitle(value) {
         switch (value) {
             case 'information':
-                this._activeTitle = 'Information';
+                this.activeTitle = 'Information';
                 break;
             case 'comments':
-                this._activeTitle = 'Comments';
+                this.activeTitle = 'Comments';
                 break;
             case 'timeline':
-                this._activeTitle = 'Timeline';
+                this.activeTitle = 'Timeline';
                 break;
             case 'follow-up':
-                this._activeTitle = 'Follow up';
+                this.activeTitle = 'Follow up';
                 break;
         }
-        this._active = value;
     }
 
-    public setSidenav(sidenav: MatSidenav) {
-        this.sidenav = sidenav;
-    }
-
+    /**
+     * Open sidenav
+     * @return {Promise<void>}
+     */
     public openSidenav(): Promise<void> {
+        this.sidenavVisibilityChange.next(true);
         return this.sidenav.open();
     }
 
-    public closeSidenav(): Promise<void> {
+    /**
+     * Close sidenav
+     * @return {Promise<void>}
+     */
+    public closeSidenav(): Promise<any> {
+        this.sidenavVisibilityChange.next(false);
         return this.sidenav.close();
     }
 
-    public toggleSidenav(isOpen?: boolean): Promise<void> {
-        return this.sidenav.toggle(isOpen);
-    }
-
+    /**
+     *
+     * @param {string} section
+     */
     public openDetails(section: string = 'information') {
-        this.setActive(section);
+        this.section = section;
         if (!this.sidenav.opened) {
             this.openSidenav().then(() => {
-                this._scrollService.scrollTo(section);
+                this._scrollToService.scrollTo(this.scrollToConfig);
             });
-        } else {
-            this._scrollService.scrollTo(section);
         }
     }
 
