@@ -10,7 +10,7 @@
 .list-contingency{
   @include generate-font-size(-6);
   color: mat-color($foreground, 'text');
-  margin: auto 25px;
+  margin: auto 16px;
   header{
     height: 40px;
     padding: 0 16px;
