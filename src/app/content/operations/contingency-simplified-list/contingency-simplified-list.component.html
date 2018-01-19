@@ -18,18 +18,39 @@
             <span class="two-lines">{{ contingency.aircraft.tail }}</span>
             <span class="two-lines">{{ contingency.aircraft.fleet }}</span>
         </div>
-        <div class="block-s" >
-            <span class="flag-icon">&nbsp;</span>
+        <div class="block-s">
             {{ contingency.aircraft.operator }}
         </div>
         <div class="block-s">{{ contingency.flight.flightNumber }}</div>
-        <div class="block-s">{{ contingency.flight.origin }} / {{ contingency.flight.destination }}</div>
-        <div class="block-xl description" >{{ (contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}</div>
-        <div class="block-s"><span class="badge {{ contingency.status.code | lowercase }}">{{ contingency.status.code | uppercase }}</span></div>
-        <div class="block-s" ><div><strong>CONT</strong></div><div>{{ contingency.type }}</div></div>
-        <div class="block-s" ><span class="badge" *ngIf="contingency.safetyEvent.code?.length > 0">{{ contingency.safetyEvent.code }}</span></div>
-        <div class="block-m"><mat-progress-bar mode="determinate" [value]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, false, 0)" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 600000) ? 'warn' : 'primary'" class="mat-progress-bar"  ></mat-progress-bar></div>
-        <div class="block-m"><mat-icon class="mat-icon-adj" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 300000) ? 'warn' : 'primary'">timer</mat-icon> <lsl-countdown [creationTime]="contingency.status.requestedInterval.dt.epochTime" [duration]="contingency.status.requestedInterval.duration" [threshold]="5"></lsl-countdown></div>
+        <!-- FROM / TO -->
+        <div class="block-s" *ngIf="!contingency.isBackup">{{ contingency.flight.origin }} / {{ contingency.flight.destination }}</div>
+        <div class="block-s" *ngIf="contingency.isBackup">{{ contingency.backup.location }}</div>
+
+        <div class="block-xl description">{{ (contingency.reason.length > 65) ? (contingency.reason | slice:0:65) +
+            '...' : contingency.reason }}
+        </div>
+        <div class="block-s"><span class="badge {{ contingency.status.code | lowercase }}">{{ contingency.status.code | uppercase }}</span>
+        </div>
+        <div class="block-s">
+            <div><strong>CONT</strong></div>
+            <div>{{ contingency.type }}</div>
+        </div>
+        <div class="block-s"><span class="badge" *ngIf="contingency.safetyEvent.code?.length > 0">{{ contingency.safetyEvent.code }}</span>
+        </div>
+        <div class="block-m">
+            <mat-progress-bar mode="determinate"
+                              [value]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, false, 0)"
+                              [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 600000) ? 'warn' : 'primary'"
+                              class="mat-progress-bar"></mat-progress-bar>
+        </div>
+        <div class="block-m">
+            <mat-icon class="mat-icon-adj"
+                      [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 300000) ? 'warn' : 'primary'">
+                timer
+            </mat-icon>
+            <lsl-countdown [creationTime]="contingency.status.requestedInterval.dt.epochTime"
+                           [duration]="contingency.status.requestedInterval.duration" [threshold]="5"></lsl-countdown>
+        </div>
     </mat-list-item>
 </mat-list>
 
