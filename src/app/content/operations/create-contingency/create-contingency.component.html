@@ -140,11 +140,12 @@
 
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
 
+                        <label fxFlex="20">{{ 'OPERATIONS.CONTINGENCY_FORM.SLOT_TIME' | translate }}</label>
                         <mat-form-field fxFlex="20">
                             <input id="in-contingency-form-slot-time" matInput
-                                   placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.SLOT_TIME' | translate }}"
+                                   placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.TIME_FORMAT' | translate }}"
                                    [(ngModel)]="this.contingencyDateModel[1].timeString" [formControl]="contingencyForm.controls['slotTm']"
-                                   name="slotTm">
+                            name="slotTm">
                         </mat-form-field>
 
                         <label fxFlex="10">UTC</label>

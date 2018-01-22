@@ -9,9 +9,14 @@ export class MessageService {
 
     }
 
-    openSnackBar(message: string) {
+    /**
+     * Method for show 'toast' message, get message and duration as arguments
+     * @param message
+     * @param time
+     */
+    openSnackBar(message: string, time: number = 5000) {
         this.matSnackBar.open(message, '', <MatSnackBarConfig>{
-            duration: 2500,
+            duration: time,
             verticalPosition: 'top',
             horizontalPosition: 'center'
         });

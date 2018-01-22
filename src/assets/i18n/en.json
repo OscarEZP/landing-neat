@@ -101,6 +101,7 @@
       "STATUS_CODE_REQUIRED": "Status code is required",
       "SUCCESSFULLY_MESSAGE": "Contingency has been created successfully",
       "TECHNICAL_TYPE_PLACEHOLDER": "Technical Type",
+      "TIME_FORMAT": "HH:MM",
       "TIME_REQUIRED": "Time is required",
       "TO": "To",
       "TYPOLOGY": "Typology",
