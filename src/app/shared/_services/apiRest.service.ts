@@ -1,7 +1,9 @@
-import { HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Injectable, Injector } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../../environments/environment';
+import { StorageService } from './storage.service';
+import 'rxjs/add/operator/do';
 
 @Injectable()
 export class ApiRestService {
@@ -30,7 +32,6 @@ export class ApiRestService {
 
     public search<T>(path: string, itemToSearch: any): Observable<T> {
         const toSearch = JSON.stringify(itemToSearch).replace(/\b[_]/g, '');
-
         return this.http.post<T>(this.baseUrl + environment.paths[path], toSearch);
     }
 
@@ -53,14 +54,29 @@ export class ApiRestService {
 @Injectable()
 export class CustomInterceptor implements HttpInterceptor {
 
+    private static TOKEN_ATTR = 'Authorization';
+    private static SESSION_ERROR_CODE = 400;
+    private static CONTENT_TYPE = 'application/json';
+
+    private _storageService: StorageService;
+
+    constructor(inj: Injector) {
+        this._storageService = inj.get(StorageService);
+    }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
         if (!req.headers.has('Content-Type')) {
-            req = req.clone({headers: req.headers.set('Content-Type', 'application/json')});
+            req = req.clone({headers: req.headers.set('Content-Type', CustomInterceptor.CONTENT_TYPE)});
         }
+        req = req.clone({headers: req.headers.set('Accept', CustomInterceptor.CONTENT_TYPE)});
+        const idToken = this._storageService.getCurrentUser().idToken ? this._storageService.getCurrentUser().idToken : '';
+        req = req.clone({headers: req.headers.set(CustomInterceptor.TOKEN_ATTR, idToken)});
 
-        req = req.clone({headers: req.headers.set('Accept', 'application/json')});
-        return next.handle(req);
+        return next.handle(req).do(event => {}, err => {
+            if (err instanceof HttpErrorResponse && err.status === CustomInterceptor.SESSION_ERROR_CODE) {
+                this._storageService.removeCurrentUser();
+            }
+        });
     }
 }

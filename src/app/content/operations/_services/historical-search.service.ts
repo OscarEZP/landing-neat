@@ -25,18 +25,6 @@ export class HistoricalSearchService {
         return this._fields;
     }
 
-    public setValidators() {
-        Object.keys(this._fields).forEach((field) => {
-            this.searchForm.get(field).setValidators([Validators.required]);
-        });
-    }
-
-    public clearValidators() {
-        Object.keys(this._fields).forEach((field) => {
-            this.searchForm.get(field).setValidators(null);
-        });
-    }
-
     get fromTS(): any {
         return this.searchForm.value.from ? this.searchForm.value.from.getTime() : 0;
     }

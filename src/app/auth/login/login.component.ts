@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from '../../shared/_services/message.service';
 import { StorageService } from '../../shared/_services/storage.service';
 import { AuthService } from '../_services/auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -39,7 +40,10 @@ export class LoginComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private fb: FormBuilder,
-        private  messageService: MessageService) {
+        private  _messageService: MessageService,
+        private _translate: TranslateService
+    ) {
+        this._translate.setDefaultLang('en');
     }
 
     ngOnInit() {
@@ -53,7 +57,6 @@ export class LoginComponent implements OnInit {
             'passwordFormControl': this.passwordFormControl
         });
         this.routeData = this.route.data.subscribe((data: { logout: string }) => {
-
             if (data.logout && this.authService.getIsLoggedIn()) {
                 this.authService.logOut();
                 this.router.navigate([this.authService.getLoginUrl()]);
@@ -61,6 +64,11 @@ export class LoginComponent implements OnInit {
                 this.router.navigate([this.authService.getRedirectUrl()]);
             }
         });
+        if (this.authService.expired) {
+            this._translate.get('ERROR.SESSION').subscribe((res: string) => {
+                this._messageService.openSnackBar(res);
+            });
+        }
     }
 
     logIn(form: NgForm) {
@@ -75,7 +83,7 @@ export class LoginComponent implements OnInit {
                 this.activateLoadingBar(false);
                 this.disableButton = false;
             }).catch(reason => {
-                this.messageService.openSnackBar(reason);
+                this._messageService.openSnackBar(reason);
                 this.activateLoadingBar(false);
                 this.disableButton = false;
             });
