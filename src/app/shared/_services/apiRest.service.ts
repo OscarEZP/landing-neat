@@ -69,8 +69,8 @@ export class CustomInterceptor implements HttpInterceptor {
             req = req.clone({headers: req.headers.set('Content-Type', 'application/json')});
         }
         req = req.clone({headers: req.headers.set('Accept', 'application/json')});
-        const accessToken = this._storageService.getCurrentUser().accessToken ? this._storageService.getCurrentUser().accessToken : '';
-        req = req.clone({headers: req.headers.set('Authorization', accessToken)});
+        const idToken = this._storageService.getCurrentUser().idToken ? this._storageService.getCurrentUser().idToken : '';
+        req = req.clone({headers: req.headers.set('Authorization', idToken)});
 
         return next.handle(req).do(event => {}, err => {
             if (err instanceof HttpErrorResponse && err.status === CustomInterceptor.SESSION_ERROR_CODE) {
