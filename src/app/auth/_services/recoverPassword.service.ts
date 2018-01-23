@@ -8,6 +8,9 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable()
 export class RecoverPasswordService {
 
+    private static FORGOT_PASSWORD_ENDPOINT = 'forgotPassword';
+    private static CONFIRM_FORGOT_PASSWORD_ENDPOINT = 'confirmForgotPassword';
+
     private redirectUrl: string;
     private recoverUrl: string;
     public data: {username: string, password: string, confirmPassword: string, verificationCode: string, destination: string };
@@ -60,7 +63,7 @@ export class RecoverPasswordService {
         const user = new User();
         user.username = username;
         return this.apiService
-            .search('forgotPassword', user)
+            .search(RecoverPasswordService.FORGOT_PASSWORD_ENDPOINT, user)
             .toPromise()
             .then(
                 value => {
@@ -80,7 +83,7 @@ export class RecoverPasswordService {
         user.confirmationCode = verificationCode;
 
         return this.apiService
-            .search('confirmForgotPassword', user)
+            .search(RecoverPasswordService.CONFIRM_FORGOT_PASSWORD_ENDPOINT, user)
             .toPromise()
             .then(value => {
                 const status: boolean = !value['statusChangePassword'] ? value['statusChangePassword'] : false;
