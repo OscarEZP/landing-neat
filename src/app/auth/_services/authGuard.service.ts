@@ -18,6 +18,7 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
             return true;
         }
 
+        this.authService.expired = true;
         this.router.navigate([ this.authService.getLoginUrl() ]);
         return false;
     }

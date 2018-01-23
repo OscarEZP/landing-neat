@@ -21,6 +21,9 @@
       "FOLLOW_UP": "Follow up"
     }
   },
+  "ERROR":{
+    "SESSION": "Your session has expired"
+  },
   "ESS":{
     "NO_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters."
   },

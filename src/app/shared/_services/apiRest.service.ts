@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import { environment } from '../../../environments/environment';
 import { StorageService } from './storage.service';
 import 'rxjs/add/operator/do';
-import {Router} from "@angular/router";
 
 @Injectable()
 export class ApiRestService {
@@ -61,7 +60,7 @@ export class CustomInterceptor implements HttpInterceptor {
         this._storageService = inj.get(StorageService);
     }
 
-    private static SESSION_ERROR_CODE = 472;
+    private static SESSION_ERROR_CODE = 400;
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 

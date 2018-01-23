@@ -17,6 +17,7 @@ export class AuthService {
     private loginUrl: string;
     public data: { username: string, password: string };
     private _apiService: ApiRestService;
+    private _expired: boolean;
 
     constructor(private http: HttpClient, private storageService: StorageService) {
         this.isLoggedIn = this.getIsLoggedIn();
@@ -24,6 +25,15 @@ export class AuthService {
         this.loginUrl = '/login';
         this.reset();
         this.apiService = new ApiRestService(this.http);
+        this.expired = false;
+    }
+
+    get expired(): boolean {
+        return this._expired;
+    }
+
+    set expired(value: boolean) {
+        this._expired = value;
     }
 
     get apiService(): ApiRestService {
@@ -52,6 +62,7 @@ export class AuthService {
                     }
                     user.principalGroup = user.groupList[i].name;
                 }
+                this.expired = false;
                 return Promise.resolve(user);
             }).catch((reason: HttpErrorResponse) => {
                 return Promise.reject(reason.error.message);
