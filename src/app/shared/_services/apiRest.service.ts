@@ -54,22 +54,24 @@ export class ApiRestService {
 @Injectable()
 export class CustomInterceptor implements HttpInterceptor {
 
+    private static TOKEN_ATTR = 'Authorization';
+    private static SESSION_ERROR_CODE = 400;
+    private static CONTENT_TYPE = 'application/json';
+
     private _storageService: StorageService;
 
     constructor(inj: Injector) {
         this._storageService = inj.get(StorageService);
     }
 
-    private static SESSION_ERROR_CODE = 400;
-
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
         if (!req.headers.has('Content-Type')) {
-            req = req.clone({headers: req.headers.set('Content-Type', 'application/json')});
+            req = req.clone({headers: req.headers.set('Content-Type', CustomInterceptor.CONTENT_TYPE)});
         }
-        req = req.clone({headers: req.headers.set('Accept', 'application/json')});
+        req = req.clone({headers: req.headers.set('Accept', CustomInterceptor.CONTENT_TYPE)});
         const idToken = this._storageService.getCurrentUser().idToken ? this._storageService.getCurrentUser().idToken : '';
-        req = req.clone({headers: req.headers.set('Authorization', idToken)});
+        req = req.clone({headers: req.headers.set(CustomInterceptor.TOKEN_ATTR, idToken)});
 
         return next.handle(req).do(event => {}, err => {
             if (err instanceof HttpErrorResponse && err.status === CustomInterceptor.SESSION_ERROR_CODE) {
