@@ -73,7 +73,7 @@ export class RecoverPasswordService {
 
     }
 
-    changePassword(username: string, password: string, verificationCode: string): Promise<any> {
+    changePassword(username: string, password: string, verificationCode: string): Promise<boolean> {
         const user = new User();
         user.username = username;
         user.newPassword = password;
