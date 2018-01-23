@@ -6,6 +6,7 @@ import {RecoverPasswordService} from '../_services/recoverPassword.service';
 import {MessageService} from '../../shared/_services/message.service';
 import * as constants from '../../constants';
 import {StorageService} from '../../shared/_services/storage.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'lsl-change-password',
@@ -33,8 +34,11 @@ export class RecoverPasswordComponent implements OnInit {
         protected storageService: StorageService,
         private messageService: MessageService,
         private router: Router,
-        private fb: FormBuilder) {
+        private fb: FormBuilder,
+        private _translate: TranslateService
+    ) {
         this.destination = '';
+        this._translate.setDefaultLang('en');
     }
 
     ngOnInit() {
