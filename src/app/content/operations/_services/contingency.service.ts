@@ -12,7 +12,7 @@ import { InfiniteScrollService } from './infinite-scroll.service';
 import { LogService } from './log.service';
 
 @Injectable()
-export class ContingencyService implements OnInit {
+export class ContingencyService {
 
     private static CONTINGENCY_LIST_ENDPOINT = 'contingencyList';
     private static AIRCRAFT_SEARCH_ENDPOINT = 'aircraftsSearch';
@@ -69,10 +69,6 @@ export class ContingencyService implements OnInit {
 
     set apiService(value: ApiRestService) {
         this._apiService = value;
-    }
-
-    ngOnInit() {
-        this.getContingencies();
     }
 
     public getContingencies(): Observable<Contingency[]> {
