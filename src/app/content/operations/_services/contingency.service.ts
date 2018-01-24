@@ -17,7 +17,7 @@ const httpOptions = {
 };
 
 @Injectable()
-export class ContingencyService implements OnInit {
+export class ContingencyService {
 
     private static apiUrl = environment.apiUrl;
     private static closePath = environment.paths.close;
@@ -74,10 +74,6 @@ export class ContingencyService implements OnInit {
 
     set apiService(value: ApiRestService) {
         this._apiService = value;
-    }
-
-    ngOnInit() {
-        this.getContingencies();
     }
 
     public getContingencies(): Observable<Contingency[]> {

@@ -1,0 +1,95 @@
+<form [formGroup]="meetingForm" #meetForm="ngForm" (ngSubmit)="submitForm(meetingForm.value)">
+    <div mat-dialog-title fxLayoutGap="30px" class="title-dialog-container" fxLayout="column">
+        <div fxLayout="row" fxFlex>
+            <span class="title-dialog" fxFlex>{{'OPERATIONS.MEETING_FORM.MEETING_SUMMARY' | translate}}</span>
+            <span class="date-title-dialog">{{ utcModel.label | utcDate | date: 'dd MMM yyyy'}} | {{ timeClock | utcDate | date: 'HH:mm:ss' }} UTC</span>
+            <button (click)="closeDialog()" id="btn-contingency-form-close-btn" type="button" class="close-btn" mat-icon-button
+                    fxFlexOffset="1">
+                <mat-icon aria-label="Example icon-button" class="material-icons close-dialog">{{ 'OPERATIONS.CONTINGENCY_FORM.CLOSE' | translate }}
+                </mat-icon>
+            </button>
+        </div>
+        <span class="msg-required-dialog" fxFlex>{{'OPERATIONS.CONTINGENCY_FORM.REQUIRE_FIELDS'| translate}}</span>
+    </div>
+
+    <div mat-dialog-content class="content-dialog-container">
+        <div class="title-dialog">
+            <span>{{'OPERATIONS.MEETING_FORM.MEETING_CREATION'|translate}}</span>
+        </div>
+        <div fxLayout="row" class="sections-content">
+
+            <div fxFlex="25" fxLayout="row" class="operation-container">
+                <div fxLayout="column" fxFlexFill>
+                    <section>
+                        <span class="title-section">{{'OPERATIONS.MEETING_FORM.OPERATION_INFO'|translate}}</span>
+                        <div class="data">
+                            <p fxLayout="row">{{'OPERATIONS.MEETING_FORM.TAIL'|translate}}: <span>{{contingency.aircraft.tail}}</span></p>
+                            <p fxLayout="row" *ngIf="contingency.isBackup">{{'OPERATIONS.MEETING_FORM.STATION'|translate}}: <span>{{contingency.backup.location}}</span></p>
+                            <p fxLayout="row" *ngIf="!contingency.isBackup">{{'OPERATIONS.FROM_TO'|translate}}: <span>{{contingency.flight.origin}}/{{contingency.flight.destination}}</span></p>
+                            <p fxLayout="row">{{'OPERATIONS.MEETING_FORM.CREATION_DATE'|translate}}: <span>{{contingency.creationDate.label | utcDate | date: 'dd MMM yyyy'}}</span></p>
+                            <p fxLayout="row">{{'OPERATIONS.MEETING_FORM.TYPE'|translate}}: <span>{{contingency.type}}</span></p>
+                            <p fxLayout="row">{{'OPERATIONS.MEETING_FORM.FLEET'|translate}}: <span>{{contingency.aircraft.fleet}}</span></p>
+                            <p fxLayout="row">{{'OPERATIONS.MEETING_FORM.REASON'|translate}}: </p>
+                            <p fxLayout="row">
+                                <span>{{contingency.reason}}</span>
+                            </p>
+                            <div fxLayout="row" >
+                                <mat-form-field fxFlexFill>
+                                    <input id="in-meeting-form-barcode" matInput placeholder="barcode"
+                                           [formControl]="meetingForm.controls['barcode']" [(ngModel)]="contingency.barcode">
+                                </mat-form-field>
+                                <mat-error *ngIf="meetingForm.controls['barcode'].hasError('pattern') && meetForm.submitted">
+                                    {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_PATTERN'|translate}}
+                                </mat-error>
+                                <mat-error *ngIf="meetingForm.controls['barcode'].hasError('maxlenght') && meetForm.submitted">
+                                    {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_MAX'|translate}}
+                                </mat-error>
+                            </div>
+                        </div>
+                    </section>
+                    <section *ngIf="contingency.safetyEvent.code">
+                        <span class="title-section">{{'OPERATIONS.MEETING_FORM.TO_DO_LIST'|translate}}</span>
+                        <div class="data">
+                            <p fxLayout="row">{{'OPERATIONS.SAFETY_EVENT'|translate}}: <span>{{contingency.safetyEvent.code}}</span></p>
+                            <div class="data-table">
+                                <header fxLayout="row">
+                                    <div fxFlex="60">{{'OPERATIONS.MEETING_FORM.ACTIVITIES'|translate}}</div>
+                                    <div fxFlex="20">{{'OPERATIONS.MEETING_FORM.APPLY'|translate}}</div>
+                                    <div fxFlex="20">{{'OPERATIONS.MEETING_FORM.DONE'|translate}}</div>
+                                </header>
+                                <content>
+                                    <div fxLayout="row" *ngFor="let activity of meetingActivities">
+                                        <div fxFlex="60">{{activity.description}}</div>
+                                        <div fxFlex="20">
+                                            <mat-slide-toggle [ngModelOptions]="{standalone: true}" [(ngModel)]="activity.apply" class=""></mat-slide-toggle>
+                                        </div>
+                                        <div fxFlex="20">
+                                            <mat-checkbox [disabled]="!activity.apply" class=""></mat-checkbox>
+                                        </div>
+                                    </div>
+                                </content>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div fxFlex="25" fxLayout="row" class="operation-container">
+
+            </div>
+            <div fxFlex="25" fxLayout="row" class="operation-container">
+
+            </div>
+            <div fxFlex="25" fxLayout="row" class="operation-container">
+
+            </div>
+        </div>
+    </div>
+    <div mat-dialog-actions fxLayoutAlign="end">
+        <button id="btn-contingency-form-cancel" type="button" mat-button (click)="closeDialog()">
+            {{'OPERATIONS.CONTINGENCY_FORM.CANCEL_LABEL'|translate}}
+        </button>
+        <button id="btn-contingency-form-submit" type="submit" mat-button mat-raised-button color="primary">
+            {{'OPERATIONS.CONTINGENCY_FORM.CREATE_LABEL'|translate}}
+        </button>
+    </div>
+</form>

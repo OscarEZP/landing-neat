@@ -18,6 +18,7 @@ import {HistoricalSearchService} from '../_services/historical-search.service';
 import {ContingencyService} from '../_services/contingency.service';
 import {InfiniteScrollService} from '../_services/infinite-scroll.service';
 import {MatPaginator} from '@angular/material';
+import {MeetingComponent} from '../meeting/meeting.component';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -142,6 +143,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public openDetails(contingency: Contingency, section: string) {
         this.detailsService.activeContingencyChanged(contingency);
         this.detailsService.openDetails(section);
+        this.setSelectedContingency(contingency);
+    }
+
+    public setSelectedContingency(contingency) {
         this.selectedContingency = contingency;
     }
 
@@ -160,6 +165,16 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             disableClose: true,
             height: '536px',
             width: '500px'
+        });
+    }
+
+    public openMeeting(contingency: Contingency) {
+        this._dialogService.openDialog(MeetingComponent, {
+            data: contingency,
+            maxWidth: '100vw',
+            width: '100%',
+            height: '100%',
+            hasBackdrop: false
         });
     }
 
