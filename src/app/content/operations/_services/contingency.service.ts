@@ -12,7 +12,7 @@ import { InfiniteScrollService } from './infinite-scroll.service';
 import { LogService } from './log.service';
 
 @Injectable()
-export class ContingencyService {
+export class ContingencyService {z
 
     private static CONTINGENCY_LIST_ENDPOINT = 'contingencyList';
     private static AIRCRAFT_SEARCH_ENDPOINT = 'aircraftsSearch';
