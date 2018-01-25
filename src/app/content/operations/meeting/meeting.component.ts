@@ -58,7 +58,6 @@ export class MeetingComponent implements OnInit {
         this.meetingActivities = [];
         this.setMeetingActivitiesConf();
         this.validations = new Validation(false, true, true, false);
-        console.log(this.contingency);
     }
 
     ngOnInit(): void {
@@ -155,7 +154,8 @@ export class MeetingComponent implements OnInit {
             this.meetingActivities,
             this.contingency.barcode,
             this.contingency.username,
-            this.contingency.creationDate
+            this.contingency.creationDate,
+            this.contingency.safetyEvent.code
         );
     }
 
