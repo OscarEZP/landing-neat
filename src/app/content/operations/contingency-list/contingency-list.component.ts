@@ -21,7 +21,7 @@ import { MatPaginator } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/first';
-import { ApiRestService} from '../../../shared/_services/apiRest.service';
+import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 
 @Component({
@@ -217,12 +217,21 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 } else {
                     this.selectedContingency = contingencyList[0];
                 }
-                this.subscribeToData();
+                this.startRefresh();
             });
         }
     }
 
-    private subscribeToData(): void {
+    private startRefresh(): void {
+        if (this._timerSubscription) {
+            this._timerSubscription.unsubscribe();
+            this.subscribeTimer();
+        } else {
+            this.subscribeTimer();
+        }
+    }
+
+    private subscribeTimer(): void {
         this._timerSubscription = Observable.timer(this.intervalToRefresh).first().subscribe(() => {
             this.getContingencies();
         });
