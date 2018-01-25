@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
 import { catchError, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
-import { Aircraft } from '../../../shared/_models/aircraft';
 import { Count } from '../../../shared/_models/configuration/count';
 import { Contingency } from '../../../shared/_models/contingency';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
@@ -16,7 +14,7 @@ export class ContingencyService implements OnInit {
 
     private static CONTINGENCY_LIST_ENDPOINT = 'contingencyList';
     private static AIRCRAFT_SEARCH_ENDPOINT = 'aircraftsSearch';
-    private static CLOSE_ENDPOINT = 'aircraftsSearch';
+    private static CLOSE_ENDPOINT = 'close';
     private static CONTINGENCY_SEARCH_ENDPOINT = 'contingencySearch';
     private static CONTINGENCY_SEARCH_COUNT_ENDPOINT = 'contingencySearchCount';
 
@@ -87,11 +85,11 @@ export class ContingencyService implements OnInit {
             );
     }
 
-    public getAircrafts(searchSignature: any): Observable<Aircraft[]> {
-        return this.apiService.search<Aircraft[]>(ContingencyService.AIRCRAFT_SEARCH_ENDPOINT, searchSignature)
+    public getAircrafts(searchSignature: any): Observable<any> {
+        return this.apiService.search<any>(ContingencyService.AIRCRAFT_SEARCH_ENDPOINT, searchSignature)
             .pipe(
                 tap(aircrafts => this.log(`fetched aircrafts`)),
-                catchError(this.handleError('getAircrafts', []))
+                catchError(this.handleError('getAircrafts'))
             );
     }
 
@@ -102,7 +100,7 @@ export class ContingencyService implements OnInit {
         );
     }
 
-    public getLastInformationPercetage(item: Contingency):number{
+    public getLastInformationPercetage(item: Contingency): number {
         const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
         const percentage = (diff / 180) * 100;
         return percentage > 100 ? 100 : percentage;
@@ -122,7 +120,7 @@ export class ContingencyService implements OnInit {
                     }
                     this.loading = false;
                 }),
-                catchError(this.handleError('getContingencies', []))
+                catchError(this.handleError('getContingencies'))
             );
     }
 
@@ -133,21 +131,19 @@ export class ContingencyService implements OnInit {
                     this.log(`fetched count search`);
                     this._infiniteScrollService.length = count.items;
                 }),
-                catchError(this.handleError('getContingencies', []))
+                catchError(this.handleError('getContingencies'))
             );
     }
 
     private handleError<T>(operation = 'operation', result?: T) {
         return (error: any): Observable<T> => {
 
-            // TODO: send the error to remote logging infrastructure
-            console.log(error); // log to console instead
+            console.log(error);
 
-            // TODO: better job of transforming error for user consumption
             this.log(`${operation} failed: ${error.message}`);
 
-            // Let the app keep running by returning an empty result.
-            return of(result as T);
+            return Observable.throw(error.error);
+
         };
     }
 
