@@ -160,7 +160,7 @@ export class MeetingComponent implements OnInit {
     }
 
     /**
-     * Get a translation by code
+     * Get a translated message by code
      * @param toTranslate
      */
     private getTranslateString(toTranslate: string) {
