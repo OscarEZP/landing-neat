@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import { DialogService } from '../../_services/dialog.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TimeInstant } from '../../../shared/_models/timeInstant';
@@ -7,7 +7,7 @@ import {ClockService} from '../../../shared/_services/clock.service';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {DatetimeService} from '../../../shared/_services/datetime.service';
 import {DataService} from '../../../shared/_services/data.service';
-import {MAT_DIALOG_DATA, MatSlideToggle} from '@angular/material';
+import {MAT_DIALOG_DATA} from '@angular/material';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {Types} from '../../../shared/_models/configuration/types';
@@ -54,7 +54,7 @@ export class MeetingComponent implements OnInit {
         this._alive = true;
         const initFakeDate = new Date().getTime();
         this.utcModel = new TimeInstant(initFakeDate, null);
-        this.meetingForm = this.setFormValidators();
+        this.meetingForm = this.getFormValidators();
         this.meetingActivities = [];
         this.setMeetingActivitiesConf();
         this.validations = new Validation(false, true, true, false);
@@ -75,7 +75,11 @@ export class MeetingComponent implements OnInit {
         this._clockService.getClock().subscribe(time => this.timeClock = time);
     }
 
-    private setFormValidators(): FormGroup {
+    /**
+     * Get form with validators
+     * @return {FormGroup}
+     */
+    private getFormValidators(): FormGroup {
         this.meetingForm = this._fb.group({});
         const barcodeValidators = [Validators.pattern('^[a-zA-Z0-9]+\\S$'), Validators.maxLength(80)];
         if (this.contingency.safetyEvent.code !== null) {
@@ -85,6 +89,9 @@ export class MeetingComponent implements OnInit {
         return this.meetingForm;
     }
 
+    /**
+     * Get configuration for meeting activities
+     */
     private setMeetingActivitiesConf(): void {
         this._apiRestService.getSingle('configTypes', MeetingComponent.MEETINGS_CONFIG_TYPE).subscribe(rs => {
             const res = rs as GroupTypes;
@@ -93,6 +100,11 @@ export class MeetingComponent implements OnInit {
         });
     }
 
+    /**
+     * Get meeting activities by meeting activities configuration
+     * @param meetingActivitiesConf
+     * @return {Activity[]}
+     */
     private setMeetingActivities(meetingActivitiesConf: Types[]): Activity[] {
         const meetingActivities: Activity[] = [];
         for (const activityConf of meetingActivitiesConf) {
@@ -102,7 +114,7 @@ export class MeetingComponent implements OnInit {
     }
 
     /**
-     * Submit form of meeting
+     * Submit meeting form
      * @param value
      * @return {Subscription}
      */
@@ -157,6 +169,9 @@ export class MeetingComponent implements OnInit {
         });
     }
 
+    /**
+     *
+     */
     private newMessage(): void {
         this._messageData.changeTimeUTCMessage(this.utcModel.epochTime);
     }
