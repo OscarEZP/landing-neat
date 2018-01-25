@@ -12,7 +12,7 @@ import { InfiniteScrollService } from './infinite-scroll.service';
 import { LogService } from './log.service';
 
 @Injectable()
-export class ContingencyService {z
+export class ContingencyService {
 
     private static CONTINGENCY_LIST_ENDPOINT = 'contingencyList';
     private static AIRCRAFT_SEARCH_ENDPOINT = 'aircraftsSearch';
@@ -98,7 +98,7 @@ export class ContingencyService {z
         );
     }
 
-    public getLastInformationPercetage(item: Contingency):number{
+    public getLastInformationPercetage(item: Contingency): number {
         const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
         const percentage = (diff / 180) * 100;
         return percentage > 100 ? 100 : percentage;
