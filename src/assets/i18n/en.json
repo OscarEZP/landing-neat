@@ -21,7 +21,7 @@
       "FOLLOW_UP": "Follow up"
     }
   },
-  "ERROR":{
+  "ERRORS":{
     "SESSION": "Your session has expired"
   },
   "ESS":{

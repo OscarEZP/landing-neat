@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
 
     constructor(
         protected authService: AuthService,
-        private storageService: StorageService,
+        private _storageService: StorageService,
         private router: Router,
         private route: ActivatedRoute,
         private fb: FormBuilder,
@@ -64,9 +64,10 @@ export class LoginComponent implements OnInit {
                 this.router.navigate([this.authService.getRedirectUrl()]);
             }
         });
-        if (this.authService.expired) {
-            this._translate.get('ERROR.SESSION').subscribe((res: string) => {
+        if (this._storageService.expired) {
+            this._translate.get('ERRORS.SESSION').subscribe((res: string) => {
                 this._messageService.openSnackBar(res);
+                this._storageService.expired = false;
             });
         }
     }
@@ -78,7 +79,7 @@ export class LoginComponent implements OnInit {
             this.disableButton = true;
             const data = this.authService.getData();
             this.authService.logIn(data.username, data.password).then(value => {
-                this.storageService.addCurrentUser(value);
+                this._storageService.addCurrentUser(value);
                 this.router.navigate([this.authService.getRedirectUrl()]);
                 this.activateLoadingBar(false);
                 this.disableButton = false;
