@@ -133,6 +133,7 @@
       "APPLY": "Apply",
       "CREATION_DATE": "Creation date",
       "DONE": "Done",
+      "FAILURE_MESSAGE": "Ooops, Something went wrong",
       "FLEET": "Fleet",
       "MEETING_CREATION": "Meeting Creation",
       "MEETING_SUMMARY": "Meeting Summary",
@@ -141,7 +142,8 @@
       "STATION": "Station",
       "TAIL": "Tail",
       "TYPE": "Type",
-      "TO_DO_LIST": "To do list"
+      "TO_DO_LIST": "To do list",
+      "SUCCESSFULLY_MESSAGE": "Meeting has been created successfully"
     },
     "OPERATOR": "Operator",
     "OF": "of",

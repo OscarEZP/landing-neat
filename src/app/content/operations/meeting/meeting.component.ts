@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import { DialogService } from '../../_services/dialog.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TimeInstant } from '../../../shared/_models/timeInstant';
@@ -7,10 +7,14 @@ import {ClockService} from '../../../shared/_services/clock.service';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {DatetimeService} from '../../../shared/_services/datetime.service';
 import {DataService} from '../../../shared/_services/data.service';
-import {MAT_DIALOG_DATA} from '@angular/material';
+import {MAT_DIALOG_DATA, MatSlideToggle} from '@angular/material';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {Types} from '../../../shared/_models/configuration/types';
+import {Validation} from '../../../shared/_models/validation';
+import {TranslateService} from '@ngx-translate/core';
+import {MessageService} from '../../../shared/_services/message.service';
+import { CancelComponent } from '../cancel/cancel.component';
 
 @Component({
     selector: 'lsl-meeting-form',
@@ -20,13 +24,17 @@ import {Types} from '../../../shared/_models/configuration/types';
 
 export class MeetingComponent implements OnInit {
 
+    private static MEETINGS_ENDPOINT = 'meetings';
+    private static MEETINGS_CONFIG_TYPE = 'MEETING_ACTIVITIES';
+
     private _meetingForm: FormGroup;
     private _utcModel: TimeInstant;
-    private _contingency: Contingency;
     private _timeClock: Date;
     private _interval: number;
     private _alive: boolean;
     private _meetingActivities: Types[];
+    private _validations: Validation;
+    private _snackbarMessage: string;
 
     constructor(
         private _dialogService: DialogService,
@@ -34,18 +42,19 @@ export class MeetingComponent implements OnInit {
         private _clockService: ClockService,
         private _datetimeService: DatetimeService,
         private _messageData: DataService,
+        private _messageService: MessageService,
         private _apiRestService: ApiRestService,
-        @Inject(MAT_DIALOG_DATA) private _contingency: any
+        @Inject(MAT_DIALOG_DATA) private _contingency: Contingency,
+        private _translate: TranslateService
     ) {
         this._interval = 1000 * 60;
         this._alive = true;
         const initFakeDate = new Date().getTime();
         this.utcModel = new TimeInstant(initFakeDate, null);
-        this.meetingForm = _fb.group({
-            'barcode': [this.contingency.barcode, [Validators.pattern('^[a-zA-Z0-9]+\\S$'), Validators.maxLength(80)]],
-        });
-        console.log(this.contingency);
+        this.meetingForm = this.setFormValidators();
         this.getMeetingActivities();
+        this.validations = new Validation(false, true, true, false);
+        console.log(this.contingency);
     }
 
     ngOnInit(): void {
@@ -62,10 +71,73 @@ export class MeetingComponent implements OnInit {
         this._clockService.getClock().subscribe(time => this.timeClock = time);
     }
 
+    private setFormValidators(): FormGroup {
+        this.meetingForm = this._fb.group({});
+        const barcodeValidators = [Validators.pattern('^[a-zA-Z0-9]+\\S$'), Validators.maxLength(80)];
+        if (this.contingency.safetyEvent.code !== null) {
+            barcodeValidators.push(Validators.required);
+        }
+        this.meetingForm.addControl('barcode', new FormControl(this.contingency.barcode, barcodeValidators));
+        return this.meetingForm;
+    }
+
     private getMeetingActivities(): void {
-        this._apiRestService.getSingle('configTypes', 'MEETING_ACTIVITIES').subscribe(rs => {
+        this._apiRestService.getSingle('configTypes', MeetingComponent.MEETINGS_CONFIG_TYPE).subscribe(rs => {
             const res = rs as GroupTypes;
             this.meetingActivities = res.types;
+        });
+    }
+
+    /**
+     * Submit form of meeting
+     * @param value
+     * @return {Subscription}
+     */
+    public submitForm(value: any) {
+        if (this.meetingForm.valid) {
+            const signature = this.getSignature();
+            this.validations.isSending = true;
+            let res: Response;
+            this._apiRestService
+            .add<Response>(MeetingComponent.MEETINGS_ENDPOINT, signature)
+            .subscribe(response => res = response,
+                err => {
+                    this.getTranslateString('OPERATIONS.MEETING_FORM.FAILURE_MESSAGE');
+                    const message: string = err.error.message !== null ? err.error.message : this.snackbarMessage;
+                    this._messageService.openSnackBar(message);
+                    this.validations.isSending = false;
+                }, () => {
+                    this.getTranslateString('OPERATIONS.MEETING_FORM.SUCCESSFULLY_MESSAGE');
+                    this._messageService.openSnackBar(this.snackbarMessage);
+                    this._dialogService.closeAllDialogs();
+                    this._messageData.stringMessage('reload');
+                    this.validations.isSending = false;
+                });
+        } else {
+            this.getTranslateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
+            this._messageService.openSnackBar(this.snackbarMessage);
+            this.validations.isSending = false;
+        }
+    }
+
+    private getSignature(): any {
+        let signature: any;
+        for (const activity of this.meetingActivities) {
+            console.log(activity);
+
+        }
+        signature = {
+            contingencyId: this.contingency.id,
+            barcode: this.contingency.barcode,
+            createUser: this.contingency.username,
+            timeInstant: this.contingency.creationDate,
+        };
+        return signature;
+    }
+
+    private getTranslateString(toTranslate: string) {
+        this._translate.get(toTranslate).subscribe((res: string) => {
+            this.snackbarMessage = res;
         });
     }
 
@@ -74,7 +146,33 @@ export class MeetingComponent implements OnInit {
     }
 
     public closeDialog(): void {
-        this._dialogService.closeAllDialogs();
+        if (this.validateFilledItems()) {
+            this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
+            this._messageService.openFromComponent(CancelComponent, {
+                data: {message: this.snackbarMessage},
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+            });
+        } else {
+            this._dialogService.closeAllDialogs();
+        }
+    }
+
+    /**
+     *
+     * @return {boolean}
+     */
+    private validateFilledItems(): boolean {
+        let counterPristine = 0;
+        let counterItems = 0;
+        Object.keys(this.meetingForm.controls).forEach(elem => {
+            counterItems += 1;
+            if (this.meetingForm.controls[elem].pristine) {
+                counterPristine += 1;
+            }
+        });
+
+        return counterPristine < counterItems;
     }
 
     get timeClock(): Date {
@@ -115,5 +213,21 @@ export class MeetingComponent implements OnInit {
 
     set meetingActivities(value: Types[]) {
         this._meetingActivities = value;
+    }
+
+    get validations(): Validation {
+        return this._validations;
+    }
+
+    set validations(value: Validation) {
+        this._validations = value;
+    }
+
+    get snackbarMessage(): string {
+        return this._snackbarMessage;
+    }
+
+    set snackbarMessage(value: string) {
+        this._snackbarMessage = value;
     }
 }

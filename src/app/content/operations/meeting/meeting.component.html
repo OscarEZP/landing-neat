@@ -38,11 +38,13 @@
                                     <input id="in-meeting-form-barcode" matInput placeholder="barcode"
                                            [formControl]="meetingForm.controls['barcode']" [(ngModel)]="contingency.barcode">
                                 </mat-form-field>
+                            </div>
+                            <div fxLayout="row" >
                                 <mat-error *ngIf="meetingForm.controls['barcode'].hasError('pattern') && meetForm.submitted">
-                                    {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_PATTERN'|translate}}
+                                        {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_PATTERN'|translate}}
                                 </mat-error>
                                 <mat-error *ngIf="meetingForm.controls['barcode'].hasError('maxlenght') && meetForm.submitted">
-                                    {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_MAX'|translate}}
+                                        {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_MAX'|translate}}
                                 </mat-error>
                             </div>
                         </div>
@@ -61,7 +63,7 @@
                                     <div fxLayout="row" *ngFor="let activity of meetingActivities">
                                         <div fxFlex="60">{{activity.description}}</div>
                                         <div fxFlex="20">
-                                            <mat-slide-toggle [ngModelOptions]="{standalone: true}" [(ngModel)]="activity.apply" class=""></mat-slide-toggle>
+                                            <mat-slide-toggle #slide [ngModelOptions]="{standalone: true}" [(ngModel)]="activity.apply" class=""></mat-slide-toggle>
                                         </div>
                                         <div fxFlex="20">
                                             <mat-checkbox [disabled]="!activity.apply" class=""></mat-checkbox>
