@@ -1,28 +1,29 @@
 export class Activity {
-
     private _code: string;
     private _apply: boolean;
     private _done: boolean;
 
-    constructor (code: string, apply: boolean, done: boolean) {
-        this.code = code;
-        this.apply = apply;
-        this.done = done;
+
+    constructor(code: string, apply: boolean, done: boolean) {
+        this._code = code;
+        this._apply = apply;
+        this._done = done;
     }
 
-    get code (): string {
+
+    get code(): string {
         return this._code;
     }
 
-    set code (value: string) {
+    set code(value: string) {
         this._code = value;
     }
 
-    get apply (): boolean {
+    get apply(): boolean {
         return this._apply;
     }
 
-    set apply (value: boolean) {
+    set apply(value: boolean) {
         this._apply = value;
     }
 
