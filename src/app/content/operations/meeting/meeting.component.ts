@@ -15,6 +15,8 @@ import {Validation} from '../../../shared/_models/validation';
 import {TranslateService} from '@ngx-translate/core';
 import {MessageService} from '../../../shared/_services/message.service';
 import { CancelComponent } from '../cancel/cancel.component';
+import {Activity} from '../../../shared/_models/activity';
+import {Meeting} from '../../../shared/_models/meeting';
 
 @Component({
     selector: 'lsl-meeting-form',
@@ -32,7 +34,8 @@ export class MeetingComponent implements OnInit {
     private _timeClock: Date;
     private _interval: number;
     private _alive: boolean;
-    private _meetingActivities: Types[];
+    private _meetingActivitiesConf: Types[];
+    private _meetingActivities: Activity[];
     private _validations: Validation;
     private _snackbarMessage: string;
 
@@ -52,7 +55,8 @@ export class MeetingComponent implements OnInit {
         const initFakeDate = new Date().getTime();
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.meetingForm = this.setFormValidators();
-        this.getMeetingActivities();
+        this.meetingActivities = [];
+        this.setMeetingActivitiesConf();
         this.validations = new Validation(false, true, true, false);
         console.log(this.contingency);
     }
@@ -81,11 +85,20 @@ export class MeetingComponent implements OnInit {
         return this.meetingForm;
     }
 
-    private getMeetingActivities(): void {
+    private setMeetingActivitiesConf(): void {
         this._apiRestService.getSingle('configTypes', MeetingComponent.MEETINGS_CONFIG_TYPE).subscribe(rs => {
             const res = rs as GroupTypes;
-            this.meetingActivities = res.types;
+            this.meetingActivitiesConf = res.types;
+            this.meetingActivities = this.setMeetingActivities(this.meetingActivitiesConf);
         });
+    }
+
+    private setMeetingActivities(meetingActivitiesConf: Types[]): Activity[] {
+        const meetingActivities: Activity[] = [];
+        for (const activityConf of meetingActivitiesConf) {
+            meetingActivities.push(new Activity(activityConf.code, false, false));
+        }
+        return meetingActivities;
     }
 
     /**
@@ -120,21 +133,24 @@ export class MeetingComponent implements OnInit {
         }
     }
 
-    private getSignature(): any {
-        let signature: any;
-        for (const activity of this.meetingActivities) {
-            console.log(activity);
-
-        }
-        signature = {
-            contingencyId: this.contingency.id,
-            barcode: this.contingency.barcode,
-            createUser: this.contingency.username,
-            timeInstant: this.contingency.creationDate,
-        };
-        return signature;
+    /**
+     * Get a Meeting Object to sending data
+     * @return {Meeting}
+     */
+    private getSignature(): Meeting {
+        return new Meeting(null,
+            this.contingency.id,
+            this.meetingActivities,
+            this.contingency.barcode,
+            this.contingency.username,
+            this.contingency.creationDate
+        );
     }
 
+    /**
+     * Get a translation by code
+     * @param toTranslate
+     */
     private getTranslateString(toTranslate: string) {
         this._translate.get(toTranslate).subscribe((res: string) => {
             this.snackbarMessage = res;
@@ -145,6 +161,9 @@ export class MeetingComponent implements OnInit {
         this._messageData.changeTimeUTCMessage(this.utcModel.epochTime);
     }
 
+    /**
+     * Close form modal
+     */
     public closeDialog(): void {
         if (this.validateFilledItems()) {
             this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
@@ -159,7 +178,7 @@ export class MeetingComponent implements OnInit {
     }
 
     /**
-     *
+     * Method to validate items touched by user
      * @return {boolean}
      */
     private validateFilledItems(): boolean {
@@ -171,7 +190,6 @@ export class MeetingComponent implements OnInit {
                 counterPristine += 1;
             }
         });
-
         return counterPristine < counterItems;
     }
 
@@ -207,11 +225,19 @@ export class MeetingComponent implements OnInit {
         this._meetingForm = value;
     }
 
-    get meetingActivities(): Types[] {
+    get meetingActivitiesConf(): Types[] {
+        return this._meetingActivitiesConf;
+    }
+
+    set meetingActivitiesConf(value: Types[]) {
+        this._meetingActivitiesConf = value;
+    }
+
+    get meetingActivities(): Activity[] {
         return this._meetingActivities;
     }
 
-    set meetingActivities(value: Types[]) {
+    set meetingActivities(value: Activity[]) {
         this._meetingActivities = value;
     }
 

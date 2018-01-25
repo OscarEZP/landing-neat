@@ -60,13 +60,13 @@
                                     <div fxFlex="20">{{'OPERATIONS.MEETING_FORM.DONE'|translate}}</div>
                                 </header>
                                 <content>
-                                    <div fxLayout="row" *ngFor="let activity of meetingActivities">
+                                    <div fxLayout="row" *ngFor="let activity of meetingActivitiesConf; let i = index">
                                         <div fxFlex="60">{{activity.description}}</div>
                                         <div fxFlex="20">
-                                            <mat-slide-toggle #slide [ngModelOptions]="{standalone: true}" [(ngModel)]="activity.apply" class=""></mat-slide-toggle>
+                                            <mat-slide-toggle #slide [ngModelOptions]="{standalone: true}" [(ngModel)]="meetingActivities[i].apply" class=""></mat-slide-toggle>
                                         </div>
                                         <div fxFlex="20">
-                                            <mat-checkbox [disabled]="!activity.apply" class=""></mat-checkbox>
+                                            <mat-checkbox [disabled]="!meetingActivities[i].apply" class=""></mat-checkbox>
                                         </div>
                                     </div>
                                 </content>
