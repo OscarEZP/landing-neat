@@ -206,6 +206,15 @@ export class MeetingComponent implements OnInit {
         return counterPristine < counterItems;
     }
 
+    public checkApply(meetingActivity: Activity) {
+        meetingActivity.done = !meetingActivity.apply ? false : meetingActivity.done;
+        Object.keys(this.meetingActivities).forEach((elem, i) => {
+            if (meetingActivity.code === elem['code']) {
+                this.meetingActivities[i] = meetingActivity;
+            }
+        });
+    }
+
     get timeClock(): Date {
         return this._timeClock;
     }

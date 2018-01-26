@@ -63,10 +63,10 @@
                                     <div fxLayout="row" *ngFor="let activity of meetingActivitiesConf; let i = index">
                                         <div fxFlex="60">{{activity.description}}</div>
                                         <div fxFlex="20">
-                                            <mat-slide-toggle #slide [ngModelOptions]="{standalone: true}" [(ngModel)]="meetingActivities[i].apply" class=""></mat-slide-toggle>
+                                            <mat-slide-toggle #slide (change)="checkApply(meetingActivities[i])" [ngModelOptions]="{standalone: true}" [(ngModel)]="meetingActivities[i].apply" class=""></mat-slide-toggle>
                                         </div>
                                         <div fxFlex="20">
-                                            <mat-checkbox [disabled]="!meetingActivities[i].apply" class=""></mat-checkbox>
+                                            <mat-checkbox [disabled]="!meetingActivities[i].apply" [ngModelOptions]="{standalone: true}" [(ngModel)]="meetingActivities[i].done" class=""></mat-checkbox>
                                         </div>
                                     </div>
                                 </content>
