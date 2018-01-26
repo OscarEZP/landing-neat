@@ -386,8 +386,8 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     private initDateModels(epochDate: number): DateModel[] {
         return this.contingencyDateModel = [
-            new DateModel(null),
-            new DateModel(null),
+            this.contingencyDateModel[0] !== null ? this.contingencyDateModel[0] : new DateModel(null),
+            this.contingencyDateModel[1] !== null ? this.contingencyDateModel[1] : new DateModel(null),
             new DateModel(epochDate, -24),
             new DateModel(epochDate, 24)
         ];
