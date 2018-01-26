@@ -1,4 +1,4 @@
-<form [formGroup]="meetingForm" #meetForm="ngForm" (ngSubmit)="submitForm(meetingForm.value)">
+<form [formGroup]="meetingForm" #meetForm="ngForm" (ngSubmit)="submitForm()">
     <div mat-dialog-title fxLayoutGap="30px" class="title-dialog-container" fxLayout="column">
         <div fxLayout="row" fxFlex>
             <span class="title-dialog" fxFlex>{{'OPERATIONS.MEETING_FORM.MEETING_SUMMARY' | translate}}</span>

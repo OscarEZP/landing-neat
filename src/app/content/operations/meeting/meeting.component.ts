@@ -59,7 +59,6 @@ export class MeetingComponent implements OnInit {
         this.meetingActivities = [];
         this.setMeetingActivitiesConf();
         this.validations = new Validation(false, true, true, false);
-        this.barcode = _contingency.barcode;
     }
 
     ngOnInit(): void {
@@ -97,7 +96,7 @@ export class MeetingComponent implements OnInit {
         this._apiRestService.getSingle('configTypes', MeetingComponent.MEETINGS_CONFIG_TYPE).subscribe(rs => {
             const res = rs as GroupTypes;
             this.meetingActivitiesConf = res.types;
-            this.meetingActivities = this.setMeetingActivities(this.meetingActivitiesConf);
+            this.meetingActivities = MeetingComponent.setMeetingActivities(this.meetingActivitiesConf);
         });
     }
 
@@ -106,7 +105,7 @@ export class MeetingComponent implements OnInit {
      * @param meetingActivitiesConf
      * @return {Activity[]}
      */
-    private setMeetingActivities(meetingActivitiesConf: Types[]): Activity[] {
+    private static setMeetingActivities(meetingActivitiesConf: Types[]): Activity[] {
         const meetingActivities: Activity[] = [];
         for (const activityConf of meetingActivitiesConf) {
             meetingActivities.push(new Activity(activityConf.code, false, false));
@@ -116,10 +115,8 @@ export class MeetingComponent implements OnInit {
 
     /**
      * Submit meeting form
-     * @param value
-     * @return {Subscription}
      */
-    public submitForm(value: any) {
+    public submitForm() {
         if (this.meetingForm.valid) {
             const signature = this.getSignature();
             this.validations.isSending = true;
