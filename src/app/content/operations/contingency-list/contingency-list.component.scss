@@ -3,13 +3,13 @@
 .counter-container{
   height: 40px;
   padding: 0 16px;
-  color: mat-color($foreground, 'text');
+  color: mat-color($foreground, text);
   margin: auto 25px;
 }
 
 .list-contingency{
   @include generate-font-size(-6);
-  color: mat-color($foreground, 'text');
+  color: mat-color($foreground, text);
   margin: auto 16px;
   header{
     height: 40px;
@@ -50,7 +50,7 @@
     }
 
     .badge {
-      background-color: mat-color($foreground, 'secondary-text');
+      background-color: mat-color($foreground, secondary-text);
       margin: 0;
       font-size: 10px;
       color: white;
@@ -64,19 +64,19 @@
     }
 
     .ni1 {
-      background-color: mat-color($custom, 'ni1');
+      background-color: mat-color($custom, ni1);
     }
 
     .ni2 {
-      background-color: mat-color($custom, 'ni2');
+      background-color: mat-color($custom, ni2);
     }
 
     .ni3 {
-      background-color: mat-color($custom, 'ni3');
+      background-color: mat-color($custom, ni3);
     }
 
     .etr {
-      background-color: mat-color($primary, 'A700');
+      background-color: mat-color($primary, A700);
     }
 
     .aog{
@@ -84,7 +84,7 @@
     }
 
     .rlsd{
-      background-color: mat-color($custom, 'success');
+      background-color: mat-color($custom, success);
     }
 
     .historical-bar{
@@ -95,7 +95,7 @@
     }
   }
   .contingency-item.active{
-    background-color: #eee;
+    background-color: mat-color($mat-palette-custom, selected-card);
   }
 
 }

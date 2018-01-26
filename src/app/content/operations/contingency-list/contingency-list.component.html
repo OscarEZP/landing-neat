@@ -134,5 +134,5 @@
     [pageSize]="infiniteScrollService.pageSize"
     [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
 </mat-paginator>
-
-<lsl-ess message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading"></lsl-ess>
+<lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading && !historicalSearchService.active"></lsl-ess>
+<lsl-ess icon="assignment_late" message="ESS.NO_HISTORICAL_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading && historicalSearchService.active"></lsl-ess>
