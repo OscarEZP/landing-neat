@@ -16,7 +16,7 @@ export class DatetimeService {
     getTime(): Observable<ActualTimeModel> {
         return this.http
                    .get(this.url)
-                   .map((res: Response) => res.json());
+                   .map(res => res.json());
     }
 
 }
