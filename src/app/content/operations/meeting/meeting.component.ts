@@ -206,6 +206,10 @@ export class MeetingComponent implements OnInit {
         return counterPristine < counterItems;
     }
 
+    /**
+     * Change checkbox value to false if apply slider is false
+     * @param meetingActivity
+     */
     public checkApply(meetingActivity: Activity) {
         meetingActivity.done = !meetingActivity.apply ? false : meetingActivity.done;
         Object.keys(this.meetingActivities).forEach((elem, i) => {
