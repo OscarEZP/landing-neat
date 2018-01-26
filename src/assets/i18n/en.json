@@ -1,8 +1,19 @@
 {
+  "AUTHENTICATION":{
+    "CHANGE_PASSWORD": "Change Password",
+    "CHECK_YOUR_EMAIL": "Please check your email",
+    "ENTER_YOUR_CODE": "Please enter your Verification Code",
+    "ENTER_YOUR_CONFIRM_PASSWORD": "Please enter your confirm password",
+    "ENTER_YOUR_PASSWORD": "Please enter your password",
+    "PASSWORD_VALIDATION": "The password must be at least 8 characters long, with numbers, a capital letter and a special character.",
+    "TO_FIND_YOUR_CODE": "to find your verification code and enter it here"
+  },
   "BUTTONS": {
     "CANCEL": "CANCEL",
+    "CHANGE": "CHANGE",
     "CLOSE": "CLOSE",
     "CREATE": "CREATE",
+    "RESEND": "RESEND",
     "SAVE": "SAVE",
     "SUB_MENUS": {
       "CLOSE_CONTINGENCY": "Close Contingency",
@@ -10,10 +21,14 @@
       "FOLLOW_UP": "Follow up"
     }
   },
+  "ERRORS":{
+    "SESSION": "Your session has expired"
+  },
   "ESS":{
     "NO_CONTINGENCIES_FOUND": "There are no contingencies. Have a nice day!",
     "NO_HISTORICAL_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters."
   },
+
   "OPERATIONS": {
     "ALERT": "Alert",
     "ALERTS": "Alerts",
@@ -111,10 +126,26 @@
     },
     "CONTINGENCY_LIMIT": "Last 3 hours",
     "DESCRIPTION": "Reason",
-
     "FLIGHT": "Flight",
     "FOCAL": "Focal",
     "FROM_TO": "From/To",
+    "MEETING_FORM": {
+      "ACTIVITIES": "Activities",
+      "APPLY": "Apply",
+      "CREATION_DATE": "Creation date",
+      "DONE": "Done",
+      "FAILURE_MESSAGE": "Ooops, Something went wrong",
+      "FLEET": "Fleet",
+      "MEETING_CREATION": "Meeting Creation",
+      "MEETING_SUMMARY": "Meeting Summary",
+      "OPERATION_INFO": "Operation Info",
+      "REASON": "Reason",
+      "STATION": "Station",
+      "TAIL": "Tail",
+      "TYPE": "Type",
+      "TO_DO_LIST": "To do list",
+      "SUCCESSFULLY_MESSAGE": "Meeting has been created successfully"
+    },
     "OPERATOR": "Operator",
     "OF": "of",
     "PIT_STOP": "PIT STOP",

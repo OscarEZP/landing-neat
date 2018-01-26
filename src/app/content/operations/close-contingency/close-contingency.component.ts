@@ -10,7 +10,6 @@ import { DataService } from '../../../shared/_services/data.service';
 import { CancelComponent } from '../cancel/cancel.component';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
 
-
 @Component({
     selector: 'lsl-close-contingency',
     templateUrl: './close-contingency.component.html',
@@ -22,7 +21,6 @@ export class CloseContingencyComponent implements OnInit {
     public closeSignature;
     public snackBarMessage;
     public typeCloseList;
-
 
     constructor(private dialogService: DialogService,
                 private translate: TranslateService,
@@ -75,7 +73,6 @@ export class CloseContingencyComponent implements OnInit {
                     this.dismissCloseContigency();
                     this.dataService.stringMessage('reload');
                 }, err => {
-                    this.messageService.openSnackBar(err);
                 }
             );
         } else {

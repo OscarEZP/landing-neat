@@ -1,29 +1,22 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
 import { catchError, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
-import { environment } from '../../../../environments/environment';
-import { Aircraft } from '../../../shared/_models/aircraft';
 import { Count } from '../../../shared/_models/configuration/count';
 import { Contingency } from '../../../shared/_models/contingency';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { InfiniteScrollService } from './infinite-scroll.service';
 import { LogService } from './log.service';
 
-const httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
-};
-
 @Injectable()
-export class ContingencyService implements OnInit {
+export class ContingencyService {
 
-    private static apiUrl = environment.apiUrl;
-    private static closePath = environment.paths.close;
-    private static searchAircraftPath = environment.paths.aircraftsSearch;
-    private static contingencySearch = environment.paths.contingencySearch;
-    private static contingencySearchCount = environment.paths.contingencySearchCount;
+    private static CONTINGENCY_LIST_ENDPOINT = 'contingencyList';
+    private static AIRCRAFT_SEARCH_ENDPOINT = 'aircraftsSearch';
+    private static CLOSE_ENDPOINT = 'close';
+    private static CONTINGENCY_SEARCH_ENDPOINT = 'contingencySearch';
+    private static CONTINGENCY_SEARCH_COUNT_ENDPOINT = 'contingencySearchCount';
 
     private _contingencyList: Contingency[];
     private _loading: boolean;
@@ -76,14 +69,10 @@ export class ContingencyService implements OnInit {
         this._apiService = value;
     }
 
-    ngOnInit() {
-        this.getContingencies();
-    }
-
     public getContingencies(): Observable<Contingency[]> {
         this.loading = true;
         return this.apiService
-            .getAll<Contingency[]>('contingencyList')
+            .getAll<Contingency[]>(ContingencyService.CONTINGENCY_LIST_ENDPOINT)
             .pipe(
                 tap((contingencies: Contingency[]) => {
                     this.loading = false;
@@ -92,63 +81,65 @@ export class ContingencyService implements OnInit {
             );
     }
 
-    public getAircrafts(searchSignature: any): Observable<Aircraft[]> {
-        return this.http.post<Aircraft[]>(ContingencyService.apiUrl + ContingencyService.searchAircraftPath, searchSignature, httpOptions)
+    public getAircrafts(searchSignature: any): Observable<any> {
+        return this.apiService.search<any>(ContingencyService.AIRCRAFT_SEARCH_ENDPOINT, searchSignature)
             .pipe(
                 tap(aircrafts => this.log(`fetched aircrafts`)),
-                catchError(this.handleError('getAircrafts', []))
+                catchError(this.handleError('getAircrafts'))
             );
     }
 
     public closeContingency(closeSignature: any): Observable<any> {
-        return this.http.post<any>(ContingencyService.apiUrl + ContingencyService.closePath, closeSignature, httpOptions).pipe(
+        return this.apiService.search<any>(ContingencyService.CLOSE_ENDPOINT, closeSignature).pipe(
             tap((signature: any) => this.log(`close contingency w/ id=${signature.id}`)),
             catchError(this.handleError<any>('closeContingency'))
         );
     }
 
-    public postHistoricalSearch(searchSignature): Observable<Contingency[]> {
+    public getLastInformationPercetage(item: Contingency): number {
+        const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
+        const percentage = (diff / 180) * 100;
+        return percentage > 100 ? 100 : percentage;
+    }
+
+    public postHistoricalSearch(searchSignature): Observable<any> {
         this.loading = true;
-        return this.http.post<any>(ContingencyService.apiUrl + ContingencyService.contingencySearch, searchSignature, httpOptions)
-            .pipe(
+        return this.apiService.search<Contingency[]>(ContingencyService.CONTINGENCY_SEARCH_ENDPOINT, searchSignature)
+        .pipe(
                 tap(contingencies => {
                     this.log(`fetched search`);
                     this._contingencyList = contingencies;
                     if (contingencies.length > 0) {
                         contingencies.forEach((item) => {
-                            const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
-                            const percentage = (diff / 180) * 100;
-                            item.lastInformationPercentage = percentage > 100 ? 100 : percentage;
+                            item.lastInformationPercentage = this.getLastInformationPercetage(item);
                         });
                     }
                     this.loading = false;
                 }),
-                catchError(this.handleError('getContingencies', []))
+                catchError(this.handleError('getContingencies'))
             );
     }
 
     public getTotalRecords(searchSignature): Observable<any> {
-        return this.http.post<Count>(ContingencyService.apiUrl + ContingencyService.contingencySearchCount, searchSignature, httpOptions)
+        return this.apiService.search<Count>(ContingencyService.CONTINGENCY_SEARCH_COUNT_ENDPOINT, searchSignature)
             .pipe(
                 tap(count => {
                     this.log(`fetched count search`);
                     this._infiniteScrollService.length = count.items;
                 }),
-                catchError(this.handleError('getContingencies', []))
+                catchError(this.handleError('getContingencies'))
             );
     }
 
     private handleError<T>(operation = 'operation', result?: T) {
         return (error: any): Observable<T> => {
 
-            // TODO: send the error to remote logging infrastructure
-            console.log(error); // log to console instead
+            console.log(error);
 
-            // TODO: better job of transforming error for user consumption
             this.log(`${operation} failed: ${error.message}`);
 
-            // Let the app keep running by returning an empty result.
-            return of(result as T);
+            return Observable.throw(error.error);
+
         };
     }
 

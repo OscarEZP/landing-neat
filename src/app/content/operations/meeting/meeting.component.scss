@@ -1,0 +1,132 @@
+@import '../../../../assets/style/base.scss';
+
+$padd-section: 25px;
+
+@mixin border-padd-bottom(){
+  border-bottom: .6px solid #c5c5c5;
+  padding-bottom: $padd-section;
+}
+@mixin border-padd-top(){
+  border-top: .6px solid #c5c5c5;
+  padding-top: $padd-section;
+}
+@mixin border-right(){
+  border-right: 1px solid #c5c5c5;
+}
+@mixin padding-left(){
+  padding-left: 33px;
+}
+@mixin md-icon-size($size: 24px) {
+  font-size: $size;
+  height: $size;
+  width: $size;
+}
+
+.mat-dialog-content{
+  max-height: none;
+  overflow: hidden;
+}
+
+.title-dialog-container{
+  margin-bottom: 33px;
+  div{
+    margin: 0;
+  }
+  span.title-dialog{
+    @include generate-font-size(9);
+    text-transform: uppercase;
+    color: #37474f;
+  }
+  .date-title-dialog{
+    @include generate-font-size();
+    color:#37474f;
+  }
+  mat-icon.close-dialog {
+    font-size: 26px;
+    margin: -5px 0 0 -2px
+  }
+  .msg-required-dialog{
+    @include generate-font-size();
+    font-style: italic;
+    color: #546e7a;
+  }
+}
+
+.content-dialog-container{
+
+  div.title-dialog{
+    font-size: 21px;
+    margin-bottom: 4px;
+  }
+  .sections-content{
+    font-size: 18px;
+    color: mat-color($foreground, text);
+
+    > div:last-child{
+      border-right: none;
+    }
+
+    .title-section{
+      @include generate-font-size(4);
+      color: mat-color($foreground, text);
+      padding: 0 0 10px 0;
+    }
+    .label-element{
+      color: #546e7a;
+      @include generate-font-size(2);
+      padding: 5px 0 0 0;
+    }
+    .alert-warning{
+      color: #ef6c00;
+    }
+    .operation-container{
+      @include border-padd-top();
+      @include border-padd-bottom();
+      @include border-right();
+
+      section{
+        @include border-padd-top();
+        .data-table{
+          header, content > *{
+            padding: 7px 5px;
+          }
+          content > *:nth-child(2n){
+            background-color: map_get($mat-grey, 50);
+          }
+        }
+      }
+
+      section:first-child{
+        border: none;
+        padding: 0;
+      }
+      .data{
+        padding-right: $padd-section;
+      }
+      .barcode-container{
+        min-height: 77.44px;
+      }
+      p {
+        padding: 7px 0;
+        @include generate-font-size(1);
+        span {
+          color: mat-color($foreground, secondary-text);
+          padding: 0 0 0 5px;
+        }
+      }
+    }
+    .safety-container{
+      @include border-padd-top();
+      @include border-right();
+      @include padding-left();
+    }
+    .maintenance-container{
+      @include border-padd-top();
+      @include padding-left();
+      .full-width{
+        width: 100%;
+      }
+    }
+  }
+}
+

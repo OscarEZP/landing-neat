@@ -22,6 +22,7 @@ export const environment = {
         forgotPassword: ':9001/api/security/users/_forgotpassword',
         locations: ':9005/api/v1/configurations/locations',
         login: ':9001/api/security/users/_login',
+        meetings: ':9002/api/v1/contingencies/meetings',
         operator: ':9005/api/v1/configurations/operators/',
         safetyEvent: ':9005/api/v1/configurations/safetyEvents',
         types: ':9005/api/v1/configurations/types',
