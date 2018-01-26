@@ -38,7 +38,6 @@ export class MeetingComponent implements OnInit {
     private _meetingActivities: Activity[];
     private _validations: Validation;
     private _snackbarMessage: string;
-    private _barcode: string;
 
     constructor(
         private _dialogService: DialogService,
@@ -151,7 +150,7 @@ export class MeetingComponent implements OnInit {
         return new Meeting(null,
             this.contingency.id,
             this.meetingActivities,
-            this.barcode,
+            this.contingency.barcode,
             this.contingency.username,
             this.contingency.creationDate,
             this.contingency.safetyEvent.code
@@ -271,11 +270,4 @@ export class MeetingComponent implements OnInit {
         this._snackbarMessage = value;
     }
 
-    get barcode(): string {
-        return this._barcode;
-    }
-
-    set barcode(value: string) {
-        this._barcode = value;
-    }
 }
