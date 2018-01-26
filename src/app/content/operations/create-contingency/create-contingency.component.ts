@@ -75,7 +75,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _observableOperatorList: Observable<Types[]>;
 
     constructor(private _dialogService: DialogService,
-                private _contingencyService: ContingencyService,
                 private _fb: FormBuilder,
                 private _datetimeService: DatetimeService,
                 private _clockService: ClockService,

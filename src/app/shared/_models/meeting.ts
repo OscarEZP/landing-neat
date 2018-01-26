@@ -8,14 +8,24 @@ export class Meeting {
     private _barcode: string;
     private _createUser: string;
     private _timeInstant: TimeInstant;
+    private _safetyCode: string;
 
-    constructor(id: number, contingencyId: number, activities: Array<Activity>, barcode: string, createUser: string, timeInstant: TimeInstant) {
-        this._id = id;
-        this._contingencyId = contingencyId;
-        this._activities = activities;
-        this._barcode = barcode;
-        this._createUser = createUser;
-        this._timeInstant = timeInstant;
+    constructor(id: number, contingencyId: number, activities: Array<Activity>, barcode: string, createUser: string, timeInstant: TimeInstant, safetyCode: string) {
+        this.id = id;
+        this.contingencyId = contingencyId;
+        this.activities = activities;
+        this.barcode = barcode;
+        this.createUser = createUser;
+        this.timeInstant = timeInstant;
+        this.safetyCode = safetyCode;
+    }
+
+    get safetyCode(): string {
+        return this._safetyCode;
+    }
+
+    set safetyCode(value: string) {
+        this._safetyCode = value;
     }
 
     get id(): number {

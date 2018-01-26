@@ -27,6 +27,7 @@
   "ESS":{
     "NO_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters."
   },
+
   "OPERATIONS": {
     "ALERT": "Alert",
     "ALERTS": "Alerts",
@@ -124,10 +125,26 @@
     },
     "CONTINGENCY_LIMIT": "Last 3 hours",
     "DESCRIPTION": "Reason",
-
     "FLIGHT": "Flight",
     "FOCAL": "Focal",
     "FROM_TO": "From/To",
+    "MEETING_FORM": {
+      "ACTIVITIES": "Activities",
+      "APPLY": "Apply",
+      "CREATION_DATE": "Creation date",
+      "DONE": "Done",
+      "FAILURE_MESSAGE": "Ooops, Something went wrong",
+      "FLEET": "Fleet",
+      "MEETING_CREATION": "Meeting Creation",
+      "MEETING_SUMMARY": "Meeting Summary",
+      "OPERATION_INFO": "Operation Info",
+      "REASON": "Reason",
+      "STATION": "Station",
+      "TAIL": "Tail",
+      "TYPE": "Type",
+      "TO_DO_LIST": "To do list",
+      "SUCCESSFULLY_MESSAGE": "Meeting has been created successfully"
+    },
     "OPERATOR": "Operator",
     "OF": "of",
     "PIT_STOP": "PIT STOP",

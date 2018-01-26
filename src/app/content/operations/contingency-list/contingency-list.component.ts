@@ -23,6 +23,7 @@ import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/first';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
+import { MeetingComponent } from '../meeting/meeting.component';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -171,6 +172,14 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public openDetails(contingency: Contingency, section: string) {
         this.detailsService.activeContingencyChanged(contingency);
         this.detailsService.openDetails(section);
+        this.setSelectedContingency(contingency);
+    }
+
+    /**
+     * Method for update selected contingency and contingency pivot
+     * @param contingency
+     */
+    public setSelectedContingency(contingency: Contingency) {
         this.selectedContingency = contingency;
         this.selectedContingencyPivot = contingency;
     }
@@ -196,6 +205,16 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             disableClose: true,
             height: '536px',
             width: '500px'
+        });
+    }
+
+    public openMeeting(contingency: Contingency) {
+        this._dialogService.openDialog(MeetingComponent, {
+            data: contingency,
+            maxWidth: '100vw',
+            width: '100%',
+            height: '100%',
+            hasBackdrop: false
         });
     }
 
