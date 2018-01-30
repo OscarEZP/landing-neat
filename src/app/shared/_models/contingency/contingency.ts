@@ -1,10 +1,10 @@
-import { Aircraft } from './aircraft';
-import { Backup } from './backup';
-import { Flight } from './flight';
-import { Safety } from './safety';
-import { Status } from './status';
-import { TimeInstant } from './timeInstant';
-import { Close } from './close';
+import { Aircraft } from '../aircraft';
+import { Backup } from '../backup';
+import { Flight } from '../flight';
+import { Safety } from '../safety';
+import { Status } from '../status';
+import { TimeInstant } from '../timeInstant';
+import { Close } from '../close';
 
 export class Contingency {
 
@@ -25,8 +25,26 @@ export class Contingency {
     private _status: Status;
     private _type: string;
     private _username: string;
+    private _ttlPending: number;
 
-    constructor(id: number, aircraft: Aircraft, barcode: string, creationDate: TimeInstant, failure: string, flight: Flight, informer: string, isBackup: boolean, isClose: boolean, backup: Backup, reason: string, safetyEvent: Safety, status: Status, type: string, username: string) {
+    constructor(
+        id: number,
+        aircraft: Aircraft,
+        barcode: string,
+        creationDate: TimeInstant,
+        failure: string,
+        flight: Flight,
+        informer: string,
+        isBackup: boolean,
+        isClose: boolean,
+        backup: Backup,
+        reason: string,
+        safetyEvent: Safety,
+        status: Status,
+        type: string,
+        username: string,
+        ttlPending: number
+    ) {
         this._id = id;
         this._aircraft = aircraft;
         this._barcode = barcode;
@@ -42,6 +60,7 @@ export class Contingency {
         this._status = status;
         this._type = type;
         this._username = username;
+        this._ttlPending = ttlPending;
     }
 
     set lastInformationPercentage(value: number) {
@@ -180,7 +199,15 @@ export class Contingency {
         this._backup = value;
     }
 
+    get ttlPending(): number {
+        return this._ttlPending;
+    }
+
+    set ttlPending(value: number) {
+        this._ttlPending = value;
+    }
+
     static fromJsonArray(array: Array<Object>): Contingency[] {
-        return array.map(obj => new Contingency(obj['id'], obj['aircraft'], obj['barcode'], obj['creationDate'], obj['failure'], obj['flight'], obj['informer'], obj['isBackup'], obj['isClose'], obj['backup'], obj['reason'], obj['safetyEvent'], obj['status'], obj['type'], obj['username']));
+        return array.map(obj => new Contingency(obj['id'], obj['aircraft'], obj['barcode'], obj['creationDate'], obj['failure'], obj['flight'], obj['informer'], obj['isBackup'], obj['isClose'], obj['backup'], obj['reason'], obj['safetyEvent'], obj['status'], obj['type'], obj['username'], obj['ttlPending']));
     }
 }

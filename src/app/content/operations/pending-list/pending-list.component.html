@@ -23,15 +23,10 @@
         <div fxFlex="7" fxLayoutAlign="start center">{{ 'OPERATIONS.STATUS' | translate }}</div>
         <div fxFlex="5" fxLayoutAlign="start center">{{ 'OPERATIONS.TYPE' | translate }}</div>
         <div fxFlex="8" fxLayoutAlign="start center">{{ 'OPERATIONS.SAFETY_EVENT' | translate }}</div>
-        <div fxFlex="8" fxLayoutAlign="start center">{{ (historicalSearchService.active ? 'OPERATIONS.CONTINGENCY_LIMIT' : 'OPERATIONS.PROGRESS') | translate }}</div>
-        <div fxFlex="8" fxLayout="row">
-            <div fxFlex="10"></div>
-            <span fxLayoutAlign="start center">{{ (historicalSearchService.active ? 'OPERATIONS.CLOSURE_DATE_HOUR' : 'OPERATIONS.TIME_LEFT') | translate }}</span>
-        </div>
-        <div fxFlex="" *ngIf="!detailsService.sidenav.opened"><!-- {{ 'OPERATIONS.FOCAL' | translate }} --></div>
-        <div fxFlex="">&nbsp;</div>
+        <div fxFlex="3">&nbsp;</div>
+        <div fxFlex="22">&nbsp;</div>
     </header>
-    <main>
+    <content>
         <div fxLayout="row"
              [class.active]="contingency.id === selectedContingency.id"
              *ngFor="let contingency of contingencyService.contingencyList"
@@ -78,41 +73,12 @@
                 <mat-icon *ngIf="contingency.ttlPending">fiber_manual_record</mat-icon>
             </div>
 
-            <!-- PROGRESS BAR -->
-            <div *ngIf="!historicalSearchService.active" fxFlex="8" fxLayoutAlign="start center"
-                 (click)="openDetails(contingency, 'timeline')">
-                <mat-progress-bar mode="determinate"
-                                  [value]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, false, 0)"
-                                  [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 600000) ? 'warn' : 'primary'"
-                                  class="mat-progress-bar"></mat-progress-bar>
-            </div>
-            <div fxLayout="column" *ngIf="historicalSearchService.active" fxFlex="8" fxLayoutAlign="center"
-                 class="historical-bar">
-                <mat-progress-bar mode="determinate" [value]="contingency.lastInformationPercentage"></mat-progress-bar>
-                <span fxLayoutAlign="end">LI {{ contingency.status.creationDate.epochTime | utcDate | date: 'HH:mm' }}</span>
-            </div>
-
-            <!-- TIMER -->
-            <div *ngIf="!historicalSearchService.active" fxLayout="row" fxFlex="8" (click)="openDetails(contingency, 'timeline')">
-                <div fxFlex="10"></div>
-                <div fxLayoutAlign="start center">
-                    <mat-icon class="mat-icon-adj" [color]="getTimeAverage(contingency.status.requestedInterval.dt.epochTime, contingency.status.requestedInterval.duration, true, 300000) ? 'warn' : 'primary'">
-                        timer
-                    </mat-icon>
-                    <lsl-countdown [creationTime]="contingency.status.requestedInterval.dt.epochTime" [duration]="contingency.status.requestedInterval.duration" [threshold]="5"></lsl-countdown>
-                </div>
-            </div>
-            <div *ngIf="historicalSearchService.active" fxFlex="8"  (click)="openDetails(contingency, 'timeline')">
-                <div fxFlex="10"></div>
-                <span fxLayoutAlign="start center">{{ contingency.close.closeDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }}</span>
-            </div>
-
             <!-- FOCAL -->
             <div fxFlex="3" fxLayoutAlign="start center" *ngIf="!detailsService.open"
                  (click)="openDetails(contingency, 'follow-up')">
-                <!-- <mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username | slice:0:2 | uppercase }} --></div>
+            </div>
 
-            <div fxFlex="5" fxLayoutAlign="start center" >
+            <div fxFlex="22" fxLayoutAlign="end end" >
                 <button mat-icon-button [matMenuTriggerFor]="menu" (click)="setSelectedContingency(contingency)">
                     <mat-icon aria-label="options">more_vert</mat-icon>
                 </button>
@@ -129,13 +95,12 @@
                 </mat-menu>
             </div>
         </div>
-    </main>
+    </content>
 </div>
 <mat-paginator #contPaginator [hidden]="!checkDataStatus() || !historicalSearchService.active"
-    [length]="infiniteScrollService.length"
-    [pageSize]="infiniteScrollService.pageSize"
-    [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
+       [length]="infiniteScrollService.length"
+       [pageSize]="infiniteScrollService.pageSize"
+       [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
 </mat-paginator>
 <lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !loading && !historicalSearchService.active"></lsl-ess>
-<lsl-ess icon="assignment_late" message="ESS.NO_HISTORICAL_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !loading && historicalSearchService.active"></lsl-ess>
 <div class="loader-container" fxLayoutAlign="center center" *ngIf="loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>

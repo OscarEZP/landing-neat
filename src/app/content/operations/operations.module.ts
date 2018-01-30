@@ -21,6 +21,7 @@ import { PitStopListComponent } from './pit-stop-list/pit-stop-list.component';
 import { SearchHistoricalComponent } from './search-historical/search-historical.component';
 import { EssComponent } from './ess/ess.component';
 import { MeetingComponent } from './meeting/meeting.component';
+import {PendingListComponent} from './pending-list/pending-list.component';
 
 @NgModule({
     imports: [
@@ -38,7 +39,8 @@ import { MeetingComponent } from './meeting/meeting.component';
         SearchHistoricalComponent,
         PitStopListComponent,
         EssComponent,
-        MeetingComponent
+        MeetingComponent,
+        PendingListComponent
     ],
     exports: [],
     providers: [

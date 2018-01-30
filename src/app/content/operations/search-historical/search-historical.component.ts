@@ -11,6 +11,8 @@ import { InfiniteScrollService } from '../_services/infinite-scroll.service';
 import { MatDatepickerInputEvent } from '@angular/material';
 import { DateUtil } from '../../../shared/util/dateUtil';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
+import { TimeInstant } from '../../../shared/_models/timeInstant';
+import { SearchContingency } from '../../../shared/_models/contingency/searchContingency';
 
 @Component({
     selector: 'lsl-search-historical',
@@ -113,17 +115,15 @@ export class SearchHistoricalComponent implements OnInit {
     submitForm(value: any) {
         this.searchHistoricalService.searchForm.updateValueAndValidity();
         if (this.searchHistoricalService.searchForm.valid) {
-            const search = {
-                from: {
-                    epochTime: this.searchHistoricalService.fromTS
-                },
-                to: {
-                    epochTime: this.searchHistoricalService.toTS
-                },
-                tails: this.isAllSelected(this.searchHistoricalService.tails) ? null : this.searchHistoricalService.tails,
-                offSet: this.infiniteScrollService.offset,
-                limit: this.infiniteScrollService.pageSize
-            };
+            const search = new SearchContingency(
+                this.infiniteScrollService.offset,
+                this.infiniteScrollService.pageSize,
+                this.isAllSelected(this.searchHistoricalService.tails) ? null : this.searchHistoricalService.tails,
+                new TimeInstant(this.searchHistoricalService.fromTS, ''),
+                new TimeInstant(this.searchHistoricalService.toTS, ''),
+                true,
+                false
+            );
             this.contingencyService.postHistoricalSearch(search).subscribe();
             this.contingencyService.getTotalRecords(search).subscribe();
             if (!this.searchHistoricalService.active) {

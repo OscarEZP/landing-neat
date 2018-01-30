@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import { Contingency } from '../_models/contingency';
+import { Contingency } from '../_models/contingency/contingency';
 
 @Injectable()
 export class DataService {
