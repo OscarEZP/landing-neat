@@ -62,8 +62,6 @@ export class PendingListComponent implements OnInit {
             this.loading = true;
             const searchSignature = new SearchContingency(0, 0, null, new TimeInstant(0, ''), new TimeInstant(0, ''), true, false);
             this._contingenciesSubscription = this.contingencyService.getPendings(searchSignature).subscribe((contingencyList: Contingency[]) => {
-            // TESTING
-            // this._contingenciesSubscription = this.contingencyService.getContingencies().subscribe((contingencyList: Contingency[]) => {
                 const ctgInArray = contingencyList.filter(ctg => ctg.id === this.selectedContingencyPivot.id).length;
                 if (this.selectedContingencyPivot.id !== null && ctgInArray === 1) {
                     this.selectedContingency = this.selectedContingencyPivot;
