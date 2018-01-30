@@ -8,7 +8,8 @@
     </div>
     <div *ngIf="!historicalSearchService.active">
         {{contingencyService.contingencyList.length}}
-        {{contingencyService.contingencyList.length !== 1 ? 'OPERATIONS.ACTIVE_CONTINGENCIES': 'OPERATIONS.ACTIVE_CONTINGENCY' | translate }}
+        <span *ngIf="contingencyService.contingencyList.length !== 1">{{'OPERATIONS.ACTIVE_CONTINGENCIES' | translate}}</span>
+        <span *ngIf="contingencyService.contingencyList.length === 1">{{'OPERATIONS.ACTIVE_CONTINGENCY' | translate }}</span>
     </div>
 </div>
 

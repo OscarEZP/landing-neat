@@ -124,19 +124,6 @@ export class SearchHistoricalComponent implements OnInit {
                 true,
                 false
             );
-
-            // const search = {
-            //     from: {
-            //         epochTime: this.searchHistoricalService.fromTS
-            //     },
-            //     to: {
-            //         epochTime: this.searchHistoricalService.toTS
-            //     },
-            //     tails: this.isAllSelected(this.searchHistoricalService.tails) ? null : this.searchHistoricalService.tails,
-            //     offSet: this.infiniteScrollService.offset,
-            //     limit: this.infiniteScrollService.pageSize
-            // };
-
             this.contingencyService.postHistoricalSearch(search).subscribe();
             this.contingencyService.getTotalRecords(search).subscribe();
             if (!this.searchHistoricalService.active) {

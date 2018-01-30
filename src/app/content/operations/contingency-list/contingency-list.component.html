@@ -72,7 +72,7 @@
             </div>
 
             <!-- SAFETY EVENT -->
-            <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">
+            <div class="safety-event" fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">
                 <span class="badge"
                       *ngIf="contingency.safetyEvent.code?.length > 0">{{ contingency.safetyEvent.code }}</span>
                 <mat-icon *ngIf="contingency.ttlPending">fiber_manual_record</mat-icon>

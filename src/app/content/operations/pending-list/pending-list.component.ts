@@ -1,34 +1,40 @@
-import {Component, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs/Subscription';
-import {ActivatedRoute} from '@angular/router';
-import {HistoricalSearchService} from '../_services/historical-search.service';
-import {ContingencyService} from '../_services/contingency.service';
-import {Contingency} from '../../../shared/_models/contingency/contingency';
-import {Aircraft} from '../../../shared/_models/aircraft';
-import {TimeInstant} from '../../../shared/_models/timeInstant';
-import {Flight} from '../../../shared/_models/flight';
-import {Backup} from '../../../shared/_models/backup';
-import {Safety} from '../../../shared/_models/safety';
-import {Interval} from '../../../shared/_models/interval';
-import {Status} from '../../../shared/_models/status';
-import {ApiRestService} from '../../../shared/_services/apiRest.service';
-import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
-import {Observable} from 'rxjs/Observable';
-import {DetailsService} from '../../../details/_services/details.service';
-import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
-import {InfiniteScrollService} from '../_services/infinite-scroll.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+import { ActivatedRoute } from '@angular/router';
+import { HistoricalSearchService } from '../_services/historical-search.service';
+import { ContingencyService } from '../_services/contingency.service';
+import { Contingency } from '../../../shared/_models/contingency/contingency';
+import { Aircraft } from '../../../shared/_models/aircraft';
+import { TimeInstant } from '../../../shared/_models/timeInstant';
+import { Flight } from '../../../shared/_models/flight';
+import { Backup } from '../../../shared/_models/backup';
+import { Safety } from '../../../shared/_models/safety';
+import { Interval } from '../../../shared/_models/interval';
+import { Status } from '../../../shared/_models/status';
+import { ApiRestService } from '../../../shared/_services/apiRest.service';
+import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
+import { Observable } from 'rxjs/Observable';
+import { DetailsService } from '../../../details/_services/details.service';
+import { SearchContingency } from '../../../shared/_models/contingency/searchContingency';
+import { InfiniteScrollService } from '../_services/infinite-scroll.service';
+import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
+import { MeetingComponent } from '../meeting/meeting.component';
+import { DialogService } from '../../_services/dialog.service';
+import { DataService } from '../../../shared/_services/data.service';
 
 @Component({
     selector: 'lsl-pending-list',
     templateUrl: './pending-list.component.html',
-    styleUrls: ['./pending-list.component.scss']
+    styleUrls: ['./pending-list.component.scss'],
+    providers: [DialogService]
 })
-export class PendingListComponent implements OnInit {
+export class PendingListComponent implements OnInit, OnDestroy {
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
 
     private _routingSubscription: Subscription;
     private _contingenciesSubscription: Subscription;
+    private _reloadSubscription: Subscription;
     private _timerSubscription: Subscription;
     private _loading: boolean;
     private _selectedContingency: Contingency;
@@ -36,12 +42,14 @@ export class PendingListComponent implements OnInit {
     private _intervalToRefresh: number;
 
     constructor(
+        private _messageData: DataService,
         private _route: ActivatedRoute,
         private _historicalSearchService: HistoricalSearchService,
         private _contingencyService: ContingencyService,
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
-        private _infiniteScrollService: InfiniteScrollService
+        private _infiniteScrollService: InfiniteScrollService,
+        private _dialogService: DialogService
     ) {
         this.loading = true;
         this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
@@ -50,6 +58,7 @@ export class PendingListComponent implements OnInit {
     }
 
     ngOnInit() {
+        this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this._routingSubscription = this._route.data.subscribe((data: any) => {
             this.historicalSearchService.active = data.historical;
         });
@@ -57,10 +66,24 @@ export class PendingListComponent implements OnInit {
         this.getIntervalToRefresh().add(() => this.getContingencies());
     }
 
+    /**
+     * Event when component is destroyed
+     */
+    public ngOnDestroy() {
+        this._reloadSubscription.unsubscribe();
+        this._routingSubscription.unsubscribe();
+        if (this._contingenciesSubscription) {
+            this._contingenciesSubscription.unsubscribe();
+        }
+        if (this._timerSubscription) {
+            this._timerSubscription.unsubscribe();
+        }
+    }
+
     private getContingencies() {
         if (!this.historicalSearchService.active) {
             this.loading = true;
-            const searchSignature = new SearchContingency(0, 0, null, new TimeInstant(0, ''), new TimeInstant(0, ''), true, false);
+            const searchSignature = new SearchContingency(null, null, null, new TimeInstant(0, ''), new TimeInstant(0, ''), false, true);
             this._contingenciesSubscription = this.contingencyService.getPendings(searchSignature).subscribe((contingencyList: Contingency[]) => {
                 const ctgInArray = contingencyList.filter(ctg => ctg.id === this.selectedContingencyPivot.id).length;
                 if (this.selectedContingencyPivot.id !== null && ctgInArray === 1) {
@@ -90,6 +113,32 @@ export class PendingListComponent implements OnInit {
             this.intervalToRefresh = Number(res.types[0].code) * 1000;
             this.loading = false;
         });
+    }
+
+    public openCloseContingency(contingency: any) {
+        this._dialogService.openDialog(CloseContingencyComponent, {
+            data: contingency,
+            hasBackdrop: true,
+            disableClose: true,
+            height: '536px',
+            width: '500px'
+        });
+    }
+
+    public openMeeting(contingency: Contingency) {
+        this._dialogService.openDialog(MeetingComponent, {
+            data: contingency,
+            maxWidth: '100vw',
+            width: '100%',
+            height: '100%',
+            hasBackdrop: false
+        });
+    }
+
+    public reloadList(message) {
+        if (message === 'reload') {
+            this.getContingencies();
+        }
     }
 
     /**
