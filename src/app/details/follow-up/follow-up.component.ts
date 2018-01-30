@@ -7,7 +7,7 @@ import { ActualTimeModel } from '../../shared/_models/actualTime';
 import { Aircraft } from '../../shared/_models/aircraft';
 import { Backup } from '../../shared/_models/backup';
 import { StatusCode } from '../../shared/_models/configuration/statusCode';
-import { Contingency } from '../../shared/_models/contingency';
+import { Contingency } from '../../shared/_models/contingency/contingency';
 import { Flight } from '../../shared/_models/flight';
 import { Interval } from '../../shared/_models/interval';
 import { Safety } from '../../shared/_models/safety';
@@ -74,7 +74,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this.apiRestService = new ApiRestService(http);
 
         this.currentUTCTime = 0;
-        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null);
+        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
 
         this.validations = new Validation(false, true, true, false);
 

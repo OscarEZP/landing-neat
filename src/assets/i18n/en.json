@@ -32,7 +32,7 @@
   "OPERATIONS": {
     "ALERT": "Alert",
     "ALERTS": "Alerts",
-    "AOG_CONTINGENCY": "AOG / CONTINGENCY",
+    "CONTINGENCY": "CONTINGENCY",
     "SELECT_ALL": "SELECT ALL",
     "CANCEL_COMPONENT": {
       "MESSAGE": "Are you sure that you want to Cancel? (The filled information will be lost)",
@@ -59,8 +59,8 @@
     "CLOSED_CONTINGENCY": "Closed contingency",
     "CLOSED_CONTINGENCIES": "Closed contingencies",
     "CLOSURE_DATE_HOUR": "Closure Date - Hour",
-    "CONTINGENCIES_ACTIVES": "Actives Contingencies",
-    "CONTINGENCY_ACTIVE": "Active Contingency",
+    "ACTIVE_CONTINGENCIES": "Active Contingencies",
+    "ACTIVE_CONTINGENCY": "Active Contingency",
     "CONTINGENCY_DETAILS": {
       "FOLLOW_UP": {
         "CONTINGENCY_TYPE_REQUIRED": "Contingency type is required",
@@ -149,6 +149,7 @@
     "OPERATOR": "Operator",
     "OF": "of",
     "PIT_STOP": "PIT STOP",
+    "PENDINGS": "PENDINGS",
     "PROGRESS": "Progress",
     "SAFETY_EVENT": "Safety Event",
     "SEARCH_HISTORICAL": {

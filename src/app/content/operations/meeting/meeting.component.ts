@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import { DialogService } from '../../_services/dialog.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TimeInstant } from '../../../shared/_models/timeInstant';
-import { Contingency } from '../../../shared/_models/contingency';
+import { Contingency } from '../../../shared/_models/contingency/contingency';
 import {ClockService} from '../../../shared/_services/clock.service';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {DatetimeService} from '../../../shared/_services/datetime.service';

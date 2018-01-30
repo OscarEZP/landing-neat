@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailsService } from '../_services/details.service';
-import { Contingency } from '../../shared/_models/contingency';
+import { Contingency } from '../../shared/_models/contingency/contingency';
 
 @Component({
   selector: 'lsl-information',
