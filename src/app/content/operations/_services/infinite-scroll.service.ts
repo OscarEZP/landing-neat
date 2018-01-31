@@ -15,6 +15,10 @@ export class InfiniteScrollService {
         this._pageSizeOptions = [1, 10, 25, 50, 100];
     }
 
+    public init(): void {
+        this.pageIndex = 0;
+    }
+
     get viewedRecords(): number {
         const viewedRecords = this.pageSize * (this.pageIndex + 1);
         return viewedRecords < this._length ? viewedRecords : this.length;

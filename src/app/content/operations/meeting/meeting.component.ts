@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, OnDestroy} from '@angular/core';
 import { DialogService } from '../../_services/dialog.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TimeInstant } from '../../../shared/_models/timeInstant';
@@ -17,6 +17,7 @@ import {MessageService} from '../../../shared/_services/message.service';
 import { CancelComponent } from '../cancel/cancel.component';
 import {Activity} from '../../../shared/_models/activity';
 import {Meeting} from '../../../shared/_models/meeting';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
     selector: 'lsl-meeting-form',
@@ -24,7 +25,7 @@ import {Meeting} from '../../../shared/_models/meeting';
     styleUrls: ['./meeting.component.scss']
 })
 
-export class MeetingComponent implements OnInit {
+export class MeetingComponent implements OnInit, OnDestroy {
 
     private static MEETINGS_ENDPOINT = 'meetings';
     private static MEETINGS_CONFIG_TYPE = 'MEETING_ACTIVITIES';
@@ -38,6 +39,7 @@ export class MeetingComponent implements OnInit {
     private _meetingActivities: Activity[];
     private _validations: Validation;
     private _snackbarMessage: string;
+    private _meetingActivitiesSubscription: Subscription;
 
     constructor(
         private _dialogService: DialogService,
@@ -54,9 +56,9 @@ export class MeetingComponent implements OnInit {
         this._alive = true;
         const initFakeDate = new Date().getTime();
         this.utcModel = new TimeInstant(initFakeDate, null);
-        this.meetingForm = this.getFormValidators();
         this.meetingActivities = [];
-        this.setMeetingActivitiesConf();
+        this.meetingForm = this.getFormValidators();
+        this._meetingActivitiesSubscription = this.setMeetingActivitiesConf();
         this.validations = new Validation(false, true, true, false);
     }
 
@@ -72,6 +74,10 @@ export class MeetingComponent implements OnInit {
             });
         });
         this._clockService.getClock().subscribe(time => this.timeClock = time);
+    }
+
+    ngOnDestroy(): void {
+        this._meetingActivitiesSubscription.unsubscribe();
     }
 
     /**
@@ -91,8 +97,8 @@ export class MeetingComponent implements OnInit {
     /**
      * Get configuration for meeting activities
      */
-    private setMeetingActivitiesConf(): void {
-        this._apiRestService.getSingle('configTypes', MeetingComponent.MEETINGS_CONFIG_TYPE).subscribe(rs => {
+    private setMeetingActivitiesConf(): Subscription {
+        return this._apiRestService.getSingle('configTypes', MeetingComponent.MEETINGS_CONFIG_TYPE).subscribe(rs => {
             const res = rs as GroupTypes;
             this.meetingActivitiesConf = res.types;
             this.meetingActivities = MeetingComponent.setMeetingActivities(this.meetingActivitiesConf);
@@ -203,7 +209,8 @@ export class MeetingComponent implements OnInit {
                 counterPristine += 1;
             }
         });
-        return counterPristine < counterItems;
+        const activities = this.meetingActivities.filter(act => act.apply);
+        return (counterPristine < counterItems) || (activities.length > 0);
     }
 
     /**
@@ -212,7 +219,7 @@ export class MeetingComponent implements OnInit {
      */
     public checkApply(meetingActivity: Activity) {
         meetingActivity.done = !meetingActivity.apply ? false : meetingActivity.done;
-        Object.keys(this.meetingActivities).forEach((elem, i) => {
+        this.meetingActivities.forEach((elem, i) => {
             if (meetingActivity.code === elem['code']) {
                 this.meetingActivities[i] = meetingActivity;
             }
