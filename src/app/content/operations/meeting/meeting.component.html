@@ -76,8 +76,34 @@
                 </div>
             </div>
             <div fxFlex="25" fxLayout="row" class="operation-container">
+                <div fxLayout="column" fxFlexFill>
+                <section>
+                    <span fxLayout="row" class="title-section">{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_TITTLE'|translate}}</span>
+                    <div class="data">
+                    <div id="addAsistant" fxLayout="row">
+                        <mat-form-field style="width: 100%">
+                            <input matInput placeholder="{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_MAIL'|translate}}"
+                                   [formControl]="meetingForm.controls['assistantMail']" [(ngModel)]="assistant" >
+                            <mat-icon matSuffix>search</mat-icon>
+                        </mat-form-field>
+                        <mat-error *ngIf="meetingForm.controls['assistantMail'].hasError('required') && meetForm.submitted">
+                            {{'OPERATIONS.MEETING_FORM.ASSISTANT_REQUIRED'|translate}}
+                        </mat-error>
+                        <mat-error *ngIf="meetingForm.controls['assistantMail'].hasError('pattern') && meetForm.submitted">
+                            {{'OPERATIONS.MEETING_FORM.VALID_MAIL'|translate}}
+                        </mat-error>
+                    </div>
+                    <div fxFlex="" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end center">
+                        <button type="submit" mat-button color="primary">
+                            {{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT'|translate}}
+                        </button>
 
+                    </div>
+                    </div>
+                </section>
+                </div>
             </div>
+
             <div fxFlex="25" fxLayout="row" class="operation-container">
 
             </div>

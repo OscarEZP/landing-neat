@@ -16,6 +16,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {MessageService} from '../../../shared/_services/message.service';
 import { CancelComponent } from '../cancel/cancel.component';
 import {Activity} from '../../../shared/_models/activity';
+import {Assistant} from '../../../shared/_models/assistant';
 import {Meeting} from '../../../shared/_models/meeting';
 
 @Component({
@@ -38,6 +39,8 @@ export class MeetingComponent implements OnInit {
     private _meetingActivities: Activity[];
     private _validations: Validation;
     private _snackbarMessage: string;
+    private _meetingAssistants: Assistant[];
+    private _assistant: string;
 
     constructor(
         private _dialogService: DialogService,
@@ -58,6 +61,8 @@ export class MeetingComponent implements OnInit {
         this.meetingActivities = [];
         this.setMeetingActivitiesConf();
         this.validations = new Validation(false, true, true, false);
+        this.meetingAssistants = [];
+        this.assistant = "";
     }
 
     ngOnInit(): void {
@@ -79,7 +84,9 @@ export class MeetingComponent implements OnInit {
      * @return {FormGroup}
      */
     private getFormValidators(): FormGroup {
-        this.meetingForm = this._fb.group({});
+        this.meetingForm = this._fb.group({
+            'assistantMail': [this.assistant,Validators.required,Validators.pattern('^[a-zA-Z0-9]+\\S$')]
+        });
         const barcodeValidators = [Validators.pattern('^[a-zA-Z0-9]+\\S$'), Validators.maxLength(80)];
         if (this.contingency.safetyEvent.code !== null) {
             barcodeValidators.push(Validators.required);
@@ -153,7 +160,8 @@ export class MeetingComponent implements OnInit {
             this.contingency.barcode,
             this.contingency.username,
             this.contingency.creationDate,
-            this.contingency.safetyEvent.code
+            this.contingency.safetyEvent.code,
+            this.meetingAssistants
         );
     }
 
@@ -281,6 +289,22 @@ export class MeetingComponent implements OnInit {
 
     set snackbarMessage(value: string) {
         this._snackbarMessage = value;
+    }
+
+    get meetingAssistants(): Assistant[] {
+        return this._meetingAssistants;
+    }
+
+    set meetingAssistants(value: Assistant[]) {
+        this._meetingAssistants = value;
+    }
+
+    get assistant(): string {
+        return this._assistant;
+    }
+
+    set assistant(value: string) {
+        this._assistant = value;
     }
 
 }
