@@ -102,5 +102,5 @@
        [pageSize]="infiniteScrollService.pageSize"
        [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
 </mat-paginator>
-<lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !loading && !historicalSearchService.active"></lsl-ess>
-<div class="loader-container" fxLayoutAlign="center center" *ngIf="loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>
+<lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading && !historicalSearchService.active"></lsl-ess>
+<div class="loader-container" fxLayoutAlign="center center" *ngIf="contingencyService.loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>

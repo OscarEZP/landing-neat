@@ -21,12 +21,14 @@ export class ContingencyService {
     private _contingencyList: Contingency[];
     private _contingencyListChanged: Subject<Contingency[]> = new Subject<Contingency[]>();
     private _apiService: ApiRestService;
+    private _loading: boolean;
 
     constructor(private http: HttpClient,
                 private logService: LogService,
                 private _infiniteScrollService: InfiniteScrollService) {
 
         this.contingencyList = [];
+        this.loading = false;
         this.apiService = new ApiRestService(this.http);
         this.contingencyListChanged.subscribe((value: Contingency[]) => {
             this.contingencyList = value;
@@ -145,5 +147,13 @@ export class ContingencyService {
 
     set apiService(value: ApiRestService) {
         this._apiService = value;
+    }
+
+    get loading(): boolean {
+        return this._loading;
+    }
+
+    set loading(value: boolean) {
+        this._loading = value;
     }
 }
