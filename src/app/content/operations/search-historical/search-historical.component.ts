@@ -137,7 +137,10 @@ export class SearchHistoricalComponent implements OnInit {
         if (this.searchHistoricalService.searchForm.valid) {
             this.infiniteScrollService.init();
             const search = this.getSearchContingency();
-            this.contingencyService.postHistoricalSearch(search).subscribe();
+            this.contingencyService.loading = true;
+            this.contingencyService.postHistoricalSearch(search).subscribe(() => {
+                this.contingencyService.loading = false;
+            });
             this.contingencyService.getTotalRecords(search).subscribe();
             if (!this.searchHistoricalService.active) {
                 this.router.navigate([SearchHistoricalComponent.HISTORICAL_URL]);
