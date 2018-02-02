@@ -22,7 +22,10 @@
     }
   },
   "ERRORS":{
-    "SESSION": "Your session has expired"
+    "BAD_REQUEST": "Your request in invalid, please check it and try again",
+    "DEFAULT": "Ooops, something went wrong",
+    "SESSION": "Your session has expired",
+    "UNAUTHORIZED": "You don't have permissions to access this content"
   },
   "ESS":{
     "NO_CONTINGENCIES_FOUND": "There are no contingencies. Have a nice day!",

@@ -39,6 +39,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     @ViewChild('f') followUpFormChild;
     private _contingencySubcription: Subscription;
     private _detailServiceSubscription: Subscription;
+    private _configStatusSubscription: Subscription;
+    private _safetyEventListSubscription: Subscription;
 
     private _followUp: Status;
 
@@ -105,7 +107,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     ngOnInit() {
 
         this.generateIntervalSelection();
-        this.getSafetyEventList();
+        this._safetyEventListSubscription = this.getSafetyEventList();
         this.getStatusCodesAvailable();
 
         this.contingencySubcription = this._detailsService.selectedContingencyChange.subscribe(contingency => this.selectedContingencyChanged(contingency));
@@ -120,6 +122,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.contingencySubcription.unsubscribe();
         this.detailServiceSubscription.unsubscribe();
+        this._configStatusSubscription.unsubscribe();
+        this._safetyEventListSubscription.unsubscribe();
     }
 
     /**
@@ -228,7 +232,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     private getStatusCodesAvailable(): StatusCode[] {
         this._dataService.stringMessage('open');
-        this.apiRestService
+        this._configStatusSubscription = this.apiRestService
             .getSingle('configStatus', this.selectedContingency.status.code)
             .subscribe((data: StatusCode[]) => {
                     this.statusCodes = data;
@@ -268,9 +272,9 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      *
      * @return {void} nothing to return
      */
-    public getCurrentTime() {
+    public getCurrentTime(): Subscription {
         this._dataService.stringMessage('open');
-        this.apiRestService
+        return this.apiRestService
             .getAll('dateTime')
             .subscribe((data: ActualTimeModel) => {
                 this.currentUTCTime = data.currentTimeLong;
@@ -309,9 +313,9 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     /**
      * Method to obtain the safety event list and populate a combo box.
      */
-    public getSafetyEventList() {
+    public getSafetyEventList(): Subscription {
         this._dataService.stringMessage('open');
-        this.apiRestService
+        return this.apiRestService
             .getAll<Safety[]>('safetyEvent')
             .subscribe(data => this.safetyEventList = data,
                 error => () => {

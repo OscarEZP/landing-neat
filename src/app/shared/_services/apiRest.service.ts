@@ -7,6 +7,10 @@ import 'rxjs/add/operator/do';
 import {Router} from '@angular/router';
 import {DialogService} from '../../content/_services/dialog.service';
 import {MessageService} from './message.service';
+import {DataService} from "./data.service";
+import {Subject} from "rxjs/Subject";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Subscription} from "rxjs/Subscription";
 
 @Injectable()
 export class ApiRestService {
@@ -58,7 +62,6 @@ export class ApiRestService {
 export class CustomInterceptor implements HttpInterceptor {
 
     private static TOKEN_ATTR = 'Authorization';
-    private static SESSION_ERROR_CODE = 472;
     private static CONTENT_TYPE = 'application/json';
     private static LOGIN_PATH = '/login';
 
@@ -66,38 +69,34 @@ export class CustomInterceptor implements HttpInterceptor {
     private _router: Router;
     private _dialogService: DialogService;
     private _messageService: MessageService;
+    private _dataService: DataService;
 
     constructor(inj: Injector) {
         this._storageService = inj.get(StorageService);
         this._router = inj.get(Router);
         this._dialogService = inj.get(DialogService);
         this._messageService = inj.get(MessageService);
+        this._dataService = inj.get(DataService);
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
         if (!req.headers.has('Content-Type')) {
             req = req.clone({headers: req.headers.set('Content-Type', CustomInterceptor.CONTENT_TYPE)});
         }
         req = req.clone({headers: req.headers.set('Accept', CustomInterceptor.CONTENT_TYPE)});
-        const idToken = this._storageService.getCurrentUser().idToken ? this._storageService.getCurrentUser().idToken : '';
+        let idToken = this._storageService.getCurrentUser().idToken ? this._storageService.getCurrentUser().idToken : '';
         req = req.clone({headers: req.headers.set(CustomInterceptor.TOKEN_ATTR, idToken)});
-
-        return next.handle(req).do(event => {}, err => {
-            if (err instanceof HttpErrorResponse) {
-                this.handlerError(err);
+        return next.handle(req).do(
+            event => {
+                return event;
+            },
+            err => {
+                console.log('request: ', req, 'current user: ', this._storageService.getCurrentUser(), 'token: ', idToken);
+                if (err instanceof HttpErrorResponse) {
+                    this._dataService.triggerError(err);
+                    return err;
+                }
             }
-        });
-    }
-
-    private handlerError(err): void {
-        if (err.status === CustomInterceptor.SESSION_ERROR_CODE) {
-            this._storageService.removeCurrentUser();
-            this._storageService.expired = true;
-            this._router.navigate([CustomInterceptor.LOGIN_PATH]);
-            this._dialogService.closeAllDialogs();
-        } else {
-            this._messageService.openSnackBar(err.error.message);
-        }
+        );
     }
 }

@@ -64,12 +64,6 @@ export class LoginComponent implements OnInit {
                 this.router.navigate([this.authService.getRedirectUrl()]);
             }
         });
-        if (this._storageService.expired) {
-            this._translate.get('ERRORS.SESSION').subscribe((res: string) => {
-                this._messageService.openSnackBar(res);
-                this._storageService.expired = false;
-            });
-        }
     }
 
     logIn(form: NgForm) {
@@ -80,6 +74,7 @@ export class LoginComponent implements OnInit {
             const data = this.authService.getData();
             this.authService.logIn(data.username, data.password).then(value => {
                 this._storageService.addCurrentUser(value);
+                console.log('logged: ', this._storageService.getCurrentUser());
                 this.router.navigate([this.authService.getRedirectUrl()]);
                 this.activateLoadingBar(false);
                 this.disableButton = false;

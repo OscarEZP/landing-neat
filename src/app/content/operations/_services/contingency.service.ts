@@ -114,9 +114,8 @@ export class ContingencyService {
 
     private handleError<T>(operation = 'operation', result?: T) {
         return (error: any): Observable<T> => {
-            console.log(error);
             this.log(`${operation} failed: ${error.message}`);
-            return Observable.throw(error.error);
+            return Observable.throw(error);
         };
     }
 

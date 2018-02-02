@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import { Contingency } from '../_models/contingency/contingency';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable()
 export class DataService {
@@ -8,21 +9,28 @@ export class DataService {
     private messageSourceString = new BehaviorSubject<string>('default message');
     private messageSourceContingency = new BehaviorSubject<Contingency>(null);
     private messageSourceNumber = new BehaviorSubject<number>(0);
-    currentStringMessage = this.messageSourceString.asObservable();
-    currentNumberMessage = this.messageSourceNumber.asObservable();
-    currentSelectedContingency = this.messageSourceContingency.asObservable();
+    private messageSourceError = new BehaviorSubject<HttpErrorResponse>(null);
+
+    public currentStringMessage = this.messageSourceString.asObservable();
+    public currentNumberMessage = this.messageSourceNumber.asObservable();
+    public currentSelectedContingency = this.messageSourceContingency.asObservable();
+    public currentError = this.messageSourceError.asObservable();
 
     constructor() { }
 
-    stringMessage(message: string) {
+    public stringMessage(message: string) {
         this.messageSourceString.next(message);
     }
 
-    changeSelectedContingency(message: Contingency) {
+    public changeSelectedContingency(message: Contingency) {
         this.messageSourceContingency.next(message);
     }
 
-    changeTimeUTCMessage(message: number) {
+    public changeTimeUTCMessage(message: number) {
         this.messageSourceNumber.next(message);
+    }
+
+    public triggerError(message: HttpErrorResponse){
+        this.messageSourceError.next(message);
     }
 }

@@ -11,7 +11,6 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
     }
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         const url: string = state.url;
-        console.log('Url:' + url);
 
         this.routingService.setActiveModule(url);
 

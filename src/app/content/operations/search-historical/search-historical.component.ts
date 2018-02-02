@@ -13,6 +13,7 @@ import { DateUtil } from '../../../shared/util/dateUtil';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 import { TimeInstant } from '../../../shared/_models/timeInstant';
 import { SearchContingency } from '../../../shared/_models/contingency/searchContingency';
+import {Subscription} from "rxjs/Subscription";
 // import {  } from
 
 @Component({
@@ -105,11 +106,11 @@ export class SearchHistoricalComponent implements OnInit {
         };
         this.contingencyService.getAircrafts(searchSignature).subscribe((data) => {
             this.aicraftList = data as Aircraft[];
-        });
+        }, error => console.log(error));
     }
 
-    private translateString(toTranslate: string) {
-        this.translate.get(toTranslate).subscribe((res: string) => {
+    private translateString(toTranslate: string): Subscription {
+        return this.translate.get(toTranslate).subscribe((res: string) => {
             this.snackbarMessage = res;
         });
     }

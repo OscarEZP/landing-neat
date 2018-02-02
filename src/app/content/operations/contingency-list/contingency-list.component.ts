@@ -25,6 +25,7 @@ import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 import { MeetingComponent } from '../meeting/meeting.component';
 import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
+import {StorageService} from "../../../shared/_services/storage.service";
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -44,6 +45,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private _timerSubscription: Subscription;
     private _paginatorSubscription: Subscription;
     private _routingSubscription: Subscription;
+    private _intervalRefreshSubscription: Subscription;
     private _currentUTCTime: number;
     private _selectedContingency: Contingency;
     private _selectedContingencyPivot: Contingency;
@@ -57,7 +59,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 private _contingencyService: ContingencyService,
                 private _infiniteScrollService: InfiniteScrollService,
                 private _translate: TranslateService,
-                private _apiRestService: ApiRestService) {
+                private _apiRestService: ApiRestService,
+                private _storageService: StorageService
+    ) {
         this._translate.setDefaultLang('en');
         this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
         this.selectedContingencyPivot = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
@@ -72,7 +76,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             this.historicalSearchService.active = data.historical;
         });
         this.contingencyService.clearList();
-        this.getIntervalToRefresh().add(() => this.getContingencies());
+        this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
         this._paginatorSubscription = this.getPaginationSubscription();
     }
 
@@ -131,6 +135,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this._reloadSubscription.unsubscribe();
         this._routingSubscription.unsubscribe();
         this._paginatorSubscription.unsubscribe();
+        this._intervalRefreshSubscription.unsubscribe();
         if (this._contingenciesSubscription) {
             this._contingenciesSubscription.unsubscribe();
         }
@@ -198,12 +203,13 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private getIntervalToRefresh(): Subscription {
         this.contingencyService.loading = true;
+        console.log('cl - ss: ', this._storageService.getCurrentUser());
         return this._apiRestService.getSingle('configTypes', 'CONTINGENCY_UPDATE_INTERVAL').subscribe(
             rs => {
                 const res = rs as GroupTypes;
                 this.intervalToRefresh = Number(res.types[0].code) * 1000;
             },
-            () => {},
+            () => this.intervalToRefresh = 60 * 1000,
             () => this.contingencyService.loading = false
         );
     }
