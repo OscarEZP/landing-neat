@@ -26,8 +26,6 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
         }
 
         this.router.navigate([ this.authService.getLoginUrl() ]);
-        console.log('Trigger error');
-        this._dataService.triggerError(new HttpErrorResponse({status: 401, error: true}));
         return false;
     }
 

@@ -57,11 +57,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this._errorDataSubscription = this.messageData
             .currentError
             .subscribe(error => {
-                console.log('error: ', error);
                 if (error) {
                     this.loading = false;
                     this.handleError(error);
-                    this.messageData.triggerError(null);
                 }
             });
     }
@@ -75,7 +73,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
         let subscription: Subscription;
         switch (error.status) {
             case LayoutComponent.SESSION_ERROR.code: {
-                console.log('ERROR: remove user');
                 this._storageService.removeCurrentUser();
                 this._router.navigate([this._authService.getLoginUrl()]);
                 this._dialogService.closeAllDialogs();
@@ -87,7 +84,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
                 break;
             }
             case LayoutComponent.UNAUTHORIZED_ERROR.code: {
-                subscription = this.showMessage(LayoutComponent.SESSION_ERROR.message);
+                subscription = this.showMessage(LayoutComponent.UNAUTHORIZED_ERROR.message);
                 break;
             }
         }
@@ -97,9 +94,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     public showMessage(message: string): Subscription {
         return this._translate.get(message).subscribe((res: string) => {
             this._messageService.openSnackBar(res);
-            if (this._errorDataSubscription) {
-                this._errorDataSubscription.unsubscribe();
-            }
         });
     }
 

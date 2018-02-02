@@ -109,7 +109,6 @@ export class PendingListComponent implements OnInit, OnDestroy {
 
     private getIntervalToRefresh(): Subscription {
         this.contingencyService.loading = true;
-        console.log('pl');
         return this._apiRestService.getSingle('configTypes', PendingListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(rs => {
             const res = rs as GroupTypes;
             this.intervalToRefresh = Number(res.types[0].code) * 1000;
