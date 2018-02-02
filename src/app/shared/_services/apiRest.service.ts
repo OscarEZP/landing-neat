@@ -7,10 +7,7 @@ import 'rxjs/add/operator/do';
 import {Router} from '@angular/router';
 import {DialogService} from '../../content/_services/dialog.service';
 import {MessageService} from './message.service';
-import {DataService} from "./data.service";
-import {Subject} from "rxjs/Subject";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Subscription} from "rxjs/Subscription";
+import {DataService} from './data.service';
 
 @Injectable()
 export class ApiRestService {
@@ -84,18 +81,17 @@ export class CustomInterceptor implements HttpInterceptor {
             req = req.clone({headers: req.headers.set('Content-Type', CustomInterceptor.CONTENT_TYPE)});
         }
         req = req.clone({headers: req.headers.set('Accept', CustomInterceptor.CONTENT_TYPE)});
-        let idToken = this._storageService.getCurrentUser().idToken ? this._storageService.getCurrentUser().idToken : '';
+        const idToken = this._storageService.getCurrentUser().idToken ? this._storageService.getCurrentUser().idToken : '';
         req = req.clone({headers: req.headers.set(CustomInterceptor.TOKEN_ATTR, idToken)});
         return next.handle(req).do(
             event => {
                 return event;
             },
             err => {
-                console.log('request: ', req, 'current user: ', this._storageService.getCurrentUser(), 'token: ', idToken);
                 if (err instanceof HttpErrorResponse) {
                     this._dataService.triggerError(err);
-                    return err;
                 }
+                return err;
             }
         );
     }

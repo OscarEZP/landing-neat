@@ -6,6 +6,7 @@ import { MessageService } from '../../shared/_services/message.service';
 import { StorageService } from '../../shared/_services/storage.service';
 import { AuthService } from '../_services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
+import {DataService} from '../../shared/_services/data.service';
 
 
 @Component({
@@ -41,7 +42,8 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute,
         private fb: FormBuilder,
         private  _messageService: MessageService,
-        private _translate: TranslateService
+        private _translate: TranslateService,
+        private _dataService: DataService
     ) {
         this._translate.setDefaultLang('en');
     }
@@ -74,10 +76,10 @@ export class LoginComponent implements OnInit {
             const data = this.authService.getData();
             this.authService.logIn(data.username, data.password).then(value => {
                 this._storageService.addCurrentUser(value);
-                console.log('logged: ', this._storageService.getCurrentUser());
                 this.router.navigate([this.authService.getRedirectUrl()]);
                 this.activateLoadingBar(false);
                 this.disableButton = false;
+                this._dataService.triggerError(null);
             }).catch(reason => {
                 this._messageService.openSnackBar(reason);
                 this.activateLoadingBar(false);

@@ -25,7 +25,7 @@ import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 import { MeetingComponent } from '../meeting/meeting.component';
 import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
-import {StorageService} from "../../../shared/_services/storage.service";
+import {StorageService} from '../../../shared/_services/storage.service';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -203,7 +203,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private getIntervalToRefresh(): Subscription {
         this.contingencyService.loading = true;
-        console.log('cl - ss: ', this._storageService.getCurrentUser());
         return this._apiRestService.getSingle('configTypes', 'CONTINGENCY_UPDATE_INTERVAL').subscribe(
             rs => {
                 const res = rs as GroupTypes;

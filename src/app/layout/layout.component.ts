@@ -60,9 +60,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
                 console.log('error: ', error);
                 if (error) {
                     this.loading = false;
-                    this.handleError(error).unsubscribe();
+                    this.handleError(error);
+                    this.messageData.triggerError(null);
                 }
-                console.log('errodDataSubs: ',this.messageData.currentError);
             });
     }
 
@@ -80,12 +80,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
                 this._router.navigate([this._authService.getLoginUrl()]);
                 this._dialogService.closeAllDialogs();
                 subscription = this.showMessage(LayoutComponent.SESSION_ERROR.message);
+                break;
             }
             case LayoutComponent.BAD_REQUEST_ERROR.code: {
                 subscription = this.showMessage(LayoutComponent.BAD_REQUEST_ERROR.message);
+                break;
             }
             case LayoutComponent.UNAUTHORIZED_ERROR.code: {
                 subscription = this.showMessage(LayoutComponent.SESSION_ERROR.message);
+                break;
             }
         }
         return subscription;
