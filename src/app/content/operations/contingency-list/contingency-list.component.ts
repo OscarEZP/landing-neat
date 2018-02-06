@@ -59,8 +59,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 private _contingencyService: ContingencyService,
                 private _infiniteScrollService: InfiniteScrollService,
                 private _translate: TranslateService,
-                private _apiRestService: ApiRestService,
-                private _storageService: StorageService
+                private _apiRestService: ApiRestService
     ) {
         this._translate.setDefaultLang('en');
         this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);

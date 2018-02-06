@@ -31,6 +31,7 @@ import { DataService } from '../../../shared/_services/data.service';
 export class PendingListComponent implements OnInit, OnDestroy {
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
+    private static DEFAULT_INTERVAL = 30;
 
     private _routingSubscription: Subscription;
     private _contingenciesSubscription: Subscription;
@@ -113,7 +114,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
             const res = rs as GroupTypes;
             this.intervalToRefresh = Number(res.types[0].code) * 1000;
             this.contingencyService.loading = false;
-        }, error => this.intervalToRefresh = 30 * 1000);
+        }, error => this.intervalToRefresh = PendingListComponent.DEFAULT_INTERVAL * 1000);
     }
 
     public openCloseContingency(contingency: any) {
