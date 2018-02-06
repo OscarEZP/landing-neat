@@ -170,6 +170,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public reloadList(message) {
         if (message === 'reload') {
             this.getContingencies();
+            this._messageData.stringMessage(null);
         }
     }
 

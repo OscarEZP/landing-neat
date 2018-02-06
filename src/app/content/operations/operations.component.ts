@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {InfiniteScrollService} from './_services/infinite-scroll.service';
 import {HistoricalSearchService} from './_services/historical-search.service';
 
 @Component({
@@ -23,10 +22,10 @@ export class OperationsComponent implements OnInit {
                 'label': 'OPERATIONS.CONTINGENCY',
                 'link': '/operations/contingencies' + (this.historicalSearchService.active ? '/historical' : ''),
             },
-            {
-                'label': 'OPERATIONS.PENDINGS',
-                'link': '/operations/pendings',
-            }
+            // {
+            //     'label': 'OPERATIONS.PENDINGS',
+            //     'link': '/operations/pendings',
+            // }
         ];
     }
 
