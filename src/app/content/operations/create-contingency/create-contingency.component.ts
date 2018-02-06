@@ -304,8 +304,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                         startWith(''),
                         map(val => this.aircraftFilter(val))
                     );
-            },
-            error => {  });
+            });
     }
 
     /**
