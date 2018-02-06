@@ -20,6 +20,8 @@ import { OperationsComponent } from './operations.component';
 import { PitStopListComponent } from './pit-stop-list/pit-stop-list.component';
 import { SearchHistoricalComponent } from './search-historical/search-historical.component';
 import { EssComponent } from './ess/ess.component';
+import { MeetingComponent } from './meeting/meeting.component';
+import {PendingListComponent} from './pending-list/pending-list.component';
 
 @NgModule({
     imports: [
@@ -36,7 +38,9 @@ import { EssComponent } from './ess/ess.component';
         CloseContingencyComponent,
         SearchHistoricalComponent,
         PitStopListComponent,
-        EssComponent
+        EssComponent,
+        MeetingComponent,
+        PendingListComponent
     ],
     exports: [],
     providers: [
@@ -52,7 +56,8 @@ import { EssComponent } from './ess/ess.component';
     ],
     entryComponents: [
         CancelComponent,
-        CloseContingencyComponent
+        CloseContingencyComponent,
+        MeetingComponent
     ]
 })
 

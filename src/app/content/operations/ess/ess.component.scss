@@ -1,0 +1,7 @@
+@import '../../../../assets/style/base.scss';
+
+#ess {
+  > i {
+    color: mat-color($mat-grey, 200);
+  }
+}

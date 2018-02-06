@@ -7,6 +7,7 @@ import {RoutingService} from '../../shared/_services/routing.service';
 @Injectable()
 export class AuthGuardService implements CanActivate, CanActivateChild {
     constructor(private authService: AuthService, private router: Router, private routingService: RoutingService) {
+
     }
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         const url: string = state.url;

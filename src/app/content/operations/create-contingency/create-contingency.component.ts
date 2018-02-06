@@ -17,7 +17,7 @@ import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 import { Location } from '../../../shared/_models/configuration/location';
 import { StatusCode } from '../../../shared/_models/configuration/statusCode';
 import { Types } from '../../../shared/_models/configuration/types';
-import { Contingency } from '../../../shared/_models/contingency';
+import { Contingency } from '../../../shared/_models/contingency/contingency';
 import { Flight } from '../../../shared/_models/flight';
 import { Interval } from '../../../shared/_models/interval';
 import { Safety } from '../../../shared/_models/safety';
@@ -75,7 +75,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _observableOperatorList: Observable<Types[]>;
 
     constructor(private _dialogService: DialogService,
-                private _contingencyService: ContingencyService,
                 private _fb: FormBuilder,
                 private _datetimeService: DatetimeService,
                 private _clockService: ClockService,
@@ -93,7 +92,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.durationArray = [];
 
-        this.contingency = new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(initFakeDate, null), null, new Interval(new TimeInstant(null, null), null), new Interval(new TimeInstant(null, null), 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username);
+        this.contingency = new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(initFakeDate, null), null, new Interval(new TimeInstant(null, null), null), new Interval(new TimeInstant(null, null), 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username, 0);
 
         this.contingencyType = [];
         this.operatorList = [];
@@ -386,8 +385,8 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     private initDateModels(epochDate: number): DateModel[] {
         return this.contingencyDateModel = [
-            new DateModel(null),
-            new DateModel(null),
+            this.contingencyDateModel[0] !== null ? this.contingencyDateModel[0] : new DateModel(null),
+            this.contingencyDateModel[1] !== null ? this.contingencyDateModel[1] : new DateModel(null),
             new DateModel(epochDate, -24),
             new DateModel(epochDate, 24)
         ];

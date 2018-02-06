@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 @Injectable()
 export class HistoricalSearchService {
@@ -17,24 +17,16 @@ export class HistoricalSearchService {
         this.searchForm = new FormGroup(fields);
     }
 
+    private isAllSelected(selectedOptions): boolean {
+        return selectedOptions.indexOf('ALL') !== -1;
+    }
+
     set fields(value: any) {
         this._fields = value;
     }
 
     get fields(): any {
         return this._fields;
-    }
-
-    public setValidators() {
-        Object.keys(this._fields).forEach((field) => {
-            this.searchForm.get(field).setValidators([Validators.required]);
-        });
-    }
-
-    public clearValidators() {
-        Object.keys(this._fields).forEach((field) => {
-            this.searchForm.get(field).setValidators(null);
-        });
     }
 
     get fromTS(): any {
@@ -46,7 +38,7 @@ export class HistoricalSearchService {
     }
 
     get tails(): any {
-        return this.searchForm.value.tails ? this.searchForm.value.tails : [];
+        return this.isAllSelected(this.searchForm.value.tails) ? null : this.searchForm.value.tails;
     }
 
     set searchForm(value){

@@ -7,7 +7,7 @@ import { ActualTimeModel } from '../../shared/_models/actualTime';
 import { Aircraft } from '../../shared/_models/aircraft';
 import { Backup } from '../../shared/_models/backup';
 import { StatusCode } from '../../shared/_models/configuration/statusCode';
-import { Contingency } from '../../shared/_models/contingency';
+import { Contingency } from '../../shared/_models/contingency/contingency';
 import { Flight } from '../../shared/_models/flight';
 import { Interval } from '../../shared/_models/interval';
 import { Safety } from '../../shared/_models/safety';
@@ -74,7 +74,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this.apiRestService = new ApiRestService(http);
 
         this.currentUTCTime = 0;
-        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null);
+        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
 
         this.validations = new Validation(false, true, true, false);
 
@@ -89,110 +89,6 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             'code': [this.followUp.code, Validators.required],
             'duration': [this.followUp.requestedInterval.duration, Validators.required]
         });
-    }
-
-    get contingencySubcription(): Subscription {
-        return this._contingencySubcription;
-    }
-
-    set contingencySubcription(value: Subscription) {
-        this._contingencySubcription = value;
-    }
-
-    get detailServiceSubscription(): Subscription {
-        return this._detailServiceSubscription;
-    }
-
-    set detailServiceSubscription(value: Subscription) {
-        this._detailServiceSubscription = value;
-    }
-
-    get followUp(): Status {
-        return this._followUp;
-    }
-
-    set followUp(value: Status) {
-        this._followUp = value;
-    }
-
-    get currentUTCTime(): number {
-        return this._currentUTCTime;
-    }
-
-    set currentUTCTime(value: number) {
-        this._currentUTCTime = value;
-    }
-
-    get followUpForm(): FormGroup {
-        return this._followUpForm;
-    }
-
-    set followUpForm(value: FormGroup) {
-        this._followUpForm = value;
-    }
-
-    get safetyEventList(): Safety[] {
-        return this._safetyEventList;
-    }
-
-    set safetyEventList(value: Safety[]) {
-        this._safetyEventList = value;
-    }
-
-    get user(): User {
-        return this._user;
-    }
-
-    set user(value: User) {
-        this._user = value;
-    }
-
-    get selectedContingency(): Contingency {
-        return this._selectedContingency;
-    }
-
-    set selectedContingency(value: Contingency) {
-        this._selectedContingency = value;
-    }
-
-    get statusCodes(): StatusCode[] {
-        return this._statusCodes;
-    }
-
-    set statusCodes(value: StatusCode[]) {
-        this._statusCodes = value;
-    }
-
-    get durations(): number[] {
-        return this._durations;
-    }
-
-    set durations(value: number[]) {
-        this._durations = value;
-    }
-
-    get validations(): Validation {
-        return this._validations;
-    }
-
-    set validations(value: Validation) {
-        this._validations = value;
-    }
-
-    get apiRestService(): ApiRestService {
-        return this._apiRestService;
-    }
-
-    set apiRestService(value: ApiRestService) {
-        this._apiRestService = value;
-    }
-
-    get delta(): number {
-        return this._delta;
-    }
-
-    set delta(value: number) {
-        this._delta = value;
     }
 
     /**
@@ -287,26 +183,23 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      *
      * @return {void} nothing to return
      */
-    private generateIntervalSelection(creationDate?: number): number[] {
+    private generateIntervalSelection(creationDate?: number): void {
         let i: number;
         let quantity = 36;
-
-        this.durations = [];
-
         this.apiRestService.getAll<ActualTimeModel>('dateTime')
-            .subscribe(response => this.currentUTCTime = response.currentTimeLong);
+            .subscribe(response => this.currentUTCTime = response.currentTimeLong)
+            .add(() => {
+                this.durations = [];
+                if (creationDate) {
+                    quantity = Math.ceil(((creationDate + (180 * 60000)) - this.currentUTCTime) / (60000 * 5));
+                }
 
-        if (creationDate) {
-            quantity = Math.ceil(((creationDate + (180 * 60000)) - this.currentUTCTime) / (60000 * 5));
-        }
-
-        if (0 < quantity && quantity < 37) {
-            for (i = 0; i < quantity; i++) {
-                this.durations.push(i * 5 + 5);
-            }
-        }
-
-        return this.durations;
+                if (0 < quantity && quantity < 37) {
+                    for (i = 0; i < quantity; i++) {
+                        this.durations.push(i * 5 + 5);
+                    }
+                }
+            });
     }
 
     /**
@@ -517,6 +410,110 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         }
 
         return null;
+    }
+
+    get contingencySubcription(): Subscription {
+        return this._contingencySubcription;
+    }
+
+    set contingencySubcription(value: Subscription) {
+        this._contingencySubcription = value;
+    }
+
+    get detailServiceSubscription(): Subscription {
+        return this._detailServiceSubscription;
+    }
+
+    set detailServiceSubscription(value: Subscription) {
+        this._detailServiceSubscription = value;
+    }
+
+    get followUp(): Status {
+        return this._followUp;
+    }
+
+    set followUp(value: Status) {
+        this._followUp = value;
+    }
+
+    get currentUTCTime(): number {
+        return this._currentUTCTime;
+    }
+
+    set currentUTCTime(value: number) {
+        this._currentUTCTime = value;
+    }
+
+    get followUpForm(): FormGroup {
+        return this._followUpForm;
+    }
+
+    set followUpForm(value: FormGroup) {
+        this._followUpForm = value;
+    }
+
+    get safetyEventList(): Safety[] {
+        return this._safetyEventList;
+    }
+
+    set safetyEventList(value: Safety[]) {
+        this._safetyEventList = value;
+    }
+
+    get user(): User {
+        return this._user;
+    }
+
+    set user(value: User) {
+        this._user = value;
+    }
+
+    get selectedContingency(): Contingency {
+        return this._selectedContingency;
+    }
+
+    set selectedContingency(value: Contingency) {
+        this._selectedContingency = value;
+    }
+
+    get statusCodes(): StatusCode[] {
+        return this._statusCodes;
+    }
+
+    set statusCodes(value: StatusCode[]) {
+        this._statusCodes = value;
+    }
+
+    get durations(): number[] {
+        return this._durations;
+    }
+
+    set durations(value: number[]) {
+        this._durations = value;
+    }
+
+    get validations(): Validation {
+        return this._validations;
+    }
+
+    set validations(value: Validation) {
+        this._validations = value;
+    }
+
+    get apiRestService(): ApiRestService {
+        return this._apiRestService;
+    }
+
+    set apiRestService(value: ApiRestService) {
+        this._apiRestService = value;
+    }
+
+    get delta(): number {
+        return this._delta;
+    }
+
+    set delta(value: number) {
+        this._delta = value;
     }
 
 }

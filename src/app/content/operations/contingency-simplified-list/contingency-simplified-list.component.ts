@@ -3,7 +3,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { TranslateService } from '@ngx-translate/core';
 import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 import { Subscription } from 'rxjs/Subscription';
-import { Contingency } from '../../../shared/_models/contingency';
+import { Contingency } from '../../../shared/_models/contingency/contingency';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { DataService } from '../../../shared/_services/data.service';
 import { MessageService } from '../../../shared/_services/message.service';

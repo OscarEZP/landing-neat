@@ -8,9 +8,12 @@ import { ContingencyService } from '../_services/contingency.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HistoricalSearchService } from '../_services/historical-search.service';
 import { InfiniteScrollService } from '../_services/infinite-scroll.service';
-import { MatDatepickerInputEvent } from '@angular/material';
+import {MatDatepickerInputEvent} from '@angular/material';
 import { DateUtil } from '../../../shared/util/dateUtil';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
+import { TimeInstant } from '../../../shared/_models/timeInstant';
+import { SearchContingency } from '../../../shared/_models/contingency/searchContingency';
+// import {  } from
 
 @Component({
     selector: 'lsl-search-historical',
@@ -20,6 +23,10 @@ import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 
 export class SearchHistoricalComponent implements OnInit {
 
+    private static RANGE_DATE_HISTORICAL = 'RANGE_DATE_HISTORICAL';
+    private static HISTORICAL_URL = '/operations/contingencies/historical';
+    private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
+
     public searchForm: FormGroup;
     public snackbarMessage: string;
     public aicraftList: Aircraft[];
@@ -28,14 +35,16 @@ export class SearchHistoricalComponent implements OnInit {
     public minTo: Date;
     public selectedOptions = [];
 
-    constructor(public translate: TranslateService,
-                public messageService: MessageService,
-                public apiRestService: ApiRestService,
-                private router: Router,
-                private route: ActivatedRoute,
-                private _contingencyService: ContingencyService,
-                private _searchHistoricalService: HistoricalSearchService,
-                private _infiniteScrollService: InfiniteScrollService) {
+    constructor(
+        public translate: TranslateService,
+        public messageService: MessageService,
+        public apiRestService: ApiRestService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private _contingencyService: ContingencyService,
+        private _searchHistoricalService: HistoricalSearchService,
+        private _infiniteScrollService: InfiniteScrollService,
+    ) {
         this.translate.setDefaultLang('en');
         this.searchHistoricalService.initForm(
             {
@@ -77,7 +86,7 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     private setMinDate() {
-        this.apiRestService.getSingle('configTypes', 'RANGE_DATE_HISTORICAL').subscribe(rs => {
+        this.apiRestService.getSingle('configTypes', SearchHistoricalComponent.RANGE_DATE_HISTORICAL).subscribe(rs => {
             const res = rs as GroupTypes;
             const day = Number(res.types[0].code);
             const today = new Date();
@@ -107,30 +116,37 @@ export class SearchHistoricalComponent implements OnInit {
 
     public clearSearch(): void {
         this.searchHistoricalService.searchForm.reset();
+        this.infiniteScrollService.init();
         this.router.navigate(['../'], {relativeTo: this.route});
     }
 
-    submitForm(value: any) {
+    public getSearchContingency(): SearchContingency {
+        return new SearchContingency(
+            this.infiniteScrollService.offset,
+            this.infiniteScrollService.pageSize,
+            this.searchHistoricalService.tails,
+            new TimeInstant(this.searchHistoricalService.fromTS, ''),
+            new TimeInstant(this.searchHistoricalService.toTS, ''),
+            true,
+            false
+        );
+    }
+
+    public submitForm(value: any) {
         this.searchHistoricalService.searchForm.updateValueAndValidity();
         if (this.searchHistoricalService.searchForm.valid) {
-            const search = {
-                from: {
-                    epochTime: this.searchHistoricalService.fromTS
-                },
-                to: {
-                    epochTime: this.searchHistoricalService.toTS
-                },
-                tails: this.isAllSelected(this.searchHistoricalService.tails) ? null : this.searchHistoricalService.tails,
-                offSet: this.infiniteScrollService.offset,
-                limit: this.infiniteScrollService.pageSize
-            };
-            this.contingencyService.postHistoricalSearch(search).subscribe();
+            this.infiniteScrollService.init();
+            const search = this.getSearchContingency();
+            this.contingencyService.loading = true;
+            this.contingencyService.postHistoricalSearch(search).subscribe(() => {
+                this.contingencyService.loading = false;
+            });
             this.contingencyService.getTotalRecords(search).subscribe();
             if (!this.searchHistoricalService.active) {
-                this.router.navigate([this.router.url + '/historical']);
+                this.router.navigate([SearchHistoricalComponent.HISTORICAL_URL]);
             }
         } else {
-            this.translateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
+            this.translateString(SearchHistoricalComponent.VALIDATION_ERROR_MESSAGE);
             this.messageService.openSnackBar(this.snackbarMessage);
         }
     }
@@ -147,7 +163,4 @@ export class SearchHistoricalComponent implements OnInit {
         }
     }
 
-    private isAllSelected(selectedOptions): boolean {
-        return selectedOptions.indexOf('ALL') !== -1;
-    }
 }
