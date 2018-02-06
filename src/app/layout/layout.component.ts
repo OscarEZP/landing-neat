@@ -23,6 +23,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     @ViewChild('details') public details: MatSidenav;
     private _messageDataSubscription: Subscription;
     private _errorDataSubscription: Subscription;
+    private _handleErrorSubscription: Subscription;
 
     public loading: boolean;
     public mode: string;
@@ -31,6 +32,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private static SESSION_ERROR = {code: 472, message: 'ERRORS.SESSION'};
     private static BAD_REQUEST_ERROR = {code: 400, message: 'ERRORS.BAD_REQUEST'};
     private static UNAUTHORIZED_ERROR = {code: 401, message: 'ERRORS.UNAUTHORIZED'};
+    private static DEFAULT_ERROR = {code: 500, message: 'ERRORS.DEFAULT'};
 
     constructor(
         private _sidenavService: SidenavService,
@@ -41,7 +43,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         private _dialogService: DialogService,
         private _storageService: StorageService,
         private _authService: AuthService,
-        private _router: Router,
+        private _router: Router
     ) {
         this.loading = true;
         this.mode = 'determinate';
@@ -59,7 +61,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             .subscribe(error => {
                 if (error) {
                     this.loading = false;
-                    this.handleError(error);
+                    this._handleErrorSubscription = this.handleError(error);
                 }
             });
     }
@@ -67,6 +69,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     public ngOnDestroy() {
         this._messageDataSubscription.unsubscribe();
         this._errorDataSubscription.unsubscribe();
+        this._handleErrorSubscription.unsubscribe();
     }
 
     private handleError(error: HttpErrorResponse): Subscription {
@@ -86,6 +89,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
             case LayoutComponent.UNAUTHORIZED_ERROR.code: {
                 subscription = this.showMessage(LayoutComponent.UNAUTHORIZED_ERROR.message);
                 break;
+            }
+            default: {
+                subscription = this.showMessage(LayoutComponent.DEFAULT_ERROR.message);
             }
         }
         return subscription;

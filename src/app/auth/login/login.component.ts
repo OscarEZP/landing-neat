@@ -79,7 +79,6 @@ export class LoginComponent implements OnInit {
                 this.router.navigate([this.authService.getRedirectUrl()]);
                 this.activateLoadingBar(false);
                 this.disableButton = false;
-                this._dataService.triggerError(null);
             }).catch(reason => {
                 this._messageService.openSnackBar(reason);
                 this.activateLoadingBar(false);

@@ -32,7 +32,6 @@ import { MessageService } from '../../../shared/_services/message.service';
 import { StorageService } from '../../../shared/_services/storage.service';
 import { DateUtil } from '../../../shared/util/dateUtil';
 import { DialogService } from '../../_services/dialog.service';
-import { ContingencyService } from '../_services/contingency.service';
 import { CancelComponent } from '../cancel/cancel.component';
 
 @Component({
@@ -212,7 +211,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                 .subscribe(response => res = response,
                     err => {
                         this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
-                        const message: string = err.error.message !== null ? err.error.message : this.snackbarMessage;
+                        const message: string = err.error && err.error.message ? err.error.message : this.snackbarMessage;
                         this._messageService.openSnackBar(message);
                         this.validations.isSending = false;
                     }, () => {

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import { Contingency } from '../_models/contingency/contingency';
 import {HttpErrorResponse} from '@angular/common/http';
+import {Subject} from 'rxjs/Subject';
 
 @Injectable()
 export class DataService {
@@ -9,7 +10,7 @@ export class DataService {
     private messageSourceString = new BehaviorSubject<string>('default message');
     private messageSourceContingency = new BehaviorSubject<Contingency>(null);
     private messageSourceNumber = new BehaviorSubject<number>(0);
-    private messageSourceError = new BehaviorSubject<HttpErrorResponse>(null);
+    private messageSourceError = new Subject<HttpErrorResponse>();
 
     public currentStringMessage = this.messageSourceString.asObservable();
     public currentNumberMessage = this.messageSourceNumber.asObservable();
@@ -30,7 +31,7 @@ export class DataService {
         this.messageSourceNumber.next(message);
     }
 
-    public triggerError(message: HttpErrorResponse){
+    public triggerError(message: HttpErrorResponse) {
         this.messageSourceError.next(message);
     }
 }
