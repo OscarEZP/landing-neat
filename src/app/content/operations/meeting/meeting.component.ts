@@ -19,7 +19,6 @@ import {Activity} from '../../../shared/_models/activity';
 import {Assistant} from '../../../shared/_models/assistant';
 import {Meeting} from '../../../shared/_models/meeting';
 import {Mail} from '../../../shared/_models/configuration/mail';
-import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
     selector: 'lsl-meeting-form',
