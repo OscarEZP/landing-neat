@@ -12,7 +12,7 @@ export class Assistant {
         return this._mail;
     }
 
-    set code(value: string) {
+    set mail(value: string) {
         this._mail = value;
     }
 

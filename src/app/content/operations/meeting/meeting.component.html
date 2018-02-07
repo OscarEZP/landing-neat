@@ -76,32 +76,61 @@
                 </div>
             </div>
             <div fxFlex="25" fxLayout="row" class="operation-container">
+
                 <div fxLayout="column" fxFlexFill>
+                    <form [formGroup]="assistantForm" #assisForm="ngForm" (submit)="addAssistant()">
                 <section>
                     <span fxLayout="row" class="title-section">{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_TITTLE'|translate}}</span>
-                    <div class="data">
-                    <div id="addAsistant" fxLayout="row">
-                        <mat-form-field style="width: 100%">
-                            <input matInput placeholder="{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_MAIL'|translate}}"
-                                   [formControl]="meetingForm.controls['assistantMail']" [(ngModel)]="assistant" >
-                            <mat-icon matSuffix>search</mat-icon>
-                        </mat-form-field>
-                        <mat-error *ngIf="meetingForm.controls['assistantMail'].hasError('required') && meetForm.submitted">
-                            {{'OPERATIONS.MEETING_FORM.ASSISTANT_REQUIRED'|translate}}
-                        </mat-error>
-                        <mat-error *ngIf="meetingForm.controls['assistantMail'].hasError('pattern') && meetForm.submitted">
-                            {{'OPERATIONS.MEETING_FORM.VALID_MAIL'|translate}}
-                        </mat-error>
+
+                    <div >
+                        <div fxLayout="row" fxFlex="100" id="in-meeting-form-assistant" >
+                            <mat-form-field >
+                                <div><mat-icon matSuffix>person_add</mat-icon></div>
+                                <input matInput placeholder="{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_MAIL'|translate}}"
+                                       [formControl]="assistantForm.controls['assistantMail']" [value]="assistant.mail" (input)="assistant.mail=$event.target.value" >
+
+                            </mat-form-field>
+
+                        </div>
                     </div>
-                    <div fxFlex="" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end center">
-                        <button type="submit" mat-button color="primary">
+                <div>
+                        <div fxLayout="row" >
+                            <mat-error *ngIf="assistantForm.controls['assistantMail'].hasError('required') && assisForm.submitted">
+                                {{'OPERATIONS.MEETING_FORM.ASSISTANT_REQUIRED'|translate}}
+                            </mat-error>
+                        </div>
+                    <div>
+                            <mat-error *ngIf="assistantForm.controls['assistantMail'].hasError('email') && assisForm.submitted">
+                                {{'OPERATIONS.MEETING_FORM.VALID_MAIL'|translate}}
+                            </mat-error>
+
+                        </div>
+                </div>
+                    <div>
+                        <div fxLayout="row" fxFlex="100"  fxLayoutGap="10px" fxLayoutAlign="end center">
+                            <button type="submit" mat-button color="primary" >
                             {{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT'|translate}}
-                        </button>
+                            </button>
+
+                        </div>
+                    </div>
+                    <div>
+
+
+                            <content>
+
+                                <div fxLayout="row" *ngFor="let assistant of meetingAssistants; let i = index">
+                                    <div><mat-icon matSuffix>person</mat-icon></div>
+                                    <div fxFlex="60">{{assistant.mail}}</div>
+                                    <div><mat-icon matSuffix>delete</mat-icon></div>
+                                </div>
+                            </content>
 
                     </div>
-                    </div>
                 </section>
+                    </form>
                 </div>
+
             </div>
 
             <div fxFlex="25" fxLayout="row" class="operation-container">

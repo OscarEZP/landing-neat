@@ -18,6 +18,8 @@ import { CancelComponent } from '../cancel/cancel.component';
 import {Activity} from '../../../shared/_models/activity';
 import {Assistant} from '../../../shared/_models/assistant';
 import {Meeting} from '../../../shared/_models/meeting';
+import {Mail} from '../../../shared/_models/configuration/mail';
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
     selector: 'lsl-meeting-form',
@@ -31,6 +33,7 @@ export class MeetingComponent implements OnInit {
     private static MEETINGS_CONFIG_TYPE = 'MEETING_ACTIVITIES';
 
     private _meetingForm: FormGroup;
+    private _assistantForm: FormGroup;
     private _utcModel: TimeInstant;
     private _timeClock: Date;
     private _interval: number;
@@ -40,7 +43,8 @@ export class MeetingComponent implements OnInit {
     private _validations: Validation;
     private _snackbarMessage: string;
     private _meetingAssistants: Assistant[];
-    private _assistant: string;
+    private _assistant: Assistant;
+    private _mails: Mail[];
 
     constructor(
         private _dialogService: DialogService,
@@ -59,10 +63,23 @@ export class MeetingComponent implements OnInit {
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.meetingForm = this.getFormValidators();
         this.meetingActivities = [];
+        this.getMailsConf();
         this.setMeetingActivitiesConf();
         this.validations = new Validation(false, true, true, false);
         this.meetingAssistants = [];
-        this.assistant = "";
+        this.assistant = new Assistant("");
+
+
+        console.log(this.mails);
+        this.assistantForm = this._fb.group({
+
+             });
+
+        this.assistantForm.addControl('assistantMail',new FormControl(this.assistant.mail, {
+            validators: [Validators.required,Validators.email],
+            updateOn: 'submit'
+        }));
+
     }
 
     ngOnInit(): void {
@@ -84,9 +101,8 @@ export class MeetingComponent implements OnInit {
      * @return {FormGroup}
      */
     private getFormValidators(): FormGroup {
-        this.meetingForm = this._fb.group({
-            'assistantMail': [this.assistant,Validators.required,Validators.pattern('^[a-zA-Z0-9]+\\S$')]
-        });
+
+        this.meetingForm = this._fb.group({});
         const barcodeValidators = [Validators.pattern('^[a-zA-Z0-9]+\\S$'), Validators.maxLength(80)];
         if (this.contingency.safetyEvent.code !== null) {
             barcodeValidators.push(Validators.required);
@@ -100,6 +116,7 @@ export class MeetingComponent implements OnInit {
      */
     private setMeetingActivitiesConf(): void {
         this._apiRestService.getSingle('configTypes', MeetingComponent.MEETINGS_CONFIG_TYPE).subscribe(rs => {
+
             const res = rs as GroupTypes;
             this.meetingActivitiesConf = res.types;
             this.meetingActivities = MeetingComponent.setMeetingActivities(this.meetingActivitiesConf);
@@ -149,6 +166,35 @@ export class MeetingComponent implements OnInit {
         }
     }
 
+    /**
+     * Submit addAssistant form
+     */
+    public addAssistant() : void {
+
+
+        if (this.assistantForm.valid) {
+
+            const currentAssistant = new Assistant(this.assistant.mail);
+            const findAssistant = this.meetingAssistants.find(x => x.mail==currentAssistant.mail);
+
+            if (findAssistant==undefined){
+                this.meetingAssistants.push(currentAssistant);
+            }
+
+        }
+
+}
+
+    private getMailsConf() : void {
+        console.log('Buscando mails configurados');
+        this._apiRestService
+            .getAll<Mail[]>('mails')
+            .subscribe(rs => {
+                    console.log('response:'+rs);
+                    //this.mails = rs;
+                });
+
+    }
     /**
      * Get a Meeting Object to sending data
      * @return {Meeting}
@@ -299,12 +345,31 @@ export class MeetingComponent implements OnInit {
         this._meetingAssistants = value;
     }
 
-    get assistant(): string {
+    get assistant(): Assistant {
         return this._assistant;
     }
 
-    set assistant(value: string) {
+    set assistant(value: Assistant) {
         this._assistant = value;
     }
 
+
+    get assistantForm(): FormGroup {
+        return this._assistantForm;
+    }
+
+
+    set assistantForm(value: FormGroup) {
+        this._assistantForm = value;
+    }
+
+
+    get mails(): Mail[] {
+        return this._mails;
+    }
+
+
+    set mails(value: Mail[]) {
+        this._mails = value;
+    }
 }
