@@ -31,11 +31,13 @@ import { DataService } from '../../../shared/_services/data.service';
 export class PendingListComponent implements OnInit, OnDestroy {
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
+    private static DEFAULT_INTERVAL = 30;
 
     private _routingSubscription: Subscription;
     private _contingenciesSubscription: Subscription;
     private _reloadSubscription: Subscription;
     private _timerSubscription: Subscription;
+    private _intervalRefreshSubscription: Subscription;
     private _selectedContingency: Contingency;
     private _selectedContingencyPivot: Contingency;
     private _intervalToRefresh: number;
@@ -62,7 +64,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
             this.historicalSearchService.active = data.historical;
         });
         this.contingencyService.clearList();
-        this.getIntervalToRefresh().add(() => this.getContingencies());
+        this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
     }
 
     /**
@@ -71,6 +73,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
     public ngOnDestroy() {
         this._reloadSubscription.unsubscribe();
         this._routingSubscription.unsubscribe();
+        this._intervalRefreshSubscription.unsubscribe();
         if (this._contingenciesSubscription) {
             this._contingenciesSubscription.unsubscribe();
         }
@@ -111,7 +114,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
             const res = rs as GroupTypes;
             this.intervalToRefresh = Number(res.types[0].code) * 1000;
             this.contingencyService.loading = false;
-        });
+        }, error => this.intervalToRefresh = PendingListComponent.DEFAULT_INTERVAL * 1000);
     }
 
     public openCloseContingency(contingency: any) {

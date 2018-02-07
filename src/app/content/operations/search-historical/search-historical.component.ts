@@ -13,7 +13,7 @@ import { DateUtil } from '../../../shared/util/dateUtil';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 import { TimeInstant } from '../../../shared/_models/timeInstant';
 import { SearchContingency } from '../../../shared/_models/contingency/searchContingency';
-// import {  } from
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
     selector: 'lsl-search-historical',
@@ -108,8 +108,8 @@ export class SearchHistoricalComponent implements OnInit {
         });
     }
 
-    private translateString(toTranslate: string) {
-        this.translate.get(toTranslate).subscribe((res: string) => {
+    private translateString(toTranslate: string): Subscription {
+        return this.translate.get(toTranslate).subscribe((res: string) => {
             this.snackbarMessage = res;
         });
     }

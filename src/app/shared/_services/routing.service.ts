@@ -21,7 +21,6 @@ export class RoutingService {
                 this.moduleTitle = 'Hemycicle Module';
                 break;
         }
-        console.log('Title: ' + this.moduleTitle);
     }
 
     public getModuleTitle() {
