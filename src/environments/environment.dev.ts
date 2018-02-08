@@ -26,6 +26,7 @@ export const environment = {
         operator: ':9005/api/v1/configurations/operators/',
         safetyEvent: ':9005/api/v1/configurations/safetyEvents',
         types: ':9005/api/v1/configurations/types',
-        configTypes: ':9005/api/v1/configurations/types/groupNames'
+        configTypes: ':9005/api/v1/configurations/types/groupNames',
+        mails : ':9005/api/v1/configurations/mails'
     }
 };

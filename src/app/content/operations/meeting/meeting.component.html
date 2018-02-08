@@ -83,15 +83,36 @@
                     <span fxLayout="row" class="title-section">{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_TITTLE'|translate}}</span>
 
                     <div >
+                       <!-- <mat-form-field fxFlex="">
+                            <mat-select placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.TAIL'|translate}}"
+                                        [formControl]="searchForm.controls['mails']" required
+                                        [(ngModel)]="selectedOptions">-->
                         <div fxLayout="row" fxFlex="100" id="in-meeting-form-assistant" >
                             <mat-form-field >
                                 <div><mat-icon matSuffix>person_add</mat-icon></div>
-                                <input matInput placeholder="{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_MAIL'|translate}}"
-                                       [formControl]="assistantForm.controls['assistantMail']" [value]="assistant.mail" (input)="assistant.mail=$event.target.value" >
-
+                                <input type="text" matInput placeholder="{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_MAIL'|translate}}"
+                                       [formControl]="assistantForm.controls['assistantMail']"
+                                       [matAutocomplete]="auto">
+                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                    <mat-option *ngFor="let assistantConf of mails" [value]="assistantConf">
+                                        {{ assistantConf.address }}
+                                    </mat-option>
+                                </mat-autocomplete>
                             </mat-form-field>
 
                         </div>
+                        <!--        <mat-select-trigger>
+                                    {{searchForm.controls['mails'].value ? searchForm.controls['mails'].value[0] : ''}}
+                                    <span *ngIf="searchForm.controls['mails'].value?.length > 1"
+                                          class="example-additional-selection">
+                        (+{{searchForm.controls['mails'].value.length - 1}} others)
+                    </span>
+                                </mat-select-trigger>
+                                <mat-option *ngFor="let assistantConf of mails" [value]="assistantConf.address">
+                                    {{assistantConf.address}}
+                                </mat-option>
+                        </mat-select>
+                        </mat-form-field>-->
                     </div>
                 <div>
                         <div fxLayout="row" >

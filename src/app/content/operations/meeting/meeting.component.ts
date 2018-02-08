@@ -19,11 +19,16 @@ import {Activity} from '../../../shared/_models/activity';
 import {Assistant} from '../../../shared/_models/assistant';
 import {Meeting} from '../../../shared/_models/meeting';
 import {Mail} from '../../../shared/_models/configuration/mail';
+import {AssistantMeetingsService} from "../_services/assistantMeetings.service";
+import {Observable} from 'rxjs/Observable';
+import {startWith} from 'rxjs/operators/startWith';
+import {map} from 'rxjs/operators/map';
 
 @Component({
     selector: 'lsl-meeting-form',
     templateUrl: './meeting.component.html',
-    styleUrls: ['./meeting.component.scss']
+    styleUrls: ['./meeting.component.scss'],
+    providers: [AssistantMeetingsService]
 })
 
 export class MeetingComponent implements OnInit {
@@ -43,8 +48,10 @@ export class MeetingComponent implements OnInit {
     private _snackbarMessage: string;
     private _meetingAssistants: Assistant[];
     private _assistant: Assistant;
-    private _mails: Mail[];
-
+    private _mails: string[];
+    public selectedOptions = [];
+    public searchForm: FormGroup;
+    filteredOptions: Observable<string[]>;
     constructor(
         private _dialogService: DialogService,
         private _fb: FormBuilder,
@@ -54,7 +61,8 @@ export class MeetingComponent implements OnInit {
         private _messageService: MessageService,
         private _apiRestService: ApiRestService,
         @Inject(MAT_DIALOG_DATA) private _contingency: Contingency,
-        private _translate: TranslateService
+        private _translate: TranslateService,
+        private _assistantMeetingService: AssistantMeetingsService,
     ) {
         this._interval = 1000 * 60;
         this._alive = true;
@@ -79,9 +87,26 @@ export class MeetingComponent implements OnInit {
             updateOn: 'submit'
         }));
 
+        this.assistantForm.addControl('mailSelected',new FormControl())
+
+        this.assistantMeetingService.initForm(
+            {
+                mails: new FormControl('', {
+                    validators: Validators.required,
+                    updateOn: 'change'
+                })
+            }
+        );
+
+        this.searchForm = this.assistantMeetingService.searchForm;
+
+
+
     }
 
     ngOnInit(): void {
+
+
         TimerObservable.create(0, this._interval)
         .takeWhile(() => this._alive)
         .subscribe(() => {
@@ -93,8 +118,18 @@ export class MeetingComponent implements OnInit {
             });
         });
         this._clockService.getClock().subscribe(time => this.timeClock = time);
+
+        this.filteredOptions = this.assistantForm['assistantMail'].valueChanges
+            .pipe(
+                startWith(''),
+                map(val => this.filter(val))
+            );
     }
 
+    filter(val: string): string[] {
+        return this.mails.filter(option =>
+        option.toLowerCase().indexOf(val.toLowerCase()) === 0);
+    }
     /**
      * Get form with validators
      * @return {FormGroup}
@@ -184,13 +219,21 @@ export class MeetingComponent implements OnInit {
 
 }
 
+    displayFn(mail?: Mail): string | undefined {
+        return mail ? mail.address : undefined;
+    }
+
+
+
     private getMailsConf() : void {
         console.log('Buscando mails configurados');
         this._apiRestService
             .getAll<Mail[]>('mails')
             .subscribe(rs => {
-                    console.log('response:'+rs);
+                    console.log('response:'+rs)
+                    rs.forEach(mail=> this.mails.push(mail.address) );
                     //this.mails = rs;
+                    console.log(this.mails);
                 });
 
     }
@@ -363,12 +406,22 @@ export class MeetingComponent implements OnInit {
     }
 
 
-    get mails(): Mail[] {
+    get mails(): string[] {
         return this._mails;
     }
 
 
-    set mails(value: Mail[]) {
+    set mails(value: string[]) {
         this._mails = value;
+    }
+
+
+    get assistantMeetingService(): AssistantMeetingsService {
+        return this._assistantMeetingService;
+    }
+
+
+    set assistantMeetingService(value: AssistantMeetingsService) {
+        this._assistantMeetingService = value;
     }
 }
