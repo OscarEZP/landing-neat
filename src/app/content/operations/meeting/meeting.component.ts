@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import { DialogService } from '../../_services/dialog.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TimeInstant } from '../../../shared/_models/timeInstant';
@@ -22,6 +22,7 @@ import {Mail} from '../../../shared/_models/configuration/mail';
 import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
     selector: 'lsl-meeting-form',
@@ -29,10 +30,16 @@ import {map} from 'rxjs/operators/map';
     styleUrls: ['./meeting.component.scss'],
 })
 
-export class MeetingComponent implements OnInit {
+export class MeetingComponent implements OnInit, OnDestroy {
 
     private static MEETINGS_ENDPOINT = 'meetings';
+    private static MAILS_ENDPOINT = 'mails';
     private static MEETINGS_CONFIG_TYPE = 'MEETING_ACTIVITIES';
+    private static BARCODE_PATTERN = '^[a-zA-Z0-9]+\\S$';
+
+
+    private _meetingSubscription: Subscription;
+    private _emailsSubscription: Subscription;
 
     private _meetingForm: FormGroup;
     private _assistantForm: FormGroup;
@@ -47,8 +54,6 @@ export class MeetingComponent implements OnInit {
     private _meetingAssistants: Assistant[];
     private _assistant: Assistant;
     private _mails: string[];
-    public selectedOptions = [];
-    public searchForm: FormGroup;
     public filteredOptions: Observable<string[]>;
 
     constructor(
@@ -93,28 +98,43 @@ export class MeetingComponent implements OnInit {
             });
         });
         this._clockService.getClock().subscribe(time => this.timeClock = time);
-
         this.filteredOptions = this.assistantForm.controls['assistantMail'].valueChanges
             .pipe(
                 startWith(''),
                 map(val => {
-                    return this.filter(val);
+                    if (val.length >= 3) {
+                        return this.filter(val);
+                    }
                 })
             );
     }
 
+    ngOnDestroy() {
+        if (this._meetingSubscription) {
+            this._meetingSubscription.unsubscribe();
+        }
+        if (this._emailsSubscription) {
+            this._emailsSubscription.unsubscribe();
+        }
+    }
+
+    /**
+     * Filter for show email coincidencies
+     * @param val
+     * @return {string[]}
+     */
     filter(val: string): string[] {
         return this.mails.filter(option =>
         option.toLowerCase().indexOf(val.toLowerCase()) === 0);
     }
+
     /**
      * Get form with validators
      * @return {FormGroup}
      */
     private getFormValidators(): FormGroup {
-
         this.meetingForm = this._fb.group({});
-        const barcodeValidators = [Validators.pattern('^[a-zA-Z0-9]+\\S$'), Validators.maxLength(80)];
+        const barcodeValidators = [Validators.pattern(MeetingComponent.BARCODE_PATTERN), Validators.maxLength(80)];
         if (this.contingency.safetyEvent.code !== null) {
             barcodeValidators.push(Validators.required);
         }
@@ -148,43 +168,25 @@ export class MeetingComponent implements OnInit {
     }
 
     /**
-     * Submit meeting form
+     * Save meeting form
      */
     public submitForm() {
         if (this.meetingForm.valid) {
             const signature = this.getSignature();
-            const signatureAssistantConf = this.getSignatureAssistantConf();
             this.validations.isSending = true;
             let res: Response;
-            this._apiRestService
-            .add<Response>(MeetingComponent.MEETINGS_ENDPOINT, signature)
-            .subscribe(response => res = response,
-                err => {
-                    this.getTranslateString('OPERATIONS.MEETING_FORM.FAILURE_MESSAGE');
-                    const message: string = err.error.message !== null ? err.error.message : this.snackbarMessage;
-                    this._messageService.openSnackBar(message);
-                    this.validations.isSending = false;
-                }, () => {
-
-                    this._apiRestService
-                        .add<Response>("mails", signatureAssistantConf)
-                        .subscribe(response => res = response,
-
-                            err => {
-                                this.getTranslateString('OPERATIONS.MEETING_FORM.FAILURE_MESSAGE');
-                                const message: string = err.error.message !== null ? err.error.message : this.snackbarMessage;
-                                this._messageService.openSnackBar(message);
-                                this.validations.isSending = false;
-                            },
-                            () => {
-
-                                this.getTranslateString('OPERATIONS.MEETING_FORM.SUCCESSFULLY_MESSAGE');
-                                this._messageService.openSnackBar(this.snackbarMessage);
-                                this._dialogService.closeAllDialogs();
-                                this._messageData.stringMessage('reload');
-                                this.validations.isSending = false;
-                                })
-                    });
+            this._meetingSubscription = this._apiRestService
+                .add<Response>(MeetingComponent.MEETINGS_ENDPOINT, signature)
+                .subscribe(response => res = response,
+                    err => {
+                        this.getTranslateString('OPERATIONS.MEETING_FORM.FAILURE_MESSAGE');
+                        const message: string = err.error.message !== null ? err.error.message : this.snackbarMessage;
+                        this._messageService.openSnackBar(message);
+                        this.validations.isSending = false;
+                    }, () => {
+                        this._emailsSubscription = this.saveEmails();
+                    }
+                );
         } else {
             this.getTranslateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
             this._messageService.openSnackBar(this.snackbarMessage);
@@ -192,39 +194,63 @@ export class MeetingComponent implements OnInit {
         }
     }
 
+    public saveEmails(): Subscription {
+        let res: Response;
+        const signatureAssistantConf = this.getSignatureAssistantConf();
+
+        return this._apiRestService
+            .add<Response>(MeetingComponent.MAILS_ENDPOINT, signatureAssistantConf)
+            .subscribe(
+                response => res = response,
+                err => {
+                    this.getTranslateString('OPERATIONS.MEETING_FORM.FAILURE_MESSAGE');
+                    const message: string = err.error.message !== null ? err.error.message : this.snackbarMessage;
+                    this._messageService.openSnackBar(message);
+                    this.validations.isSending = false;
+                },
+                () => {
+                    this.getTranslateString('OPERATIONS.MEETING_FORM.SUCCESSFULLY_MESSAGE');
+                    this._messageService.openSnackBar(this.snackbarMessage);
+                    this._dialogService.closeAllDialogs();
+                    this._messageData.stringMessage('reload');
+                    this.validations.isSending = false;
+                }
+            );
+    }
+
     /**
-     * Submit addAssistant form
+     * Add assistant
      */
     public addAssistant(): void {
         if (this.assistantForm.valid) {
             const currentAssistant = new Assistant(this.assistant.mail);
-            const findAssistant = this.meetingAssistants.find(x => x.mail==currentAssistant.mail);
+            const findAssistant = this.meetingAssistants.find(x => x.mail === currentAssistant.mail);
             if (typeof findAssistant === 'undefined') {
                 this.meetingAssistants.push(currentAssistant);
             }
-            console.log(findAssistant, currentAssistant, this.meetingAssistants);
         }
     }
 
     /**
      * Delete Assistant Meeting from assistant list
      */
-    deleteAssistantMeeting(index:number) {
-
+    deleteAssistantMeeting(index: number) {
         if (index !== -1) {
             this.meetingAssistants.splice(index, 1);
         }
     }
 
+    /**
+     * Get a emails list for add assistant
+     */
     private getMailsConf(): void {
         this._apiRestService
-            .getAll<Mail[]>('mails')
+            .getAll<Mail[]>(MeetingComponent.MAILS_ENDPOINT)
             .subscribe(rs => {
-                    console.log('response:',  rs)
-                    rs.forEach(mail=> this.mails.push(mail.address) );
-                    console.log(this.mails);
+                    rs.forEach(mail => this.mails.push(mail.address) );
                 });
     }
+
     /**
      * Get a Meeting Object to sending data
      * @return {Meeting}
@@ -245,20 +271,14 @@ export class MeetingComponent implements OnInit {
      * Get a Mail Object to sending data
      * @return {Meeting}
      */
-    private getSignatureAssistantConf():Mail[]{
-
-        const mailsConf : Mail[]=[];
+    private getSignatureAssistantConf(): Mail[] {
+        const mailsConf: Mail[] = [];
         const assistants = this.meetingAssistants;
-
         assistants.forEach(assistant => {
-
             const mail = new Mail(assistant.mail);
-
             mailsConf.push(mail);
         });
-
         return mailsConf;
-        
     }
 
     /**
@@ -272,7 +292,7 @@ export class MeetingComponent implements OnInit {
     }
 
     /**
-     *
+     * Trigger for change time
      */
     private newMessage(): void {
         this._messageData.changeTimeUTCMessage(this.utcModel.epochTime);
