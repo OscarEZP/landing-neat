@@ -1,8 +1,6 @@
 export class Assistant {
     private _mail: string;
 
-
-
     constructor(mail: string) {
         this._mail = mail;
     }
@@ -15,6 +13,5 @@ export class Assistant {
     set mail(value: string) {
         this._mail = value;
     }
-
 
 }
