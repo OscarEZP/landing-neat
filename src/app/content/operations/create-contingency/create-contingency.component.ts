@@ -32,7 +32,6 @@ import { MessageService } from '../../../shared/_services/message.service';
 import { StorageService } from '../../../shared/_services/storage.service';
 import { DateUtil } from '../../../shared/util/dateUtil';
 import { DialogService } from '../../_services/dialog.service';
-import { ContingencyService } from '../_services/contingency.service';
 import { CancelComponent } from '../cancel/cancel.component';
 
 @Component({
@@ -73,6 +72,9 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _observableAircraftList: Observable<Aircraft[]>;
     private _observableLocationList: Observable<Location[]>;
     private _observableOperatorList: Observable<Types[]>;
+
+    private _aircraftSubscription: Subscription;
+    private _safetyEventSubscription: Subscription;
 
     constructor(private _dialogService: DialogService,
                 private _fb: FormBuilder,
@@ -140,218 +142,8 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     }
 
 
-    get messageUTCSubscription(): Subscription {
-        return this._messageUTCSubscription;
-    }
-
-    set messageUTCSubscription(value: Subscription) {
-        this._messageUTCSubscription = value;
-    }
-
-    get aircraftList(): Aircraft[] {
-        return this._aircraftList;
-    }
-
-    set aircraftList(value: Aircraft[]) {
-        this._aircraftList = value;
-    }
-
-    get flightList(): Flight[] {
-        return this._flightList;
-    }
-
-    set flightList(value: Flight[]) {
-        this._flightList = value;
-    }
-
-    get statusCodes(): StatusCode[] {
-        return this._statusCodes;
-    }
-
-    set statusCodes(value: StatusCode[]) {
-        this._statusCodes = value;
-    }
-
-    get safetyEventList(): Safety[] {
-        return this._safetyEventList;
-    }
-
-    set safetyEventList(value: Safety[]) {
-        this._safetyEventList = value;
-    }
-
-    get groupTypeList(): GroupTypes[] {
-        return this._groupTypeList;
-    }
-
-    set groupTypeList(value: GroupTypes[]) {
-        this._groupTypeList = value;
-    }
-
-    get contingencyType(): Types[] {
-        return this._contingencyType;
-    }
-
-    set contingencyType(value: Types[]) {
-        this._contingencyType = value;
-    }
-
-    get operatorList(): Types[] {
-        return this._operatorList;
-    }
-
-    set operatorList(value: Types[]) {
-        this._operatorList = value;
-    }
-
-    get failureType(): Types[] {
-        return this._failureType;
-    }
-
-    set failureType(value: Types[]) {
-        this._failureType = value;
-    }
-
-    get informer(): Types[] {
-        return this._informer;
-    }
-
-    set informer(value: Types[]) {
-        this._informer = value;
-    }
-
-    get contingencyForm(): FormGroup {
-        return this._contingencyForm;
-    }
-
-    set contingencyForm(value: FormGroup) {
-        this._contingencyForm = value;
-    }
-
-    get contingency(): Contingency {
-        return this._contingency;
-    }
-
-    set contingency(value: Contingency) {
-        this._contingency = value;
-    }
-
-    get stations(): Location[] {
-        return this._stations;
-    }
-
-    set stations(value: Location[]) {
-        this._stations = value;
-    }
-
-    get durationArray(): number[] {
-        return this._durationArray;
-    }
-
-    set durationArray(value: number[]) {
-        this._durationArray = value;
-    }
-
-    get utcModel(): TimeInstant {
-        return this._utcModel;
-    }
-
-    set utcModel(value: TimeInstant) {
-        this._utcModel = value;
-    }
-
-    get alive(): boolean {
-        return this._alive;
-    }
-
-    set alive(value: boolean) {
-        this._alive = value;
-    }
-
-    get interval(): number {
-        return this._interval;
-    }
-
-    set interval(value: number) {
-        this._interval = value;
-    }
-
-    get snackbarMessage(): string {
-        return this._snackbarMessage;
-    }
-
-    set snackbarMessage(value: string) {
-        this._snackbarMessage = value;
-    }
-
-    get isSafetyEvent(): boolean {
-        return this._isSafetyEvent;
-    }
-
-    set isSafetyEvent(value: boolean) {
-        this._isSafetyEvent = value;
-    }
-
-    get timeClock(): Date {
-        return this._timeClock;
-    }
-
-    set timeClock(value: Date) {
-        this._timeClock = value;
-    }
-
-    get validations(): Validation {
-        return this._validations;
-    }
-
-    set validations(value: Validation) {
-        this._validations = value;
-    }
-
-    get contingencyDateModel(): DateModel[] {
-        return this._contingencyDateModel;
-    }
-
-    set contingencyDateModel(value: DateModel[]) {
-        this._contingencyDateModel = value;
-    }
-
-    get observableFlightList(): Observable<Flight[]> {
-        return this._observableFlightList;
-    }
-
-    set observableFlightList(value: Observable<Flight[]>) {
-        this._observableFlightList = value;
-    }
-
-    get observableAircraftList(): Observable<Aircraft[]> {
-        return this._observableAircraftList;
-    }
-
-    set observableAircraftList(value: Observable<Aircraft[]>) {
-        this._observableAircraftList = value;
-    }
-
-    get observableLocationList(): Observable<Location[]> {
-        return this._observableLocationList;
-    }
-
-    set observableLocationList(value: Observable<Location[]>) {
-        this._observableLocationList = value;
-    }
-
-    get observableOperatorList(): Observable<Types[]> {
-        return this._observableOperatorList;
-    }
-
-    set observableOperatorList(value: Observable<Types[]>) {
-        this._observableOperatorList = value;
-    }
-
     public ngOnInit() {
-
         this._messageUTCSubscription = this._messageData.currentNumberMessage.subscribe(message => this.utcModel.epochTime = message);
-
         TimerObservable.create(0, this.interval)
             .takeWhile(() => this.alive)
             .subscribe(() => {
@@ -365,9 +157,8 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             });
 
         this._clockService.getClock().subscribe(time => this.timeClock = time);
-
-        this.getAircraftList();
-        this.getSafetyEventList();
+        this._aircraftSubscription = this.getAircraftList();
+        this._safetyEventSubscription = this.getSafetyEventList();
         this.getGroupTypes();
         this.getLocationsList();
         this.getOperatorList();
@@ -398,6 +189,8 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     public ngOnDestroy() {
         this._messageUTCSubscription.unsubscribe();
+        this._aircraftSubscription.unsubscribe();
+        this._safetyEventSubscription.unsubscribe();
     }
 
     /**
@@ -418,7 +211,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                 .subscribe(response => res = response,
                     err => {
                         this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
-                        const message: string = err.error.message !== null ? err.error.message : this.snackbarMessage;
+                        const message: string = err.error && err.error.message ? err.error.message : this.snackbarMessage;
                         this._messageService.openSnackBar(message);
                         this.validations.isSending = false;
                     }, () => {
@@ -500,12 +293,10 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
 
     private getAircraftList(): Subscription {
-
         return this._apiRestService
             .search<Aircraft[]>('aircraftsSearch', new AircraftSearch(1))
             .subscribe((response: Aircraft[]) => {
                 this.aircraftList = response;
-
                 this.observableAircraftList = this.contingencyForm
                     .controls['tail']
                     .valueChanges
@@ -790,4 +581,214 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         return this.operatorList.filter(operator =>
             operator.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
     }
+
+
+    get messageUTCSubscription(): Subscription {
+        return this._messageUTCSubscription;
+    }
+
+    set messageUTCSubscription(value: Subscription) {
+        this._messageUTCSubscription = value;
+    }
+
+    get aircraftList(): Aircraft[] {
+        return this._aircraftList;
+    }
+
+    set aircraftList(value: Aircraft[]) {
+        this._aircraftList = value;
+    }
+
+    get flightList(): Flight[] {
+        return this._flightList;
+    }
+
+    set flightList(value: Flight[]) {
+        this._flightList = value;
+    }
+
+    get statusCodes(): StatusCode[] {
+        return this._statusCodes;
+    }
+
+    set statusCodes(value: StatusCode[]) {
+        this._statusCodes = value;
+    }
+
+    get safetyEventList(): Safety[] {
+        return this._safetyEventList;
+    }
+
+    set safetyEventList(value: Safety[]) {
+        this._safetyEventList = value;
+    }
+
+    get groupTypeList(): GroupTypes[] {
+        return this._groupTypeList;
+    }
+
+    set groupTypeList(value: GroupTypes[]) {
+        this._groupTypeList = value;
+    }
+
+    get contingencyType(): Types[] {
+        return this._contingencyType;
+    }
+
+    set contingencyType(value: Types[]) {
+        this._contingencyType = value;
+    }
+
+    get operatorList(): Types[] {
+        return this._operatorList;
+    }
+
+    set operatorList(value: Types[]) {
+        this._operatorList = value;
+    }
+
+    get failureType(): Types[] {
+        return this._failureType;
+    }
+
+    set failureType(value: Types[]) {
+        this._failureType = value;
+    }
+
+    get informer(): Types[] {
+        return this._informer;
+    }
+
+    set informer(value: Types[]) {
+        this._informer = value;
+    }
+
+    get contingencyForm(): FormGroup {
+        return this._contingencyForm;
+    }
+
+    set contingencyForm(value: FormGroup) {
+        this._contingencyForm = value;
+    }
+
+    get contingency(): Contingency {
+        return this._contingency;
+    }
+
+    set contingency(value: Contingency) {
+        this._contingency = value;
+    }
+
+    get stations(): Location[] {
+        return this._stations;
+    }
+
+    set stations(value: Location[]) {
+        this._stations = value;
+    }
+
+    get durationArray(): number[] {
+        return this._durationArray;
+    }
+
+    set durationArray(value: number[]) {
+        this._durationArray = value;
+    }
+
+    get utcModel(): TimeInstant {
+        return this._utcModel;
+    }
+
+    set utcModel(value: TimeInstant) {
+        this._utcModel = value;
+    }
+
+    get alive(): boolean {
+        return this._alive;
+    }
+
+    set alive(value: boolean) {
+        this._alive = value;
+    }
+
+    get interval(): number {
+        return this._interval;
+    }
+
+    set interval(value: number) {
+        this._interval = value;
+    }
+
+    get snackbarMessage(): string {
+        return this._snackbarMessage;
+    }
+
+    set snackbarMessage(value: string) {
+        this._snackbarMessage = value;
+    }
+
+    get isSafetyEvent(): boolean {
+        return this._isSafetyEvent;
+    }
+
+    set isSafetyEvent(value: boolean) {
+        this._isSafetyEvent = value;
+    }
+
+    get timeClock(): Date {
+        return this._timeClock;
+    }
+
+    set timeClock(value: Date) {
+        this._timeClock = value;
+    }
+
+    get validations(): Validation {
+        return this._validations;
+    }
+
+    set validations(value: Validation) {
+        this._validations = value;
+    }
+
+    get contingencyDateModel(): DateModel[] {
+        return this._contingencyDateModel;
+    }
+
+    set contingencyDateModel(value: DateModel[]) {
+        this._contingencyDateModel = value;
+    }
+
+    get observableFlightList(): Observable<Flight[]> {
+        return this._observableFlightList;
+    }
+
+    set observableFlightList(value: Observable<Flight[]>) {
+        this._observableFlightList = value;
+    }
+
+    get observableAircraftList(): Observable<Aircraft[]> {
+        return this._observableAircraftList;
+    }
+
+    set observableAircraftList(value: Observable<Aircraft[]>) {
+        this._observableAircraftList = value;
+    }
+
+    get observableLocationList(): Observable<Location[]> {
+        return this._observableLocationList;
+    }
+
+    set observableLocationList(value: Observable<Location[]>) {
+        this._observableLocationList = value;
+    }
+
+    get observableOperatorList(): Observable<Types[]> {
+        return this._observableOperatorList;
+    }
+
+    set observableOperatorList(value: Observable<Types[]>) {
+        this._observableOperatorList = value;
+    }
+
 }

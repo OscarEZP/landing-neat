@@ -110,7 +110,8 @@
             <!-- FOCAL -->
             <div fxFlex="3" fxLayoutAlign="start center" *ngIf="!detailsService.open"
                  (click)="openDetails(contingency, 'follow-up')">
-                <!-- <mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username | slice:0:2 | uppercase }} --></div>
+                <!-- <mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username | slice:0:2 | uppercase }} -->
+            </div>
 
             <div fxFlex="5" fxLayoutAlign="start center" >
                 <button mat-icon-button [matMenuTriggerFor]="menu" (click)="setSelectedContingency(contingency)">
@@ -132,10 +133,12 @@
     </main>
 </div>
 <mat-paginator #contPaginator [hidden]="!checkDataStatus() || !historicalSearchService.active"
-    [length]="infiniteScrollService.length"
-    [pageSize]="infiniteScrollService.pageSize"
-    [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
+               [length]="infiniteScrollService.length"
+               [pageIndex]="infiniteScrollService.pageIndex"
+               [pageSize]="infiniteScrollService.pageSize"
+               [pageSizeOptions]="infiniteScrollService.pageSizeOptions"
+>
 </mat-paginator>
-<lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !loading && !historicalSearchService.active"></lsl-ess>
-<lsl-ess icon="assignment_late" message="ESS.NO_HISTORICAL_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !loading && historicalSearchService.active"></lsl-ess>
-<div class="loader-container" fxLayoutAlign="center center" *ngIf="loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>
+<lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading && !historicalSearchService.active"></lsl-ess>
+<lsl-ess icon="assignment_late" message="ESS.NO_HISTORICAL_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading && historicalSearchService.active"></lsl-ess>
+<div class="loader-container" fxLayoutAlign="center center" *ngIf="contingencyService.loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>

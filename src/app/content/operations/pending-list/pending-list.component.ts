@@ -31,12 +31,13 @@ import { DataService } from '../../../shared/_services/data.service';
 export class PendingListComponent implements OnInit, OnDestroy {
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
+    private static DEFAULT_INTERVAL = 30;
 
     private _routingSubscription: Subscription;
     private _contingenciesSubscription: Subscription;
     private _reloadSubscription: Subscription;
     private _timerSubscription: Subscription;
-    private _loading: boolean;
+    private _intervalRefreshSubscription: Subscription;
     private _selectedContingency: Contingency;
     private _selectedContingencyPivot: Contingency;
     private _intervalToRefresh: number;
@@ -51,7 +52,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
         private _infiniteScrollService: InfiniteScrollService,
         private _dialogService: DialogService
     ) {
-        this.loading = true;
+        this.contingencyService.loading = true;
         this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
         this.selectedContingencyPivot = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
         this.intervalToRefresh = 0;
@@ -63,7 +64,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
             this.historicalSearchService.active = data.historical;
         });
         this.contingencyService.clearList();
-        this.getIntervalToRefresh().add(() => this.getContingencies());
+        this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
     }
 
     /**
@@ -72,6 +73,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
     public ngOnDestroy() {
         this._reloadSubscription.unsubscribe();
         this._routingSubscription.unsubscribe();
+        this._intervalRefreshSubscription.unsubscribe();
         if (this._contingenciesSubscription) {
             this._contingenciesSubscription.unsubscribe();
         }
@@ -82,7 +84,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
 
     private getContingencies() {
         if (!this.historicalSearchService.active) {
-            this.loading = true;
+            this.contingencyService.loading = true;
             const searchSignature = new SearchContingency(null, null, null, new TimeInstant(0, ''), new TimeInstant(0, ''), false, true);
             this._contingenciesSubscription = this.contingencyService.getPendings(searchSignature).subscribe((contingencyList: Contingency[]) => {
                 const ctgInArray = contingencyList.filter(ctg => ctg.id === this.selectedContingencyPivot.id).length;
@@ -92,7 +94,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
                     this.selectedContingency = contingencyList[0];
                 }
                 this.subscribeTimer();
-                this.loading = false;
+                this.contingencyService.loading = false;
             });
         }
     }
@@ -107,12 +109,12 @@ export class PendingListComponent implements OnInit, OnDestroy {
     }
 
     private getIntervalToRefresh(): Subscription {
-        this.loading = true;
+        this.contingencyService.loading = true;
         return this._apiRestService.getSingle('configTypes', PendingListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(rs => {
             const res = rs as GroupTypes;
             this.intervalToRefresh = Number(res.types[0].code) * 1000;
-            this.loading = false;
-        });
+            this.contingencyService.loading = false;
+        }, error => this.intervalToRefresh = PendingListComponent.DEFAULT_INTERVAL * 1000);
     }
 
     public openCloseContingency(contingency: any) {
@@ -138,6 +140,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
     public reloadList(message) {
         if (message === 'reload') {
             this.getContingencies();
+            this._messageData.stringMessage(null);
         }
     }
 
@@ -167,7 +170,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
      * @return {boolean}
      */
     public checkDataStatus(): boolean {
-        return this.contingencyService.contingencyList.length > 0 && !this.loading;
+        return this.contingencyService.contingencyList.length > 0 && !this.contingencyService.loading;
     }
 
     get historicalSearchService(): HistoricalSearchService {
@@ -184,14 +187,6 @@ export class PendingListComponent implements OnInit, OnDestroy {
 
     set contingencyService(value: ContingencyService) {
         this._contingencyService = value;
-    }
-
-    get loading(): boolean {
-        return this._loading;
-    }
-
-    set loading(value: boolean) {
-        this._loading = value;
     }
 
     get selectedContingency(): Contingency {

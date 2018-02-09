@@ -25,6 +25,7 @@ import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 import { MeetingComponent } from '../meeting/meeting.component';
 import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
+import {StorageService} from '../../../shared/_services/storage.service';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -40,14 +41,15 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
     private _contingenciesSubscription: Subscription;
+    private _historicalSubscription: Subscription;
     private _timerSubscription: Subscription;
     private _paginatorSubscription: Subscription;
     private _routingSubscription: Subscription;
+    private _intervalRefreshSubscription: Subscription;
     private _currentUTCTime: number;
     private _selectedContingency: Contingency;
     private _selectedContingencyPivot: Contingency;
     private _intervalToRefresh: number;
-    private _loading: boolean;
 
     constructor(private _messageData: DataService,
                 private _dialogService: DialogService,
@@ -57,9 +59,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 private _contingencyService: ContingencyService,
                 private _infiniteScrollService: InfiniteScrollService,
                 private _translate: TranslateService,
-                private _apiRestService: ApiRestService) {
+                private _apiRestService: ApiRestService
+    ) {
         this._translate.setDefaultLang('en');
-        this.loading = false;
         this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
         this.selectedContingencyPivot = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
         this._intervalToRefresh = 0;
@@ -73,7 +75,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             this.historicalSearchService.active = data.historical;
         });
         this.contingencyService.clearList();
-        this.getIntervalToRefresh().add(() => this.getContingencies());
+        this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
         this._paginatorSubscription = this.getPaginationSubscription();
     }
 
@@ -90,8 +92,8 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 true,
                 false
             );
-            this.loading = true;
-            this.contingencyService.postHistoricalSearch(search).subscribe(() => { this.loading = false; });
+            this.contingencyService.loading = true;
+            this._historicalSubscription = this.contingencyService.postHistoricalSearch(search).subscribe(() => { this.contingencyService.loading = false; });
         });
     }
 
@@ -101,7 +103,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
      * @return {boolean}
      */
     public checkDataStatus(): boolean {
-        return this.contingencyService.contingencyList.length > 0 && !this.loading;
+        return this.contingencyService.contingencyList.length > 0 && !this.contingencyService.loading;
     }
 
     /**
@@ -131,11 +133,16 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this._messageSubscriptions.unsubscribe();
         this._reloadSubscription.unsubscribe();
         this._routingSubscription.unsubscribe();
+        this._paginatorSubscription.unsubscribe();
+        this._intervalRefreshSubscription.unsubscribe();
         if (this._contingenciesSubscription) {
             this._contingenciesSubscription.unsubscribe();
         }
         if (this._timerSubscription) {
             this._timerSubscription.unsubscribe();
+        }
+        if (this._historicalSubscription) {
+            this._historicalSubscription.unsubscribe();
         }
     }
 
@@ -162,6 +169,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public reloadList(message) {
         if (message === 'reload') {
             this.getContingencies();
+            this._messageData.stringMessage(null);
         }
     }
 
@@ -170,7 +178,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
      */
     private getContingencies() {
         if (!this.historicalSearchService.active) {
-            this.loading = true;
+            this.contingencyService.loading = true;
             this._contingenciesSubscription = this.contingencyService.getContingencies().subscribe((contingencyList: Contingency[]) => {
                 const ctgInArray = contingencyList.filter(ctg => ctg.id === this.selectedContingencyPivot.id).length;
                 if (this.selectedContingencyPivot.id !== null && ctgInArray === 1) {
@@ -179,7 +187,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                     this.selectedContingency = contingencyList[0];
                 }
                 this.subscribeTimer();
-                this.loading = false;
+                this.contingencyService.loading = false;
             });
         }
     }
@@ -194,12 +202,15 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     private getIntervalToRefresh(): Subscription {
-        this.loading = true;
-        return this._apiRestService.getSingle('configTypes', 'CONTINGENCY_UPDATE_INTERVAL').subscribe(rs => {
-            const res = rs as GroupTypes;
-            this.intervalToRefresh = Number(res.types[0].code) * 1000;
-            this.loading = false;
-        });
+        this.contingencyService.loading = true;
+        return this._apiRestService.getSingle('configTypes', 'CONTINGENCY_UPDATE_INTERVAL').subscribe(
+            rs => {
+                const res = rs as GroupTypes;
+                this.intervalToRefresh = Number(res.types[0].code) * 1000;
+            },
+            () => this.intervalToRefresh = 60 * 1000,
+            () => this.contingencyService.loading = false
+        );
     }
 
     public getTimeAverage(creationDate: any, duration: any, remain: boolean, limit: number) {
@@ -269,13 +280,5 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     set intervalToRefresh(value: number) {
         this._intervalToRefresh = value;
-    }
-
-    get loading(): boolean {
-        return this._loading;
-    }
-
-    set loading(value: boolean) {
-        this._loading = value;
     }
 }

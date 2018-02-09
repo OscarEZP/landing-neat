@@ -27,7 +27,7 @@ import {Subscription} from 'rxjs/Subscription';
 @Component({
     selector: 'lsl-meeting-form',
     templateUrl: './meeting.component.html',
-    styleUrls: ['./meeting.component.scss'],
+    styleUrls: ['./meeting.component.scss']
 })
 
 export class MeetingComponent implements OnInit, OnDestroy {
@@ -55,6 +55,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private _assistant: Assistant;
     private _mails: string[];
     public filteredOptions: Observable<string[]>;
+    private _meetingActivitiesSubscription: Subscription;
 
     constructor(
         private _dialogService: DialogService,
@@ -145,9 +146,8 @@ export class MeetingComponent implements OnInit, OnDestroy {
     /**
      * Get configuration for meeting activities
      */
-    private setMeetingActivitiesConf(): void {
-        this._apiRestService.getSingle('configTypes', MeetingComponent.MEETINGS_CONFIG_TYPE).subscribe(rs => {
-
+    private setMeetingActivitiesConf(): Subscription {
+        return this._apiRestService.getSingle('configTypes', MeetingComponent.MEETINGS_CONFIG_TYPE).subscribe(rs => {
             const res = rs as GroupTypes;
             this.meetingActivitiesConf = res.types;
             this.meetingActivities = MeetingComponent.setMeetingActivities(this.meetingActivitiesConf);
@@ -327,7 +327,8 @@ export class MeetingComponent implements OnInit, OnDestroy {
                 counterPristine += 1;
             }
         });
-        return counterPristine < counterItems;
+        const activities = this.meetingActivities.filter(act => act.apply);
+        return (counterPristine < counterItems) || (activities.length > 0);
     }
 
     /**
@@ -336,7 +337,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
      */
     public checkApply(meetingActivity: Activity) {
         meetingActivity.done = !meetingActivity.apply ? false : meetingActivity.done;
-        Object.keys(this.meetingActivities).forEach((elem, i) => {
+        this.meetingActivities.forEach((elem, i) => {
             if (meetingActivity.code === elem['code']) {
                 this.meetingActivities[i] = meetingActivity;
             }

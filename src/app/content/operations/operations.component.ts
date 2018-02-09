@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {InfiniteScrollService} from './_services/infinite-scroll.service';
 import {HistoricalSearchService} from './_services/historical-search.service';
 
 @Component({
