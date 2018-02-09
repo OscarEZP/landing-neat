@@ -119,7 +119,7 @@
                             <div fxFlex="10"><mat-icon matSuffix>person</mat-icon></div>
                             <div fxFlex="80">{{assistant.mail}}</div>
                             <div fxFlex="10">
-                                <button mat-button>
+                                <button mat-button (click)="deleteAssistantMeeting(i)">
                                     <mat-icon matSuffix>delete</mat-icon>
                                 </button>
                             </div>

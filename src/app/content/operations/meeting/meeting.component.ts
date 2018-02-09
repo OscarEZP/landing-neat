@@ -153,6 +153,7 @@ export class MeetingComponent implements OnInit {
     public submitForm() {
         if (this.meetingForm.valid) {
             const signature = this.getSignature();
+            const signatureAssistantConf = this.getSignatureAssistantConf();
             this.validations.isSending = true;
             let res: Response;
             this._apiRestService
@@ -164,12 +165,26 @@ export class MeetingComponent implements OnInit {
                     this._messageService.openSnackBar(message);
                     this.validations.isSending = false;
                 }, () => {
-                    this.getTranslateString('OPERATIONS.MEETING_FORM.SUCCESSFULLY_MESSAGE');
-                    this._messageService.openSnackBar(this.snackbarMessage);
-                    this._dialogService.closeAllDialogs();
-                    this._messageData.stringMessage('reload');
-                    this.validations.isSending = false;
-                });
+
+                    this._apiRestService
+                        .add<Response>("mails", signatureAssistantConf)
+                        .subscribe(response => res = response,
+
+                            err => {
+                                this.getTranslateString('OPERATIONS.MEETING_FORM.FAILURE_MESSAGE');
+                                const message: string = err.error.message !== null ? err.error.message : this.snackbarMessage;
+                                this._messageService.openSnackBar(message);
+                                this.validations.isSending = false;
+                            },
+                            () => {
+
+                                this.getTranslateString('OPERATIONS.MEETING_FORM.SUCCESSFULLY_MESSAGE');
+                                this._messageService.openSnackBar(this.snackbarMessage);
+                                this._dialogService.closeAllDialogs();
+                                this._messageData.stringMessage('reload');
+                                this.validations.isSending = false;
+                                })
+                    });
         } else {
             this.getTranslateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
             this._messageService.openSnackBar(this.snackbarMessage);
@@ -188,6 +203,16 @@ export class MeetingComponent implements OnInit {
                 this.meetingAssistants.push(currentAssistant);
             }
             console.log(findAssistant, currentAssistant, this.meetingAssistants);
+        }
+    }
+
+    /**
+     * Delete Assistant Meeting from assistant list
+     */
+    deleteAssistantMeeting(index:number) {
+
+        if (index !== -1) {
+            this.meetingAssistants.splice(index, 1);
         }
     }
 
@@ -214,6 +239,26 @@ export class MeetingComponent implements OnInit {
             this.contingency.safetyEvent.code,
             this.meetingAssistants
         );
+    }
+
+    /**
+     * Get a Mail Object to sending data
+     * @return {Meeting}
+     */
+    private getSignatureAssistantConf():Mail[]{
+
+        const mailsConf : Mail[]=[];
+        const assistants = this.meetingAssistants;
+
+        assistants.forEach(assistant => {
+
+            const mail = new Mail(assistant.mail);
+
+            mailsConf.push(mail);
+        });
+
+        return mailsConf;
+        
     }
 
     /**
