@@ -1,4 +1,5 @@
 import { Activity } from './activity';
+import { Assistant } from './assistant';
 import { TimeInstant } from './timeInstant';
 
 export class Meeting {
@@ -9,8 +10,9 @@ export class Meeting {
     private _createUser: string;
     private _timeInstant: TimeInstant;
     private _safetyCode: string;
+    private _assistants: Array<Assistant>;
 
-    constructor(id: number, contingencyId: number, activities: Array<Activity>, barcode: string, createUser: string, timeInstant: TimeInstant, safetyCode: string) {
+    constructor(id: number, contingencyId: number, activities: Array<Activity>, barcode: string, createUser: string, timeInstant: TimeInstant, safetyCode: string, assistants: Array<Assistant>) {
         this.id = id;
         this.contingencyId = contingencyId;
         this.activities = activities;
@@ -18,6 +20,7 @@ export class Meeting {
         this.createUser = createUser;
         this.timeInstant = timeInstant;
         this.safetyCode = safetyCode;
+        this.assistants = assistants;
     }
 
     get safetyCode(): string {
@@ -74,5 +77,13 @@ export class Meeting {
 
     set timeInstant(value: TimeInstant) {
         this._timeInstant = value;
+    }
+
+    get assistants(): Array<Assistant> {
+        return this._assistants;
+    }
+
+    set assistants(value: Array<Assistant>) {
+        this._assistants = value;
     }
 }
