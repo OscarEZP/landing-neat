@@ -75,13 +75,13 @@
                     </section>
                 </div>
             </div>
-            <div fxFlex="25" class="operation-container add-assistant">
+            <div fxFlex="25" class="operation-container add-assistant lateral-inner-padding">
                 <form [formGroup]="assistantForm" #assisForm="ngForm" (submit)="addAssistant()">
                     <div fxLayout="row" class="title-section">{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_TITTLE'|translate}}</div>
-                    <div fxLayout="row" id="in-meeting-add-assistant">
+                    <div fxLayout="row" id="container-add-assistant">
                         <mat-form-field>
                             <mat-icon matSuffix>person_add</mat-icon>
-                            <input type="text" matInput placeholder="{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_MAIL'|translate}}"
+                            <input id="in-meeting-add-assistant" type="text" matInput placeholder="{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_MAIL'|translate}}"
                                    [formControl]="assistantForm.controls['assistantMail']"
                                    [matAutocomplete]="auto"
                                    [(ngModel)]="assistant.mail"
@@ -114,11 +114,11 @@
                         </div>
 
                     </div>
-                    <div fxLayout="row" id="assistant-list">
+                    <div  id="assistant-list">
                         <div fxFlexFill *ngFor="let assistant of meetingAssistants; let i = index">
                             <div fxFlex="10"><mat-icon matSuffix>person</mat-icon></div>
-                            <div fxFlex="80">{{assistant.mail}}</div>
-                            <div fxFlex="10">
+                            <div fxFlex="75">{{assistant.mail}}</div>
+                            <div fxFlex="15">
                                 <button mat-button>
                                     <mat-icon matSuffix>delete</mat-icon>
                                 </button>
@@ -126,67 +126,10 @@
                         </div>
                     </div>
                 </form>
-                <!--<div fxLayout="column" fxFlexFill>
-                    <form [formGroup]="assistantForm" #assisForm="ngForm" (submit)="addAssistant()">
-                        <section>
-                            <div fxLayout="row" fxFlex="100" id="in-meeting-form-assistant" >
-                                <mat-form-field >
-                                    <div><mat-icon matSuffix>person_add</mat-icon></div>
-                                    <input type="text" matInput placeholder="{{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT_MAIL'|translate}}"
-                                           [formControl]="assistantForm.controls['assistantMail']"
-                                           [matAutocomplete]="auto"
-                                           [(ngModel)]="assistant.mail"
-                                    >
-                                    <mat-autocomplete #auto="matAutocomplete">
-                                        <mat-option *ngFor="let assistantConf of filteredOptions | async" [value]="assistantConf">
-                                            {{ assistantConf }}
-                                        </mat-option>
-                                    </mat-autocomplete>
-                                </mat-form-field>
-                            </div>
-                            <div>
-                                <div fxLayout="row" >
-                                    <mat-error *ngIf="assistantForm.controls['assistantMail'].hasError('required') && assisForm.submitted">
-                                        {{'OPERATIONS.MEETING_FORM.ASSISTANT_REQUIRED'|translate}}
-                                    </mat-error>
-                                </div>
-                                <div>
-                                    <mat-error *ngIf="assistantForm.controls['assistantMail'].hasError('email') && assisForm.submitted">
-                                        {{'OPERATIONS.MEETING_FORM.VALID_MAIL'|translate}}
-                                    </mat-error>
-
-                                </div>
-                            </div>
-                            <div>
-                                <div fxLayout="row" fxFlex="100"  fxLayoutGap="10px" fxLayoutAlign="end center">
-                                    <button type="submit" mat-button color="primary" >
-                                        {{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT'|translate}}
-                                    </button>
-
-                                </div>
-                            </div>
-                            <div>
-                                <content>
-
-                                    <div fxLayout="row" *ngFor="let assistant of meetingAssistants; let i = index">
-                                        <div><mat-icon matSuffix>person</mat-icon></div>
-                                        <div fxFlex="60">{{assistant.mail}}</div>
-                                        <div><mat-icon matSuffix>delete</mat-icon></div>
-                                    </div>
-                                </content>
-                            </div>
-                        </section>
-                    </form>
-                </div>-->
-
-
-            </div>
-
-            <div fxFlex="25" fxLayout="row" class="operation-container">
-
             </div>
             <div fxFlex="25" fxLayout="row" class="operation-container">
-
+            </div>
+            <div fxFlex="25" fxLayout="row" class="operation-container">
             </div>
         </div>
     </div>
