@@ -64,6 +64,8 @@
     "CLOSURE_DATE_HOUR": "Closure Date - Hour",
     "ACTIVE_CONTINGENCIES": "Active Contingencies",
     "ACTIVE_CONTINGENCY": "Active Contingency",
+    "PENDING_CONTINGENCIES":"Contingencies",
+    "PENDING_CONTINGENCY":"Contingency",
     "CONTINGENCY_DETAILS": {
       "FOLLOW_UP": {
         "CONTINGENCY_TYPE_REQUIRED": "Contingency type is required",
@@ -160,6 +162,7 @@
     "PENDINGS": "PENDINGS",
     "PROGRESS": "Progress",
     "SAFETY_EVENT": "Safety Event",
+    "TOTAL_PENDINGS":"Pendings",
     "SEARCH_HISTORICAL": {
       "CLEAR": "CLEAR",
       "FILTER": "FILTER",
