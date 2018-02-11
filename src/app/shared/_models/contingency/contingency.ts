@@ -26,6 +26,7 @@ export class Contingency {
     private _type: string;
     private _username: string;
     private _ttlPending: number;
+    private _hasPendingMeeting:boolean;
 
     constructor(
         id: number,
@@ -43,7 +44,8 @@ export class Contingency {
         status: Status,
         type: string,
         username: string,
-        ttlPending: number
+        ttlPending: number,
+        hasPendingMeeting:boolean
     ) {
         this._id = id;
         this._aircraft = aircraft;
@@ -61,6 +63,7 @@ export class Contingency {
         this._type = type;
         this._username = username;
         this._ttlPending = ttlPending;
+        this._hasPendingMeeting= hasPendingMeeting;
     }
 
     set lastInformationPercentage(value: number) {
@@ -206,8 +209,16 @@ export class Contingency {
     set ttlPending(value: number) {
         this._ttlPending = value;
     }
+    get hasPendingMeeting(): boolean {
+        return this._hasPendingMeeting;
+    }
+
+    set hasPendingMeeting(value: boolean) {
+        this._hasPendingMeeting = value;
+    }
+
 
     static fromJsonArray(array: Array<Object>): Contingency[] {
-        return array.map(obj => new Contingency(obj['id'], obj['aircraft'], obj['barcode'], obj['creationDate'], obj['failure'], obj['flight'], obj['informer'], obj['isBackup'], obj['isClose'], obj['backup'], obj['reason'], obj['safetyEvent'], obj['status'], obj['type'], obj['username'], obj['ttlPending']));
+        return array.map(obj => new Contingency(obj['id'], obj['aircraft'], obj['barcode'], obj['creationDate'], obj['failure'], obj['flight'], obj['informer'], obj['isBackup'], obj['isClose'], obj['backup'], obj['reason'], obj['safetyEvent'], obj['status'], obj['type'], obj['username'], obj['ttlPending'],obj['hasPendingMeeting']));
     }
 }

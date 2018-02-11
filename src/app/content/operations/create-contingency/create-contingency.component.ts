@@ -94,7 +94,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.durationArray = [];
 
-        this.contingency = new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(initFakeDate, null), null, new Interval(new TimeInstant(null, null), null), new Interval(new TimeInstant(null, null), 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username, 0);
+        this.contingency = new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(initFakeDate, null), null, new Interval(new TimeInstant(null, null), null), new Interval(new TimeInstant(null, null), 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username, 0,false);
 
         this.contingencyType = [];
         this.operatorList = [];
@@ -199,6 +199,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     public submitForm(value: any) {
+
         if (this.contingencyForm.valid) {
 
             this.isBackupCheck();
@@ -211,7 +212,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                 .subscribe(response => res = response,
                     err => {
                         this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
-                        const message: string = err.error && err.error.message ? err.error.message : this.snackbarMessage;
+                        const message: string = (err.error!=null && err.error.message!=null) ? err.error.message : this.snackbarMessage;
                         this._messageService.openSnackBar(message);
                         this.validations.isSending = false;
                     }, () => {

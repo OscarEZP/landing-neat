@@ -2,7 +2,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
-import { ContingencyService } from '../../content/operations/_services/contingency.service';
 import { ActualTimeModel } from '../../shared/_models/actualTime';
 import { Aircraft } from '../../shared/_models/aircraft';
 import { Backup } from '../../shared/_models/backup';
@@ -76,7 +75,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this.apiRestService = new ApiRestService(http);
 
         this.currentUTCTime = 0;
-        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
+        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0,false);
 
         this.validations = new Validation(false, true, true, false);
 
