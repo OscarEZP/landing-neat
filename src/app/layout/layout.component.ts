@@ -32,7 +32,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private static SESSION_ERROR = {code: 472, message: 'ERRORS.SESSION'};
     private static BAD_REQUEST_ERROR = {code: 400, message: 'ERRORS.BAD_REQUEST'};
     private static UNAUTHORIZED_ERROR = {code: 401, message: 'ERRORS.UNAUTHORIZED'};
-    private static DEFAULT_ERROR = {code: 500, message: 'ERRORS.DEFAULT'};
+    private static CUSTOM_ERROR = {code: 500, message: ''};
+    private static DEFAULT_ERROR = 'ERRORS.DEFAULT';
 
     constructor(
         private _sidenavService: SidenavService,
@@ -90,8 +91,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
                 subscription = this.showMessage(LayoutComponent.UNAUTHORIZED_ERROR.message);
                 break;
             }
+            case LayoutComponent.CUSTOM_ERROR.code: {
+                if (typeof error.error !== 'undefined' && typeof error.error.message !== 'undefined' && error.error.message !== '') {
+                    subscription = this.showMessage(error.error.message);
+                }
+                break;
+            }
             default: {
-                subscription = this.showMessage(LayoutComponent.DEFAULT_ERROR.message);
+                subscription = this.showMessage(LayoutComponent.DEFAULT_ERROR);
+                break;
             }
         }
         return subscription;
