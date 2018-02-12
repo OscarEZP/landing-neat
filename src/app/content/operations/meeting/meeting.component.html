@@ -129,11 +129,35 @@
             </div>
             <div fxFlex="25" fxLayout="row" class="operation-container">
             </div>
-            <div fxFlex="25" fxLayout="row" class="operation-container">
-                <div class="title-dialog">
-                    <span>{{'OPERATIONS.MEETING_FORM.MEETING_CREATION'|translate}}</span>
+            <div fxFlex="25" class="operation-container lateral-inner-padding">
+                <div class="title-dialog" fxLayout="row" >
+                    <span>{{'OPERATIONS.MEETING_FORM.MEETING_INFO'|translate}}</span>
                 </div>
-                <div class="sections-content">
+                <div fxLayout="row">
+                    <mat-form-field fxFlexFill>
+                        <textarea
+                                id="txt-meeting-performed-activities"
+                                matInput
+                                placeholder="{{'OPERATIONS.MEETING_FORM.PERFORMED_ACTIVITIES' | translate}}"
+                                [formControl]="meetingForm.controls['barcode']"
+                                [(ngModel)]="contingency.barcode"
+                        >
+                        </textarea>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row">
+                    <mat-form-field fxFlexFill>
+                        <textarea
+                                id="txt-meeting-performed-activities"
+                                matInput
+                                placeholder="{{'OPERATIONS.MEETING_FORM.AGREEMENTS' | translate}}"
+                                [formControl]="meetingForm.controls['barcode']"
+                                [(ngModel)]="contingency.barcode"
+                        >
+                        </textarea>
+                    </mat-form-field>
+                </div>
+                <div class="sections-content" fxLayout="row">
                     <mat-accordion>
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>
