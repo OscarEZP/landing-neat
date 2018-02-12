@@ -7,10 +7,12 @@ export class Interval {
 
 
     constructor (dt: TimeInstant, duration: number) {
-        this._dt = dt;
+        this._dt =dt!=null?dt:TimeInstant.getInstance();
         this._duration = duration;
     }
-
+    static getInstance():Interval{
+        return new Interval(null,null);
+    }
 
     get dt (): TimeInstant {
         return this._dt;

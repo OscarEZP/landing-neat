@@ -10,7 +10,9 @@ export class Activity {
         this._done = done;
     }
 
-
+    static getInstance(): Activity {
+        return new Activity(null, false, false);
+    }
     get code(): string {
         return this._code;
     }

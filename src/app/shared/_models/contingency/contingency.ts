@@ -29,41 +29,29 @@ export class Contingency {
     private _hasPendingMeeting:boolean;
 
     constructor(
-        id: number,
-        aircraft: Aircraft,
-        barcode: string,
-        creationDate: TimeInstant,
-        failure: string,
-        flight: Flight,
-        informer: string,
-        isBackup: boolean,
-        isClose: boolean,
-        backup: Backup,
-        reason: string,
-        safetyEvent: Safety,
-        status: Status,
-        type: string,
-        username: string,
-        ttlPending: number,
-        hasPendingMeeting:boolean
+
     ) {
-        this._id = id;
-        this._aircraft = aircraft;
-        this._barcode = barcode;
-        this._creationDate = creationDate;
-        this._failure = failure;
-        this._flight = flight;
-        this._informer = informer;
-        this._isBackup = isBackup;
-        this._isClose = isClose;
-        this._backup = backup;
-        this._reason = reason;
-        this._safetyEvent = safetyEvent;
-        this._status = status;
-        this._type = type;
-        this._username = username;
-        this._ttlPending = ttlPending;
-        this._hasPendingMeeting= hasPendingMeeting;
+        this._id = null;
+        this._aircraft = Aircraft.getInstance();
+        this._barcode = null;
+        this._creationDate = TimeInstant.getInstance();
+        this._failure = null;
+        this._flight =Flight.getInstance();
+        this._informer = null;
+        this._isBackup = false;
+        this._isClose = false;
+        this._backup = Backup.getInstance();
+        this._reason = null;
+        this._safetyEvent = Safety.getInstance();
+        this._status = Status.getInstance();
+        this._type = null;
+        this._username =null;
+        this._ttlPending = 0;
+        this._hasPendingMeeting= false;
+    }
+
+    static getInstance():Contingency{
+        return new Contingency();
     }
 
     set lastInformationPercentage(value: number) {
@@ -218,7 +206,34 @@ export class Contingency {
     }
 
 
+
     static fromJsonArray(array: Array<Object>): Contingency[] {
-        return array.map(obj => new Contingency(obj['id'], obj['aircraft'], obj['barcode'], obj['creationDate'], obj['failure'], obj['flight'], obj['informer'], obj['isBackup'], obj['isClose'], obj['backup'], obj['reason'], obj['safetyEvent'], obj['status'], obj['type'], obj['username'], obj['ttlPending'],obj['hasPendingMeeting']));
+
+        return array.map(obj => Contingency.parser(obj)
+        );
     }
+
+    private static parser(obj: Object): Contingency {
+        let item = new Contingency();
+        item.id = obj['id'];
+        item.aircraft = obj['aircraft'];
+        item.barcode = obj['barcode'];
+        item.creationDate = obj['creationDate'];
+        item.failure = obj['failure'];
+        item.flight = obj['flight'];
+        item.informer = obj['informer'];
+        item.isBackup = obj['isBackup'];
+        item.isClose = obj['isClose'];
+        item.backup = obj['backup'];
+        item.reason = obj['reason'];
+        item.safetyEvent = obj['safetyEvent'];
+        item.status = obj['status'];
+        item.type = obj['type'];
+        item.username = obj['username'];
+        item.ttlPending = obj['ttlPending'];
+        item.hasPendingMeeting = obj['hasPendingMeeting'];
+        return item;
+
+    }
+
 }

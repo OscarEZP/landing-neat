@@ -1,24 +1,19 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
-import { ActualTimeModel } from '../../shared/_models/actualTime';
-import { Aircraft } from '../../shared/_models/aircraft';
-import { Backup } from '../../shared/_models/backup';
-import { StatusCode } from '../../shared/_models/configuration/statusCode';
-import { Contingency } from '../../shared/_models/contingency/contingency';
-import { Flight } from '../../shared/_models/flight';
-import { Interval } from '../../shared/_models/interval';
-import { Safety } from '../../shared/_models/safety';
-import { Status } from '../../shared/_models/status';
-import { TimeInstant } from '../../shared/_models/timeInstant';
-import { User } from '../../shared/_models/user/user';
-import { Validation } from '../../shared/_models/validation';
-import { ApiRestService } from '../../shared/_services/apiRest.service';
-import { DataService } from '../../shared/_services/data.service';
-import { MessageService } from '../../shared/_services/message.service';
-import { StorageService } from '../../shared/_services/storage.service';
-import { DetailsService } from '../_services/details.service';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Subscription} from 'rxjs/Subscription';
+import {ActualTimeModel} from '../../shared/_models/actualTime';
+import {StatusCode} from '../../shared/_models/configuration/statusCode';
+import {Contingency} from '../../shared/_models/contingency/contingency';
+import {Safety} from '../../shared/_models/safety';
+import {Status} from '../../shared/_models/status';
+import {User} from '../../shared/_models/user/user';
+import {Validation} from '../../shared/_models/validation';
+import {ApiRestService} from '../../shared/_services/apiRest.service';
+import {DataService} from '../../shared/_services/data.service';
+import {MessageService} from '../../shared/_services/message.service';
+import {StorageService} from '../../shared/_services/storage.service';
+import {DetailsService} from '../_services/details.service';
 
 /**
  * Follow up component
@@ -70,13 +65,12 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         private _storageService: StorageService,
         private _dataService: DataService,
         private http: HttpClient) {
-        this.followUp = new Status(null, null, null, new TimeInstant(null, null), null, new Interval(new TimeInstant(null, null), null), new Interval(new TimeInstant(null, null), null), this._storageService.getCurrentUser().userId);
-
+        this.followUp = Status.getInstance();
+        this.followUp.username=this._storageService.getCurrentUser().userId;
         this.apiRestService = new ApiRestService(http);
 
         this.currentUTCTime = 0;
-        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0,false);
-
+        this.selectedContingency = Contingency.getInstance();
         this.validations = new Validation(false, true, true, false);
 
         this.user = this._storageService.getCurrentUser();

@@ -8,6 +8,11 @@ export class Safety {
         this._description = description;
     }
 
+
+    static getInstance():Safety{
+        return new Safety(null,null);
+    }
+
     get code (): string {
         return this._code;
     }
