@@ -23,10 +23,6 @@ export class Activity {
         return this._apply;
     }
 
-    set apply(value: boolean) {
-        this._apply = value;
-    }
-
     get done(): boolean {
         return this._done;
     }

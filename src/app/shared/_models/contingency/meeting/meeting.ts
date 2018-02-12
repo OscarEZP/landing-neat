@@ -1,6 +1,6 @@
 import { Activity } from './activity';
 import { Assistant } from './assistant';
-import { TimeInstant } from './timeInstant';
+import { TimeInstant } from '../../timeInstant';
 
 export class Meeting {
     private _id: number;
@@ -23,10 +23,6 @@ export class Meeting {
         this.assistants = assistants;
     }
 
-    get safetyCode(): string {
-        return this._safetyCode;
-    }
-
     set safetyCode(value: string) {
         this._safetyCode = value;
     }
@@ -39,16 +35,8 @@ export class Meeting {
         this._id = value;
     }
 
-    get contingencyId(): number {
-        return this._contingencyId;
-    }
-
     set contingencyId(value: number) {
         this._contingencyId = value;
-    }
-
-    get activities(): Array<Activity> {
-        return this._activities;
     }
 
     set activities(value: Array<Activity>) {
@@ -63,10 +51,6 @@ export class Meeting {
         this._barcode = value;
     }
 
-    get createUser(): string {
-        return this._createUser;
-    }
-
     set createUser(value: string) {
         this._createUser = value;
     }
@@ -77,10 +61,6 @@ export class Meeting {
 
     set timeInstant(value: TimeInstant) {
         this._timeInstant = value;
-    }
-
-    get assistants(): Array<Assistant> {
-        return this._assistants;
     }
 
     set assistants(value: Array<Assistant>) {
