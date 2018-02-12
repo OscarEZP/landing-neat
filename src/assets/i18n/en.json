@@ -151,7 +151,7 @@
       "TO_DO_LIST": "To do list",
       "SUCCESSFULLY_MESSAGE": "Meeting has been created successfully",
       "ADD_ASSISTANT_TITTLE": "Add Assistants",
-      "ADD_ASSISTANT_MAIL": "Assistant e-mail *",
+      "ADD_ASSISTANT_MAIL": "Assistant e-mail",
       "ADD_ASSISTANT": "ADD",
       "ASSISTANT_REQUIRED": "Assistant is required",
       "VALID_MAIL":"Format mail is invalid"
