@@ -1,16 +1,9 @@
-import { Injectable } from '@angular/core';
-import { MatSidenav } from '@angular/material';
-import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { Subject } from 'rxjs/Subject';
-import { Aircraft } from '../../shared/_models/aircraft';
-import { Backup } from '../../shared/_models/backup';
-import { Contingency } from '../../shared/_models/contingency/contingency';
-import { Flight } from '../../shared/_models/flight';
-import { Interval } from '../../shared/_models/interval';
-import { Safety } from '../../shared/_models/safety';
-import { Status } from '../../shared/_models/status';
-import { TimeInstant } from '../../shared/_models/timeInstant';
-import { DataService } from '../../shared/_services/data.service';
+import {Injectable} from '@angular/core';
+import {MatSidenav} from '@angular/material';
+import {ScrollToConfigOptions, ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
+import {Subject} from 'rxjs/Subject';
+import {Contingency} from '../../shared/_models/contingency/contingency';
+import {DataService} from '../../shared/_services/data.service';
 
 @Injectable()
 export class DetailsService {
@@ -33,7 +26,7 @@ export class DetailsService {
             offset: -20
         };
 
-        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0,false);
+        this.selectedContingency = Contingency.getInstance();
 
         this.isOpen = false;
         this.activeTitle = 'Follow Up';

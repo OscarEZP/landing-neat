@@ -1,38 +1,36 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
-import { Observable } from 'rxjs/Observable';
+import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-import { TimerObservable } from 'rxjs/observable/TimerObservable';
-import { map, startWith } from 'rxjs/operators';
-import { Subscription } from 'rxjs/Subscription';
-import { Aircraft } from '../../../shared/_models/aircraft';
-import { Backup } from '../../../shared/_models/backup';
-import { AircraftSearch } from '../../../shared/_models/configuration/aircraftSearch';
-import { DateModel } from '../../../shared/_models/configuration/dateModel';
-import { FlightSearch } from '../../../shared/_models/configuration/flightSearch';
-import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
-import { Location } from '../../../shared/_models/configuration/location';
-import { StatusCode } from '../../../shared/_models/configuration/statusCode';
-import { Types } from '../../../shared/_models/configuration/types';
-import { Contingency } from '../../../shared/_models/contingency/contingency';
-import { Flight } from '../../../shared/_models/flight';
-import { Interval } from '../../../shared/_models/interval';
-import { Safety } from '../../../shared/_models/safety';
-import { Status } from '../../../shared/_models/status';
-import { TimeInstant } from '../../../shared/_models/timeInstant';
-import { Validation } from '../../../shared/_models/validation';
-import { ApiRestService } from '../../../shared/_services/apiRest.service';
-import { ClockService } from '../../../shared/_services/clock.service';
-import { DataService } from '../../../shared/_services/data.service';
-import { DatetimeService } from '../../../shared/_services/datetime.service';
-import { MessageService } from '../../../shared/_services/message.service';
-import { StorageService } from '../../../shared/_services/storage.service';
-import { DateUtil } from '../../../shared/util/dateUtil';
-import { DialogService } from '../../_services/dialog.service';
-import { CancelComponent } from '../cancel/cancel.component';
+import {TimerObservable} from 'rxjs/observable/TimerObservable';
+import {map, startWith} from 'rxjs/operators';
+import {Subscription} from 'rxjs/Subscription';
+import {Aircraft} from '../../../shared/_models/aircraft';
+import {AircraftSearch} from '../../../shared/_models/configuration/aircraftSearch';
+import {DateModel} from '../../../shared/_models/configuration/dateModel';
+import {FlightSearch} from '../../../shared/_models/configuration/flightSearch';
+import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
+import {Location} from '../../../shared/_models/configuration/location';
+import {StatusCode} from '../../../shared/_models/configuration/statusCode';
+import {Types} from '../../../shared/_models/configuration/types';
+import {Contingency} from '../../../shared/_models/contingency/contingency';
+import {Flight} from '../../../shared/_models/flight';
+import {Safety} from '../../../shared/_models/safety';
+import {Status} from '../../../shared/_models/status';
+import {TimeInstant} from '../../../shared/_models/timeInstant';
+import {Validation} from '../../../shared/_models/validation';
+import {ApiRestService} from '../../../shared/_services/apiRest.service';
+import {ClockService} from '../../../shared/_services/clock.service';
+import {DataService} from '../../../shared/_services/data.service';
+import {DatetimeService} from '../../../shared/_services/datetime.service';
+import {MessageService} from '../../../shared/_services/message.service';
+import {StorageService} from '../../../shared/_services/storage.service';
+import {DateUtil} from '../../../shared/util/dateUtil';
+import {DialogService} from '../../_services/dialog.service';
+import {CancelComponent} from '../cancel/cancel.component';
 
 @Component({
     selector: 'lsl-contingency-form',
@@ -94,7 +92,21 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.durationArray = [];
 
-        this.contingency = new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(initFakeDate, null), null, new Interval(new TimeInstant(null, null), null), new Interval(new TimeInstant(null, null), 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username, 0,false);
+        let flight: Flight = Flight.getInstance();
+        flight.etd.epochTime = initFakeDate;
+
+        let status: Status = Status.getInstance();
+        status.creationDate.epochTime = initFakeDate;
+        status.username = this._storageService.getCurrentUser().username;
+        status.requestedInterval.duration = 30;
+
+        this.contingency = Contingency.getInstance();
+        this.contingency.username=this._storageService.getCurrentUser().username;
+        this.contingency.status=status;
+        this.contingency.flight=flight;
+
+
+        // new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(initFakeDate, null), null, new Interval(new TimeInstant(null, null), null), new Interval(new TimeInstant(null, null), 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username, 0,false);
 
         this.contingencyType = [];
         this.operatorList = [];
@@ -211,6 +223,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                 .add<Response>('contingencyList', this.contingency)
                 .subscribe(response => res = response,
                     err => {
+
                         this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
                         const message: string = (err.error!=null && err.error.message!=null) ? err.error.message : this.snackbarMessage;
                         this._messageService.openSnackBar(message);
@@ -440,7 +453,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                                     this.flightList[0].etd.label
                                 ));
                         } else {
-                            this.contingency.flight = new Flight(null, null, null, new TimeInstant(null, null));
+                            this.contingency.flight =Flight.getInstance();
                         }
 
                         this.contingencyDateModel[0].updateFromEpoch(this.contingency.flight.etd.epochTime);

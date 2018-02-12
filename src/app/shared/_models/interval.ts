@@ -10,7 +10,9 @@ export class Interval {
         this._dt =dt!=null?dt:TimeInstant.getInstance();
         this._duration = duration;
     }
-
+    static getInstance():Interval{
+        return new Interval(null,null);
+    }
 
     get dt (): TimeInstant {
         return this._dt;
