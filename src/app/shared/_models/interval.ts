@@ -7,7 +7,7 @@ export class Interval {
 
 
     constructor (dt: TimeInstant, duration: number) {
-        this._dt = dt;
+        this._dt =dt!=null?dt:TimeInstant.getInstance();
         this._duration = duration;
     }
 

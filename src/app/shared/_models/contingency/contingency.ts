@@ -29,41 +29,25 @@ export class Contingency {
     private _hasPendingMeeting:boolean;
 
     constructor(
-        id: number,
-        aircraft: Aircraft,
-        barcode: string,
-        creationDate: TimeInstant,
-        failure: string,
-        flight: Flight,
-        informer: string,
-        isBackup: boolean,
-        isClose: boolean,
-        backup: Backup,
-        reason: string,
-        safetyEvent: Safety,
-        status: Status,
-        type: string,
-        username: string,
-        ttlPending: number,
-        hasPendingMeeting:boolean
+
     ) {
-        this._id = id;
-        this._aircraft = aircraft;
-        this._barcode = barcode;
-        this._creationDate = creationDate;
-        this._failure = failure;
-        this._flight = flight;
-        this._informer = informer;
-        this._isBackup = isBackup;
-        this._isClose = isClose;
-        this._backup = backup;
-        this._reason = reason;
-        this._safetyEvent = safetyEvent;
-        this._status = status;
-        this._type = type;
-        this._username = username;
-        this._ttlPending = ttlPending;
-        this._hasPendingMeeting= hasPendingMeeting;
+        this._id = null;
+        this._aircraft = Aircraft.getInstance();
+        this._barcode = null;
+        this._creationDate = TimeInstant.getInstance();
+        this._failure = null;
+        this._flight =Flight.getInstance();
+        this._informer = null;
+        this._isBackup = false;
+        this._isClose = false;
+        this._backup = Backup.getInstance();
+        this._reason = null;
+        this._safetyEvent = null;
+        this._status = null;
+        this._type = null;
+        this._username =null;
+        this._ttlPending = 0;
+        this._hasPendingMeeting= false;
     }
 
     set lastInformationPercentage(value: number) {
@@ -220,5 +204,9 @@ export class Contingency {
 
     static fromJsonArray(array: Array<Object>): Contingency[] {
         return array.map(obj => new Contingency(obj['id'], obj['aircraft'], obj['barcode'], obj['creationDate'], obj['failure'], obj['flight'], obj['informer'], obj['isBackup'], obj['isClose'], obj['backup'], obj['reason'], obj['safetyEvent'], obj['status'], obj['type'], obj['username'], obj['ttlPending'],obj['hasPendingMeeting']));
+    }
+
+    static getInstance(){
+        return new Contingency();
     }
 }

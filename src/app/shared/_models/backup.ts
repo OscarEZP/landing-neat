@@ -7,9 +7,12 @@ export class Backup {
 
     constructor(location: string, slot: TimeInstant) {
         this._location = location;
-        this._slot = slot;
+        this._slot = slot!=null?slot:TimeInstant.getInstance();
     }
 
+    static getInstance():Backup{
+        return new Backup(null,null);
+    }
     get location(): string {
         return this._location;
     }
