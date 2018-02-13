@@ -1,6 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
-import {ActivatedRoute} from '@angular/router';
 import {HistoricalSearchService} from '../_services/historical-search.service';
 import {ContingencyService} from '../_services/contingency.service';
 import {Contingency} from '../../../shared/_models/contingency/contingency';
@@ -15,6 +14,7 @@ import {CloseContingencyComponent} from '../close-contingency/close-contingency.
 import {MeetingComponent} from '../meeting/meeting.component';
 import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
+import {MatPaginator} from '@angular/material';
 
 @Component({
     selector: 'lsl-pending-list',
@@ -24,21 +24,23 @@ import {DataService} from '../../../shared/_services/data.service';
 })
 export class PendingListComponent implements OnInit, OnDestroy {
 
+    @ViewChild('contPaginator') public paginator: MatPaginator;
+
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
     private static DEFAULT_INTERVAL = 30;
 
-    private _routingSubscription: Subscription;
     private _contingenciesSubscription: Subscription;
     private _reloadSubscription: Subscription;
     private _timerSubscription: Subscription;
     private _intervalRefreshSubscription: Subscription;
+    private _paginatorSubscription: Subscription;
+    private _totalRecordsSubscription: Subscription;
     private _selectedContingency: Contingency;
     private _selectedContingencyPivot: Contingency;
     private _intervalToRefresh: number;
 
     constructor(
         private _messageData: DataService,
-        private _route: ActivatedRoute,
         private _historicalSearchService: HistoricalSearchService,
         private _contingencyService: ContingencyService,
         private _apiRestService: ApiRestService,
@@ -54,20 +56,21 @@ export class PendingListComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
-        this._routingSubscription = this._route.data.subscribe((data: any) => {
-            this.historicalSearchService.active = data.historical;
-        });
         this.contingencyService.clearList();
         this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
+        this._paginatorSubscription = this.getPaginationSubscription();
+        this._totalRecordsSubscription = this.getTotalRecordsSubscription();
+        this.infiniteScrollService.init();
     }
 
     /**
-     * Event when component is destroyed
+     * Event when component is destroyed. Unsubscribe general subscriptions.
      */
     public ngOnDestroy() {
         this._reloadSubscription.unsubscribe();
-        this._routingSubscription.unsubscribe();
         this._intervalRefreshSubscription.unsubscribe();
+        this._paginatorSubscription.unsubscribe();
+        this._totalRecordsSubscription.unsubscribe();
         if (this._contingenciesSubscription) {
             this._contingenciesSubscription.unsubscribe();
         }
@@ -76,23 +79,69 @@ export class PendingListComponent implements OnInit, OnDestroy {
         }
     }
 
-    private getContingencies() {
-        if (!this.historicalSearchService.active) {
-            this.contingencyService.loading = true;
-            const searchSignature = new SearchContingency(null, null, null, new TimeInstant(0, ''), new TimeInstant(0, ''), false, true);
-            this._contingenciesSubscription = this.contingencyService.getPendings(searchSignature).subscribe((contingencyList: Contingency[]) => {
-                const ctgInArray = contingencyList.filter(ctg => ctg.id === this.selectedContingencyPivot.id).length;
-                if (this.selectedContingencyPivot.id !== null && ctgInArray === 1) {
-                    this.selectedContingency = this.selectedContingencyPivot;
-                } else {
-                    this.selectedContingency = contingencyList[0];
-                }
-                this.subscribeTimer();
-                this.contingencyService.loading = false;
-            });
-        }
+    /**
+     * Returns a subscription for get total records count and set it in infinite scroll service
+     * @return {Subscription}
+     */
+    public getTotalRecordsSubscription(): Subscription {
+        const searchSignature = this.getSearchSignature();
+        return this.contingencyService.getTotalRecords(searchSignature).subscribe((count) => {
+            this.infiniteScrollService.length = count.items;
+        });
     }
 
+    /**
+     * Returns a subscription for pagination page event. Show loader and set pagination attributes in page change.
+     * @return {any}
+     */
+    public getPaginationSubscription(): Subscription {
+        return this.paginator.page.subscribe((page) => {
+            this.infiniteScrollService.pageSize = page.pageSize;
+            this.infiniteScrollService.pageIndex = page.pageIndex;
+            this.contingencyService.loading = true;
+            this.getContingencies();
+        });
+    }
+
+    /**
+     * Method for get a search signature
+     * @return {SearchContingency}
+     */
+    private getSearchSignature(): SearchContingency {
+        return new SearchContingency(
+            this.infiniteScrollService.offset,
+            this.infiniteScrollService.pageSize,
+            null,
+            new TimeInstant(0, ''),
+            new TimeInstant(0, ''),
+            false,
+            true
+        );
+    }
+
+    /**
+     * Returns a subscription with pendings list.
+     * @return {Subscription}
+     */
+    private getContingencies(): Subscription {
+        this.contingencyService.loading = true;
+        const searchSignature = this.getSearchSignature();
+        return this._contingenciesSubscription = this.contingencyService.getPendings(searchSignature).subscribe((contingencyList: Contingency[]) => {
+            const ctgInArray = contingencyList.filter(ctg => ctg.id === this.selectedContingencyPivot.id).length;
+            if (this.selectedContingencyPivot.id !== null && ctgInArray === 1) {
+                this.selectedContingency = this.selectedContingencyPivot;
+            } else {
+                this.selectedContingency = contingencyList[0];
+            }
+            this.subscribeTimer();
+            this.contingencyService.loading = false;
+        });
+    }
+
+    /**
+     * Subscription for pending list reload.
+     * @return {Subscription}
+     */
     private subscribeTimer(): Subscription {
         if (this._timerSubscription) {
             this._timerSubscription.unsubscribe();
@@ -102,6 +151,10 @@ export class PendingListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Subscription for get the time for reloa data
+     * @return {Subscription}
+     */
     private getIntervalToRefresh(): Subscription {
         this.contingencyService.loading = true;
         return this._apiRestService.getSingle('configTypes', PendingListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(rs => {
@@ -111,6 +164,10 @@ export class PendingListComponent implements OnInit, OnDestroy {
         }, error => this.intervalToRefresh = PendingListComponent.DEFAULT_INTERVAL * 1000);
     }
 
+    /**
+     * Method for open close contingency modal
+     * @param contingency
+     */
     public openCloseContingency(contingency: any) {
         this._dialogService.openDialog(CloseContingencyComponent, {
             data: contingency,
@@ -121,6 +178,10 @@ export class PendingListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Method for open meeting creation modal
+     * @param contingency
+     */
     public openMeeting(contingency: Contingency) {
         this._dialogService.openDialog(MeetingComponent, {
             data: contingency,
@@ -131,6 +192,10 @@ export class PendingListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Method for reload list by an event
+     * @param message
+     */
     public reloadList(message) {
         if (message === 'reload') {
             this.getContingencies();
