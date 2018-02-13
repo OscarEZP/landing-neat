@@ -1,8 +1,8 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import { DialogService } from '../../_services/dialog.service';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { TimeInstant } from '../../../shared/_models/timeInstant';
-import { Contingency } from '../../../shared/_models/contingency/contingency';
+import {DialogService} from '../../_services/dialog.service';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {TimeInstant} from '../../../shared/_models/timeInstant';
+import {Contingency} from '../../../shared/_models/contingency/contingency';
 import {ClockService} from '../../../shared/_services/clock.service';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {DatetimeService} from '../../../shared/_services/datetime.service';
@@ -14,15 +14,16 @@ import {Types} from '../../../shared/_models/configuration/types';
 import {Validation} from '../../../shared/_models/validation';
 import {TranslateService} from '@ngx-translate/core';
 import {MessageService} from '../../../shared/_services/message.service';
-import { CancelComponent } from '../cancel/cancel.component';
-import {Activity} from '../../../shared/_models/activity';
-import {Assistant} from '../../../shared/_models/assistant';
-import {Meeting} from '../../../shared/_models/meeting';
+import {CancelComponent} from '../cancel/cancel.component';
+import {Activity} from '../../../shared/_models/meeting/activity';
+import {Assistant} from '../../../shared/_models/meeting/assistant';
+import {Meeting} from '../../../shared/_models/meeting/meeting';
 import {Mail} from '../../../shared/_models/configuration/mail';
 import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {Subscription} from 'rxjs/Subscription';
+import {StorageService} from "../../../shared/_services/storage.service";
 
 @Component({
     selector: 'lsl-meeting-form',
@@ -50,13 +51,12 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private _interval: number;
     private _alive: boolean;
     private _meetingActivitiesConf: Types[];
-    private _meetingActivities: Activity[];
     private _validations: Validation;
     private _snackbarMessage: string;
-    private _meetingAssistants: Assistant[];
     private _assistant: Assistant;
     private _mails: string[];
     public filteredOptions: Observable<string[]>;
+    private _meeting: Meeting;
 
     static emailValidator(control: FormControl) {
         if (!control.value.match(/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i) && control.value) {
@@ -66,32 +66,41 @@ export class MeetingComponent implements OnInit, OnDestroy {
         }
     }
 
-    constructor(
-        private _dialogService: DialogService,
-        private _fb: FormBuilder,
-        private _clockService: ClockService,
-        private _datetimeService: DatetimeService,
-        private _messageData: DataService,
-        private _messageService: MessageService,
-        private _apiRestService: ApiRestService,
-        @Inject(MAT_DIALOG_DATA) private _contingency: Contingency,
-        private _translate: TranslateService,
-    ) {
+    constructor(private _dialogService: DialogService,
+                private _fb: FormBuilder,
+                private _clockService: ClockService,
+                private _datetimeService: DatetimeService,
+                private _messageData: DataService,
+                private _messageService: MessageService,
+                private _apiRestService: ApiRestService,
+                @Inject(MAT_DIALOG_DATA) private _contingency: Contingency,
+                private _translate: TranslateService,
+                private _storageService: StorageService) {
         this._interval = 1000 * 60;
         this._alive = true;
         const initFakeDate = new Date().getTime();
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.meetingForm = this.getFormValidators();
-        this.meetingActivities = [];
+
+        const username = this._storageService.getCurrentUser().username;
+
         this.mails = [];
         this._emailsConfSubscription = this.getMailsConf();
         this._meetingActivitiesSubscription = this.setMeetingActivitiesConf();
-        this.validations = new Validation(false, true, true, false);
-        this.meetingAssistants = [];
+        this.validations = Validation.getInstance();
+
+
         this.assistant = new Assistant('');
 
+        this.meeting = new Meeting(this.contingency.id);
+        this.meeting.createUser=username;
+
+        this.barcode = this.contingency.barcode;
+        this.safetyCode = this.contingency.safetyEvent.code;
+
+
         this.assistantForm = this._fb.group({
-            assistantMail: [this.assistant.mail, { validators: MeetingComponent.emailValidator }],
+            assistantMail: [this.assistant.mail, {validators: MeetingComponent.emailValidator}],
             mailSelected: new FormControl()
         });
 
@@ -99,14 +108,14 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         TimerObservable.create(0, this._interval)
-        .subscribe(() => {
-            this._datetimeService.getTime()
-            .subscribe((data) => {
-                this.utcModel = new TimeInstant(data.currentTimeLong, data.currentTime);
-                this.newMessage();
-                this._clockService.setClock(this.utcModel.epochTime);
+            .subscribe(() => {
+                this._datetimeService.getTime()
+                    .subscribe((data) => {
+                        this.utcModel = new TimeInstant(data.currentTimeLong, data.currentTime);
+                        this.newMessage();
+                        this._clockService.setClock(this.utcModel.epochTime);
+                    });
             });
-        });
         this._clockService.getClock().subscribe(time => this.timeClock = time);
         this.filteredOptions = this.assistantForm.controls['assistantMail'].valueChanges
             .pipe(
@@ -130,7 +139,6 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
 
-
     /**
      * Filter for show email coincidencies
      * @param val
@@ -138,7 +146,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
      */
     public filter(val: string): string[] {
         return this.mails.filter(option =>
-        option.toLowerCase().indexOf(val.toLowerCase()) === 0);
+            option.toLowerCase().indexOf(val.toLowerCase()) === 0);
     }
 
     /**
@@ -265,8 +273,8 @@ export class MeetingComponent implements OnInit, OnDestroy {
         return this._apiRestService
             .getAll<Mail[]>(MeetingComponent.MAILS_ENDPOINT)
             .subscribe(rs => {
-                    rs.forEach(mail => this.mails.push(mail.address) );
-                });
+                rs.forEach(mail => this.mails.push(mail.address));
+            });
     }
 
     /**
@@ -274,15 +282,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
      * @return {Meeting}
      */
     private getSignature(): Meeting {
-        return new Meeting(null,
-            this.contingency.id,
-            this.meetingActivities,
-            this.contingency.barcode,
-            this.contingency.username,
-            this.contingency.creationDate,
-            this.contingency.safetyEvent.code,
-            this.meetingAssistants
-        );
+        return this.meeting;
     }
 
     /**
@@ -403,11 +403,11 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     get meetingActivities(): Activity[] {
-        return this._meetingActivities;
+        return this.meeting.activities;
     }
 
     set meetingActivities(value: Activity[]) {
-        this._meetingActivities = value;
+        this.meeting.activities = value;
     }
 
     get validations(): Validation {
@@ -427,11 +427,11 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     get meetingAssistants(): Assistant[] {
-        return this._meetingAssistants;
+        return this.meeting.assistants;
     }
 
     set meetingAssistants(value: Assistant[]) {
-        this._meetingAssistants = value;
+        this.meeting.assistants = value;
     }
 
     get assistant(): Assistant {
@@ -462,6 +462,29 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this._mails = value;
     }
 
+    get barcode(): string {
+        return this.meeting.barcode;
+    }
 
+    set barcode(value: string) {
+        this.meeting.barcode = value;
+    }
+
+
+    get safetyCode(): string {
+        return this.meeting.safetyCode;
+    }
+
+    set safetyCode(value: string) {
+        this.meeting.safetyCode = value;
+    }
+
+    get meeting(): Meeting {
+        return this._meeting;
+    }
+
+    set meeting(value: Meeting) {
+        this._meeting = value;
+    }
 
 }

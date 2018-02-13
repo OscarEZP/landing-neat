@@ -2,28 +2,29 @@ import { TimeInstant } from '../timeInstant';
 
 export class Pending {
 
-    private _seq: number;
+    private _id: number;
     private _area: string;
     private _description: string;
     private _create_user: string;
     private _create_dt: TimeInstant;
 
 
-    constructor(seq: number, area: string, description: string, create_user: string, create_dt: TimeInstant) {
-        this._seq = seq;
+    constructor( area: string, description: string, create_user: string) {
         this._area = area;
         this._description = description;
         this._create_user = create_user;
-        this._create_dt = create_dt;
+
     }
 
-
-    get seq(): number {
-        return this._seq;
+    static getInstance():Pending{
+        return new Pending(null,null,null);
+    }
+    get id(): number {
+        return this._id;
     }
 
-    set seq(value: number) {
-        this._seq = value;
+    set id(value: number) {
+        this._id= value;
     }
 
     get area(): string {

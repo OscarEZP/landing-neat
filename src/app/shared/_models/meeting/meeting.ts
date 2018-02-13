@@ -1,6 +1,6 @@
 import { Activity } from './activity';
 import { Assistant } from './assistant';
-import { TimeInstant } from './timeInstant';
+import { TimeInstant } from '../timeInstant';
 
 export class Meeting {
     private _id: number;
@@ -12,15 +12,18 @@ export class Meeting {
     private _safetyCode: string;
     private _assistants: Array<Assistant>;
 
-    constructor(id: number, contingencyId: number, activities: Array<Activity>, barcode: string, createUser: string, timeInstant: TimeInstant, safetyCode: string, assistants: Array<Assistant>) {
-        this.id = id;
+    constructor( contingencyId: number) {
+
         this.contingencyId = contingencyId;
-        this.activities = activities;
-        this.barcode = barcode;
-        this.createUser = createUser;
-        this.timeInstant = timeInstant!=null?timeInstant:TimeInstant.getInstance();
-        this.safetyCode = safetyCode;
-        this.assistants = assistants;
+        this.activities = [];
+        this.barcode = null;
+        this.createUser = null;
+        this.timeInstant = TimeInstant.getInstance();
+        this.safetyCode = null;
+        this.assistants = [];
+    }
+    static getInstance():Meeting{
+        return new Meeting(null);
     }
 
     get safetyCode(): string {
