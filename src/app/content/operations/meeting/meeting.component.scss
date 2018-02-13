@@ -91,6 +91,10 @@ $padd-section: 25px;
     padding: 0 20px;
   }
 
+  .lateral-inner-padding:last-child {
+    padding-right: 0px;
+  }
+
   .mat-error {
     padding: 5px 0 0 0;
     @include generate-font-size(-1);
@@ -198,6 +202,10 @@ $padd-section: 25px;
         width: 100%;
       }
     }
+  }
+
+  .mat-accordion {
+    width: 100%;
   }
 }
 

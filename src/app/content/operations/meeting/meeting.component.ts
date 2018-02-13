@@ -15,9 +15,9 @@ import {Validation} from '../../../shared/_models/validation';
 import {TranslateService} from '@ngx-translate/core';
 import {MessageService} from '../../../shared/_services/message.service';
 import { CancelComponent } from '../cancel/cancel.component';
-import {Activity} from '../../../shared/_models/activity';
-import {Assistant} from '../../../shared/_models/assistant';
-import {Meeting} from '../../../shared/_models/meeting';
+import {Activity} from '../../../shared/_models/contingency/meeting/activity';
+import {Assistant} from '../../../shared/_models/contingency/meeting/assistant';
+import {Meeting} from '../../../shared/_models/contingency/meeting/meeting';
 import {Mail} from '../../../shared/_models/configuration/mail';
 import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
@@ -36,7 +36,6 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private static MAILS_ENDPOINT = 'mails';
     private static MEETINGS_CONFIG_TYPE = 'MEETING_ACTIVITIES';
     private static BARCODE_PATTERN = '^[a-zA-Z0-9]+\\S$';
-
 
     private _meetingSubscription: Subscription;
     private _emailsSubscription: Subscription;
@@ -76,7 +75,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this.meetingActivities = [];
         this.mails = [];
         this.getMailsConf();
-        this.setMeetingActivitiesConf();
+        this._meetingActivitiesSubscription = this.setMeetingActivitiesConf();
         this.validations = new Validation(false, true, true, false);
         this.meetingAssistants = [];
         this.assistant = new Assistant('');
@@ -117,6 +116,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
         if (this._emailsSubscription) {
             this._emailsSubscription.unsubscribe();
         }
+        this._meetingActivitiesSubscription.unsubscribe();
     }
 
     /**
