@@ -91,18 +91,17 @@
                                     {{ assistantConf }}
                                 </mat-option>
                             </mat-autocomplete>
-
                         </mat-form-field>
                     </div>
                     <div fxLayout="row">
                         <div fxFlex="80">
                             <div fxLayout="row" >
-                                <mat-error *ngIf="assistantForm.controls['assistantMail'].hasError('required') && assisForm.submitted">
+                                <mat-error *ngIf="meetingAssistants.length === 0 && meetForm.submitted">
                                     {{'OPERATIONS.MEETING_FORM.ASSISTANT_REQUIRED'|translate}}
                                 </mat-error>
                             </div>
                             <div>
-                                <mat-error *ngIf="assistantForm.controls['assistantMail'].hasError('email') && assisForm.submitted && !assistantForm.controls['assistantMail'].hasError('required')">
+                                <mat-error *ngIf="assistantForm.controls['assistantMail'].hasError('invalidEmail') && assistant.mail">
                                     {{'OPERATIONS.MEETING_FORM.VALID_MAIL'|translate}}
                                 </mat-error>
                             </div>

@@ -39,6 +39,8 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
     private _meetingSubscription: Subscription;
     private _emailsSubscription: Subscription;
+    private _meetingActivitiesSubscription: Subscription;
+    private _emailsConfSubscription: Subscription;
 
     private _meetingForm: FormGroup;
     private _assistantForm: FormGroup;
@@ -54,7 +56,14 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private _assistant: Assistant;
     private _mails: string[];
     public filteredOptions: Observable<string[]>;
-    private _meetingActivitiesSubscription: Subscription;
+
+    static emailValidator(control: FormControl) {
+        if (!control.value.match(/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i) && control.value) {
+            return {invalidEmail: true};
+        } else {
+            return null;
+        }
+    }
 
     constructor(
         private _dialogService: DialogService,
@@ -74,14 +83,14 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this.meetingForm = this.getFormValidators();
         this.meetingActivities = [];
         this.mails = [];
-        this.getMailsConf();
+        this._emailsConfSubscription = this.getMailsConf();
         this._meetingActivitiesSubscription = this.setMeetingActivitiesConf();
         this.validations = new Validation(false, true, true, false);
         this.meetingAssistants = [];
         this.assistant = new Assistant('');
 
         this.assistantForm = this._fb.group({
-            assistantMail: [this.assistant.mail, [Validators.required, Validators.email]],
+            assistantMail: [this.assistant.mail, { validators: MeetingComponent.emailValidator }],
             mailSelected: new FormControl()
         });
 
@@ -110,13 +119,13 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        this._meetingActivitiesSubscription.unsubscribe();
         if (this._meetingSubscription) {
             this._meetingSubscription.unsubscribe();
         }
         if (this._emailsSubscription) {
             this._emailsSubscription.unsubscribe();
         }
-        this._meetingActivitiesSubscription.unsubscribe();
     }
 
     /**
@@ -124,7 +133,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
      * @param val
      * @return {string[]}
      */
-    filter(val: string): string[] {
+    public filter(val: string): string[] {
         return this.mails.filter(option =>
         option.toLowerCase().indexOf(val.toLowerCase()) === 0);
     }
@@ -134,7 +143,9 @@ export class MeetingComponent implements OnInit, OnDestroy {
      * @return {FormGroup}
      */
     private getFormValidators(): FormGroup {
-        this.meetingForm = this._fb.group({});
+        this.meetingForm = this._fb.group({
+            meetingAsistants: ['', Validators.required]
+        });
         const barcodeValidators = [Validators.pattern(MeetingComponent.BARCODE_PATTERN), Validators.maxLength(80)];
         if (this.contingency.safetyEvent.code !== null) {
             barcodeValidators.push(Validators.required);
@@ -219,14 +230,16 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Add assistant
+     * Add emaill to list and clean text input
      */
     public addAssistant(): void {
-        if (this.assistantForm.valid) {
+        if (this.assistantForm.valid && this.assistant.mail !== '') {
             const currentAssistant = new Assistant(this.assistant.mail);
             const findAssistant = this.meetingAssistants.find(x => x.mail === currentAssistant.mail);
             if (typeof findAssistant === 'undefined') {
                 this.meetingAssistants.push(currentAssistant);
+                this.meetingForm.controls['meetingAsistants'].setValue(this.meetingAssistants);
+                this.assistant.mail = '';
             }
         }
     }
@@ -243,8 +256,8 @@ export class MeetingComponent implements OnInit, OnDestroy {
     /**
      * Get a emails list for add assistant
      */
-    private getMailsConf(): void {
-        this._apiRestService
+    private getMailsConf(): Subscription {
+        return this._apiRestService
             .getAll<Mail[]>(MeetingComponent.MAILS_ENDPOINT)
             .subscribe(rs => {
                     rs.forEach(mail => this.mails.push(mail.address) );

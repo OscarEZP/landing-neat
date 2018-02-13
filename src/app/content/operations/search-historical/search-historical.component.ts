@@ -132,7 +132,7 @@ export class SearchHistoricalComponent implements OnInit {
         );
     }
 
-    public submitForm(value: any) {
+    public submitForm() {
         this.searchHistoricalService.searchForm.updateValueAndValidity();
         if (this.searchHistoricalService.searchForm.valid) {
             this.infiniteScrollService.init();
@@ -141,7 +141,9 @@ export class SearchHistoricalComponent implements OnInit {
             this.contingencyService.postHistoricalSearch(search).subscribe(() => {
                 this.contingencyService.loading = false;
             });
-            this.contingencyService.getTotalRecords(search).subscribe();
+            this.contingencyService.getTotalRecords(search).subscribe((count) => {
+                this.infiniteScrollService.length = count.items;
+            });
             if (!this.searchHistoricalService.active) {
                 this.router.navigate([SearchHistoricalComponent.HISTORICAL_URL]);
             }
