@@ -16,13 +16,16 @@ export class Status {
         this._code = code;
         this._level = level;
         this._contingencyId = contingencyId;
-        this._creationDate = creationDate;
+        this._creationDate = creationDate!=null?creationDate:TimeInstant.getInstance();
         this._observation = observation;
-        this._realInterval = realInterval;
-        this._requestedInterval = requestedInterval;
+        this._realInterval = realInterval!=null?realInterval:Interval.getInstance();
+        this._requestedInterval = requestedInterval!=null?requestedInterval:Interval.getInstance();
         this._username = username;
     }
 
+    static getInstance():Status{
+        return new Status(null,null,null,null,null,null,null,null);
+    }
     get code(): string {
         return this._code;
     }

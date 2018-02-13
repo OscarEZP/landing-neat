@@ -11,6 +11,9 @@ export class Aircraft {
         this._operator = operator;
     }
 
+    static getInstance():Aircraft{
+       return new Aircraft(null,null,null);
+    }
 
     get tail(): string {
         return this._tail;

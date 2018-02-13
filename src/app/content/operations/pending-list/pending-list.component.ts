@@ -1,26 +1,20 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { ActivatedRoute } from '@angular/router';
-import { HistoricalSearchService } from '../_services/historical-search.service';
-import { ContingencyService } from '../_services/contingency.service';
-import { Contingency } from '../../../shared/_models/contingency/contingency';
-import { Aircraft } from '../../../shared/_models/aircraft';
-import { TimeInstant } from '../../../shared/_models/timeInstant';
-import { Flight } from '../../../shared/_models/flight';
-import { Backup } from '../../../shared/_models/backup';
-import { Safety } from '../../../shared/_models/safety';
-import { Interval } from '../../../shared/_models/interval';
-import { Status } from '../../../shared/_models/status';
-import { ApiRestService } from '../../../shared/_services/apiRest.service';
-import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
-import { Observable } from 'rxjs/Observable';
-import { DetailsService } from '../../../details/_services/details.service';
-import { SearchContingency } from '../../../shared/_models/contingency/searchContingency';
-import { InfiniteScrollService } from '../_services/infinite-scroll.service';
-import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
-import { MeetingComponent } from '../meeting/meeting.component';
-import { DialogService } from '../../_services/dialog.service';
-import { DataService } from '../../../shared/_services/data.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs/Subscription';
+import {ActivatedRoute} from '@angular/router';
+import {HistoricalSearchService} from '../_services/historical-search.service';
+import {ContingencyService} from '../_services/contingency.service';
+import {Contingency} from '../../../shared/_models/contingency/contingency';
+import {TimeInstant} from '../../../shared/_models/timeInstant';
+import {ApiRestService} from '../../../shared/_services/apiRest.service';
+import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
+import {Observable} from 'rxjs/Observable';
+import {DetailsService} from '../../../details/_services/details.service';
+import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
+import {InfiniteScrollService} from '../_services/infinite-scroll.service';
+import {CloseContingencyComponent} from '../close-contingency/close-contingency.component';
+import {MeetingComponent} from '../meeting/meeting.component';
+import {DialogService} from '../../_services/dialog.service';
+import {DataService} from '../../../shared/_services/data.service';
 
 @Component({
     selector: 'lsl-pending-list',
@@ -53,8 +47,8 @@ export class PendingListComponent implements OnInit, OnDestroy {
         private _dialogService: DialogService
     ) {
         this.contingencyService.loading = true;
-        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
-        this.selectedContingencyPivot = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
+        this.selectedContingency = Contingency.getInstance();
+        this.selectedContingencyPivot = Contingency.getInstance();
         this.intervalToRefresh = 0;
     }
 

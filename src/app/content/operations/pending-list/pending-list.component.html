@@ -8,8 +8,8 @@
     </div>
     <div *ngIf="!historicalSearchService.active">
         {{contingencyService.contingencyList.length}}
-        <span *ngIf="contingencyService.contingencyList.length !== 1">{{'OPERATIONS.ACTIVE_CONTINGENCIES' | translate}}</span>
-        <span *ngIf="contingencyService.contingencyList.length === 1">{{'OPERATIONS.ACTIVE_CONTINGENCY' | translate }}</span>
+        <span *ngIf="contingencyService.contingencyList.length !== 1">{{'OPERATIONS.PENDING_CONTINGENCIES' | translate}}</span>
+        <span *ngIf="contingencyService.contingencyList.length === 1">{{'OPERATIONS.PENDING_CONTINGENCY' | translate }}</span>
     </div>
 </div>
 
@@ -23,6 +23,7 @@
         <div fxFlex="7" fxLayoutAlign="start center">{{ 'OPERATIONS.STATUS' | translate }}</div>
         <div fxFlex="5" fxLayoutAlign="start center">{{ 'OPERATIONS.TYPE' | translate }}</div>
         <div fxFlex="8" fxLayoutAlign="start center">{{ 'OPERATIONS.SAFETY_EVENT' | translate }}</div>
+        <div fxFlex="8" fxLayoutAlign="start center">{{ 'OPERATIONS.TOTAL_PENDINGS' | translate }}</div>
         <div fxFlex="3">&nbsp;</div>
         <div fxFlex="22">&nbsp;</div>
     </header>
@@ -70,8 +71,13 @@
             <div class="safety-event" fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">
                 <span class="badge"
                       *ngIf="contingency.safetyEvent.code?.length > 0">{{ contingency.safetyEvent.code }}</span>
-                <mat-icon *ngIf="contingency.ttlPending">fiber_manual_record</mat-icon>
+                <mat-icon *ngIf="contingency.hasPendingMeeting">fiber_manual_record</mat-icon>
             </div>
+            <!-- PENDINGS -->
+            <div id="cont-pendings" fxLayout="column" fxFlex="8" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
+                <div *ngIf="contingency.ttlPending">{{ contingency.ttlPending>9?'9+': contingency.ttlPending}}</div>
+            </div>
+
 
             <!-- FOCAL -->
             <div fxFlex="3" fxLayoutAlign="start center" *ngIf="!detailsService.open"

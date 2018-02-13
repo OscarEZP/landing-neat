@@ -1,31 +1,25 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs/Subscription';
-import { DetailsService } from '../../../details/_services/details.service';
-import { Aircraft } from '../../../shared/_models/aircraft';
-import { Backup } from '../../../shared/_models/backup';
-import { Contingency } from '../../../shared/_models/contingency/contingency';
-import { Flight } from '../../../shared/_models/flight';
-import { Interval } from '../../../shared/_models/interval';
-import { Safety } from '../../../shared/_models/safety';
-import { Status } from '../../../shared/_models/status';
-import { TimeInstant } from '../../../shared/_models/timeInstant';
-import { DataService } from '../../../shared/_services/data.service';
-import { DialogService } from '../../_services/dialog.service';
-import { CloseContingencyComponent } from '../close-contingency/close-contingency.component';
-import { ActivatedRoute } from '@angular/router';
-import { HistoricalSearchService } from '../_services/historical-search.service';
-import { ContingencyService } from '../_services/contingency.service';
-import { InfiniteScrollService } from '../_services/infinite-scroll.service';
-import { MatPaginator } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {Subscription} from 'rxjs/Subscription';
+import {DetailsService} from '../../../details/_services/details.service';
+import {Contingency} from '../../../shared/_models/contingency/contingency';
+import {TimeInstant} from '../../../shared/_models/timeInstant';
+import {DataService} from '../../../shared/_services/data.service';
+import {DialogService} from '../../_services/dialog.service';
+import {CloseContingencyComponent} from '../close-contingency/close-contingency.component';
+import {ActivatedRoute} from '@angular/router';
+import {HistoricalSearchService} from '../_services/historical-search.service';
+import {ContingencyService} from '../_services/contingency.service';
+import {InfiniteScrollService} from '../_services/infinite-scroll.service';
+import {MatPaginator} from '@angular/material';
+import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/first';
-import { ApiRestService } from '../../../shared/_services/apiRest.service';
-import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
-import { MeetingComponent } from '../meeting/meeting.component';
+import {ApiRestService} from '../../../shared/_services/apiRest.service';
+import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
+import {MeetingComponent} from '../meeting/meeting.component';
 import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
-import {StorageService} from '../../../shared/_services/storage.service';
+
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -62,8 +56,8 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 private _apiRestService: ApiRestService
     ) {
         this._translate.setDefaultLang('en');
-        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
-        this.selectedContingencyPivot = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
+        this.selectedContingency = Contingency.getInstance();
+        this.selectedContingencyPivot = Contingency.getInstance();
         this._intervalToRefresh = 0;
     }
 
