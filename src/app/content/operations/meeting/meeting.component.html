@@ -36,7 +36,7 @@
                             <div fxLayout="row" >
                                 <mat-form-field fxFlexFill>
                                     <input id="in-meeting-form-barcode" matInput placeholder="barcode"
-                                           [formControl]="meetingForm.controls['barcode']" [(ngModel)]="contingency.barcode">
+                                           [formControl]="meetingForm.controls['barcode']" [(ngModel)]="barcode">
                                 </mat-form-field>
                             </div>
                             <div fxLayout="row" >
@@ -49,7 +49,7 @@
                             </div>
                         </div>
                     </section>
-                    <section *ngIf="contingency.safetyEvent.code">
+                    <section *ngIf="safetyCode">
                         <span class="title-section">{{'OPERATIONS.MEETING_FORM.TO_DO_LIST'|translate}}</span>
                         <div class="data">
                             <p fxLayout="row">{{'OPERATIONS.SAFETY_EVENT'|translate}}: <span>{{contingency.safetyEvent.code}}</span></p>

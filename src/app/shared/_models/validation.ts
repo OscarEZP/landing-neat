@@ -12,6 +12,9 @@ export class Validation {
         this._isComponentDisabled = isComponentDisabled;
         this._isSending = isSending;
     }
+    static getInstance():Validation{
+        return new Validation(false,true,true,false);
+    }
 
     get isSubmited(): boolean {
         return this._isSubmited;
