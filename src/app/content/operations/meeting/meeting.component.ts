@@ -147,7 +147,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
      */
     private getFormValidators(): FormGroup {
         this.meetingForm = this._fb.group({
-            meetingAsistants: [[], Validators.required]
+            meetingAsistants: ['', Validators.required]
         });
         const barcodeValidators = [Validators.pattern(MeetingComponent.BARCODE_PATTERN), Validators.maxLength(80)];
         if (this.contingency.safetyEvent.code !== null) {

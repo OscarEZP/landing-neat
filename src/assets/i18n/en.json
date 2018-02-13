@@ -59,6 +59,7 @@
       "BTN_SAVE": "SAVE",
       "CLOSE_SUCCESS": "Contingency has been closed successfully"
     },
+    "CONTINGENCIES_WITH_PENDINGS": "Contingencies with pendings",
     "CLOSED_CONTINGENCY": "Closed contingency",
     "CLOSED_CONTINGENCIES": "Closed contingencies",
     "CLOSURE_DATE_HOUR": "Closure Date - Hour",
