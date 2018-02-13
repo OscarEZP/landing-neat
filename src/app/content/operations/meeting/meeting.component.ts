@@ -210,7 +210,6 @@ export class MeetingComponent implements OnInit, OnDestroy {
                     }
                 );
         } else {
-            console.log(this.meetingForm);
             this.getTranslateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
             this._messageService.openSnackBar(this.snackbarMessage);
             this.validations.isSending = false;
@@ -247,7 +246,6 @@ export class MeetingComponent implements OnInit, OnDestroy {
     public addAssistant(): void {
         if (this.assistantForm.valid && this.assistant.mail !== '') {
             const currentAssistant = new Assistant(this.assistant.mail);
-            console.log(currentAssistant);
             const findAssistant = this.meetingAssistants.find(x => x.mail === currentAssistant.mail);
             if (typeof findAssistant === 'undefined') {
                 this.meetingAssistants.push(currentAssistant);
