@@ -23,7 +23,7 @@ import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {Subscription} from 'rxjs/Subscription';
-import {StorageService} from "../../../shared/_services/storage.service";
+import {StorageService} from '../../../shared/_services/storage.service';
 
 @Component({
     selector: 'lsl-meeting-form',
@@ -45,6 +45,8 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
     private _meetingForm: FormGroup;
     private _assistantForm: FormGroup;
+    private _agreementForm: FormGroup;
+
     private _utcModel: TimeInstant;
     private _timeClock: Date;
     private _interval: number;
@@ -56,6 +58,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private _mails: string[];
     public filteredOptions: Observable<string[]>;
     private _meeting: Meeting;
+    private _agreement: string;
 
     static emailValidator(control: FormControl) {
         if (!control.value.match(/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i) && control.value) {
@@ -92,15 +95,20 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this.assistant = new Assistant('');
 
         this.meeting = new Meeting(this.contingency.id);
-        this.meeting.createUser=username;
+        this.meeting.createUser = username;
 
         this.barcode = this.contingency.barcode;
         this.safetyCode = this.contingency.safetyEvent.code;
 
+        this.agreement = '';
 
         this.assistantForm = this._fb.group({
             assistantMail: [this.assistant.mail, {validators: MeetingComponent.emailValidator}],
             mailSelected: new FormControl()
+        });
+
+        this.agreementForm = this._fb.group({
+            agreement: ['']
         });
 
     }
@@ -467,7 +475,6 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this.meeting.barcode = value;
     }
 
-
     get safetyCode(): string {
         return this.meeting.safetyCode;
     }
@@ -484,4 +491,19 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this._meeting = value;
     }
 
+    get agreement(): string {
+        return this._agreement;
+    }
+
+    set agreement(value: string) {
+        this._agreement = value;
+    }
+
+    get agreementForm(): FormGroup {
+        return this._agreementForm;
+    }
+
+    set agreementForm(value: FormGroup) {
+        this._agreementForm = value;
+    }
 }

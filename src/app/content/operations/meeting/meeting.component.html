@@ -138,8 +138,6 @@
                                 id="txt-meeting-performed-activities"
                                 matInput
                                 placeholder="{{'OPERATIONS.MEETING_FORM.PERFORMED_ACTIVITIES' | translate}}"
-                                [formControl]="meetingForm.controls['barcode']"
-                                [(ngModel)]="contingency.barcode"
                         >
                         </textarea>
                     </mat-form-field>
@@ -147,11 +145,11 @@
                 <div fxLayout="row">
                     <mat-form-field fxFlexFill>
                         <textarea
-                                id="txt-meeting-performed-activities"
+                                id="txt-meeting-agreement"
                                 matInput
                                 placeholder="{{'OPERATIONS.MEETING_FORM.AGREEMENTS' | translate}}"
-                                [formControl]="meetingForm.controls['barcode']"
-                                [(ngModel)]="contingency.barcode"
+                                [formControl]="agreementForm.controls['agreement']"
+                                [(ngModel)]="agreement"
                         >
                         </textarea>
                     </mat-form-field>
