@@ -138,6 +138,8 @@
                                 id="txt-meeting-performed-activities"
                                 matInput
                                 placeholder="{{'OPERATIONS.MEETING_FORM.PERFORMED_ACTIVITIES' | translate}}"
+                                [formControl]="meetingForm.controls['performedActivities']"
+                                [(ngModel)]="performedActivities"
                         >
                         </textarea>
                     </mat-form-field>

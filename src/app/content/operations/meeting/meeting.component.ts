@@ -82,9 +82,16 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this._alive = true;
         const initFakeDate = new Date().getTime();
         this.utcModel = new TimeInstant(initFakeDate, null);
-        this.meetingForm = this.getFormValidators();
 
         const username = this._storageService.getCurrentUser().username;
+
+        this.meeting = new Meeting(this.contingency.id);
+        this.meeting.createUser = username;
+        this.barcode = this.contingency.barcode;
+        this.safetyCode = this.contingency.safetyEvent.code;
+
+        this.meetingForm = this.getFormValidators();
+
 
         this.mails = [];
         this._emailsConfSubscription = this.getMailsConf();
@@ -94,11 +101,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
         this.assistant = new Assistant('');
 
-        this.meeting = new Meeting(this.contingency.id);
-        this.meeting.createUser = username;
 
-        this.barcode = this.contingency.barcode;
-        this.safetyCode = this.contingency.safetyEvent.code;
 
         this.agreement = '';
 
@@ -162,13 +165,14 @@ export class MeetingComponent implements OnInit, OnDestroy {
      */
     private getFormValidators(): FormGroup {
         this.meetingForm = this._fb.group({
-            meetingAsistants: ['', Validators.required]
+            meetingAsistants: ['', Validators.required],
+            performedActivities:[this.performedActivities,{validators:Validators.required}],
         });
         const barcodeValidators = [Validators.pattern(MeetingComponent.BARCODE_PATTERN), Validators.maxLength(80)];
-        if (this.contingency.safetyEvent.code !== null) {
+        if (this.safetyCode !== null) {
             barcodeValidators.push(Validators.required);
         }
-        this.meetingForm.addControl('barcode', new FormControl(this.contingency.barcode, barcodeValidators));
+        this.meetingForm.addControl('barcode', new FormControl(this.barcode, barcodeValidators));
         return this.meetingForm;
     }
 
@@ -499,11 +503,20 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this._agreement = value;
     }
 
+
     get agreementForm(): FormGroup {
         return this._agreementForm;
     }
 
     set agreementForm(value: FormGroup) {
         this._agreementForm = value;
+    }
+
+    get performedActivities(): string {
+        return this.meeting.performedActivities;
+    }
+
+    set performedActivities(value: string) {
+        this.meeting.performedActivities = value;
     }
 }
