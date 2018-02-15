@@ -27,6 +27,8 @@ export const environment = {
         safetyEvent: '/api/v1/configurations/safetyEvents',
         types: '/api/v1/configurations/types',
         configTypes: '/api/v1/configurations/types/groupNames',
-        mails : '/api/v1/configurations/mails'
+        mails : '/api/v1/configurations/mails',
+        pendingSearch:':/api/v1/pendings/_search',
+        pendingResolve:':/api/v1/pendings/_resolve'
     }
 };
