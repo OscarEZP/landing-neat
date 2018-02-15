@@ -4,15 +4,15 @@ export class Agreement {
 
     private _id: number;
     private _description: string;
-    private _create_user: string;
-    private _create_dt: TimeInstant;
+    private _createUser: string;
+    private _createDate: TimeInstant;
 
 
     constructor(  ) {
         this.id = null;
         this.description = null;
-        this.create_user = null;
-        this.create_dt = TimeInstant.getInstance();
+        this.createUser = null;
+        this.createDate = TimeInstant.getInstance();
     }
 
     static getInstance():Agreement{
@@ -34,19 +34,20 @@ export class Agreement {
         this._description = value;
     }
 
-    get create_user(): string {
-        return this._create_user;
+
+    get createUser(): string {
+        return this._createUser;
     }
 
-    set create_user(value: string) {
-        this._create_user = value;
+    set createUser(value: string) {
+        this._createUser = value;
     }
 
-    get create_dt(): TimeInstant {
-        return this._create_dt;
+    get createDate(): TimeInstant {
+        return this._createDate;
     }
 
-    set create_dt(value: TimeInstant) {
-        this._create_dt = value;
+    set createDate(value: TimeInstant) {
+        this._createDate = value;
     }
 }

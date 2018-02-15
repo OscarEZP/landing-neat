@@ -24,6 +24,7 @@ import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {Subscription} from 'rxjs/Subscription';
 import {StorageService} from '../../../shared/_services/storage.service';
+import {Agreement} from "../../../shared/_models/meeting/agreement";
 
 @Component({
     selector: 'lsl-meeting-form',
@@ -111,7 +112,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
         });
 
         this.agreementForm = this._fb.group({
-            agreement: ['']
+            agreement: [this.agreement]
         });
 
     }
@@ -206,6 +207,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     public submitForm() {
         if (this.meetingForm.valid) {
             const signature = this.getSignature();
+            console.log('signature',signature);
             this.validations.isSending = true;
             let res: Response;
             this._meetingSubscription = this._apiRestService
@@ -252,7 +254,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Add emaill to list and clean text input
+     * Add email to list and clean text input
      */
     public addAssistant(): void {
         if (this.assistantForm.valid && this.assistant.mail !== '') {
@@ -262,6 +264,24 @@ export class MeetingComponent implements OnInit, OnDestroy {
                 this.meetingAssistants.push(currentAssistant);
                 this.meetingForm.controls['meetingAsistants'].setValue(this.meetingAssistants);
                 this.assistant.mail = '';
+            }
+        }
+    }
+
+    /**
+     * Add agreement to list and clean text input
+     */
+    public addAgreement(): void {
+        if (this.agreementForm.valid && this.agreement!='') {
+            const currentAgreement = new Agreement();
+            currentAgreement.description=this.agreement;
+
+            currentAgreement.createUser=this._storageService.getCurrentUser().username;
+            const findAgreement = this.meetingAgreements.find(x => x.description === currentAgreement.description);
+            if (typeof findAgreement === 'undefined') {
+                this.meetingAgreements.push(currentAgreement);
+
+                this.agreement = '';
             }
         }
     }
@@ -442,6 +462,15 @@ export class MeetingComponent implements OnInit, OnDestroy {
     set meetingAssistants(value: Assistant[]) {
         this.meeting.assistants = value;
     }
+
+    get meetingAgreements(): Agreement[] {
+        return this.meeting.agreements;
+    }
+
+    set meetingAagreements(value: Agreement[]) {
+        this.meeting.agreements = value;
+    }
+
 
     get assistant(): Assistant {
         return this._assistant;
