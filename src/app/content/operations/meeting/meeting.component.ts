@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DialogService} from '../../_services/dialog.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
@@ -23,7 +23,8 @@ import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {Subscription} from 'rxjs/Subscription';
-import {StorageService} from "../../../shared/_services/storage.service";
+import {StorageService} from '../../../shared/_services/storage.service';
+import {Pending} from '../../../shared/_models/meeting/pending';
 
 @Component({
     selector: 'lsl-meeting-form',
@@ -35,6 +36,8 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
     private static MEETINGS_ENDPOINT = 'meetings';
     private static MAILS_ENDPOINT = 'mails';
+    private static AREAS_ENDPOINT = 'areas';
+
     private static MEETINGS_CONFIG_TYPE = 'MEETING_ACTIVITIES';
     private static BARCODE_PATTERN = '^[a-zA-Z0-9]+\\S$';
 
@@ -43,20 +46,30 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private _emailsSubscription: Subscription;
     private _meetingActivitiesSubscription: Subscription;
     private _emailsConfSubscription: Subscription;
+    private _areasSubscription: Subscription;
 
     private _meetingForm: FormGroup;
     private _assistantForm: FormGroup;
+    private _pendingForm: FormGroup;
+
     private _utcModel: TimeInstant;
     private _timeClock: Date;
     private _interval: number;
     private _alive: boolean;
     private _meetingActivitiesConf: Types[];
+
     private _validations: Validation;
+
     private _snackbarMessage: string;
     private _assistant: Assistant;
+    private _pending: Pending;
     private _mails: string[];
-    public filteredOptions: Observable<string[]>;
+    private _filteredOptions: Observable<string[]>;
+    private _filteredAreas: Observable<string[]>;
+
     private _meeting: Meeting;
+    private _areas: string[];
+    private _pendingsGroups: any[];
 
     static emailValidator(control: FormControl) {
         if (!control.value.match(/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i) && control.value) {
@@ -79,30 +92,31 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this._interval = 1000 * 60;
         this._alive = true;
         const initFakeDate = new Date().getTime();
+        this.mails = [];
+        this.areas = [];
+        this.pendingsGroups = [];
+
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.meetingForm = this.getFormValidators();
 
-        const username = this._storageService.getCurrentUser().username;
-
-        this.mails = [];
         this._emailsConfSubscription = this.getMailsConf();
         this._meetingActivitiesSubscription = this.setMeetingActivitiesConf();
+        this._areasSubscription = this.getAreas();
+
         this.validations = Validation.getInstance();
 
-
         this.assistant = new Assistant('');
-
+        this.pending = Pending.getInstance();
         this.meeting = new Meeting(this.contingency.id);
-        this.meeting.createUser=username;
-
         this.barcode = this.contingency.barcode;
         this.safetyCode = this.contingency.safetyEvent.code;
 
+        this.pendingForm = this.getPendingForm();
+        this.assistantForm = this.getAssistantForm();
 
-        this.assistantForm = this._fb.group({
-            assistantMail: [this.assistant.mail, {validators: MeetingComponent.emailValidator}],
-            mailSelected: new FormControl()
-        });
+        const username = this._storageService.getCurrentUser().username;
+        this.meeting.createUser = username;
+        this.pending.create_user = username;
 
     }
 
@@ -122,14 +136,24 @@ export class MeetingComponent implements OnInit, OnDestroy {
                 startWith(''),
                 map(val => {
                     if (val.length >= 3) {
-                        return this.filter(val);
+                        return this.filter(val, this.mails);
                     }
                 })
             );
+        this.filteredAreas = this.pendingForm.controls['area'].valueChanges
+            .pipe(
+                startWith(''),
+                map(val => {
+                    const result = this.filter(val, this.areas);
+                    return result.length > 0 ? result : this.areas;
+                })
+            );
+
     }
 
     ngOnDestroy() {
         this._meetingActivitiesSubscription.unsubscribe();
+        this._areasSubscription.unsubscribe();
         if (this._meetingSubscription) {
             this._meetingSubscription.unsubscribe();
         }
@@ -138,14 +162,92 @@ export class MeetingComponent implements OnInit, OnDestroy {
         }
     }
 
+    public comboValidation(val: string, list: string[]): string {
+        return list.filter(v => (v === val || v.indexOf(val) !== -1)).length > 0 ? val : '';
+    }
+
+    private reloadPendings() {
+        this.pendingsGroups = this.groupBy(this.meeting.pendings, 'area');
+    }
+
+    private pendingValidation(): boolean {
+        let valid = true;
+        const errorObj = { descriptionRequired: false, areaRequired: false };
+        if (this.pending.area === null || this.pending.area === '') {
+            valid = false;
+            errorObj.areaRequired = true;
+        }
+        if (this.pending.description === null || this.pending.description === '') {
+            valid = false;
+            errorObj.descriptionRequired = true;
+        }
+        this.pendingForm.setErrors(errorObj);
+        return valid;
+    }
+
+    public addPending(): void {
+        if (this.pendingForm.valid && this.pendingValidation()) {
+
+            this.meeting.pendings.push(new Pending(this.pending.area, this.pending.description, this.pending.create_user));
+            this.reloadPendings();
+            this.pending.description = '';
+            this.pending.area = '';
+        }
+    }
+
+    public deletePending(pending: Pending): void {
+        this.meeting.pendings = this.meeting.pendings.filter(p => pending !== p);
+        this.reloadPendings();
+    }
+
+    private groupBy(collection: any[], property: string) {
+        let i = 0, val, index;
+        const values = [], result = [];
+        for (; i < collection.length; i++) {
+            val = collection[i][property];
+            index = values.indexOf(val);
+            if (index > -1) {
+                result[index].push(collection[i]);
+            } else {
+                values.push(val);
+                result.push([collection[i]]);
+            }
+        }
+        return result;
+    }
 
     /**
-     * Filter for show email coincidencies
+     * Get areas for add pending
+     */
+    private getAreas(): Subscription {
+        return this._apiRestService
+        .getAll<any[]>(MeetingComponent.AREAS_ENDPOINT)
+        .subscribe(rs => {
+            rs.forEach(area => this.areas.push(area.description));
+        });
+    }
+
+    private getPendingForm(): FormGroup {
+        return this._fb.group({
+            area: [''],
+            description: ['']
+        });
+    }
+
+    private getAssistantForm(): FormGroup {
+        return this._fb.group({
+            assistantMail: [this.assistant.mail, {validators: MeetingComponent.emailValidator}],
+            mailSelected: new FormControl()
+        });
+    }
+
+    /**
+     * Filter for coincidencies
      * @param val
      * @return {string[]}
      */
-    public filter(val: string): string[] {
-        return this.mails.filter(option =>
+    public filter(val: string, list: any[]): string[] {
+        return list.filter(option =>
             option.toLowerCase().indexOf(val.toLowerCase()) === 0);
     }
 
@@ -483,6 +585,54 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
     set meeting(value: Meeting) {
         this._meeting = value;
+    }
+
+    get areas(): string[] {
+        return this._areas;
+    }
+
+    set areas(value: string[]) {
+        this._areas = value;
+    }
+
+    get pendingForm(): FormGroup {
+        return this._pendingForm;
+    }
+
+    set pendingForm(value: FormGroup) {
+        this._pendingForm = value;
+    }
+
+    get pending(): Pending {
+        return this._pending;
+    }
+
+    set pending(value: Pending) {
+        this._pending = value;
+    }
+
+    get filteredAreas(): Observable<string[]> {
+        return this._filteredAreas;
+    }
+
+    set filteredAreas(value: Observable<string[]>) {
+        this._filteredAreas = value;
+    }
+
+    get filteredOptions(): Observable<string[]> {
+        return this._filteredOptions;
+    }
+
+    set filteredOptions(value: Observable<string[]>) {
+        this._filteredOptions = value;
+    }
+
+    get pendingsGroups(): any[] {
+        return this._pendingsGroups;
+    }
+
+    set pendingsGroups(value: any[]) {
+        this._pendingsGroups = value;
     }
 
 }

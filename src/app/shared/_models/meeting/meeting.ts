@@ -1,16 +1,18 @@
 import { Activity } from './activity';
 import { Assistant } from './assistant';
 import { TimeInstant } from '../timeInstant';
+import { Pending } from './pending';
 
 export class Meeting {
     private _id: number;
     private _contingencyId: number;
-    private _activities: Array<Activity>;
+    private _activities: Activity[];
     private _barcode: string;
     private _createUser: string;
     private _timeInstant: TimeInstant;
     private _safetyCode: string;
-    private _assistants: Array<Assistant>;
+    private _assistants: Assistant[];
+    private _pendings: Pending[];
 
     constructor( contingencyId: number) {
 
@@ -21,8 +23,9 @@ export class Meeting {
         this.timeInstant = TimeInstant.getInstance();
         this.safetyCode = null;
         this.assistants = [];
+        this.pendings = [];
     }
-    static getInstance():Meeting{
+    static getInstance(): Meeting {
         return new Meeting(null);
     }
 
@@ -88,5 +91,13 @@ export class Meeting {
 
     set assistants(value: Array<Assistant>) {
         this._assistants = value;
+    }
+
+    get pendings(): Pending[] {
+        return this._pendings;
+    }
+
+    set pendings(value: Pending[]) {
+        this._pendings = value;
     }
 }

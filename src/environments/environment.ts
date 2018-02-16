@@ -9,9 +9,11 @@ export const environment = {
     paths: {
         aircrafts: '/api/v1/configurations/aircrafts',
         aircraftsSearch: '/api/v1/configurations/aircrafts/_search',
+        areas: '/api/v1/contingencies/pendings/areas',
         close: '/api/v1/contingencies/_close',
         configMaxStatus: '/api/v1/configurations/status/max',
         configStatus: '/api/v1/configurations/status/_search',
+        configTypes: '/api/v1/configurations/types/groupNames',
         confirmForgotPassword: '/api/security/users/_confirmforgotpassword',
         contingencyList: '/api/v1/contingencies',
         contingencySearch: '/api/v1/contingencies/_search',
@@ -22,11 +24,10 @@ export const environment = {
         forgotPassword: '/api/security/users/_forgotpassword',
         locations: '/api/v1/configurations/locations',
         login: '/api/security/users/_login',
+        mails : '/api/v1/configurations/mails',
         meetings: '/api/v1/contingencies/meetings',
         operator: '/api/v1/configurations/operators/',
         safetyEvent: '/api/v1/configurations/safetyEvents',
-        types: '/api/v1/configurations/types',
-        configTypes: '/api/v1/configurations/types/groupNames',
-        mails : '/api/v1/configurations/mails'
+        types: '/api/v1/configurations/types'
     }
 };
