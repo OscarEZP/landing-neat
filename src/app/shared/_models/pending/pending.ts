@@ -13,6 +13,7 @@ export class Pending {
         this.area = area;
         this.description = description;
         this.createUser = createUser;
+        this.createDate=TimeInstant.getInstance();
 
     }
 
