@@ -167,7 +167,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private getFormValidators(): FormGroup {
         this.meetingForm = this._fb.group({
             meetingAsistants: ['', Validators.required],
-            performedActivities:[this.performedActivities,{validators:Validators.required}],
+            performedActivities:[this.performedActivities,Validators.required],
         });
         const barcodeValidators = [Validators.pattern(MeetingComponent.BARCODE_PATTERN), Validators.maxLength(80)];
         if (this.safetyCode !== null) {
@@ -294,6 +294,15 @@ export class MeetingComponent implements OnInit, OnDestroy {
             this.meetingAssistants.splice(index, 1);
         }
     }
+    /**
+     * Delete Agreement Meeting from assistant list
+     */
+    deleteAgreementMeeting(index: number) {
+        if (index !== -1) {
+            this.meetingAgreements.splice(index, 1);
+        }
+    }
+
 
     /**
      * Get a emails list for add assistant
