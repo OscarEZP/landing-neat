@@ -193,8 +193,87 @@
                     </div>
                 </form>
             </div>
-            <div fxFlex="25" fxLayout="row" class="operation-container">
+            <div fxFlex="25" class="operation-container lateral-inner-padding">
 
+                <div class="title-dialog" fxLayout="row" >
+                    <span>{{'OPERATIONS.MEETING_FORM.MEETING_INFO'|translate}}</span>
+                </div>
+                <div fxLayout="row">
+                    <mat-form-field fxFlexFill>
+                        <textarea
+                                id="txt-meeting-performed-activities"
+                                matInput
+                                placeholder="{{'OPERATIONS.MEETING_FORM.PERFORMED_ACTIVITIES' | translate}}"
+                                [formControl]="meetingForm.controls['performedActivities']"
+                                [(ngModel)]="performedActivities"
+                                #perAct
+                                maxlength="400"
+                        >
+                        </textarea>
+                        <div fxLayout="row" >
+                            <mat-error *ngIf="meetingForm.controls['performedActivities'].hasError('maxlenght') && meetForm.submitted">
+                                {{'MEETING_PERFORMED_ACTIVITIES_MAX_MSG'|translate}}
+                            </mat-error>
+                        </div>
+                        <mat-hint align="end">{{perAct.value.length}} to 400</mat-hint>
+                    </mat-form-field>
+                </div>
+                <form [formGroup]="agreementForm" #agreeForm="ngForm" (submit)="addAgreement()">
+                <div fxLayout="row">
+
+                    <mat-form-field fxFlexFill>
+                        <textarea
+                                id="txt-meeting-agreement"
+                                matInput
+                                placeholder="{{'OPERATIONS.MEETING_FORM.AGREEMENTS' | translate}}"
+                                [formControl]="agreementForm.controls['agreement']"
+                                [(ngModel)]="agreement"
+                                #agree
+                                maxlength="400"
+                        >
+                        </textarea>
+                        <mat-hint align="end">{{agree.value.length}} to 400</mat-hint>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row">
+
+                        <div fxFlex="100" fxLayoutGap="10px" fxLayoutAlign="end center">
+                            <button type="submit" mat-button color="primary" >
+                                {{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT'|translate}}
+                            </button>
+                        </div>
+
+                </div>
+                <div class="sections-content" fxLayout="row" >
+                    <mat-accordion>
+
+                            <mat-expansion-panel *ngFor="let agreement of meetingAgreements; let i = index">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{i+1}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+
+                                <div fxLayout="row" fxFlex="100">
+                                    {{agreement.description}}
+                                </div>
+
+                               <mat-action-row>
+
+
+                                    <div fxLayout="row"  fxFlex="100" fxLayoutAlign="end center">
+                                        <button mat-button (click)="deleteAgreementMeeting(i)">
+                                            <mat-icon matSuffix>delete</mat-icon>
+                                        </button>
+                                    </div>
+
+                             </mat-action-row>
+
+                            </mat-expansion-panel>
+
+                    </mat-accordion>
+                </div>
+                </form>
             </div>
         </div>
     </div>

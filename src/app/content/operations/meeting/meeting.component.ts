@@ -24,6 +24,7 @@ import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {Subscription} from 'rxjs/Subscription';
 import {StorageService} from '../../../shared/_services/storage.service';
+import {Agreement} from "../../../shared/_models/meeting/agreement";
 import {Pending} from '../../../shared/_models/meeting/pending';
 
 @Component({
@@ -42,7 +43,6 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private static MEETINGS_CONFIG_TYPE = 'MEETING_ACTIVITIES';
     private static BARCODE_PATTERN = '^[a-zA-Z0-9]+\\S$';
 
-
     private _meetingSubscription: Subscription;
     private _emailsSubscription: Subscription;
     private _meetingActivitiesSubscription: Subscription;
@@ -51,6 +51,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
     private _meetingForm: FormGroup;
     private _assistantForm: FormGroup;
+    private _agreementForm: FormGroup;
     private _pendingForm: FormGroup;
 
     private _utcModel: TimeInstant;
@@ -58,9 +59,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private _interval: number;
     private _alive: boolean;
     private _meetingActivitiesConf: Types[];
-
     private _validations: Validation;
-
     private _snackbarMessage: string;
     private _assistant: Assistant;
     private _pending: Pending;
@@ -69,6 +68,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private _filteredAreas: Observable<string[]>;
 
     private _meeting: Meeting;
+    private _agreement: string;
     private _areas: string[];
     private _pendingsGroups: any[];
 
@@ -99,6 +99,15 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.meetingForm = this.getFormValidators();
+        this.pendingForm = this.getPendingForm();
+        this.assistantForm = this.getAssistantForm();
+        this.agreementForm = this._fb.group({agreement: [this.agreement]});
+
+        this.meeting = new Meeting(this.contingency.id);
+        this.meeting.createUser = username;
+        this.barcode = this.contingency.barcode;
+        this.safetyCode = this.contingency.safetyEvent.code;
+        this.mails = [];
 
         this._emailsConfSubscription = this.getMailsConf();
         this._meetingActivitiesSubscription = this.setMeetingActivitiesConf();
@@ -108,16 +117,12 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
         this.assistant = new Assistant('');
         this.pending = Pending.getInstance();
-        this.meeting = new Meeting(this.contingency.id);
-        this.barcode = this.contingency.barcode;
-        this.safetyCode = this.contingency.safetyEvent.code;
-
-        this.pendingForm = this.getPendingForm();
-        this.assistantForm = this.getAssistantForm();
+        this.agreement = '';
 
         const username = this._storageService.getCurrentUser().username;
         this.meeting.createUser = username;
         this.pending.create_user = username;
+
 
     }
 
@@ -264,13 +269,14 @@ export class MeetingComponent implements OnInit, OnDestroy {
      */
     private getFormValidators(): FormGroup {
         this.meetingForm = this._fb.group({
-            meetingAsistants: ['', Validators.required]
+            meetingAsistants: ['', Validators.required],
+            performedActivities:[this.performedActivities,Validators.required],
         });
         const barcodeValidators = [Validators.pattern(MeetingComponent.BARCODE_PATTERN), Validators.maxLength(80)];
-        if (this.contingency.safetyEvent.code !== null) {
+        if (this.safetyCode !== null) {
             barcodeValidators.push(Validators.required);
         }
-        this.meetingForm.addControl('barcode', new FormControl(this.contingency.barcode, barcodeValidators));
+        this.meetingForm.addControl('barcode', new FormControl(this.barcode, barcodeValidators));
         return this.meetingForm;
     }
 
@@ -360,7 +366,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Add emaill to list and clean text input
+     * Add email to list and clean text input
      */
     public addAssistant(): void {
         if (this.assistantForm.valid && this.assistant.mail !== '') {
@@ -375,6 +381,24 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Add agreement to list and clean text input
+     */
+    public addAgreement(): void {
+        if (this.agreementForm.valid && this.agreement!='') {
+            const currentAgreement = new Agreement();
+            currentAgreement.description=this.agreement;
+
+            currentAgreement.createUser=this._storageService.getCurrentUser().username;
+            const findAgreement = this.meetingAgreements.find(x => x.description === currentAgreement.description);
+            if (typeof findAgreement === 'undefined') {
+                this.meetingAgreements.push(currentAgreement);
+
+                this.agreement = '';
+            }
+        }
+    }
+
+    /**
      * Delete Assistant Meeting from assistant list
      */
     deleteAssistantMeeting(index: number) {
@@ -382,6 +406,15 @@ export class MeetingComponent implements OnInit, OnDestroy {
             this.meetingAssistants.splice(index, 1);
         }
     }
+    /**
+     * Delete Agreement Meeting from assistant list
+     */
+    deleteAgreementMeeting(index: number) {
+        if (index !== -1) {
+            this.meetingAgreements.splice(index, 1);
+        }
+    }
+
 
     /**
      * Get a emails list for add assistant
@@ -543,6 +576,15 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this.meeting.assistants = value;
     }
 
+    get meetingAgreements(): Agreement[] {
+        return this.meeting.agreements;
+    }
+
+    set meetingAagreements(value: Agreement[]) {
+        this.meeting.agreements = value;
+    }
+
+
     get assistant(): Assistant {
         return this._assistant;
     }
@@ -578,7 +620,6 @@ export class MeetingComponent implements OnInit, OnDestroy {
     set barcode(value: string) {
         this.meeting.barcode = value;
     }
-
 
     get safetyCode(): string {
         return this.meeting.safetyCode;
@@ -644,4 +685,28 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this._pendingsGroups = value;
     }
 
+    get agreement(): string {
+        return this._agreement;
+    }
+
+    set agreement(value: string) {
+        this._agreement = value;
+    }
+
+
+    get agreementForm(): FormGroup {
+        return this._agreementForm;
+    }
+
+    set agreementForm(value: FormGroup) {
+        this._agreementForm = value;
+    }
+
+    get performedActivities(): string {
+        return this.meeting.performedActivities;
+    }
+
+    set performedActivities(value: string) {
+        this.meeting.performedActivities = value;
+    }
 }
