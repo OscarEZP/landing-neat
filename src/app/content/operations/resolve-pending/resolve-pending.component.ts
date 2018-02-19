@@ -11,6 +11,8 @@ import {Subscription} from 'rxjs/Subscription';
 import {Contingency} from '../../../shared/_models/contingency/contingency';
 import {PendingSearch} from '../../../shared/_models/pending/pendingSearch';
 import {Pending} from '../../../shared/_models/pending/pending';
+import {Resolve} from '../../../shared/_models/pending/resolve';
+import {Validation} from '../../../shared/_models/validation';
 
 @Component({
     selector: 'lsl-resolve-pending',
@@ -24,9 +26,12 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
     private snackBarMessage: string;
     private _resolveForm: FormGroup;
     private _pendingsSubscription: Subscription;
-
-    private _contingencyId: number;
+    private _resolvesSubscription: Subscription;
     private _groupPendingByArea: Map<string, Pending[]>;
+    private _resolves: Resolve[];
+    private _contingencyId: number;
+    private _username: string;
+    private _validations: Validation;
 
     constructor(private _dialogService: DialogService,
                 private _translate: TranslateService,
@@ -38,12 +43,13 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
                 @Inject(MAT_DIALOG_DATA) private _contingency: Contingency) {
         this._translate.setDefaultLang('en');
 
-        const username = this._storageService.getCurrentUser().username;
-        const contingencyId = this._contingency.id;
+        this.username = this._storageService.getCurrentUser().username;
+        this.contingencyId = this._contingency.id;
 
         this.groupPendingByArea = new Map<string, Pending[]>();
         this.snackBarMessage = '';
-
+        this.resolves = [];
+        this.validations = Validation.getInstance();
     }
 
 
@@ -68,6 +74,9 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         if (this._pendingsSubscription) {
             this._pendingsSubscription.unsubscribe();
         }
+        if (this._resolvesSubscription) {
+            this._resolvesSubscription.unsubscribe();
+        }
     }
     private searchPendings(contingencyId: number): Subscription {
 
@@ -83,7 +92,22 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
 
     }
 
+    public addResolve(pendingId: number): void {
+        this.resolves.push(new Resolve(this.contingencyId, pendingId, this.username));
+    }
 
+    public deleteResolve(pendingId: number): void {
+        /**
+         * TO_DO
+         */
+    }
+    public saveResolves(): Subscription {
+        this.validations.isSending = true;
+        return this._apiRestService.add<Response>(ResolvePendingComponent.RESOLVE_ENDPOINT, this.resolves)
+            .subscribe(rs => {
+               this.validations.isSending = false;
+            });
+    }
     private validateFilledItems(): boolean {
         let counterFilled = 0;
         const defaultValid = 0;
@@ -104,10 +128,6 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         this._resolveForm = value;
     }
 
-    get contingencyId(): number {
-        return this._contingencyId;
-    }
-
     get groupPendingByArea(): Map<string, Pending[]> {
         return this._groupPendingByArea;
     }
@@ -116,4 +136,35 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         this._groupPendingByArea = value;
     }
 
+    get resolves(): Resolve[] {
+        return this._resolves;
+    }
+
+    set resolves(value: Resolve[]) {
+        this._resolves = value;
+    }
+
+    get contingencyId(): number {
+        return this._contingencyId;
+    }
+
+    set contingencyId(value: number) {
+        this._contingencyId = value;
+    }
+
+    get username(): string {
+        return this._username;
+    }
+
+    set username(value: string) {
+        this._username = value;
+    }
+
+    get validations(): Validation {
+        return this._validations;
+    }
+
+    set validations(value: Validation) {
+        this._validations = value;
+    }
 }
