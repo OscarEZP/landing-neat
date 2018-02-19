@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {DialogService} from '../../_services/dialog.service';
 import {TranslateService} from '@ngx-translate/core';
@@ -7,17 +7,17 @@ import {StorageService} from '../../../shared/_services/storage.service';
 import {MessageService} from '../../../shared/_services/message.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
-import {Subscription} from "rxjs/Subscription";
-import {Contingency} from "../../../shared/_models/contingency/contingency";
-import {PendingSearch} from "../../../shared/_models/pending/pendingSearch";
-import {Pending} from "../../../shared/_models/pending/pending";
+import {Subscription} from 'rxjs/Subscription';
+import {Contingency} from '../../../shared/_models/contingency/contingency';
+import {PendingSearch} from '../../../shared/_models/pending/pendingSearch';
+import {Pending} from '../../../shared/_models/pending/pending';
 
 @Component({
     selector: 'lsl-resolve-pending',
     templateUrl: './resolve-pending.component.html',
     styleUrls: ['./resolve-pending.component.scss']
 })
-export class ResolvePendingComponent implements OnInit {
+export class ResolvePendingComponent implements OnInit, OnDestroy {
 
     private static SEARCH_ENDPOINT = 'pendingSearch';
     private static RESOLVE_ENDPOINT = 'pendingResolve';
@@ -27,7 +27,6 @@ export class ResolvePendingComponent implements OnInit {
 
     private _contingencyId: number;
     private _groupPendingByArea: Map<string, Pending[]>;
-
 
     constructor(private _dialogService: DialogService,
                 private _translate: TranslateService,
@@ -40,51 +39,50 @@ export class ResolvePendingComponent implements OnInit {
         this._translate.setDefaultLang('en');
 
         const username = this._storageService.getCurrentUser().username;
-        const contingencyId= this._contingency.id;
+        const contingencyId = this._contingency.id;
 
         this.groupPendingByArea = new Map<string, Pending[]>();
         this.snackBarMessage = '';
 
     }
 
-    ngOnInit() {
-      this._pendingsSubscription=this.searchPendings(this.contingencyId);
-    }
-    ngOnDestroy() {
 
-        if (this._pendingsSubscription) {
-            this._pendingsSubscription.unsubscribe();
-        }
-
-    }
-
-    private searchPendings(contingencyId:number): Subscription {
-
-        let pendingSearch:PendingSearch=PendingSearch.getInstance();
-        pendingSearch.isResolve = false;
-        pendingSearch.contingencyId=contingencyId;
-
-       return this._apiRestService.search<Pending[]>(ResolvePendingComponent.SEARCH_ENDPOINT, pendingSearch)
-            .subscribe(rs => {
-               let res = rs as Pending[];
-                this.groupPendingByArea=ResolvePendingComponent.groupPendingByArea(res);
-           });
-
-    }
-
-    private static groupPendingByArea(pendings: Pending[]): Map<string, Pending[]> {
-        let pendingsByGroup: Map<string, Pending[]> = new Map<string, Pending[]>();
+    static groupPendingByArea(pendings: Pending[]): Map<string, Pending[]> {
+        const pendingsByGroup: Map<string, Pending[]> = new Map<string, Pending[]>();
         for (const pending of pendings) {
-            if(pendingsByGroup.has(pending.area)){
+            if (pendingsByGroup.has(pending.area)) {
                 pendingsByGroup.get(pending.area).push(pending);
-            }else{
-                let pendings: Pending[]=[];
-                pendings.push(pending);
-                pendingsByGroup.set(pending.area,pendings);
+            } else {
+                const items: Pending[] = [];
+                items.push(pending);
+                pendingsByGroup.set(pending.area, items);
             }
         }
         return pendingsByGroup;
     }
+    ngOnInit() {
+        this._pendingsSubscription = this.searchPendings(this.contingencyId);
+    }
+
+    ngOnDestroy() {
+        if (this._pendingsSubscription) {
+            this._pendingsSubscription.unsubscribe();
+        }
+    }
+    private searchPendings(contingencyId: number): Subscription {
+
+        const pendingSearch: PendingSearch = PendingSearch.getInstance();
+        pendingSearch.isResolve = false;
+        pendingSearch.contingencyId = contingencyId;
+
+        return this._apiRestService.search<Pending[]>(ResolvePendingComponent.SEARCH_ENDPOINT, pendingSearch)
+            .subscribe(rs => {
+                const res = rs as Pending[];
+                this.groupPendingByArea = ResolvePendingComponent.groupPendingByArea(res);
+            });
+
+    }
+
 
     private validateFilledItems(): boolean {
         let counterFilled = 0;
@@ -94,7 +92,7 @@ export class ResolvePendingComponent implements OnInit {
                 counterFilled = counterFilled + 1;
             }
         });
-        return counterFilled > defaultValid ? true : false;
+        return counterFilled > defaultValid;
     }
 
 
@@ -109,7 +107,8 @@ export class ResolvePendingComponent implements OnInit {
     get contingencyId(): number {
         return this._contingencyId;
     }
-    get groupPendingByArea(): Map<string,Pending[]> {
+
+    get groupPendingByArea(): Map<string, Pending[]> {
         return this._groupPendingByArea;
     }
 
