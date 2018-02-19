@@ -23,7 +23,8 @@ import {
     MatButtonToggleModule,
     MatChipsModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatExpansionModule
 } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -58,7 +59,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         MatButtonToggleModule,
         MatChipsModule,
         MatPaginatorModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatExpansionModule
     ],
     exports: [
         FlexLayoutModule,
@@ -89,7 +91,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         MatButtonToggleModule,
         MatChipsModule,
         MatPaginatorModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatExpansionModule
     ],
 
 })

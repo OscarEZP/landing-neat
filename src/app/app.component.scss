@@ -1,3 +1,7 @@
 .dummy {
   color: red;
 }
+/deep/
+.mat-button-focus-overlay {
+  background-color:transparent !important;
+}
