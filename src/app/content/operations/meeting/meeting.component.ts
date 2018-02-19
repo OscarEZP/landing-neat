@@ -103,7 +103,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this.pending = Pending.getInstance();
 
         this.meeting.createUser = username;
-        this.pending.create_user = username;
+        this.pending.createUser = username;
 
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.meetingForm = this.getFormValidators();
@@ -150,6 +150,10 @@ export class MeetingComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Filter for area list
+     * @return {Observable<string[]>}
+     */
     private getFilteredAreas(): Observable <string[]> {
         return this.pendingForm.controls['area'].valueChanges
         .pipe(
@@ -161,6 +165,10 @@ export class MeetingComponent implements OnInit, OnDestroy {
         );
     }
 
+    /**
+     * Filter for mail list
+     * @return {Observable<string[]>}
+     */
     private getFilteredOptions(): Observable <string[]> {
         return this.assistantForm.controls['assistantMail'].valueChanges
         .pipe(
@@ -173,14 +181,27 @@ export class MeetingComponent implements OnInit, OnDestroy {
         );
     }
 
+    /**
+     * Validation for selecting values only from options
+     * @param val
+     * @param list
+     * @return {string}
+     */
     public comboValidation(val: string, list: string[]): string {
         return val && list.filter(v => (v.toLowerCase() === val.toLowerCase() || v.toLowerCase().indexOf(val.toLowerCase()) !== -1)).length > 0 ? val : '';
     }
 
-    private reloadPendings() {
-        this.pendingsGroups = this.groupBy(this.meeting.pendings, 'area');
+    /**
+     * Method for regroup pending list items
+     */
+    private reloadPendings(): Pending[] {
+        return this.groupBy(this.meeting.pendings, 'area');
     }
 
+    /**
+     * Validation for pending form
+     * @return {boolean}
+     */
     private pendingValidation(): boolean {
         let valid = true;
         const errorObj = { descriptionRequired: false, areaRequired: false };
@@ -196,20 +217,36 @@ export class MeetingComponent implements OnInit, OnDestroy {
         return valid;
     }
 
-    public addPending(): void {
+    /**
+     * Add pending method
+     */
+    public addPending(): boolean {
+        let result = false;
         if (this.pendingForm.valid && this.pendingValidation()) {
-            this.meeting.pendings.push(new Pending(this.pending.area, this.pending.description, this.pending.create_user));
-            this.reloadPendings();
+            this.meeting.pendings.push(new Pending(this.pending.area, this.pending.description, this.pending.createUser));
+            this.pendingsGroups = this.reloadPendings();
             this.pending.description = '';
             this.pending.area = '';
+            result = true;
         }
+        return result;
     }
 
+    /**
+     * Delete pending from list
+     * @param pending
+     */
     public deletePending(pending: Pending): void {
         this.meeting.pendings = this.meeting.pendings.filter(p => pending !== p);
-        this.reloadPendings();
+        this.pendingsGroups = this.reloadPendings();
     }
 
+    /**
+     * Group a collection by attribute
+     * @param collection
+     * @param property
+     * @return {Array}
+     */
     private groupBy(collection: any[], property: string) {
         let i = 0, val, index;
         const values = [], result = [];
@@ -237,6 +274,10 @@ export class MeetingComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Get pending form with validation
+     * @return {FormGroup}
+     */
     private getPendingForm(): FormGroup {
         return this._fb.group({
             area: [''],
@@ -244,6 +285,10 @@ export class MeetingComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Get assistant form with validation
+     * @return {FormGroup}
+     */
     private getAssistantForm(): FormGroup {
         return this._fb.group({
             assistantMail: [this.assistant.mail, {validators: MeetingComponent.emailValidator}],
@@ -302,13 +347,17 @@ export class MeetingComponent implements OnInit, OnDestroy {
         return meetingActivities;
     }
 
+    /**
+     * Method for add pending if there is an activity without done check
+     * @param meeting
+     * @return {Meeting}
+     */
     private addPendingsByActivities(meeting: Meeting): Meeting {
         meeting.activities.forEach((act) => {
             if (act.apply && !act.done && meeting.pendings.filter((p) => p.area === MeetingComponent.MOC_CODE && p.description === act.code).length < 1) {
-                meeting.pendings.push(new Pending(MeetingComponent.MOC_CODE, act.code, this.pending.create_user));
+                meeting.pendings.push(new Pending(MeetingComponent.MOC_CODE, act.code, this.pending.createUser));
             }
         });
-        console.log(meeting);
         return meeting;
     }
 
@@ -339,6 +388,10 @@ export class MeetingComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Method for save email in configuration table
+     * @return {Subscription}
+     */
     public saveEmails(): Subscription {
         let res: Response;
         const signatureAssistantConf = this.getSignatureAssistantConf();
