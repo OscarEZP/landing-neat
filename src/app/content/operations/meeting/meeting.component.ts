@@ -71,6 +71,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private _agreement: string;
     private _areas: string[];
     private _pendingsGroups: any[];
+    private _maxChars: number;
 
     static emailValidator(control: FormControl) {
         if (!control.value.match(/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i) && control.value) {
@@ -122,6 +123,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this.validations = Validation.getInstance();
 
         this.agreement = '';
+        this._maxChars = 400;
     }
 
     ngOnInit(): void {
@@ -759,5 +761,9 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
     set performedActivities(value: string) {
         this.meeting.performedActivities = value;
+    }
+
+    get maxChars(): number {
+        return this._maxChars;
     }
 }

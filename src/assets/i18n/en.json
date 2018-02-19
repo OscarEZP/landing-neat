@@ -158,6 +158,7 @@
       "STATION": "Station",
       "TAIL": "Tail",
       "TYPE": "Type",
+      "TO": "to",
       "TO_DO_LIST": "To do list",
       "SUCCESSFULLY_MESSAGE": "Meeting has been created successfully",
       "ADD_ASSISTANT_TITTLE": "Add Assistants",

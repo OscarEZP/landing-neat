@@ -152,11 +152,11 @@
                                     matInput
                                     placeholder="{{'OPERATIONS.MEETING_FORM.PENDINGS'|translate}}"
                                     [formControl]="pendingForm.controls['description']"
-                                    maxlength="400"
+                                    maxlength="{{maxChars}}"
                                     #pendingDescription
                                 >
                                 </textarea>
-                                <mat-hint align="end">{{pendingDescription.value.length}} to 400</mat-hint>
+                                <mat-hint align="end">{{pendingDescription.value.length}} {{'OPERATIONS.MEETING_FORM.TO' | translate}} {{maxChars}}</mat-hint>
                             </mat-form-field>
                         </div>
                     </div>
@@ -210,7 +210,7 @@
                                 [formControl]="meetingForm.controls['performedActivities']"
                                 [(ngModel)]="performedActivities"
                                 #perAct
-                                maxlength="400"
+                                maxlength="{{maxChars}}"
                         >
                         </textarea>
                         <div fxLayout="row" >
@@ -218,7 +218,7 @@
                                 {{'MEETING_PERFORMED_ACTIVITIES_MAX_MSG'|translate}}
                             </mat-error>
                         </div>
-                        <mat-hint align="end">{{perAct.value.length}} to 400</mat-hint>
+                        <mat-hint align="end">{{perAct.value.length}} {{'OPERATIONS.MEETING_FORM.TO' | translate}} {{maxChars}}</mat-hint>
                     </mat-form-field>
                 </div>
                 <form [formGroup]="agreementForm" #agreeForm="ngForm" (submit)="addAgreement()">
@@ -232,10 +232,10 @@
                                 [formControl]="agreementForm.controls['agreement']"
                                 [(ngModel)]="agreement"
                                 #agree
-                                maxlength="400"
+                                maxlength="{{maxChars}}"
                         >
                         </textarea>
-                        <mat-hint align="end">{{agree.value.length}} to 400</mat-hint>
+                        <mat-hint align="end">{{agree.value.length}} {{'OPERATIONS.MEETING_FORM.TO' | translate}} {{maxChars}}</mat-hint>
                     </mat-form-field>
                 </div>
                 <div fxLayout="row" class="actions-container">
