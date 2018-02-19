@@ -61,10 +61,18 @@ $padd-section: 25px;
   @include generate-font-size(-1);
 }
 
+.mat-input-container {
+  width: 100%;
+}
+
+
+.mat-icon {
+  color: mat-color($foreground, secondary-text);
+}
+
 /deep/
 #container-add-assistant {
   > .mat-input-container {
-    width: 100%;
     height: 60px;
 
     > .mat-input-wrapper {
@@ -74,7 +82,6 @@ $padd-section: 25px;
       display: inline-block;
       .mat-icon {
         margin: 22px 0 0 0;
-        color: mat-color($foreground, secondary-text);
         @include generate-font-size(3);
       }
     }
@@ -86,12 +93,33 @@ $padd-section: 25px;
 }
 
 .content-dialog-container {
+
+  .actions-container {
+    margin: 10px 0;
+  }
+
+  .mat-expansion-panel {
+    box-shadow: none;
+    background-color: mat-color($mat-grey, 50);
+  }
+
   /deep/
   .mat-expansion-panel-body {
+
+    .separator-border {
+      border-top: thin solid mat-color($foreground, secondary-text);
+      padding: 10px 0 0 0;
+    }
+
     li {
       div {
         white-space: pre-line;
       }
+    }
+
+    hr {
+      padding-top: 0;
+      margin-top: 0;
     }
   }
 
@@ -104,6 +132,7 @@ $padd-section: 25px;
 
   .mat-accordion {
     width: 100%;
+
     .delete {
       padding: 0 0 0 0;
       width: 30px;
@@ -230,8 +259,5 @@ $padd-section: 25px;
     }
   }
 
-  .mat-accordion {
-    width: 100%;
-  }
 }
 

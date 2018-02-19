@@ -131,13 +131,13 @@
                     <span>{{'OPERATIONS.MEETING_FORM.ADD_PENDINGS'|translate}}</span>
                 </div>
                 <form [formGroup]="pendingForm" #pendForm="ngForm" (submit)="addPending()">
-                    <div fxLayout="row" id="container-add-pendings" fxLayoutGap="10px">
-                        <mat-form-field fxFlex="40">
+                    <div id="container-add-pendings">
+                        <mat-form-field>
                             <input id="in-meeting-area" type="text" matInput placeholder="{{'OPERATIONS.MEETING_FORM.AREA'|translate}}"
                                    [matAutocomplete]="autoArea"
                                    [(ngModel)]="pending.area"
                                    [formControl]="pendingForm.controls['area']"
-                                   (blur)="pending.area = comboValidation(pendingForm.controls['area'].value, areas)"
+                                   (blur)="pending.area = comboValidation(pending.area, areas)"
                             >
                             <mat-autocomplete #autoArea="matAutocomplete" role="combobox">
                                 <mat-option *ngFor="let area of filteredAreas | async" [value]="area">
@@ -145,15 +145,18 @@
                                 </mat-option>
                             </mat-autocomplete>
                         </mat-form-field>
-                        <div fxFlex="60" id="cont-meeting-pending-description">
+                        <div id="cont-meeting-pending-description">
                             <mat-form-field class="">
                                 <textarea
                                     [(ngModel)]="pending.description"
                                     matInput
                                     placeholder="{{'OPERATIONS.MEETING_FORM.PENDINGS'|translate}}"
                                     [formControl]="pendingForm.controls['description']"
+                                    maxlength="400"
+                                    #pendingDescription
                                 >
                                 </textarea>
+                                <mat-hint align="end">{{pendingDescription.value.length}} to 400</mat-hint>
                             </mat-form-field>
                         </div>
                     </div>
@@ -170,20 +173,20 @@
                                 </mat-error>
                             </div>
                         </div>
-                        <div fxFlex="20" fxLayoutGap="10px" fxLayoutAlign="end center">
+                        <div fxFlex="20" fxLayoutGap="10px" fxLayoutAlign="end center" class="actions-container">
                             <button type="submit" mat-button color="primary" >
                                 {{'BUTTONS.ADD'|translate}}
                             </button>
                         </div>
                     </div>
-                    <div fxLayout="row">
+                    <div fxLayout="row" class="accordion-container">
                         <mat-accordion>
                             <mat-expansion-panel *ngFor="let tempGroup of pendingsGroups">
-                                <mat-expansion-panel-header>
+                                <mat-expansion-panel-header expandedHeight="50px">
                                     {{tempGroup[0].area}}
                                 </mat-expansion-panel-header>
                                 <ul>
-                                    <li *ngFor="let tempPending of tempGroup; let i = index">
+                                    <li class="separator-border" *ngFor="let tempPending of tempGroup; let i = index">
                                         <div>{{i+1}}- {{tempPending._description}}</div>
                                         <div fxLayoutAlign="end"><button class="delete" type="button" (click)="deletePending(tempPending)" mat-button><mat-icon matSuffix>delete</mat-icon></button></div>
                                     </li>
@@ -235,42 +238,28 @@
                         <mat-hint align="end">{{agree.value.length}} to 400</mat-hint>
                     </mat-form-field>
                 </div>
-                <div fxLayout="row">
-
-                        <div fxFlex="100" fxLayoutGap="10px" fxLayoutAlign="end center">
-                            <button type="submit" mat-button color="primary" >
-                                {{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT'|translate}}
-                            </button>
-                        </div>
-
+                <div fxLayout="row" class="actions-container">
+                    <div fxFlex="100" fxLayoutGap="10px" fxLayoutAlign="end center">
+                        <button type="submit" mat-button color="primary" >
+                            {{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT'|translate}}
+                        </button>
+                    </div>
                 </div>
-                <div class="sections-content" fxLayout="row" >
+                <div class="sections-content accordion-container" fxLayout="row" >
                     <mat-accordion>
-
-                            <mat-expansion-panel *ngFor="let agreement of meetingAgreements; let i = index">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    {{i+1}}
-                                </mat-panel-title>
+                        <mat-expansion-panel *ngFor="let agreement of meetingAgreements; let i = index">
+                            <mat-expansion-panel-header expandedHeight="50px">
+                                <mat-panel-title>{{i+1}}</mat-panel-title>
                             </mat-expansion-panel-header>
-
-                                <div fxLayout="row" fxFlex="100">
-                                    {{agreement.description}}
+                            <div class="separator-border">
+                                <div>{{agreement.description}}</div>
+                                <div fxLayout="row" fxLayoutAlign="end center">
+                                    <button class="delete" mat-button (click)="deleteAgreementMeeting(i)">
+                                        <mat-icon matSuffix>delete</mat-icon>
+                                    </button>
                                 </div>
-
-                               <mat-action-row>
-
-
-                                    <div fxLayout="row"  fxFlex="100" fxLayoutAlign="end center">
-                                        <button mat-button (click)="deleteAgreementMeeting(i)">
-                                            <mat-icon matSuffix>delete</mat-icon>
-                                        </button>
-                                    </div>
-
-                             </mat-action-row>
-
-                            </mat-expansion-panel>
-
+                            </div>
+                        </mat-expansion-panel>
                     </mat-accordion>
                 </div>
                 </form>

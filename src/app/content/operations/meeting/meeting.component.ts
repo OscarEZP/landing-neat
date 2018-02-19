@@ -24,7 +24,7 @@ import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {Subscription} from 'rxjs/Subscription';
 import {StorageService} from '../../../shared/_services/storage.service';
-import {Agreement} from "../../../shared/_models/meeting/agreement";
+import {Agreement} from '../../../shared/_models/meeting/agreement';
 import {Pending} from '../../../shared/_models/meeting/pending';
 
 @Component({
@@ -97,14 +97,20 @@ export class MeetingComponent implements OnInit, OnDestroy {
         this.areas = [];
         this.pendingsGroups = [];
 
+        const username = this._storageService.getCurrentUser().username;
+        this.meeting = new Meeting(this.contingency.id);
+        this.assistant = new Assistant('');
+        this.pending = Pending.getInstance();
+
+        this.meeting.createUser = username;
+        this.pending.create_user = username;
+
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.meetingForm = this.getFormValidators();
         this.pendingForm = this.getPendingForm();
         this.assistantForm = this.getAssistantForm();
         this.agreementForm = this._fb.group({agreement: [this.agreement]});
 
-        this.meeting = new Meeting(this.contingency.id);
-        this.meeting.createUser = username;
         this.barcode = this.contingency.barcode;
         this.safetyCode = this.contingency.safetyEvent.code;
         this.mails = [];
@@ -115,15 +121,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
         this.validations = Validation.getInstance();
 
-        this.assistant = new Assistant('');
-        this.pending = Pending.getInstance();
         this.agreement = '';
-
-        const username = this._storageService.getCurrentUser().username;
-        this.meeting.createUser = username;
-        this.pending.create_user = username;
-
-
     }
 
     ngOnInit(): void {
@@ -152,7 +150,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
         }
     }
 
-    private getFilteredAreas(): Observable {
+    private getFilteredAreas(): Observable <string[]> {
         return this.pendingForm.controls['area'].valueChanges
         .pipe(
             startWith(''),
@@ -163,7 +161,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
         );
     }
 
-    private getFilteredOptions(): Observable {
+    private getFilteredOptions(): Observable <string[]> {
         return this.assistantForm.controls['assistantMail'].valueChanges
         .pipe(
             startWith(''),
@@ -176,7 +174,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     public comboValidation(val: string, list: string[]): string {
-        return list.filter(v => (v.toLowerCase() === val.toLowerCase() || v.toLowerCase().indexOf(val.toLowerCase()) !== -1)).length > 0 ? val : '';
+        return val && list.filter(v => (v.toLowerCase() === val.toLowerCase() || v.toLowerCase().indexOf(val.toLowerCase()) !== -1)).length > 0 ? val : '';
     }
 
     private reloadPendings() {
@@ -270,7 +268,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private getFormValidators(): FormGroup {
         this.meetingForm = this._fb.group({
             meetingAsistants: ['', Validators.required],
-            performedActivities:[this.performedActivities,Validators.required],
+            performedActivities: [this.performedActivities, Validators.required],
         });
         const barcodeValidators = [Validators.pattern(MeetingComponent.BARCODE_PATTERN), Validators.maxLength(80)];
         if (this.safetyCode !== null) {
@@ -384,11 +382,11 @@ export class MeetingComponent implements OnInit, OnDestroy {
      * Add agreement to list and clean text input
      */
     public addAgreement(): void {
-        if (this.agreementForm.valid && this.agreement!='') {
+        if (this.agreementForm.valid && this.agreement !== '') {
             const currentAgreement = new Agreement();
-            currentAgreement.description=this.agreement;
+            currentAgreement.description = this.agreement;
 
-            currentAgreement.createUser=this._storageService.getCurrentUser().username;
+            currentAgreement.createUser = this._storageService.getCurrentUser().username;
             const findAgreement = this.meetingAgreements.find(x => x.description === currentAgreement.description);
             if (typeof findAgreement === 'undefined') {
                 this.meetingAgreements.push(currentAgreement);

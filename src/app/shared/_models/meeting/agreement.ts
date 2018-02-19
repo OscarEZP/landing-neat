@@ -15,7 +15,7 @@ export class Agreement {
         this.createDate = TimeInstant.getInstance();
     }
 
-    static getInstance():Agreement{
+    static getInstance(): Agreement {
         return new Agreement();
     }
     get id(): number {
@@ -23,7 +23,7 @@ export class Agreement {
     }
 
     set id(value: number) {
-        this._id= value;
+        this._id = value;
     }
 
     get description(): string {

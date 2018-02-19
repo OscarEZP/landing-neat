@@ -18,7 +18,7 @@ export class Meeting {
         this.activities = activities;
         this.barcode = barcode;
         this.createUser = createUser;
-        this.timeInstant = timeInstant!=null?timeInstant:TimeInstant.getInstance();
+        this.timeInstant = timeInstant !== null ? timeInstant : TimeInstant.getInstance();
         this.safetyCode = safetyCode;
         this.assistants = assistants;
     }
