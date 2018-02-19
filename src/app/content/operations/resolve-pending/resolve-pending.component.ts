@@ -44,6 +44,9 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         this._translate.setDefaultLang('en');
 
         this.username = this._storageService.getCurrentUser().username;
+
+        console.log('contingency',this._contingency);
+
         this.contingencyId = this._contingency.id;
 
         this.groupPendingByArea = new Map<string, Pending[]>();
@@ -81,13 +84,15 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         }
     }
     private searchPendings(contingencyId: number): Subscription {
-
+        console.log('contingencyId',contingencyId)
         const pendingSearch: PendingSearch = PendingSearch.getInstance();
         pendingSearch.isResolve = false;
         pendingSearch.contingencyId = contingencyId;
+        console.log("pendingSearch :",pendingSearch);
 
         return this._apiRestService.search<Pending[]>(ResolvePendingComponent.SEARCH_ENDPOINT, pendingSearch)
             .subscribe(rs => {
+                console.log('rs',rs);
                 const res = rs as Pending[];
                 this.groupPendingByArea = ResolvePendingComponent.groupPendingByArea(res);
             });
