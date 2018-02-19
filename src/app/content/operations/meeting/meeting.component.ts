@@ -37,6 +37,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     private static MEETINGS_ENDPOINT = 'meetings';
     private static MAILS_ENDPOINT = 'mails';
     private static AREAS_ENDPOINT = 'areas';
+    private static MOC_CODE = 'MOC';
 
     private static MEETINGS_CONFIG_TYPE = 'MEETING_ACTIVITIES';
     private static BARCODE_PATTERN = '^[a-zA-Z0-9]+\\S$';
@@ -131,24 +132,8 @@ export class MeetingComponent implements OnInit, OnDestroy {
                     });
             });
         this._clockService.getClock().subscribe(time => this.timeClock = time);
-        this.filteredOptions = this.assistantForm.controls['assistantMail'].valueChanges
-            .pipe(
-                startWith(''),
-                map(val => {
-                    if (val.length >= 3) {
-                        return this.filter(val, this.mails);
-                    }
-                })
-            );
-        this.filteredAreas = this.pendingForm.controls['area'].valueChanges
-            .pipe(
-                startWith(''),
-                map(val => {
-                    const result = this.filter(val, this.areas);
-                    return result.length > 0 ? result : this.areas;
-                })
-            );
-
+        this.filteredOptions = this.getFilteredOptions();
+        this.filteredAreas = this.getFilteredAreas();
     }
 
     ngOnDestroy() {
@@ -162,8 +147,31 @@ export class MeetingComponent implements OnInit, OnDestroy {
         }
     }
 
+    private getFilteredAreas(): Observable {
+        return this.pendingForm.controls['area'].valueChanges
+        .pipe(
+            startWith(''),
+            map(val => {
+                const result = this.filter(val, this.areas);
+                return result.length > 0 ? result : this.areas;
+            })
+        );
+    }
+
+    private getFilteredOptions(): Observable {
+        return this.assistantForm.controls['assistantMail'].valueChanges
+        .pipe(
+            startWith(''),
+            map(val => {
+                if (val.length >= 3) {
+                    return this.filter(val, this.mails);
+                }
+            })
+        );
+    }
+
     public comboValidation(val: string, list: string[]): string {
-        return list.filter(v => (v === val || v.indexOf(val) !== -1)).length > 0 ? val : '';
+        return list.filter(v => (v.toLowerCase() === val.toLowerCase() || v.toLowerCase().indexOf(val.toLowerCase()) !== -1)).length > 0 ? val : '';
     }
 
     private reloadPendings() {
@@ -187,7 +195,6 @@ export class MeetingComponent implements OnInit, OnDestroy {
 
     public addPending(): void {
         if (this.pendingForm.valid && this.pendingValidation()) {
-
             this.meeting.pendings.push(new Pending(this.pending.area, this.pending.description, this.pending.create_user));
             this.reloadPendings();
             this.pending.description = '';
@@ -291,16 +298,26 @@ export class MeetingComponent implements OnInit, OnDestroy {
         return meetingActivities;
     }
 
+    private addPendingsByActivities(meeting: Meeting): Meeting {
+        meeting.activities.forEach((act) => {
+            if (act.apply && !act.done && meeting.pendings.filter((p) => p.area === MeetingComponent.MOC_CODE && p.description === act.code).length < 1) {
+                meeting.pendings.push(new Pending(MeetingComponent.MOC_CODE, act.code, this.pending.create_user));
+            }
+        });
+        console.log(meeting);
+        return meeting;
+    }
+
     /**
      * Save meeting form
      */
     public submitForm() {
         if (this.meetingForm.valid) {
-            const signature = this.getSignature();
+            this.meeting = this.addPendingsByActivities(this.meeting);
             this.validations.isSending = true;
             let res: Response;
             this._meetingSubscription = this._apiRestService
-                .add<Response>(MeetingComponent.MEETINGS_ENDPOINT, signature)
+                .add<Response>(MeetingComponent.MEETINGS_ENDPOINT, this.meeting)
                 .subscribe(response => res = response,
                     err => {
                         this.getTranslateString('OPERATIONS.MEETING_FORM.FAILURE_MESSAGE');
@@ -375,14 +392,6 @@ export class MeetingComponent implements OnInit, OnDestroy {
             .subscribe(rs => {
                 rs.forEach(mail => this.mails.push(mail.address));
             });
-    }
-
-    /**
-     * Get a Meeting Object to sending data
-     * @return {Meeting}
-     */
-    private getSignature(): Meeting {
-        return this.meeting;
     }
 
     /**

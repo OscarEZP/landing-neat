@@ -137,7 +137,7 @@
                                    [matAutocomplete]="autoArea"
                                    [(ngModel)]="pending.area"
                                    [formControl]="pendingForm.controls['area']"
-                                   (blur)="pending.area = comboValidation(pending.area, areas)"
+                                   (blur)="pending.area = comboValidation(pendingForm.controls['area'].value, areas)"
                             >
                             <mat-autocomplete #autoArea="matAutocomplete" role="combobox">
                                 <mat-option *ngFor="let area of filteredAreas | async" [value]="area">

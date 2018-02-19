@@ -87,6 +87,15 @@ $padd-section: 25px;
 
 .content-dialog-container {
   /deep/
+  .mat-expansion-panel-body {
+    li {
+      div {
+        white-space: pre-line;
+      }
+    }
+  }
+
+  /deep/
   #cont-meeting-pending-description {
     .mat-form-field-infix {
       width: auto;
