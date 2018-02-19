@@ -50,6 +50,8 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         this.snackBarMessage = '';
         this.resolves = [];
         this.validations = Validation.getInstance();
+
+        this.resolveForm = this._fb.group({});
     }
 
 
@@ -108,6 +110,23 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
                this.validations.isSending = false;
             });
     }
+
+    /**
+     * Close form modal
+     */
+    public closeDialog(): void {
+        /*if (this.validateFilledItems()) {
+            this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
+            this._messageService.openFromComponent(CancelComponent, {
+                data: {message: this.snackbarMessage},
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+            });
+        } else {*/
+            this._dialogService.closeAllDialogs();
+       // }
+    }
+
     private validateFilledItems(): boolean {
         let counterFilled = 0;
         const defaultValid = 0;

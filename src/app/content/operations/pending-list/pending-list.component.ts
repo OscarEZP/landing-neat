@@ -15,7 +15,7 @@ import {MeetingComponent} from '../meeting/meeting.component';
 import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
-
+import {ResolvePendingComponent} from '../resolve-pending/resolve-pending.component'
 @Component({
     selector: 'lsl-pending-list',
     templateUrl: './pending-list.component.html',
@@ -191,6 +191,21 @@ export class PendingListComponent implements OnInit, OnDestroy {
             hasBackdrop: false
         });
     }
+
+    /**
+     * Method for open meeting creation modal
+     * @param contingency
+     */
+    public openPending(contingency: Contingency) {
+        this._dialogService.openDialog(ResolvePendingComponent, {
+            data: contingency,
+            maxWidth: '40vw',
+            width: '30%',
+            height: '90%',
+            hasBackdrop: false
+        });
+    }
+
 
     /**
      * Method for reload list by an event
