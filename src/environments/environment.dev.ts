@@ -28,7 +28,7 @@ export const environment = {
         types: ':9005/api/v1/configurations/types',
         configTypes: ':9005/api/v1/configurations/types/groupNames',
         mails : ':9005/api/v1/configurations/mails',
-        pendingSearch:':9002/api/v1/pendings/_search',
-        pendingResolve:':9002/api/v1/pendings/_resolve'
+        pendingSearch:':9002/api/v1/contingencies/pendings/_search',
+        pendingResolve:':9002/api/v1/contingencies/pendings/_resolve'
     }
 };

@@ -28,7 +28,7 @@ export const environment = {
         types: '/api/v1/configurations/types',
         configTypes: '/api/v1/configurations/types/groupNames',
         mails : '/api/v1/configurations/mails',
-        pendingSearch:':/api/v1/pendings/_search',
-        pendingResolve:':/api/v1/pendings/_resolve'
+        pendingSearch:':/api/v1/contingencies/pendings/_search',
+        pendingResolve:':/api/v1/contingencies/pendings/_resolve'
     }
 };
