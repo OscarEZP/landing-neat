@@ -201,7 +201,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validation for pending form; pending area required, pending ara invalid and pending description
+     * Validation for pending form; pending area required, pending area invalid and pending description
      * @return {boolean}
      */
     private pendingValidation(): boolean {
