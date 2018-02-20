@@ -28,6 +28,7 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
     private _resolveForm: FormGroup;
     private _pendingsSubscription: Subscription;
     private _resolvesSubscription: Subscription;
+    private _messageSubscription: Subscription;
     private _groupPendingByArea: any[];
     private _resolves: Resolve[];
     private _contingencyId: number;
@@ -72,6 +73,9 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         }
         if (this._resolvesSubscription) {
             this._resolvesSubscription.unsubscribe();
+        }
+        if (this._messageSubscription) {
+            this._messageSubscription.unsubscribe();
         }
     }
 
@@ -142,13 +146,22 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
     }
 
     public saveResolves(): Subscription {
-        this.validations.isSending = true;
-        return this._apiRestService.add<Response>(ResolvePendingComponent.RESOLVE_ENDPOINT, this.resolves)
+        if (this.resolves.length > 0) {
+            this.validations.isSending = true;
+            return this._apiRestService.add<Response>(ResolvePendingComponent.RESOLVE_ENDPOINT, this.resolves)
             .subscribe(rs => {
-               this.validations.isSending = false;
+                this.validations.isSending = false;
                 this._dialogService.closeAllDialogs();
                 this._dataService.stringMessage('reload');
+                this._messageSubscription = this.translateString('OPERATIONS.RESOLVE_PENDING.PENDINGS_SOLVED').add(() => {
+                    this._messageService.openSnackBar(this.resolves.length + ' ' + this.snackBarMessage);
+                });
             });
+        } else {
+            this._messageSubscription = this.translateString('OPERATIONS.RESOLVE_PENDING.PENDING_REQUIRED').add(() => {
+                this._messageService.openSnackBar(this.snackBarMessage);
+            });
+        }
     }
 
     /**
@@ -167,8 +180,8 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         }
     }
 
-    private translateString(toTranslate: string): void {
-        this.translate.get(toTranslate).subscribe((res: string) => {
+    private translateString(toTranslate: string): Subscription {
+        return this.translate.get(toTranslate).subscribe((res: string) => {
             this.snackBarMessage = res;
         });
     }
