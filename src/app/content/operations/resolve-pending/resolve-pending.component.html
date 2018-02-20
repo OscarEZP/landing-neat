@@ -12,53 +12,22 @@
     </div>
     <div id="line-tittle_resolve-pending"></div>
     <mat-accordion multi="true" displayMode="flat">
-        <mat-expansion-panel >
+        <mat-expansion-panel *ngFor="let pendingGroup of groupPendingByArea">
             <mat-expansion-panel-header>
-                <mat-panel-title>Directory</mat-panel-title>
+                <mat-panel-title>{{pendingGroup[0].area}}</mat-panel-title>
                 <mat-panel-description>0 / 2 Pendings resolved</mat-panel-description>
             </mat-expansion-panel-header>
-            <div fxLayout="column">
-            <div fxLayout="row">
-            1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc non venenatis metus. Aliquam nec lacinia ex, vitae sodales ipsum. Duis suscipit at mi in commodo.
-                x
-            </div>
-            <div fxLayout="row">
-                Resolved <mat-slide-toggle></mat-slide-toggle>
-            </div>
-            </div>
-            <div fxLayout="column">
-            <div fxLayout="row">
-             2 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc non venenatis metus. Aliquam nec lacinia ex, vitae sodales ipsum. Duis suscipit at mi in commodo.
-            </div>
+            <div fxLayout="column" *ngFor="let pending of pendingGroup; let i = index" >
                 <div fxLayout="row">
-                    Resolved <mat-slide-toggle></mat-slide-toggle>
-                </div>
-            </div>
-        </mat-expansion-panel>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>Active</mat-panel-title>
-                <mat-panel-description>0 / 2 Pendings resolved</mat-panel-description>
-            </mat-expansion-panel-header>
-            <div fxLayout="column">
-                <div fxLayout="row">
-                    1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc non venenatis metus. Aliquam nec lacinia ex, vitae sodales ipsum. Duis suscipit at mi in commodo.
-                    x
+                {{i+1}} - {{pending.description}}
+
                 </div>
                 <div fxLayout="row">
                     Resolved <mat-slide-toggle></mat-slide-toggle>
                 </div>
             </div>
-            <div fxLayout="column">
-                <div fxLayout="row">
-                    2 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc non venenatis metus. Aliquam nec lacinia ex, vitae sodales ipsum. Duis suscipit at mi in commodo.
-                </div>
-                <div fxLayout="row">
-                    Resolved <mat-slide-toggle></mat-slide-toggle>
-                </div>
-            </div>
-        </mat-expansion-panel>
-    </mat-accordion>
+            </mat-expansion-panel>
+          </mat-accordion>
     <div mat-dialog-actions fxLayoutAlign="end">
         <button id="btn-contingency-form-cancel" type="button" mat-button (click)="closeDialog()">
             {{'OPERATIONS.CONTINGENCY_FORM.CANCEL_LABEL'|translate}}

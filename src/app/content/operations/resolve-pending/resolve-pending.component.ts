@@ -27,7 +27,7 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
     private _resolveForm: FormGroup;
     private _pendingsSubscription: Subscription;
     private _resolvesSubscription: Subscription;
-    private _groupPendingByArea: Map<string, Pending[]>;
+    private _groupPendingByArea: any[];
     private _resolves: Resolve[];
     private _contingencyId: number;
     private _username: string;
@@ -46,11 +46,9 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
 
         this.username = this._storageService.getCurrentUser().username;
 
-        console.log('contingency',this._contingency);
         this.currentContingency = this._contingency;
         this.contingencyId = this._contingency.id;
 
-        this.groupPendingByArea = new Map<string, Pending[]>();
         this.snackBarMessage = '';
         this.resolves = [];
         this.validations = Validation.getInstance();
@@ -59,19 +57,6 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
     }
 
 
-    static groupPendingByArea(pendings: Pending[]): Map<string, Pending[]> {
-        const pendingsByGroup: Map<string, Pending[]> = new Map<string, Pending[]>();
-        for (const pending of pendings) {
-            if (pendingsByGroup.has(pending.area)) {
-                pendingsByGroup.get(pending.area).push(pending);
-            } else {
-                const items: Pending[] = [];
-                items.push(pending);
-                pendingsByGroup.set(pending.area, items);
-            }
-        }
-        return pendingsByGroup;
-    }
     ngOnInit() {
         this._pendingsSubscription = this.searchPendings(this.contingencyId);
     }
@@ -84,18 +69,45 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
             this._resolvesSubscription.unsubscribe();
         }
     }
+
+    /**
+     * Method for regroup pending list items
+     */
+    private reloadPendings(pendings : Pending[]): Pending[] {
+        return this.groupBy(pendings, 'area');
+    }
+    /**
+     * Group a collection by attribute
+     * @param collection
+     * @param property
+     * @return {Array}
+     */
+    private groupBy(collection: any[], property: string) {
+        let i = 0, val, index;
+        const values = [], result = [];
+        for (; i < collection.length; i++) {
+            val = collection[i][property];
+            index = values.indexOf(val);
+            if (index > -1) {
+                result[index].push(collection[i]);
+            } else {
+                values.push(val);
+                result.push([collection[i]]);
+            }
+        }
+        return result;
+    }
     private searchPendings(contingencyId: number): Subscription {
-        console.log('contingencyId',contingencyId)
+
         const pendingSearch: PendingSearch = PendingSearch.getInstance();
         pendingSearch.isResolve = false;
         pendingSearch.contingencyId = contingencyId;
-        console.log("pendingSearch :",pendingSearch);
 
         return this._apiRestService.search<Pending[]>(ResolvePendingComponent.SEARCH_ENDPOINT, pendingSearch)
             .subscribe(rs => {
                 console.log('rs',rs);
                 const res = rs as Pending[];
-                this.groupPendingByArea = ResolvePendingComponent.groupPendingByArea(res);
+                this.groupPendingByArea = this.reloadPendings(res);
             });
 
     }
@@ -153,11 +165,12 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         this._resolveForm = value;
     }
 
-    get groupPendingByArea(): Map<string, Pending[]> {
+
+    get groupPendingByArea(): any[] {
         return this._groupPendingByArea;
     }
 
-    set groupPendingByArea(value: Map<string, Pending[]>) {
+    set groupPendingByArea(value: any[]) {
         this._groupPendingByArea = value;
     }
 
