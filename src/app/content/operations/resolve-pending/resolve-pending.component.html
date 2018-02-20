@@ -12,8 +12,8 @@
     </div>
     <div id="line-tittle_resolve-pending"></div>
     <mat-accordion multi="true" displayMode="flat">
-        <mat-expansion-panel >
-            <mat-expansion-panel-header>
+        <mat-expansion-panel *ngFor="let pendingGroup of groupPendingByArea">
+            <mat-expansion-panel-header >
                 <mat-panel-title>{{pendingGroup[0].area}}</mat-panel-title>
                 <mat-panel-description>0 / 2 Pendings resolved</mat-panel-description>
             </mat-expansion-panel-header>
