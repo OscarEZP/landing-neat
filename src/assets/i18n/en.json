@@ -142,6 +142,7 @@
       "AGREEMENTS": "Agreements",
       "APPLY": "Apply",
       "AREA": "Area",
+      "AREA_INVALID": "Area is invalid",
       "AREA_REQUIRED": "Area is required",
       "CREATION_DATE": "Creation date",
       "DONE": "Done",

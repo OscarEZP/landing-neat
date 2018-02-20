@@ -201,15 +201,18 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validation for pending form
+     * Validation for pending form; pending area required, pending ara invalid and pending description
      * @return {boolean}
      */
     private pendingValidation(): boolean {
         let valid = true;
-        const errorObj = { descriptionRequired: false, areaRequired: false };
+        const errorObj = { descriptionRequired: false, areaRequired: false, areaInvalid: false };
         if (this.pending.area === null || this.pending.area === '') {
             valid = false;
             errorObj.areaRequired = true;
+        } else if (this.areas.filter(a => this.pending.area === a).length === 0) {
+            valid = false;
+            errorObj.areaInvalid = true;
         }
         if (this.pending.description === null || this.pending.description === '') {
             valid = false;

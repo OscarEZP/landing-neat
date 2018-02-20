@@ -168,6 +168,11 @@
                                 </mat-error>
                             </div>
                             <div fxLayout="row" >
+                                <mat-error *ngIf="pendingForm.hasError('areaInvalid')">
+                                    {{'OPERATIONS.MEETING_FORM.AREA_INVALID'|translate}}
+                                </mat-error>
+                            </div>
+                            <div fxLayout="row" >
                                 <mat-error *ngIf="pendingForm.hasError('descriptionRequired')">
                                     {{'OPERATIONS.MEETING_FORM.PENDINGS_REQUIRED'|translate}}
                                 </mat-error>
