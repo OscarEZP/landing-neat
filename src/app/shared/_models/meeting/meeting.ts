@@ -1,7 +1,7 @@
 import { Activity } from './activity';
 import { Assistant } from './assistant';
 import { TimeInstant } from '../timeInstant';
-import { Pending } from './pending';
+import { Pending } from '../pending/pending';
 import { Agreement } from './agreement';
 
 export class Meeting {

@@ -19,7 +19,8 @@
     "SUB_MENUS": {
       "CLOSE_CONTINGENCY": "Close Contingency",
       "MEETING": "Meeting",
-      "FOLLOW_UP": "Follow up"
+      "FOLLOW_UP": "Follow up",
+      "PENDING": "Pending"
     }
   },
   "ERRORS":{
@@ -192,7 +193,11 @@
     "THIS_MOMENT": "at this moment on Contingency",
     "TIME_LEFT": "Time Left",
     "TYPE": "Type",
-    "VALIDATION_ERROR_MESSAGE": "You must fill in all required fields"
+    "VALIDATION_ERROR_MESSAGE": "You must fill in all required fields",
+    "RESOLVE_PENDING": {
+      "PENDINGS_SOLVED": "Pending(s) solved",
+      "PENDING_REQUIRED": "Pending is required"
+    }
   },
   "TITLES": {
     "ADITIONAL_INFO": "Aditional Info",

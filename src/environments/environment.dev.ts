@@ -13,7 +13,6 @@ export const environment = {
         close: ':9002/api/v1/contingencies/_close',
         configMaxStatus: ':9005/api/v1/configurations/status/max',
         configStatus: ':9005/api/v1/configurations/status/_search',
-        configTypes: ':9005/api/v1/configurations/types/groupNames',
         confirmForgotPassword: ':9001/api/security/users/_confirmforgotpassword',
         contingencyList: ':9002/api/v1/contingencies',
         contingencySearch: ':9002/api/v1/contingencies/_search',
@@ -24,10 +23,13 @@ export const environment = {
         forgotPassword: ':9001/api/security/users/_forgotpassword',
         locations: ':9005/api/v1/configurations/locations',
         login: ':9001/api/security/users/_login',
-        mails : ':9005/api/v1/configurations/mails',
         meetings: ':9002/api/v1/contingencies/meetings',
         operator: ':9005/api/v1/configurations/operators/',
         safetyEvent: ':9005/api/v1/configurations/safetyEvents',
-        types: ':9005/api/v1/configurations/types'
+        types: ':9005/api/v1/configurations/types',
+        configTypes: ':9005/api/v1/configurations/types/groupNames',
+        mails : ':9005/api/v1/configurations/mails',
+        pendingSearch:':9002/api/v1/contingencies/pendings/_search',
+        pendingResolve:':9002/api/v1/contingencies/pendings/_resolve'
     }
 };
