@@ -321,7 +321,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
             performedActivities: [this.performedActivities, Validators.required],
         });
         const barcodeValidators = [Validators.pattern(MeetingComponent.BARCODE_PATTERN), Validators.maxLength(80)];
-        if (this.safetyCode !== null) {
+        if (this.contingency.safetyEvent.code !== null) {
             barcodeValidators.push(Validators.required);
         }
         this.meetingForm.addControl('barcode', new FormControl(this.barcode, barcodeValidators));
@@ -384,12 +384,12 @@ export class MeetingComponent implements OnInit, OnDestroy {
                         this.validations.isSending = false;
                     }, () => {
                         this._emailsSubscription = this.saveEmails();
+                        this.validations.isSending = false;
                     }
                 );
         } else {
             this.getTranslateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
             this._messageService.openSnackBar(this.snackbarMessage);
-            this.validations.isSending = false;
         }
     }
 
@@ -678,11 +678,11 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     get safetyCode(): string {
-        return this.contingency.safetyEvent.code;
+        return this.meeting.safetyCode;
     }
 
     set safetyCode(value: string) {
-        this.contingency.safetyEvent.code = value;
+        this.meeting.safetyCode = value;
     }
 
     get meeting(): Meeting {

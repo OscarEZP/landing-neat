@@ -221,13 +221,18 @@
                                 maxlength="{{maxChars}}"
                         >
                         </textarea>
-                        <div fxLayout="row" >
-                            <mat-error *ngIf="meetingForm.controls['performedActivities'].hasError('maxlenght') && meetForm.submitted">
-                                {{'MEETING_PERFORMED_ACTIVITIES_MAX_MSG'|translate}}
-                            </mat-error>
-                        </div>
                         <mat-hint align="end">{{perAct.value.length}} {{'OPERATIONS.MEETING_FORM.TO' | translate}} {{maxChars}}</mat-hint>
                     </mat-form-field>
+                </div>
+                <div>
+                    <mat-error *ngIf="meetingForm.controls['performedActivities'].hasError('maxlenght') && meetForm.submitted">
+                        {{'MEETING_PERFORMED_ACTIVITIES_MAX_MSG'|translate}}
+                    </mat-error>
+                </div>
+                <div>
+                    <mat-error *ngIf="meetingForm.controls['performedActivities'].hasError('required') && meetForm.submitted">
+                        {{'OPERATIONS.MEETING_FORM.PERFORMED_ACTIVITIES_REQUIRED'|translate}}
+                    </mat-error>
                 </div>
                 <form [formGroup]="agreementForm" #agreeForm="ngForm" (submit)="addAgreement()">
                 <div fxLayout="row">
