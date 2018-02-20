@@ -32,6 +32,7 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
     private _contingencyId: number;
     private _username: string;
     private _validations: Validation;
+    private _currentContingency: Contingency;
 
     constructor(private _dialogService: DialogService,
                 private _translate: TranslateService,
@@ -46,7 +47,7 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         this.username = this._storageService.getCurrentUser().username;
 
         console.log('contingency',this._contingency);
-
+        this.currentContingency = this._contingency;
         this.contingencyId = this._contingency.id;
 
         this.groupPendingByArea = new Map<string, Pending[]>();
@@ -190,5 +191,14 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
 
     set validations(value: Validation) {
         this._validations = value;
+    }
+
+
+    get currentContingency() {
+        return this._currentContingency;
+    }
+
+    set currentContingency(value) {
+        this._currentContingency = value;
     }
 }
