@@ -145,6 +145,7 @@
       "AREA_INVALID": "Area is invalid",
       "AREA_REQUIRED": "Area is required",
       "CREATION_DATE": "Creation date",
+      "BARCODE_REQUIRED": "Barcode is required",
       "DONE": "Done",
       "FAILURE_MESSAGE": "Ooops, Something went wrong",
       "FLEET": "Fleet",

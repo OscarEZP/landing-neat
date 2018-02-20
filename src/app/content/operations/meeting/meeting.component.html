@@ -40,6 +40,9 @@
                                 </mat-form-field>
                             </div>
                             <div fxLayout="row" >
+                                <mat-error *ngIf="meetingForm.controls['barcode'].hasError('required') && meetForm.submitted">
+                                    {{'OPERATIONS.MEETING_FORM.BARCODE_REQUIRED'|translate}}
+                                </mat-error>
                                 <mat-error *ngIf="meetingForm.controls['barcode'].hasError('pattern') && meetForm.submitted">
                                         {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_PATTERN'|translate}}
                                 </mat-error>

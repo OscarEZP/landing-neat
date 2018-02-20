@@ -678,11 +678,11 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     get safetyCode(): string {
-        return this.meeting.safetyCode;
+        return this.contingency.safetyEvent.code;
     }
 
     set safetyCode(value: string) {
-        this.meeting.safetyCode = value;
+        this.contingency.safetyEvent.code = value;
     }
 
     get meeting(): Meeting {
