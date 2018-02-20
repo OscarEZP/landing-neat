@@ -1,9 +1,62 @@
-#reason-resolve-pending{
-  font-size: 15px;
+@import '../../../../assets/style/base.scss';
 
-}
+/deep/
+#resolve-form {
 
-#line-tittle_resolve-pending {
-  border-bottom: thin solid;
-  height:20px;
+  span.title-dialog {
+    line-height: 22px;
+    padding: 10px 0 0 0;
+  }
+
+  #reason-resolve-pending{
+    font-size: 15px;
+    margin: -5px 0 0 0;
+  }
+
+  .mat-dialog-title {
+    margin: 0;
+  }
+
+  #line-tittle_resolve-pending {
+    border-bottom: thin solid;
+    height:20px;
+  }
+
+  .mat-slide-toggle {
+    margin: 0 0 0 10px;
+  }
+
+  .mat-expansion-panel {
+    box-shadow: none;
+    border-bottom: thin solid mat-color($foreground, divider);
+  }
+
+  .mat-expansion-panel-header {
+    margin: 0;
+    padding: 0 20px 0 10px;
+
+  }
+
+  .mat-expansion-panel-body {
+    padding: 0;
+    margin: 0;
+
+    > div {
+      padding: 10px;
+    }
+
+    > div:nth-child(odd) {
+      background-color: mat-color($custom, background-grey);
+    }
+  }
+
+
+
+  .title-dialog-container {
+    border-bottom: thin solid mat-color($foreground, divider);
+  }
+
+  .mat-dialog-actions {
+    //border-top: thin solid mat-color($foreground, divider);
+  }
 }
