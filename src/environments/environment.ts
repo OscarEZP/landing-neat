@@ -9,6 +9,7 @@ export const environment = {
     paths: {
         aircrafts: '/api/v1/configurations/aircrafts',
         aircraftsSearch: '/api/v1/configurations/aircrafts/_search',
+        areas: '/api/v1/contingencies/pendings/areas',
         close: '/api/v1/contingencies/_close',
         configMaxStatus: '/api/v1/configurations/status/max',
         configStatus: '/api/v1/configurations/status/_search',

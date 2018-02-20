@@ -1,16 +1,21 @@
 import { Activity } from './activity';
 import { Assistant } from './assistant';
 import { TimeInstant } from '../timeInstant';
+import { Pending } from '../pending/pending';
+import { Agreement } from './agreement';
 
 export class Meeting {
     private _id: number;
     private _contingencyId: number;
-    private _activities: Array<Activity>;
+    private _activities: Activity[];
     private _barcode: string;
     private _createUser: string;
     private _timeInstant: TimeInstant;
     private _safetyCode: string;
-    private _assistants: Array<Assistant>;
+    private _assistants: Assistant[];
+    private _pendings: Pending[];
+    private _performedActivities: string;
+    private _agreements: Array<Agreement>;
 
     constructor( contingencyId: number) {
 
@@ -21,8 +26,11 @@ export class Meeting {
         this.timeInstant = TimeInstant.getInstance();
         this.safetyCode = null;
         this.assistants = [];
+        this.pendings = [];
+        this.performedActivities = null;
+        this.agreements = [];
     }
-    static getInstance():Meeting{
+    static getInstance(): Meeting {
         return new Meeting(null);
     }
 
@@ -88,5 +96,27 @@ export class Meeting {
 
     set assistants(value: Array<Assistant>) {
         this._assistants = value;
+    }
+
+    get pendings(): Pending[] {
+        return this._pendings;
+    }
+
+    set pendings(value: Pending[]) {
+        this._pendings = value;
+    }
+    get performedActivities(): string {
+        return this._performedActivities;
+    }
+
+    set performedActivities(value: string) {
+        this._performedActivities = value;
+    }
+    get agreements(): Array<Agreement> {
+        return this._agreements;
+    }
+
+    set agreements(value: Array<Agreement>) {
+        this._agreements = value;
     }
 }

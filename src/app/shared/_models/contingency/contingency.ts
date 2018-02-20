@@ -206,4 +206,34 @@ export class Contingency {
     }
 
 
+
+    static fromJsonArray(array: Array<Object>): Contingency[] {
+
+        return array.map(obj => Contingency.parser(obj)
+        );
+    }
+
+    private static parser(obj: Object): Contingency {
+        let item = new Contingency();
+        item.id = obj['id'];
+        item.aircraft = obj['aircraft'];
+        item.barcode = obj['barcode'];
+        item.creationDate = obj['creationDate'];
+        item.failure = obj['failure'];
+        item.flight = obj['flight'];
+        item.informer = obj['informer'];
+        item.isBackup = obj['isBackup'];
+        item.isClose = obj['isClose'];
+        item.backup = obj['backup'];
+        item.reason = obj['reason'];
+        item.safetyEvent = obj['safetyEvent'];
+        item.status = obj['status'];
+        item.type = obj['type'];
+        item.username = obj['username'];
+        item.ttlPending = obj['ttlPending'];
+        item.hasPendingMeeting = obj['hasPendingMeeting'];
+        return item;
+
+    }
+
 }
