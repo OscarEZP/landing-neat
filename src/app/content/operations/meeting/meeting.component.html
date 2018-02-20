@@ -40,6 +40,9 @@
                                 </mat-form-field>
                             </div>
                             <div fxLayout="row" >
+                                <mat-error *ngIf="meetingForm.controls['barcode'].hasError('required') && meetForm.submitted">
+                                    {{'OPERATIONS.MEETING_FORM.BARCODE_REQUIRED'|translate}}
+                                </mat-error>
                                 <mat-error *ngIf="meetingForm.controls['barcode'].hasError('pattern') && meetForm.submitted">
                                         {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_PATTERN'|translate}}
                                 </mat-error>
@@ -168,6 +171,11 @@
                                 </mat-error>
                             </div>
                             <div fxLayout="row" >
+                                <mat-error *ngIf="pendingForm.hasError('areaInvalid')">
+                                    {{'OPERATIONS.MEETING_FORM.AREA_INVALID'|translate}}
+                                </mat-error>
+                            </div>
+                            <div fxLayout="row" >
                                 <mat-error *ngIf="pendingForm.hasError('descriptionRequired')">
                                     {{'OPERATIONS.MEETING_FORM.PENDINGS_REQUIRED'|translate}}
                                 </mat-error>
@@ -213,13 +221,18 @@
                                 maxlength="{{maxChars}}"
                         >
                         </textarea>
-                        <div fxLayout="row" >
-                            <mat-error *ngIf="meetingForm.controls['performedActivities'].hasError('maxlenght') && meetForm.submitted">
-                                {{'MEETING_PERFORMED_ACTIVITIES_MAX_MSG'|translate}}
-                            </mat-error>
-                        </div>
                         <mat-hint align="end">{{perAct.value.length}} {{'OPERATIONS.MEETING_FORM.TO' | translate}} {{maxChars}}</mat-hint>
                     </mat-form-field>
+                </div>
+                <div>
+                    <mat-error *ngIf="meetingForm.controls['performedActivities'].hasError('maxlenght') && meetForm.submitted">
+                        {{'MEETING_PERFORMED_ACTIVITIES_MAX_MSG'|translate}}
+                    </mat-error>
+                </div>
+                <div>
+                    <mat-error *ngIf="meetingForm.controls['performedActivities'].hasError('required') && meetForm.submitted">
+                        {{'OPERATIONS.MEETING_FORM.PERFORMED_ACTIVITIES_REQUIRED'|translate}}
+                    </mat-error>
                 </div>
                 <form [formGroup]="agreementForm" #agreeForm="ngForm" (submit)="addAgreement()">
                 <div fxLayout="row">

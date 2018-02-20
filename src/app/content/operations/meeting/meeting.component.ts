@@ -201,15 +201,18 @@ export class MeetingComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validation for pending form
+     * Validation for pending form; pending area required, pending area invalid and pending description
      * @return {boolean}
      */
     private pendingValidation(): boolean {
         let valid = true;
-        const errorObj = { descriptionRequired: false, areaRequired: false };
+        const errorObj = { descriptionRequired: false, areaRequired: false, areaInvalid: false };
         if (this.pending.area === null || this.pending.area === '') {
             valid = false;
             errorObj.areaRequired = true;
+        } else if (this.areas.filter(a => this.pending.area === a).length === 0) {
+            valid = false;
+            errorObj.areaInvalid = true;
         }
         if (this.pending.description === null || this.pending.description === '') {
             valid = false;
@@ -318,7 +321,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
             performedActivities: [this.performedActivities, Validators.required],
         });
         const barcodeValidators = [Validators.pattern(MeetingComponent.BARCODE_PATTERN), Validators.maxLength(80)];
-        if (this.safetyCode !== null) {
+        if (this.contingency.safetyEvent.code !== null) {
             barcodeValidators.push(Validators.required);
         }
         this.meetingForm.addControl('barcode', new FormControl(this.barcode, barcodeValidators));
@@ -381,12 +384,12 @@ export class MeetingComponent implements OnInit, OnDestroy {
                         this.validations.isSending = false;
                     }, () => {
                         this._emailsSubscription = this.saveEmails();
+                        this.validations.isSending = false;
                     }
                 );
         } else {
             this.getTranslateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
             this._messageService.openSnackBar(this.snackbarMessage);
-            this.validations.isSending = false;
         }
     }
 
