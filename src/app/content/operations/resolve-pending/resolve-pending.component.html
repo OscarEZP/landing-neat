@@ -1,6 +1,6 @@
-<form id="resolve-form" [formGroup]="resolveForm" #formResolve="ngForm" (ngSubmit)="submitForm(resolveForm.value)">
-    <div mat-dialog-title fxLayoutGap="30px" class="title-dialog-container" fxLayout="column">
-        <div fxLayout="row" fxFlex>
+<form id="resolve-form" [formGroup]="resolveForm" #formResolve="ngForm" (ngSubmit)="saveResolves()">
+    <div mat-dialog-title class="title-dialog-container" fxLayout="column">
+        <div >
             <span class="title-dialog" fxFlex>{{currentContingency.aircraft.tail}} {{currentContingency.aircraft.fleet}} {{currentContingency.flight.flightNumber}} {{currentContingency.flight.origin}}-{{currentContingency.flight.destination}} {{currentContingency.flight.etd.epochTime|date : 'HH:mm'}}</span>
                         <button (click)="closeDialog()" id="btn-resol-pending-form-close-btn" type="button" class="close-btn" mat-icon-button
                     fxFlexOffset="1">
@@ -8,14 +8,13 @@
                 </mat-icon>
         </button>
         </div>
-        <div id="reason-resolve-pending" fxLayout="row" fxFlex>{{currentContingency.reason}}</div>
+        <div id="reason-resolve-pending" >{{currentContingency.reason}}</div>
     </div>
-    <div id="line-tittle_resolve-pending"></div>
     <mat-accordion multi="true" displayMode="flat">
         <mat-expansion-panel *ngFor="let pendingGroup of groupPendingByArea">
             <mat-expansion-panel-header >
                 <mat-panel-title>{{pendingGroup[0].area}}</mat-panel-title>
-                <mat-panel-description>0 / 2 Pendings resolved</mat-panel-description>
+                <mat-panel-description fxLayoutAlign="end">{{countResolves(pendingGroup)}} / {{pendingGroup.length}} Pendings resolved</mat-panel-description>
             </mat-expansion-panel-header>
             <div fxLayout="column" *ngFor="let pending of pendingGroup; let i = index" >
                 <div fxLayout="row">
@@ -23,7 +22,7 @@
 
                 </div>
                 <div fxLayout="row">
-                    Resolved <mat-slide-toggle></mat-slide-toggle>
+                    Resolved <mat-slide-toggle #matSlide (change)="resolvePending(pending, matSlide.checked)"></mat-slide-toggle>
                 </div>
             </div>
         </mat-expansion-panel>

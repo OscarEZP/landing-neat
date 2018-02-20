@@ -13,6 +13,7 @@ import {PendingSearch} from '../../../shared/_models/pending/pendingSearch';
 import {Pending} from '../../../shared/_models/pending/pending';
 import {Resolve} from '../../../shared/_models/pending/resolve';
 import {Validation} from '../../../shared/_models/validation';
+import {CancelComponent} from '../cancel/cancel.component';
 
 @Component({
     selector: 'lsl-resolve-pending',
@@ -41,7 +42,9 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
                 private _dataService: DataService,
                 private _apiRestService: ApiRestService,
                 private _fb: FormBuilder,
-                @Inject(MAT_DIALOG_DATA) private _contingency: Contingency) {
+                private translate: TranslateService,
+                @Inject(MAT_DIALOG_DATA) private _contingency: Contingency
+    ) {
         this._translate.setDefaultLang('en');
 
         this.username = this._storageService.getCurrentUser().username;
@@ -54,6 +57,8 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         this.validations = Validation.getInstance();
 
         this.resolveForm = this._fb.group({});
+
+
     }
 
 
@@ -70,10 +75,28 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         }
     }
 
+    public resolvePending(pending: Pending, checked: boolean) {
+        if (checked === true) {
+            this.addResolve(pending.id);
+        } else {
+            this.deleteResolve(pending.id);
+        }
+    }
+
+    public countResolves(resolveGroup: Pending[]): number {
+        let count = 0;
+        resolveGroup.forEach((r1) => {
+            this.resolves.forEach(r2 => {
+                count = r1.id === r2.pendingId ? count + 1 : count;
+            });
+        });
+        return count;
+    }
+
     /**
      * Method for regroup pending list items
      */
-    private reloadPendings(pendings : Pending[]): Pending[] {
+    private reloadPendings(pendings: Pending[]): Pending[] {
         return this.groupBy(pendings, 'area');
     }
     /**
@@ -98,14 +121,12 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
         return result;
     }
     private searchPendings(contingencyId: number): Subscription {
-
         const pendingSearch: PendingSearch = PendingSearch.getInstance();
         pendingSearch.isResolve = false;
         pendingSearch.contingencyId = contingencyId;
 
         return this._apiRestService.search<Pending[]>(ResolvePendingComponent.SEARCH_ENDPOINT, pendingSearch)
             .subscribe(rs => {
-                console.log('rs',rs);
                 const res = rs as Pending[];
                 this.groupPendingByArea = this.reloadPendings(res);
             });
@@ -117,15 +138,16 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
     }
 
     public deleteResolve(pendingId: number): void {
-        /**
-         * TO_DO
-         */
+        this.resolves = this.resolves.filter(r => r['pendingId'] !== pendingId);
     }
+
     public saveResolves(): Subscription {
         this.validations.isSending = true;
         return this._apiRestService.add<Response>(ResolvePendingComponent.RESOLVE_ENDPOINT, this.resolves)
             .subscribe(rs => {
                this.validations.isSending = false;
+                this._dialogService.closeAllDialogs();
+                this._dataService.stringMessage('reload');
             });
     }
 
@@ -133,16 +155,22 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
      * Close form modal
      */
     public closeDialog(): void {
-        /*if (this.validateFilledItems()) {
-            this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
+        if (this.resolves.length > 0) {
+            this.translateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
             this._messageService.openFromComponent(CancelComponent, {
-                data: {message: this.snackbarMessage},
+                data: {message: this.snackBarMessage},
                 horizontalPosition: 'center',
                 verticalPosition: 'top'
             });
-        } else {*/
+        } else {
             this._dialogService.closeAllDialogs();
-       // }
+        }
+    }
+
+    private translateString(toTranslate: string): void {
+        this.translate.get(toTranslate).subscribe((res: string) => {
+            this.snackBarMessage = res;
+        });
     }
 
     private validateFilledItems(): boolean {
