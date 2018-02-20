@@ -130,9 +130,7 @@
                 </form>
             </div>
             <div fxFlex="25" class="operation-container lateral-inner-padding">
-                <div class="title-dialog">
-                    <span>{{'OPERATIONS.MEETING_FORM.ADD_PENDINGS'|translate}}</span>
-                </div>
+                <div class="title-section">{{'OPERATIONS.MEETING_FORM.ADD_PENDINGS'|translate}}</div>
                 <form [formGroup]="pendingForm" #pendForm="ngForm" (submit)="addPending()">
                     <div id="container-add-pendings">
                         <mat-form-field>
@@ -205,10 +203,7 @@
                 </form>
             </div>
             <div fxFlex="25" class="operation-container lateral-inner-padding">
-
-                <div class="title-dialog" fxLayout="row" >
-                    <span>{{'OPERATIONS.MEETING_FORM.MEETING_INFO'|translate}}</span>
-                </div>
+                <div class="title-section">{{'OPERATIONS.MEETING_FORM.MEETING_INFO'|translate}}</div>
                 <div fxLayout="row">
                     <mat-form-field fxFlexFill>
                         <textarea
