@@ -43,6 +43,14 @@
 
     > div {
       padding: 10px;
+
+      > div:last-child {
+        padding: 5px 0 0 0;
+      }
+
+      .mat-slide-toggle-bar{
+        padding: 5px 0 0 0;
+      }
     }
 
     > div:nth-child(odd) {
