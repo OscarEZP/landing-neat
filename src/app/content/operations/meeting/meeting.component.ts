@@ -25,7 +25,7 @@ import {map} from 'rxjs/operators/map';
 import {Subscription} from 'rxjs/Subscription';
 import {StorageService} from '../../../shared/_services/storage.service';
 import {Agreement} from '../../../shared/_models/meeting/agreement';
-import {Pending} from '../../../shared/_models/meeting/pending';
+import {Pending} from '../../../shared/_models/pending/pending';
 
 @Component({
     selector: 'lsl-meeting-form',

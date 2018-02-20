@@ -9,21 +9,23 @@ export class Pending {
     private _createDate: TimeInstant;
 
 
-    constructor(area: string, description: string, createUser: string) {
-        this._area = area;
-        this._description = description;
-        this._createUser = createUser;
+    constructor( area: string, description: string, createUser: string) {
+        this.area = area;
+        this.description = description;
+        this.createUser = createUser;
+        this.createDate=TimeInstant.getInstance();
+
     }
 
-    static getInstance(): Pending {
-        return new Pending(null, null, null);
+    static getInstance():Pending{
+        return new Pending(null,null,null);
     }
     get id(): number {
         return this._id;
     }
 
     set id(value: number) {
-        this._id = value;
+        this._id= value;
     }
 
     get area(): string {
@@ -42,19 +44,19 @@ export class Pending {
         this._description = value;
     }
 
-    get createUser(): string {
-        return this._createUser;
-    }
-
     set createUser(value: string) {
         this._createUser = value;
     }
 
-    get createDate(): TimeInstant {
-        return this._createDate;
-    }
-
     set createDate(value: TimeInstant) {
         this._createDate = value;
+    }
+
+    get createUser(): string {
+        return this._createUser;
+    }
+
+    get createDate(): TimeInstant {
+        return this._createDate;
     }
 }

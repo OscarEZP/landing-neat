@@ -93,6 +93,9 @@
                     <button mat-menu-item (click)="openDetails(contingency, 'follow-up')" [disabled]="contingency.status.code === 'ETR' || contingency.status.code === 'NI4' || contingency.isClose">
                         <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
                     </button>
+                    <button [disabled]="contingency.ttlPending === 0" mat-menu-item (click)="openPending(contingency)" >
+                        <span>{{ 'BUTTONS.SUB_MENUS.PENDING' | translate }}</span>
+                    </button>
                 </mat-menu>
             </div>
         </div>
