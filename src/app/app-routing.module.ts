@@ -5,13 +5,13 @@ import { DashboardComponent } from './content/dashboard/dashboard.component';
 import { ContingencySimplifiedListComponent } from './content/operations/contingency-simplified-list/contingency-simplified-list.component';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuardService } from './auth/_services/authGuard.service';
-import { ContingencyFormComponent } from './content/operations/create-contingency/create-contingency.component';
 import { FindAccountComponent } from './auth/find-account/find-account.component';
 import { OperationsComponent } from './content/operations/operations.component';
 import { RecoverPasswordComponent } from './auth/recover-password/recover-password.component';
 import { SimplifiedLayoutComponent } from './simplified-layout/simplified-layout.component';
 import { ContingencyListComponent } from './content/operations/contingency-list/contingency-list.component';
 import { PendingListComponent } from './content/operations/pending-list/pending-list.component';
+import {FleetHealthComponent} from './content/fleet-health/fleet-health.component';
 
 const ROUTES: Routes = [
     {
@@ -57,9 +57,22 @@ const ROUTES: Routes = [
                 ]
             },
             {
-                path: 'operations/contingency',
-                component: ContingencyFormComponent,
-            },
+                path: 'fleet-health',
+                canActivate: [AuthGuardService],
+                component: FleetHealthComponent,
+                children: [
+                    {
+                        path: '',
+                        redirectTo: '/fleet-health/deferrals',
+                        pathMatch: 'full',
+                    },
+                    {
+                        path: 'deferrals',
+                        component: ContingencyListComponent,
+                        canActivate: [AuthGuardService],
+                    }
+                ]
+            }
         ],
         canActivate: [AuthGuardService]
     },
@@ -84,6 +97,11 @@ const ROUTES: Routes = [
         path: 'hemicycle',
         component: SimplifiedLayoutComponent,
         children: [
+            {
+                path: '',
+                redirectTo: 'contingencies',
+                pathMatch: 'full',
+            },
             {
                 path: 'contingencies',
                 component: ContingencySimplifiedListComponent

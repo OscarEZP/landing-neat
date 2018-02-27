@@ -10,7 +10,7 @@ import {StorageService} from '../shared/_services/storage.service';
 import {DetailsModule} from '../details/details.module';
 import {RightnavComponent} from './rightnav/rightnav.component';
 import {DetailsService} from '../details/_services/details.service';
-
+import {ContingencyFormComponent} from '../content/operations/create-contingency/create-contingency.component';
 
 @NgModule({
     imports: [
@@ -34,6 +34,9 @@ import {DetailsService} from '../details/_services/details.service';
         SidenavService,
         StorageService,
         DetailsService
+    ],
+    entryComponents: [
+        ContingencyFormComponent
     ]
 })
 export class LayoutModule {

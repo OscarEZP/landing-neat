@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ContingencyService } from '../../content/operations/_services/contingency.service';
+import { ContingencyService } from '../../content/_services/contingency.service';
 import { DetailsService } from '../../details/_services/details.service';
 
 @Component({

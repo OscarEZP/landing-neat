@@ -4,7 +4,7 @@
     </button>
     <figure id="logo">
     </figure>
-    <h1 [innerHtml]="routingService.getModuleTitle()"></h1>
+    <h1 [innerHtml]="routingService.moduleTitle"></h1>
     <aside>
         <nav>
             <span *ngIf="display" id="datetime">{{ currentDateString | utcDate | date: 'dd MMM yyyy'}} | {{ time | utcDate | date: 'HH:mm:ss' }} UTC</span>

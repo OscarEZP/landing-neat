@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
-import {HistoricalSearchService} from '../_services/historical-search.service';
-import {ContingencyService} from '../_services/contingency.service';
+import {HistoricalSearchService} from '../../_services/historical-search.service';
+import {ContingencyService} from '../../_services/contingency.service';
 import {Contingency} from '../../../shared/_models/contingency/contingency';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
@@ -9,13 +9,13 @@ import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {Observable} from 'rxjs/Observable';
 import {DetailsService} from '../../../details/_services/details.service';
 import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
-import {InfiniteScrollService} from '../_services/infinite-scroll.service';
+import {InfiniteScrollService} from '../../_services/infinite-scroll.service';
 import {CloseContingencyComponent} from '../close-contingency/close-contingency.component';
 import {MeetingComponent} from '../meeting/meeting.component';
 import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
-import {ResolvePendingComponent} from '../resolve-pending/resolve-pending.component'
+import {ResolvePendingComponent} from '../resolve-pending/resolve-pending.component';
 @Component({
     selector: 'lsl-pending-list',
     templateUrl: './pending-list.component.html',

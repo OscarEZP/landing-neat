@@ -38,15 +38,25 @@ export class SidenavComponent implements OnInit {
                 'link': '/operations/',
                 'icon': 'build'
             },
-        ];
-
-        this.arrFooterMenu = [
+            {
+                'label': 'Fleet Health Module',
+                'link': '/fleet-health/',
+                'icon': 'build'
+            },
             {
                 'label': 'Log Out',
                 'link': '/logout',
                 'icon': 'power_settings_new'
             }
         ];
+
+        // this.arrFooterMenu = [
+        //     {
+        //         'label': 'Log Out',
+        //         'link': '/logout',
+        //         'icon': 'power_settings_new'
+        //     }
+        // ];
 
     }
 
