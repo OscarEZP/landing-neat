@@ -12,6 +12,7 @@ import { HistoricalSearchService } from '../_services/historical-search.service'
 import { InfiniteScrollService } from '../_services/infinite-scroll.service';
 import { LogService } from '../_services/log.service';
 import { FleetHealthComponent } from './fleet-health.component';
+import { DeferralListComponent } from './deferral-list/deferral-list.component';
 
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import { FleetHealthComponent } from './fleet-health.component';
         RouterModule
     ],
     declarations: [
-        FleetHealthComponent
+        FleetHealthComponent,
+        DeferralListComponent
     ],
     exports: [],
     providers: [

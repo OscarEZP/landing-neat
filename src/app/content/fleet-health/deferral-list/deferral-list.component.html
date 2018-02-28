@@ -1,0 +1,102 @@
+<div class="reg-list" *ngIf="checkDataStatus()">
+    <header fxLayout="row" class="">
+        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
+        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
+        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
+        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
+        <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ATA' | translate }}</div>
+        <div fxFlex="28" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DESCRIPTION' | translate }}</div>
+        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_REFERENCE' | translate }}</div>
+        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_CLASS' | translate }}</div>
+        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ALERT' | translate }}</div>
+        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TIMELINE_STATUS' | translate }}</div>
+        <div fxFlex="11">&nbsp;</div>
+    </header>
+    <content>
+        <div fxLayout="row"
+             [class.active]="contingency.id === selectedContingency.id"
+             *ngFor="let contingency of contingencyService.contingencyList"
+             class="contingency-item">
+
+            <!--TAIL/FLEET-->
+            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
+                <span>{{ contingency.aircraft.tail }}</span>
+                <span>{{ contingency.aircraft.fleet }}</span>
+            </div>
+
+            <!-- BARCODE -->
+            <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">
+                {{ contingency.barcode | uppercase }}
+            </div>
+
+            <!-- OPENING DATE -->
+            <div fxFlex="7" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">
+                01/01/2018
+            </div>
+
+            <!-- DUE DATE -->
+            <div fxFlex="7" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')" >
+                {{ contingency.flight.origin }} / {{ contingency.flight.destination }}
+            </div>
+
+            <!-- ATA -->
+            <div fxFlex="5" fxLayoutAlign="start center">
+                AA - BB
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div fxFlex="28" fxLayoutAlign="start center" class="description" (click)="openDetails(contingency, 'follow-up')">
+                {{(contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}
+            </div>
+
+            <!-- DEFERRAL REFERENCE -->
+            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
+                33-20-01A
+            </div>
+
+            <!-- DEFERRAL CLASS -->
+            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
+                MEL A (me)
+            </div>
+
+            <!-- ALERT -->
+            <div fxFlex="7" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">
+                <span class="badge">
+                    COMPLEX
+                </span>
+            </div>
+
+            <!-- TIMELINE STATUS -->
+            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
+                <div>{{ contingency.ttlPending>9?'9+': contingency.ttlPending}}</div>
+            </div>
+
+            <div fxFlex="11" fxLayoutAlign="end end" >
+                <button mat-icon-button [matMenuTriggerFor]="menu" (click)="setSelectedContingency(contingency)">
+                    <mat-icon aria-label="options">more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="openCloseContingency(contingency)" [disabled]="contingency.isClose">
+                        <span>{{ 'BUTTONS.SUB_MENUS.CLOSE_CONTINGENCY' | translate }}</span>
+                    </button>
+                    <button mat-menu-item (click)="openMeeting(contingency)">
+                        <span>{{ 'BUTTONS.SUB_MENUS.MEETING' | translate }}</span>
+                    </button>
+                    <button mat-menu-item (click)="openDetails(contingency, 'follow-up')" [disabled]="contingency.status.code === 'ETR' || contingency.status.code === 'NI4' || contingency.isClose">
+                        <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
+                    </button>
+                    <button [disabled]="contingency.ttlPending === 0" mat-menu-item (click)="openPending(contingency)" >
+                        <span>{{ 'BUTTONS.SUB_MENUS.PENDING' | translate }}</span>
+                    </button>
+                </mat-menu>
+            </div>
+        </div>
+    </content>
+</div>
+<mat-paginator #contPaginator [hidden]="!checkDataStatus()"
+       [length]="infiniteScrollService.length"
+       [pageSize]="infiniteScrollService.pageSize"
+       [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
+</mat-paginator>
+<lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading"></lsl-ess>
+<div class="loader-container" fxLayoutAlign="center center" *ngIf="contingencyService.loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>

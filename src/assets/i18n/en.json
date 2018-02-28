@@ -33,7 +33,20 @@
     "NO_CONTINGENCIES_FOUND": "There are no contingencies. Have a nice day!",
     "NO_HISTORICAL_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters."
   },
-
+  "FLEET_HEALTH": {
+    "LIST" : {
+      "ATA": "ATA",
+      "ALERT": "Alert",
+      "BARCODE": "Barcode",
+      "DESCRIPTION": "Description",
+      "DEFERRAL_CLASS": "Deferral Class",
+      "DEFERRAL_REFERENCE": "Deferral Reference",
+      "DUE_DATE": "Due Date",
+      "OPENING_DATE": "Opening Date",
+      "TAIL_FLEET": "Tail/Fleet",
+      "TIMELINE_STATUS": "Timeline Status"
+    }
+  },
   "OPERATIONS": {
     "ALERT": "Alert",
     "ALERTS": "Alerts",

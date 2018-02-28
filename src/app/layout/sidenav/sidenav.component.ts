@@ -41,7 +41,7 @@ export class SidenavComponent implements OnInit {
             {
                 'label': 'Fleet Health Module',
                 'link': '/fleet-health/',
-                'icon': 'build'
+                'icon': 'airplanemode_active'
             },
             {
                 'label': 'Log Out',

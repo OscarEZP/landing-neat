@@ -12,6 +12,7 @@ import { SimplifiedLayoutComponent } from './simplified-layout/simplified-layout
 import { ContingencyListComponent } from './content/operations/contingency-list/contingency-list.component';
 import { PendingListComponent } from './content/operations/pending-list/pending-list.component';
 import {FleetHealthComponent} from './content/fleet-health/fleet-health.component';
+import {DeferralListComponent} from './content/fleet-health/deferral-list/deferral-list.component';
 
 const ROUTES: Routes = [
     {
@@ -68,7 +69,7 @@ const ROUTES: Routes = [
                     },
                     {
                         path: 'deferrals',
-                        component: ContingencyListComponent,
+                        component: DeferralListComponent,
                         canActivate: [AuthGuardService],
                     }
                 ]
