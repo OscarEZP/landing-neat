@@ -1,8 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
-import {HistoricalSearchService} from '../../_services/historical-search.service';
-import {ContingencyService} from '../../_services/contingency.service';
-import {Contingency} from '../../../shared/_models/contingency/contingency';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
@@ -13,6 +10,8 @@ import {InfiniteScrollService} from '../../_services/infinite-scroll.service';
 import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
+import {Deferral} from '../../../shared/_models/deferral/deferral';
+
 @Component({
     selector: 'lsl-deferral-list',
     templateUrl: './deferral-list.component.html',
@@ -26,35 +25,52 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
     private static DEFAULT_INTERVAL = 30;
 
-    private _contingenciesSubscription: Subscription;
+    private _listSubscription: Subscription;
     private _reloadSubscription: Subscription;
     private _timerSubscription: Subscription;
     private _intervalRefreshSubscription: Subscription;
     private _paginatorSubscription: Subscription;
     private _totalRecordsSubscription: Subscription;
-    private _selectedContingency: Contingency;
-    private _selectedContingencyPivot: Contingency;
+
+    private _list: Observable<Deferral[]>;
+    private _listCount: Observable<number>;
+
+    private _selectedRegister: Deferral;
+    private _selectedRegisterPivot: Deferral;
     private _intervalToRefresh: number;
+    private _loading: boolean;
 
     constructor(
         private _messageData: DataService,
-        private _historicalSearchService: HistoricalSearchService,
-        private _contingencyService: ContingencyService,
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
-        private _infiniteScrollService: InfiniteScrollService,
-        // private _dialogService: DialogService
+        private _infiniteScrollService: InfiniteScrollService
     ) {
-        this.contingencyService.loading = true;
-        this.selectedContingency = Contingency.getInstance();
-        this.selectedContingencyPivot = Contingency.getInstance();
-        this.intervalToRefresh = 0;
+        this._loading = true;
+        this.selectedRegister = Deferral.getInstance();
+        this.selectedRegisterPivot = Deferral.getInstance();
+        this.intervalToRefresh = DeferralListComponent.DEFAULT_INTERVAL;
     }
 
     ngOnInit() {
+        // Test data
+        const def1 = new Deferral();
+        const def2 = new Deferral();
+        def1.id = 1;
+        def1.tail = 'tail 1';
+        def2.id = 2;
+        def2.tail = 'tail 2';
+        const arrDef = [def1, def2];
+        this.list = new Observable(observer => {
+            observer.next(arrDef);
+        });
+        this._listCount = new Observable(observer => {
+            observer.next(arrDef.length);
+        });
+        // End test data
+
         this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
-        this.contingencyService.clearList();
-        this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
+        this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
         this._paginatorSubscription = this.getPaginationSubscription();
         this._totalRecordsSubscription = this.getTotalRecordsSubscription();
         this.infiniteScrollService.init();
@@ -68,8 +84,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this._intervalRefreshSubscription.unsubscribe();
         this._paginatorSubscription.unsubscribe();
         this._totalRecordsSubscription.unsubscribe();
-        if (this._contingenciesSubscription) {
-            this._contingenciesSubscription.unsubscribe();
+        if (this._listSubscription) {
+            this._listSubscription.unsubscribe();
         }
         if (this._timerSubscription) {
             this._timerSubscription.unsubscribe();
@@ -81,10 +97,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     public getTotalRecordsSubscription(): Subscription {
-        const searchSignature = this.getSearchSignature();
-        return this.contingencyService.getTotalRecords(searchSignature).subscribe((count) => {
-            this.infiniteScrollService.length = count.items;
-        });
+        return this._listCount.subscribe(count => this.infiniteScrollService.length = count);
     }
 
     /**
@@ -95,13 +108,12 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         return this.paginator.page.subscribe((page) => {
             this.infiniteScrollService.pageSize = page.pageSize;
             this.infiniteScrollService.pageIndex = page.pageIndex;
-            this.contingencyService.loading = true;
-            this.getContingencies();
+            this.getList();
         });
     }
 
     /**
-     * Method for get a search signature
+     * Method for get a search signature for get data
      * @return {SearchContingency}
      */
     private getSearchSignature(): SearchContingency {
@@ -117,26 +129,27 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Returns a subscription with pendings list.
+     * Returns a subscription with data list.
      * @return {Subscription}
      */
-    private getContingencies(): Subscription {
-        this.contingencyService.loading = true;
-        const searchSignature = this.getSearchSignature();
-        return this._contingenciesSubscription = this.contingencyService.getPendings(searchSignature).subscribe((contingencyList: Contingency[]) => {
-            const ctgInArray = contingencyList.filter(ctg => ctg.id === this.selectedContingencyPivot.id).length;
-            if (this.selectedContingencyPivot.id !== null && ctgInArray === 1) {
-                this.selectedContingency = this.selectedContingencyPivot;
+    private getList(): Subscription {
+        this._loading = true;
+        const signature = this.getSearchSignature();
+
+        return this._listSubscription = this.list.subscribe((list) => {
+            const ctgInArray = list.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
+            if (this.selectedRegisterPivot.id !== null && ctgInArray === 1) {
+                this.selectedRegister = this.selectedRegisterPivot;
             } else {
-                this.selectedContingency = contingencyList[0];
+                this.selectedRegister = list[0];
             }
             this.subscribeTimer();
-            this.contingencyService.loading = false;
+            this._loading = false;
         });
     }
 
     /**
-     * Subscription for pending list reload.
+     * Subscription for data list reload.
      * @return {Subscription}
      */
     private subscribeTimer(): Subscription {
@@ -144,65 +157,22 @@ export class DeferralListComponent implements OnInit, OnDestroy {
             this._timerSubscription.unsubscribe();
         }
         return this._timerSubscription = Observable.timer(this.intervalToRefresh).first().subscribe(() => {
-            this.getContingencies();
+            this.getList();
         });
     }
 
     /**
-     * Subscription for get the time for reloa data
+     * Subscription for get the time for reload data
      * @return {Subscription}
      */
     private getIntervalToRefresh(): Subscription {
-        this.contingencyService.loading = true;
+        this._loading = true;
         return this._apiRestService.getSingle('configTypes', DeferralListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(rs => {
             const res = rs as GroupTypes;
             this.intervalToRefresh = Number(res.types[0].code) * 1000;
-            this.contingencyService.loading = false;
-        }, error => this.intervalToRefresh = DeferralListComponent.DEFAULT_INTERVAL * 1000);
+            this._loading = false;
+        });
     }
-
-    // /**
-    //  * Method for open close contingency modal
-    //  * @param contingency
-    //  */
-    // public openCloseContingency(contingency: any) {
-    //     this._dialogService.openDialog(CloseContingencyComponent, {
-    //         data: contingency,
-    //         hasBackdrop: true,
-    //         disableClose: true,
-    //         height: '536px',
-    //         width: '500px'
-    //     });
-    // }
-    //
-    // /**
-    //  * Method for open meeting creation modal
-    //  * @param contingency
-    //  */
-    // public openMeeting(contingency: Contingency) {
-    //     this._dialogService.openDialog(MeetingComponent, {
-    //         data: contingency,
-    //         maxWidth: '100vw',
-    //         width: '100%',
-    //         height: '100%',
-    //         hasBackdrop: false
-    //     });
-    // }
-
-    // /**
-    //  * Method for open meeting creation modal
-    //  * @param contingency
-    //  */
-    // public openPending(contingency: Contingency) {
-    //     this._dialogService.openDialog(ResolvePendingComponent, {
-    //         data: contingency,
-    //         maxWidth: '50vw',
-    //         width: '100%',
-    //         height: '90%',
-    //         hasBackdrop: false
-    //     });
-    // }
-
 
     /**
      * Method for reload list by an event
@@ -210,70 +180,42 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     public reloadList(message) {
         if (message === 'reload') {
-            this.getContingencies();
+            this.getList();
             this._messageData.stringMessage(null);
         }
-    }
-
-    /**
-     * Method for opening contingency details component
-     * @param contingency, object with contingency basic information
-     * @param section, #id for scrolling movement
-     */
-    public openDetails(contingency: Contingency, section: string) {
-        this.detailsService.activeContingencyChanged(contingency);
-        this.detailsService.openDetails(section);
-        this.setSelectedContingency(contingency);
     }
 
     /**
      * Method for update selected contingency and contingency pivot
      * @param contingency
      */
-    public setSelectedContingency(contingency: Contingency) {
-        this.selectedContingency = contingency;
-        this.selectedContingencyPivot = contingency;
+    public setSelectedRegister(register: Deferral) {
+        this.selectedRegister = register;
+        this.selectedRegisterPivot = register;
     }
 
-    /**
-     * Method for check list status with two variables, data loaded and loading process,
-     * if there is not data and the list is not loading, return false
-     * @return {boolean}
-     */
-    public checkDataStatus(): boolean {
-        return this.contingencyService.contingencyList.length > 0 && !this.contingencyService.loading;
+    get list(): Observable<Deferral[]> {
+        return this._list;
     }
 
-    get historicalSearchService(): HistoricalSearchService {
-        return this._historicalSearchService;
+    set list(value: Observable<Deferral[]>) {
+        this._list = value;
     }
 
-    set historicalSearchService(value: HistoricalSearchService) {
-        this._historicalSearchService = value;
+    get selectedRegister(): Deferral {
+        return this._selectedRegister;
     }
 
-    get contingencyService(): ContingencyService {
-        return this._contingencyService;
+    set selectedRegister(value: Deferral) {
+        this._selectedRegister = value;
     }
 
-    set contingencyService(value: ContingencyService) {
-        this._contingencyService = value;
+    get selectedRegisterPivot(): Deferral {
+        return this._selectedRegisterPivot;
     }
 
-    get selectedContingency(): Contingency {
-        return this._selectedContingency;
-    }
-
-    set selectedContingency(value: Contingency) {
-        this._selectedContingency = value;
-    }
-
-    get selectedContingencyPivot(): Contingency {
-        return this._selectedContingencyPivot;
-    }
-
-    set selectedContingencyPivot(value: Contingency) {
-        this._selectedContingencyPivot = value;
+    set selectedRegisterPivot(value: Deferral) {
+        this._selectedRegisterPivot = value;
     }
 
     get intervalToRefresh(): number {
@@ -294,5 +236,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     set infiniteScrollService(value: InfiniteScrollService) {
         this._infiniteScrollService = value;
+    }
+
+
+    get loading(): boolean {
+        return this._loading;
     }
 }

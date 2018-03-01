@@ -1,4 +1,5 @@
-<div class="reg-list" *ngIf="checkDataStatus()">
+<div class="reg-list" *ngIf="(list | async).length && !loading">
+<!--<div class="reg-list">-->
     <header fxLayout="row" class="">
         <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
         <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
@@ -14,89 +15,80 @@
     </header>
     <content>
         <div fxLayout="row"
-             [class.active]="contingency.id === selectedContingency.id"
-             *ngFor="let contingency of contingencyService.contingencyList"
+             *ngFor="let deferral of list | async"
+             [class.active]="deferral.id === selectedRegister.id"
              class="contingency-item">
 
             <!--TAIL/FLEET-->
-            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
-                <span>{{ contingency.aircraft.tail }}</span>
-                <span>{{ contingency.aircraft.fleet }}</span>
+            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                <span>{{ deferral.tail }}</span>
+                <span>{{ deferral.fleet }}</span>
             </div>
 
             <!-- BARCODE -->
-            <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">
-                {{ contingency.barcode | uppercase }}
+            <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">
+                {{ deferral.barcode | uppercase }}
             </div>
 
             <!-- OPENING DATE -->
-            <div fxFlex="7" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">
-                01/01/2018
+            <div fxFlex="7" fxLayoutAlign="start center">
+                {{ deferral.creationDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}
             </div>
 
             <!-- DUE DATE -->
-            <div fxFlex="7" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')" >
-                {{ contingency.flight.origin }} / {{ contingency.flight.destination }}
+            <div fxFlex="7" fxLayoutAlign="start center">
+                {{ deferral.dueDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}
             </div>
 
             <!-- ATA -->
             <div fxFlex="5" fxLayoutAlign="start center">
-                AA - BB
+                {{ deferral.ata }}
             </div>
 
             <!-- DESCRIPTION -->
-            <div fxFlex="28" fxLayoutAlign="start center" class="description" (click)="openDetails(contingency, 'follow-up')">
-                {{(contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}
+            <div fxFlex="28" fxLayoutAlign="start center" class="description">
+                {{(deferral.description.length > 65) ? (deferral.description | slice:0:65) + '...' : deferral.description }}
             </div>
 
             <!-- DEFERRAL REFERENCE -->
-            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
-                33-20-01A
+            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                {{deferral.deferralReference}}
             </div>
 
             <!-- DEFERRAL CLASS -->
-            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
-                MEL A (me)
+            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                {{deferral.deferralClazz}}
             </div>
 
             <!-- ALERT -->
-            <div fxFlex="7" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')">
-                <span class="badge">
-                    COMPLEX
+            <div fxFlex="7" fxLayoutAlign="start center">
+                <span class="badge" *ngIf="deferral.alert.description">
+                    {{deferral.alert.description}}
                 </span>
             </div>
 
             <!-- TIMELINE STATUS -->
-            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
-                <div>{{ contingency.ttlPending>9?'9+': contingency.ttlPending}}</div>
+            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                <div>{{ deferral.status}}</div>
             </div>
 
             <div fxFlex="11" fxLayoutAlign="end end" >
-                <button mat-icon-button [matMenuTriggerFor]="menu" (click)="setSelectedContingency(contingency)">
+                <button mat-icon-button>
                     <mat-icon aria-label="options">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="openCloseContingency(contingency)" [disabled]="contingency.isClose">
-                        <span>{{ 'BUTTONS.SUB_MENUS.CLOSE_CONTINGENCY' | translate }}</span>
-                    </button>
-                    <button mat-menu-item (click)="openMeeting(contingency)">
-                        <span>{{ 'BUTTONS.SUB_MENUS.MEETING' | translate }}</span>
-                    </button>
-                    <button mat-menu-item (click)="openDetails(contingency, 'follow-up')" [disabled]="contingency.status.code === 'ETR' || contingency.status.code === 'NI4' || contingency.isClose">
-                        <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
-                    </button>
-                    <button [disabled]="contingency.ttlPending === 0" mat-menu-item (click)="openPending(contingency)" >
-                        <span>{{ 'BUTTONS.SUB_MENUS.PENDING' | translate }}</span>
-                    </button>
+                    <!--<button mat-menu-item (click)="openCloseContingency(deferral)" [disabled]="deferral.isClose">-->
+                        <!--<span>{{ 'BUTTONS.SUB_MENUS.CLOSE_CONTINGENCY' | translate }}</span>-->
+                    <!--</button>-->
                 </mat-menu>
             </div>
         </div>
     </content>
 </div>
-<mat-paginator #contPaginator [hidden]="!checkDataStatus()"
+<mat-paginator #contPaginator [hidden]="!((list | async).length && !loading)"
        [length]="infiniteScrollService.length"
        [pageSize]="infiniteScrollService.pageSize"
        [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
 </mat-paginator>
-<lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading"></lsl-ess>
-<div class="loader-container" fxLayoutAlign="center center" *ngIf="contingencyService.loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>
+<lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="(list | async).length === 0 && !loading"></lsl-ess>
+<div class="loader-container" fxLayoutAlign="center center" *ngIf="loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>
