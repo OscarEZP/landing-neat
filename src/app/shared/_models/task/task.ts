@@ -1,7 +1,7 @@
 import {TimeInstant} from '../timeInstant';
 import {Alert} from './alert';
 
-export class Deferral {
+export class Task {
     private _alert: Alert;
     private _ata: string;
     private _barcode: string;
@@ -45,7 +45,7 @@ export class Deferral {
     }
 
     public static getInstance() {
-        return new Deferral();
+        return new Task();
     }
 
     get tail(): string {

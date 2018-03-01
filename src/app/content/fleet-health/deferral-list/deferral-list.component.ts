@@ -10,7 +10,7 @@ import {InfiniteScrollService} from '../../_services/infinite-scroll.service';
 import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
-import {Deferral} from '../../../shared/_models/deferral/deferral';
+import {Task} from '../../../shared/_models/task/task';
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -32,11 +32,11 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private _paginatorSubscription: Subscription;
     private _totalRecordsSubscription: Subscription;
 
-    private _list: Observable<Deferral[]>;
+    private _list: Observable<Task[]>;
     private _listCount: Observable<number>;
 
-    private _selectedRegister: Deferral;
-    private _selectedRegisterPivot: Deferral;
+    private _selectedRegister: Task;
+    private _selectedRegisterPivot: Task;
     private _intervalToRefresh: number;
     private _loading: boolean;
 
@@ -47,15 +47,15 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         private _infiniteScrollService: InfiniteScrollService
     ) {
         this._loading = true;
-        this.selectedRegister = Deferral.getInstance();
-        this.selectedRegisterPivot = Deferral.getInstance();
+        this.selectedRegister = Task.getInstance();
+        this.selectedRegisterPivot = Task.getInstance();
         this.intervalToRefresh = DeferralListComponent.DEFAULT_INTERVAL;
     }
 
     ngOnInit() {
         // Test data
-        const def1 = new Deferral();
-        const def2 = new Deferral();
+        const def1 = new Task();
+        const def2 = new Task();
         def1.id = 1;
         def1.tail = 'tail 1';
         def2.id = 2;
@@ -102,7 +102,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     /**
      * Returns a subscription for pagination page event. Show loader and set pagination attributes in page change.
-     * @return {any}
+     * @return {Subscription}
      */
     public getPaginationSubscription(): Subscription {
         return this.paginator.page.subscribe((page) => {
@@ -187,34 +187,34 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     /**
      * Method for update selected contingency and contingency pivot
-     * @param contingency
+     * @param task
      */
-    public setSelectedRegister(register: Deferral) {
+    public setSelectedRegister(register: Task) {
         this.selectedRegister = register;
         this.selectedRegisterPivot = register;
     }
 
-    get list(): Observable<Deferral[]> {
+    get list(): Observable<Task[]> {
         return this._list;
     }
 
-    set list(value: Observable<Deferral[]>) {
+    set list(value: Observable<Task[]>) {
         this._list = value;
     }
 
-    get selectedRegister(): Deferral {
+    get selectedRegister(): Task {
         return this._selectedRegister;
     }
 
-    set selectedRegister(value: Deferral) {
+    set selectedRegister(value: Task) {
         this._selectedRegister = value;
     }
 
-    get selectedRegisterPivot(): Deferral {
+    get selectedRegisterPivot(): Task {
         return this._selectedRegisterPivot;
     }
 
-    set selectedRegisterPivot(value: Deferral) {
+    set selectedRegisterPivot(value: Task) {
         this._selectedRegisterPivot = value;
     }
 
