@@ -11,6 +11,7 @@ import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
 import {Task} from '../../../shared/_models/task/task';
+import {SearchTask} from '../../../shared/_models/task/searchTask';
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -63,16 +64,17 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         const arrDef = [def1, def2];
         this.list = new Observable(observer => {
             observer.next(arrDef);
+            observer.complete();
         });
         this._listCount = new Observable(observer => {
             observer.next(arrDef.length);
+            observer.complete();
         });
         // End test data
 
         this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
         this._paginatorSubscription = this.getPaginationSubscription();
-        this._totalRecordsSubscription = this.getTotalRecordsSubscription();
         this.infiniteScrollService.init();
     }
 
@@ -83,7 +85,9 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this._reloadSubscription.unsubscribe();
         this._intervalRefreshSubscription.unsubscribe();
         this._paginatorSubscription.unsubscribe();
-        this._totalRecordsSubscription.unsubscribe();
+        if (this._totalRecordsSubscription) {
+            this._totalRecordsSubscription.unsubscribe();
+        }
         if (this._listSubscription) {
             this._listSubscription.unsubscribe();
         }
@@ -96,8 +100,17 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * Returns a subscription for get total records count and set it in infinite scroll service
      * @return {Subscription}
      */
-    public getTotalRecordsSubscription(): Subscription {
+    public getTotalRecordsSubscription(signature: SearchTask): Subscription {
         return this._listCount.subscribe(count => this.infiniteScrollService.length = count);
+    }
+
+    /**
+     *
+     * @param signature
+     * @return {Observable<Task[]>}
+     */
+    private getListObservable(signature: SearchTask): Observable<Task[]> {
+        return this.list;
     }
 
     /**
@@ -116,15 +129,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * Method for get a search signature for get data
      * @return {SearchContingency}
      */
-    private getSearchSignature(): SearchContingency {
-        return new SearchContingency(
+    private getSearchSignature(): SearchTask {
+        return new SearchTask(
             this.infiniteScrollService.offset,
-            this.infiniteScrollService.pageSize,
-            null,
-            new TimeInstant(0, ''),
-            new TimeInstant(0, ''),
-            false,
-            true
+            this.infiniteScrollService.pageSize
         );
     }
 
@@ -135,17 +143,19 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private getList(): Subscription {
         this._loading = true;
         const signature = this.getSearchSignature();
-
-        return this._listSubscription = this.list.subscribe((list) => {
-            const ctgInArray = list.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
-            if (this.selectedRegisterPivot.id !== null && ctgInArray === 1) {
-                this.selectedRegister = this.selectedRegisterPivot;
-            } else {
-                this.selectedRegister = list[0];
-            }
-            this.subscribeTimer();
-            this._loading = false;
+        this._totalRecordsSubscription = this.getTotalRecordsSubscription(signature).add(() => {
+            this._listSubscription = this.getListObservable(signature).subscribe((list) => {
+                const ctgInArray = list.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
+                if (this.selectedRegisterPivot.id !== null && ctgInArray === 1) {
+                    this.selectedRegister = this.selectedRegisterPivot;
+                } else {
+                    this.selectedRegister = list[0];
+                }
+                this.subscribeTimer();
+                this._loading = false;
+            });
         });
+        return this._listSubscription;
     }
 
     /**
@@ -208,6 +218,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     set selectedRegister(value: Task) {
         this._selectedRegister = value;
+        this.selectedRegisterPivot = value;
     }
 
     get selectedRegisterPivot(): Task {
@@ -237,7 +248,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     set infiniteScrollService(value: InfiniteScrollService) {
         this._infiniteScrollService = value;
     }
-
 
     get loading(): boolean {
         return this._loading;

@@ -15,61 +15,63 @@
     </header>
     <content>
         <div fxLayout="row"
-             *ngFor="let deferral of list | async"
-             [class.active]="deferral.id === selectedRegister.id"
-             class="contingency-item">
+             *ngFor="let task of list | async"
+             [class.active]="task.id === selectedRegister.id"
+             class="contingency-item"
+             (click)="setSelectedRegister(task)"
+        >
 
             <!--TAIL/FLEET-->
             <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                <span>{{ deferral.tail }}</span>
-                <span>{{ deferral.fleet }}</span>
+                <span>{{ task.tail }}</span>
+                <span>{{ task.fleet }}</span>
             </div>
 
             <!-- BARCODE -->
             <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">
-                {{ deferral.barcode | uppercase }}
+                {{ task.barcode | uppercase }}
             </div>
 
             <!-- OPENING DATE -->
             <div fxFlex="7" fxLayoutAlign="start center">
-                {{ deferral.creationDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}
+                {{ task.creationDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}
             </div>
 
             <!-- DUE DATE -->
             <div fxFlex="7" fxLayoutAlign="start center">
-                {{ deferral.dueDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}
+                {{ task.dueDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}
             </div>
 
             <!-- ATA -->
             <div fxFlex="5" fxLayoutAlign="start center">
-                {{ deferral.ata }}
+                {{ task.ata }}
             </div>
 
             <!-- DESCRIPTION -->
             <div fxFlex="28" fxLayoutAlign="start center" class="description">
-                {{(deferral.description.length > 65) ? (deferral.description | slice:0:65) + '...' : deferral.description }}
+                {{(task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}
             </div>
 
             <!-- DEFERRAL REFERENCE -->
             <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                {{deferral.deferralReference}}
+                {{task.deferralReference}}
             </div>
 
             <!-- DEFERRAL CLASS -->
             <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                {{deferral.deferralClazz}}
+                {{task.deferralClazz}}
             </div>
 
             <!-- ALERT -->
             <div fxFlex="7" fxLayoutAlign="start center">
-                <span class="badge" *ngIf="deferral.alert.description">
-                    {{deferral.alert.description}}
+                <span class="badge" *ngIf="task.alert.description">
+                    {{task.alert.description}}
                 </span>
             </div>
 
             <!-- TIMELINE STATUS -->
             <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                <div>{{ deferral.status}}</div>
+                <div>{{ task.status}}</div>
             </div>
 
             <div fxFlex="11" fxLayoutAlign="end end" >
@@ -77,7 +79,7 @@
                     <mat-icon aria-label="options">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                    <!--<button mat-menu-item (click)="openCloseContingency(deferral)" [disabled]="deferral.isClose">-->
+                    <!--<button mat-menu-item (click)="openCloseContingency(deferral)" [disabled]="task.isClose">-->
                         <!--<span>{{ 'BUTTONS.SUB_MENUS.CLOSE_CONTINGENCY' | translate }}</span>-->
                     <!--</button>-->
                 </mat-menu>
