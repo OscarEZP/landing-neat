@@ -13,6 +13,8 @@ import { InfiniteScrollService } from '../_services/infinite-scroll.service';
 import { LogService } from '../_services/log.service';
 import { FleetHealthComponent } from './fleet-health.component';
 import { DeferralListComponent } from './deferral-list/deferral-list.component';
+import { TimelineComponent } from './timeline/timeline.component';
+import { HistoricalReportComponent } from './historical-report/historical-report.component';
 
 @NgModule({
     imports: [
@@ -22,7 +24,9 @@ import { DeferralListComponent } from './deferral-list/deferral-list.component';
     ],
     declarations: [
         FleetHealthComponent,
-        DeferralListComponent
+        DeferralListComponent,
+        TimelineComponent,
+        HistoricalReportComponent
     ],
     exports: [],
     providers: [
@@ -37,7 +41,7 @@ import { DeferralListComponent } from './deferral-list/deferral-list.component';
         DateUtil
     ],
     entryComponents: [
-
+        HistoricalReportComponent
     ]
 })
 

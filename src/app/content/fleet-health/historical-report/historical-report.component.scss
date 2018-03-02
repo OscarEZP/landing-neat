@@ -1,0 +1,15 @@
+@import '../../../../assets/style/base.scss';
+
+h1 {
+  font-size: 25px;
+  font-weight: normal;
+}
+
+h2 {
+  font-size: 13px;
+  color: mat-color($mat-palette-custom, light-grey);
+}
+
+.title-dialog-container {
+  margin: 0;
+}

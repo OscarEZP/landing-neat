@@ -18,24 +18,6 @@
     }
   }
 
-/*  content {
-
-    figure {
-      text-align: center;
-      padding: 150px 20px;
-
-      i {
-        font-size: 280px;
-        color: rgba(0, 0, 0, .26);
-      }
-      p {
-        font-size: 14px;
-
-      }
-    }
-
-  }*/
-
   nav {
     background-color: mat-color($custom, 'background-grey');
     border-bottom: none;
@@ -65,7 +47,7 @@
   background-color: #fff;
 }
 
-/deep/
+/*/deep/
 .reg-list{
   @include generate-font-size(-6);
   color: mat-color($foreground, text);
@@ -156,7 +138,7 @@
   .contingency-item.active{
     background-color: mat-color($mat-palette-custom, selected-card);
   }
-}
+}*/
 
 /deep/
 .loader-container{

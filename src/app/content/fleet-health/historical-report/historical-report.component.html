@@ -1,0 +1,60 @@
+<form #formDir="ngForm" (ngSubmit)="submitForm()">
+    <div mat-dialog-title fxLayoutGap="30px" class="title-dialog-container" fxLayout="column">
+        <div fxLayout="row" fxFlex>
+            <h1 class="title-dialog" fxFlex>{{'ATA 38-21 / PT-MZU / T00D1A2R'}}</h1>
+            <!--<span class="date-title-dialog">{{ utcModel.label | utcDate | date: 'dd MMM yyyy'}} | {{ timeClock | utcDate | date: 'HH:mm:ss' }} UTC</span>-->
+            <button (click)="openCancelDialog()" id="btn-contingency-form-close-btn" type="button" class="close-btn" mat-icon-button fxFlexOffset="1">
+                <mat-icon aria-label="Example icon-button" class="material-icons close-dialog">
+                    {{ 'OPERATIONS.CONTINGENCY_FORM.CLOSE' | translate }}
+                </mat-icon>
+            </button>
+        </div>
+        <h2>
+            {{'DURING APPROACH TE FLAP DISAGREE. THE APPROACH WAS PERFORMED WITH FLAPS 1'}}
+        </h2>
+    </div>
+    <hr>
+
+    <div class="reg-list">
+        <header fxLayout="row" class="">
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
+            <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ATA' | translate }}</div>
+            <div fxFlex="28" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DESCRIPTION' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_REFERENCE' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_CLASS' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ALERT' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TIMELINE_STATUS' | translate }}</div>
+        </header>
+        <content>
+            <div fxLayout="row" class="contingency-item">
+                <!--TAIL/FLEET-->
+                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center"><span>{{ task.tail }}</span><span>{{ task.fleet }}</span></div>
+                <!-- BARCODE -->
+                <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">{{ task.barcode | uppercase }}</div>
+                <!-- OPENING DATE -->
+                <div fxFlex="7" fxLayoutAlign="start center">{{ task.creationDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}</div>
+                <!-- DUE DATE -->
+                <div fxFlex="7" fxLayoutAlign="start center">{{ task.dueDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}</div>
+                <!-- ATA -->
+                <div fxFlex="5" fxLayoutAlign="start center">{{ task.ata }}</div>
+                <!-- DESCRIPTION -->
+                <div fxFlex="28" fxLayoutAlign="start center" class="description">{{(task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}</div>
+                <!-- DEFERRAL REFERENCE -->
+                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">{{task.deferralReference}}</div>
+                <!-- DEFERRAL CLASS -->
+                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">{{task.deferralClazz}}</div>
+                <!-- ALERT -->
+                <div fxFlex="7" fxLayoutAlign="start center">
+                    <span class="badge" *ngIf="task.alert.description">
+                        {{task.alert.description}}
+                    </span>
+                </div>
+                <!-- TIMELINE STATUS -->
+                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">{{ task.status}}</div>
+            </div>
+        </content>
+    </div>
+</form>
