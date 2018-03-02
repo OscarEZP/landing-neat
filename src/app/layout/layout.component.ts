@@ -32,6 +32,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private static SESSION_ERROR = {code: 472, message: 'ERRORS.SESSION'};
     private static BAD_REQUEST_ERROR = {code: 400, message: 'ERRORS.BAD_REQUEST'};
     private static UNAUTHORIZED_ERROR = {code: 401, message: 'ERRORS.UNAUTHORIZED'};
+    private static NOT_FOUND_ERROR = {code: 404, message: 'ERRORS.NOT_FOUND'};
+
     private static CUSTOM_ERROR = {code: 500, message: ''};
     private static DEFAULT_ERROR = 'ERRORS.DEFAULT';
 
@@ -91,6 +93,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
             }
             case LayoutComponent.UNAUTHORIZED_ERROR.code: {
                 subscription = this.showMessage(LayoutComponent.UNAUTHORIZED_ERROR.message);
+                break;
+            }
+            case LayoutComponent.NOT_FOUND_ERROR.code: {
+                subscription = this.showMessage(LayoutComponent.NOT_FOUND_ERROR.message);
                 break;
             }
             case LayoutComponent.CUSTOM_ERROR.code: {

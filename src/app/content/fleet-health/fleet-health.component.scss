@@ -1,10 +1,30 @@
 @import '../../../assets/style/base.scss';
 
+/deep/
 #fleet-health-container {
   margin: 15px 0 0 0;
+
+/*  content {
+
+    figure {
+      text-align: center;
+      padding: 150px 20px;
+
+      i {
+        font-size: 280px;
+        color: rgba(0, 0, 0, .26);
+      }
+      p {
+        font-size: 14px;
+
+      }
+    }
+
+  }*/
 }
 
 /deep/
 .loader-container{
   height: 75vh;
 }
+

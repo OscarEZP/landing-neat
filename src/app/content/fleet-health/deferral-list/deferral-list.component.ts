@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
-import {TimeInstant} from '../../../shared/_models/timeInstant';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {Observable} from 'rxjs/Observable';
@@ -23,6 +22,9 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     @ViewChild('contPaginator') public paginator: MatPaginator;
 
+    private static TASK_SEARCH_ENDPOINT = 'tasksSearch';
+    private static TASK_SEARCH_COUNT_ENDPOINT = 'tasksSearchCount';
+
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
     private static DEFAULT_INTERVAL = 30;
 
@@ -33,19 +35,19 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private _paginatorSubscription: Subscription;
     private _totalRecordsSubscription: Subscription;
 
-    private _list: Observable<Task[]>;
-    private _listCount: Observable<number>;
+    private _list: Task[];
 
     private _selectedRegister: Task;
     private _selectedRegisterPivot: Task;
     private _intervalToRefresh: number;
     private _loading: boolean;
+    private _error: boolean;
 
     constructor(
         private _messageData: DataService,
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
-        private _infiniteScrollService: InfiniteScrollService
+        private _infiniteScrollService: InfiniteScrollService,
     ) {
         this._loading = true;
         this.selectedRegister = Task.getInstance();
@@ -54,24 +56,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        // Test data
-        const def1 = new Task();
-        const def2 = new Task();
-        def1.id = 1;
-        def1.tail = 'tail 1';
-        def2.id = 2;
-        def2.tail = 'tail 2';
-        const arrDef = [def1, def2];
-        this.list = new Observable(observer => {
-            observer.next(arrDef);
-            observer.complete();
-        });
-        this._listCount = new Observable(observer => {
-            observer.next(arrDef.length);
-            observer.complete();
-        });
-        // End test data
-
+        this.list = [];
         this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
         this._paginatorSubscription = this.getPaginationSubscription();
@@ -101,17 +86,45 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     public getTotalRecordsSubscription(signature: SearchTask): Subscription {
-        return this._listCount.subscribe(count => this.infiniteScrollService.length = count);
+        this._loading = true;
+        return this._apiRestService.search(DeferralListComponent.TASK_SEARCH_COUNT_ENDPOINT, signature)
+            .subscribe(
+                count => {
+                    this.infiniteScrollService.length = !isNaN(count) ? count : 0;
+                    this._loading = false;
+                    return this.getListSubscription(signature);
+                },
+                () => this.getError()
+            );
     }
 
     /**
-     *
-     * @param signature
-     * @return {Observable<Task[]>}
+     * Handler for error process on api request
+     * @return {boolean}
      */
-    private getListObservable(signature: SearchTask): Observable<Task[]> {
-        return this.list;
+    private getError(): boolean {
+        this.infiniteScrollService.length = 0;
+        this._loading = false;
+        return this._error = true;
     }
+
+    private getListSubscription(signature: SearchTask): Subscription {
+        this._loading = true;
+        return this._apiRestService.search<Task[]>(DeferralListComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
+            (list) => {
+                const ctgInArray = list.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
+                if (this.selectedRegisterPivot.id !== null && ctgInArray === 1) {
+                    this.selectedRegister = this.selectedRegisterPivot;
+                } else {
+                    this.selectedRegister = list[0];
+                }
+                this.subscribeTimer();
+                this._loading = false;
+            },
+            () => this.getError()
+        );
+    }
+
 
     /**
      * Returns a subscription for pagination page event. Show loader and set pagination attributes in page change.
@@ -141,21 +154,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     private getList(): Subscription {
-        this._loading = true;
         const signature = this.getSearchSignature();
-        this._totalRecordsSubscription = this.getTotalRecordsSubscription(signature).add(() => {
-            this._listSubscription = this.getListObservable(signature).subscribe((list) => {
-                const ctgInArray = list.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
-                if (this.selectedRegisterPivot.id !== null && ctgInArray === 1) {
-                    this.selectedRegister = this.selectedRegisterPivot;
-                } else {
-                    this.selectedRegister = list[0];
-                }
-                this.subscribeTimer();
-                this._loading = false;
-            });
-        });
-        return this._listSubscription;
+        return this._listSubscription = this.getTotalRecordsSubscription(signature);
     }
 
     /**
@@ -177,11 +177,14 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private getIntervalToRefresh(): Subscription {
         this._loading = true;
-        return this._apiRestService.getSingle('configTypes', DeferralListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(rs => {
-            const res = rs as GroupTypes;
-            this.intervalToRefresh = Number(res.types[0].code) * 1000;
-            this._loading = false;
-        });
+        return this._apiRestService.getSingle('configTypes', DeferralListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(
+            rs => {
+                const res = rs as GroupTypes;
+                this.intervalToRefresh = Number(res.types[0].code) * 1000;
+                this._loading = false;
+            },
+            () => this._loading = false
+        );
     }
 
     /**
@@ -204,11 +207,11 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this.selectedRegisterPivot = register;
     }
 
-    get list(): Observable<Task[]> {
+    get list(): Task[] {
         return this._list;
     }
 
-    set list(value: Observable<Task[]>) {
+    set list(value: Task[]) {
         this._list = value;
     }
 
@@ -252,4 +255,9 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     get loading(): boolean {
         return this._loading;
     }
+
+    get error(): boolean {
+        return this._error;
+    }
+
 }

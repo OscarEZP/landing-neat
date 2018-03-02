@@ -1,4 +1,4 @@
-<div class="reg-list" *ngIf="(list | async).length && !loading">
+<div class="reg-list" *ngIf="list.length && !loading && !error">
 <!--<div class="reg-list">-->
     <header fxLayout="row" class="">
         <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
@@ -15,7 +15,7 @@
     </header>
     <content>
         <div fxLayout="row"
-             *ngFor="let task of list | async"
+             *ngFor="let task of list"
              [class.active]="task.id === selectedRegister.id"
              class="contingency-item"
              (click)="setSelectedRegister(task)"
@@ -87,10 +87,11 @@
         </div>
     </content>
 </div>
-<mat-paginator #contPaginator [hidden]="!((list | async).length && !loading)"
+<mat-paginator #contPaginator [hidden]="!(list.length && !loading)"
        [length]="infiniteScrollService.length"
        [pageSize]="infiniteScrollService.pageSize"
        [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
 </mat-paginator>
-<lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="(list | async).length === 0 && !loading"></lsl-ess>
+<lsl-ess icon="flight_takeoff" message="ESS.NO_DEFERRALS_FOUND" *ngIf="list.length === 0 && !loading && !error"></lsl-ess>
+<lsl-ess icon="error" message="ERRORS.DEFAULT" *ngIf="error"></lsl-ess>
 <div class="loader-container" fxLayoutAlign="center center" *ngIf="loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>
