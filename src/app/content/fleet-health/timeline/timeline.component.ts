@@ -1,5 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_SNACK_BAR_DATA } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,10 +10,11 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class TimelineComponent implements OnInit {
 
-    constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
-                private messageService: MessageService,
-                private dialogService: DialogService,
-                public translate: TranslateService) {
+    constructor(
+        private messageService: MessageService,
+        private dialogService: DialogService,
+        public translate: TranslateService
+    ) {
         this.translate.setDefaultLang('en');
     }
 

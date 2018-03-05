@@ -47,6 +47,10 @@
       "OPENING_DATE": "Opening Date",
       "TAIL_FLEET": "Tail/Fleet",
       "TIMELINE_STATUS": "Timeline Status"
+    },
+    "REPORT": {
+      "HISTORICAL_REPORTS": "Historical Reports",
+      "REPORTS_TIMELINE": "Reports Timeline"
     }
   },
   "OPERATIONS": {
