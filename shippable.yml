@@ -39,9 +39,9 @@ build:
     - cd $SHIPPABLE_BUILD_DIR
     - >
       if [ "$BRANCH" == "master" ]; then
-        npm run ng -- build --env=prod
+        npm run ng -- build --env=prod --output-hashing=all
       elif [ "$BRANCH" == "develop" ]; then
-        npm run ng -- build --env=staging
+        npm run ng -- build --env=staging --output-hashing=all
       fi
 
     #Run the test

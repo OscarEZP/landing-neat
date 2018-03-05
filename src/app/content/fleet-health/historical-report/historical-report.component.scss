@@ -22,6 +22,12 @@ h3 {
   margin: 0 0 25px 0;
 }
 
+#container-timeline {
+  h3 {
+    margin: 0 0 10px 0;
+  }
+}
+
 #container-historical-report {
   h3 {
     border-bottom: thin solid mat-color($mat-palette-custom, light-grey);
