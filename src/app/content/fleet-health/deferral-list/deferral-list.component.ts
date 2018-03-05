@@ -87,10 +87,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     public getTotalRecordsSubscription(signature: SearchTask): Subscription {
         this._loading = true;
-        return this._apiRestService.search(DeferralListComponent.TASK_SEARCH_COUNT_ENDPOINT, signature)
+        return this._apiRestService.search<{count: number}>(DeferralListComponent.TASK_SEARCH_COUNT_ENDPOINT, signature)
             .subscribe(
-                count => {
-                    this.infiniteScrollService.length = !isNaN(count) ? count : 0;
+                response => {
+                    this.infiniteScrollService.length = !isNaN(response.count) ? response.count : 0;
                     this._loading = false;
                     return this.getListSubscription(signature);
                 },
@@ -108,6 +108,11 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         return this._error = true;
     }
 
+    /**
+     * Subscription for get the data list
+     * @param signature
+     * @return {Subscription}
+     */
     private getListSubscription(signature: SearchTask): Subscription {
         this._loading = true;
         return this._apiRestService.search<Task[]>(DeferralListComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
