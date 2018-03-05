@@ -36,3 +36,10 @@ h3 {
     margin: 10px 0;
   }
 }
+
+/deep/
+#container-timeline {
+  .vis-timeline {
+    min-height: 150px;
+  }
+}
