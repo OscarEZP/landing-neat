@@ -6,6 +6,7 @@ import { MessageService } from '../../shared/_services/message.service';
 import { StorageService } from '../../shared/_services/storage.service';
 import { AuthService } from '../_services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
+import {DataService} from '../../shared/_services/data.service';
 
 
 @Component({
@@ -41,7 +42,8 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute,
         private fb: FormBuilder,
         private  _messageService: MessageService,
-        private _translate: TranslateService
+        private _translate: TranslateService,
+        private _dataService: DataService
     ) {
         this._translate.setDefaultLang('en');
     }
@@ -64,12 +66,6 @@ export class LoginComponent implements OnInit {
                 this.router.navigate([this.authService.getRedirectUrl()]);
             }
         });
-        if (this._storageService.expired) {
-            this._translate.get('ERRORS.SESSION').subscribe((res: string) => {
-                this._messageService.openSnackBar(res);
-                this._storageService.expired = false;
-            });
-        }
     }
 
     logIn(form: NgForm) {

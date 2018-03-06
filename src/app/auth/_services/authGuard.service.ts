@@ -3,15 +3,21 @@ import {ActivatedRouteSnapshot, CanActivate, CanActivateChild, RouterStateSnapsh
 
 import {AuthService} from './auth.service';
 import {RoutingService} from '../../shared/_services/routing.service';
+import {DataService} from '../../shared/_services/data.service';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable()
 export class AuthGuardService implements CanActivate, CanActivateChild {
-    constructor(private authService: AuthService, private router: Router, private routingService: RoutingService) {
+    constructor(
+        private authService: AuthService,
+        private router: Router,
+        private routingService: RoutingService,
+        private _dataService: DataService
+    ) {
 
     }
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         const url: string = state.url;
-        console.log('Url:' + url);
 
         this.routingService.setActiveModule(url);
 

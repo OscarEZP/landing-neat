@@ -4,9 +4,11 @@ import {MatSnackBar, MatSnackBarConfig} from '@angular/material';
 @Injectable()
 export class MessageService {
 
-    constructor(private  matSnackBar: MatSnackBar) {
-        this.matSnackBar = matSnackBar;
+    private _active: boolean;
 
+    constructor(private  _matSnackBar: MatSnackBar) {
+        this._matSnackBar = _matSnackBar;
+        this.active = false;
     }
 
     /**
@@ -15,19 +17,40 @@ export class MessageService {
      * @param time
      */
     openSnackBar(message: string, time: number = 5000) {
-        this.matSnackBar.open(message, '', <MatSnackBarConfig>{
-            duration: time,
-            verticalPosition: 'top',
-            horizontalPosition: 'center'
-        });
-
+        if (!this.active) {
+            this.active = true;
+            this._matSnackBar.open(message, '', <MatSnackBarConfig>{
+                duration: time,
+                verticalPosition: 'top',
+                horizontalPosition: 'center'
+            }).afterDismissed().subscribe(() => {
+                this.active = false;
+            });
+        }
     }
 
     openFromComponent(component, config) {
-        this.matSnackBar.openFromComponent(component, config);
+        this._matSnackBar.openFromComponent(component, config);
     }
 
     dismissSnackBar() {
-        this.matSnackBar.dismiss();
+        this._matSnackBar.dismiss();
+    }
+
+
+    get matSnackBar(): MatSnackBar {
+        return this._matSnackBar;
+    }
+
+    set matSnackBar(value: MatSnackBar) {
+        this._matSnackBar = value;
+    }
+
+    get active(): boolean {
+        return this._active;
+    }
+
+    set active(value: boolean) {
+        this._active = value;
     }
 }

@@ -1,14 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { Aircraft } from '../shared/_models/aircraft';
-import { Backup } from '../shared/_models/backup';
-import { Contingency } from '../shared/_models/contingency/contingency';
-import { Flight } from '../shared/_models/flight';
-import { Interval } from '../shared/_models/interval';
-import { Safety } from '../shared/_models/safety';
-import { Status } from '../shared/_models/status';
-import { TimeInstant } from '../shared/_models/timeInstant';
-import { DetailsService } from './_services/details.service';
+import {Component, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs/Subscription';
+import {Contingency} from '../shared/_models/contingency/contingency';
+import {DetailsService} from './_services/details.service';
 
 @Component({
     selector: 'lsl-details',
@@ -26,7 +19,7 @@ export class DetailsComponent implements OnInit {
 
         this.asideVisible = false;
         this.activeTitle = '';
-        this.selectedContingency = new Contingency(null, new Aircraft(null, null, null), null, new TimeInstant(null, null), null, new Flight(null, null, null, new TimeInstant(null, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(null, null), null, new Interval(null, null), new Interval(null, null), null), null, null, 0);
+        this.selectedContingency = Contingency.getInstance();
     }
 
     get asideVisible(): boolean {

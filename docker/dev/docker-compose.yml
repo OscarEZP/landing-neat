@@ -5,15 +5,17 @@ version: '2'
 services:
 
   web:  # Main web service
-    container_name: moc_web
-    build: ./    # Directory containing Dockerfile
-    ports:  # Ports to expose
-    - "4200:4200"
-    volumes:    # Volumes (directories) to mount
-    - ../../:/var/www/html/
-    command: bash -c "npm install && ng serve --env=staging -o --host 0.0.0.0 --port 4200"
+      image: moc-web-img
+      container_name: moc_web
+      build: ./    # Directory containing Dockerfile
+      ports:  # Ports to expose
+      - "4200:4200"
+      volumes:    # Volumes (directories) to mount
+      - ../../:/var/www/html/
+      command: bash -c "npm install && ng serve --env=staging -o --host 0.0.0.0 --port 4200"
 
   local:  # Local web service
+      image: moc-web-img
       container_name: moc_web
       build: ./    # Directory containing Dockerfile
       ports:  # Ports to expose

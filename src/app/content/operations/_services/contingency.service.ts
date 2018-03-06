@@ -6,7 +6,6 @@ import { Subject } from 'rxjs/Subject';
 import { Count } from '../../../shared/_models/configuration/count';
 import { Contingency } from '../../../shared/_models/contingency/contingency';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
-import { InfiniteScrollService } from './infinite-scroll.service';
 import { LogService } from './log.service';
 
 @Injectable()
@@ -23,9 +22,16 @@ export class ContingencyService {
     private _apiService: ApiRestService;
     private _loading: boolean;
 
-    constructor(private http: HttpClient,
+    static getLastInformationPercentage(item: Contingency): number {
+        const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
+        const percentage = (diff / 180) * 100;
+        return percentage > 100 ? 100 : percentage;
+    }
+
+    constructor(
+                private http: HttpClient,
                 private logService: LogService,
-                private _infiniteScrollService: InfiniteScrollService) {
+                ) {
 
         this.contingencyList = [];
         this.loading = false;
@@ -60,16 +66,12 @@ export class ContingencyService {
         );
     }
 
-    public getLastInformationPercentage(item: Contingency): number {
-        const diff = (item.status.creationDate.epochTime - item.creationDate.epochTime) / (1000 * 60);
-        const percentage = (diff / 180) * 100;
-        return percentage > 100 ? 100 : percentage;
-    }
+
 
     public addLastInformationPercentage(contingencies: Contingency[]): Contingency[] {
         if (contingencies.length > 0) {
             contingencies.forEach((item) => {
-                item.lastInformationPercentage = this.getLastInformationPercentage(item);
+                item.lastInformationPercentage = ContingencyService.getLastInformationPercentage(item);
             });
         }
         return contingencies;
@@ -102,7 +104,6 @@ export class ContingencyService {
             .pipe(
                 tap(count => {
                     this.log(`fetched count search`);
-                    this._infiniteScrollService.length = count.items;
                 }),
                 catchError(this.handleError('getContingencies'))
             );
@@ -112,11 +113,10 @@ export class ContingencyService {
         return this.contingencyList = [];
     }
 
-    private handleError<T>(operation = 'operation', result?: T) {
+    private handleError<T>(operation = 'operation') {
         return (error: any): Observable<T> => {
-            console.log(error);
             this.log(`${operation} failed: ${error.message}`);
-            return Observable.throw(error.error);
+            return Observable.throw(error);
         };
     }
 
@@ -135,10 +135,6 @@ export class ContingencyService {
 
     get contingencyListChanged(): Subject<Contingency[]> {
         return this._contingencyListChanged;
-    }
-
-    set contingencyListChanged(value: Subject<Contingency[]>) {
-        this._contingencyListChanged = value;
     }
 
     get apiService(): ApiRestService {

@@ -9,6 +9,7 @@
     "TO_FIND_YOUR_CODE": "to find your verification code and enter it here"
   },
   "BUTTONS": {
+    "ADD": "ADD",
     "CANCEL": "CANCEL",
     "CHANGE": "CHANGE",
     "CLOSE": "CLOSE",
@@ -18,11 +19,15 @@
     "SUB_MENUS": {
       "CLOSE_CONTINGENCY": "Close Contingency",
       "MEETING": "Meeting",
-      "FOLLOW_UP": "Follow up"
+      "FOLLOW_UP": "Follow up",
+      "PENDING": "Pending"
     }
   },
   "ERRORS":{
-    "SESSION": "Your session has expired"
+    "BAD_REQUEST": "Your request in invalid, please check it and try again",
+    "DEFAULT": "Ooops, something went wrong",
+    "SESSION": "Your session has expired",
+    "UNAUTHORIZED": "You don't have permissions to access this content"
   },
   "ESS":{
     "NO_CONTINGENCIES_FOUND": "There are no contingencies. Have a nice day!",
@@ -56,11 +61,14 @@
       "BTN_SAVE": "SAVE",
       "CLOSE_SUCCESS": "Contingency has been closed successfully"
     },
+    "CONTINGENCIES_WITH_PENDINGS": "Contingencies with pendings",
     "CLOSED_CONTINGENCY": "Closed contingency",
     "CLOSED_CONTINGENCIES": "Closed contingencies",
     "CLOSURE_DATE_HOUR": "Closure Date - Hour",
     "ACTIVE_CONTINGENCIES": "Active Contingencies",
     "ACTIVE_CONTINGENCY": "Active Contingency",
+    "PENDING_CONTINGENCIES":"Contingencies",
+    "PENDING_CONTINGENCY":"Contingency",
     "CONTINGENCY_DETAILS": {
       "FOLLOW_UP": {
         "CONTINGENCY_TYPE_REQUIRED": "Contingency type is required",
@@ -131,20 +139,37 @@
     "FROM_TO": "From/To",
     "MEETING_FORM": {
       "ACTIVITIES": "Activities",
+      "ADD_PENDINGS": "Add pendings",
+      "AGREEMENTS": "Agreements",
       "APPLY": "Apply",
+      "AREA": "Area",
+      "AREA_INVALID": "Area is invalid",
+      "AREA_REQUIRED": "Area is required",
       "CREATION_DATE": "Creation date",
+      "BARCODE_REQUIRED": "Barcode is required",
       "DONE": "Done",
       "FAILURE_MESSAGE": "Ooops, Something went wrong",
       "FLEET": "Fleet",
       "MEETING_CREATION": "Meeting Creation",
+      "MEETING_INFO": "Meeting Info",
       "MEETING_SUMMARY": "Meeting Summary",
       "OPERATION_INFO": "Operation Info",
+      "PENDINGS": "Pendings",
+      "PENDINGS_REQUIRED": "Pending is required",
+      "PERFORMED_ACTIVITIES": "Performed Activities Record",
+      "PERFORMED_ACTIVITIES_REQUIRED": "Performed Activities Record is required",
       "REASON": "Reason",
       "STATION": "Station",
       "TAIL": "Tail",
       "TYPE": "Type",
+      "TO": "to",
       "TO_DO_LIST": "To do list",
-      "SUCCESSFULLY_MESSAGE": "Meeting has been created successfully"
+      "SUCCESSFULLY_MESSAGE": "Meeting has been created successfully",
+      "ADD_ASSISTANT_TITTLE": "Add Assistants",
+      "ADD_ASSISTANT_MAIL": "Assistant e-mail",
+      "ADD_ASSISTANT": "ADD",
+      "ASSISTANT_REQUIRED": "Assistant is required",
+      "VALID_MAIL":"Format mail is invalid"
     },
     "OPERATOR": "Operator",
     "OF": "of",
@@ -152,6 +177,7 @@
     "PENDINGS": "PENDINGS",
     "PROGRESS": "Progress",
     "SAFETY_EVENT": "Safety Event",
+    "TOTAL_PENDINGS":"Pendings",
     "SEARCH_HISTORICAL": {
       "CLEAR": "CLEAR",
       "FILTER": "FILTER",
@@ -167,7 +193,11 @@
     "THIS_MOMENT": "at this moment on Contingency",
     "TIME_LEFT": "Time Left",
     "TYPE": "Type",
-    "VALIDATION_ERROR_MESSAGE": "You must fill in all required fields"
+    "VALIDATION_ERROR_MESSAGE": "You must fill in all required fields",
+    "RESOLVE_PENDING": {
+      "PENDINGS_SOLVED": "Pending(s) solved",
+      "PENDING_REQUIRED": "Pending is required"
+    }
   },
   "TITLES": {
     "ADITIONAL_INFO": "Aditional Info",

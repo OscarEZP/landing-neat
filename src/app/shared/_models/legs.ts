@@ -11,8 +11,8 @@ export class Legs {
     constructor(origin: string, destination: string, etd: TimeInstant, updateDate: TimeInstant, tail: string) {
         this._origin = origin;
         this._destination = destination;
-        this._etd = etd;
-        this._updateDate = updateDate;
+        this._etd =etd!=null?etd:TimeInstant.getInstance();
+        this._updateDate =updateDate!=null?updateDate:TimeInstant.getInstance();
         this._tail = tail;
     }
 

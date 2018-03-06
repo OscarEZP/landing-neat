@@ -9,6 +9,7 @@ export const environment = {
     paths: {
         aircrafts: ':9002/api/v1/contingencies/configurations/aircrafts',
         aircraftsSearch: ':9005/api/v1/configurations/aircrafts/_search',
+        areas: ':9002/api/v1/contingencies/pendings/areas',
         close: ':9002/api/v1/contingencies/_close',
         configMaxStatus: ':9005/api/v1/configurations/status/max',
         configStatus: ':9005/api/v1/configurations/status/_search',
@@ -26,6 +27,9 @@ export const environment = {
         operator: ':9005/api/v1/configurations/operators/',
         safetyEvent: ':9005/api/v1/configurations/safetyEvents',
         types: ':9005/api/v1/configurations/types',
-        configTypes: ':9005/api/v1/configurations/types/groupNames'
+        configTypes: ':9005/api/v1/configurations/types/groupNames',
+        mails : ':9005/api/v1/configurations/mails',
+        pendingSearch:':9002/api/v1/contingencies/pendings/_search',
+        pendingResolve:':9002/api/v1/contingencies/pendings/_resolve'
     }
 };
