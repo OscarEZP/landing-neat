@@ -494,13 +494,18 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * Method to change form validation depending of selecting or not one checkbox (optional until is selected)
      */
     public onSelectOptional(checkboxName: string, itemsToValidate: string[]) {
-        let i: number;
+        itemsToValidate.forEach(item => {
+            this.contingencyForm.get(item).setValue(null);
+            !this.contingencyForm.get(checkboxName).value ? this.contingencyForm.get(item).setValidators(Validators.required) : this.contingencyForm.get(item).clearValidators();
+            this.contingencyForm.get(item).updateValueAndValidity();
+        });
 
-        for (i = 0; i < itemsToValidate.length; i++) {
-            this.contingencyForm.get(itemsToValidate[i]).setValue(null);
-            !this.contingencyForm.get(checkboxName).value ? this.contingencyForm.get(itemsToValidate[i]).setValidators(Validators.required) : this.contingencyForm.get(itemsToValidate[i]).clearValidators();
-            this.contingencyForm.get(itemsToValidate[i]).updateValueAndValidity();
-        }
+        // let i: number;
+        // for (i = 0; i < itemsToValidate.length; i++) {
+        //     this.contingencyForm.get(itemsToValidate[i]).setValue(null);
+        //     !this.contingencyForm.get(checkboxName).value ? this.contingencyForm.get(itemsToValidate[i]).setValidators(Validators.required) : this.contingencyForm.get(itemsToValidate[i]).clearValidators();
+        //     this.contingencyForm.get(itemsToValidate[i]).updateValueAndValidity();
+        // }
     }
 
     private onCloseCreationContingencyForm(): void {
