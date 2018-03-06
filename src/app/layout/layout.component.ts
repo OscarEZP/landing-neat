@@ -70,7 +70,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     public ngOnDestroy() {
         this._messageDataSubscription.unsubscribe();
         this._errorDataSubscription.unsubscribe();
-        this._handleErrorSubscription.unsubscribe();
+        if (this._handleErrorSubscription) {
+            this._handleErrorSubscription.unsubscribe();
+        }
     }
 
     private handleError(error: HttpErrorResponse): Subscription {
