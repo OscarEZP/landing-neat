@@ -26,7 +26,6 @@ export class SidenavComponent implements OnInit {
     }
 
     ngOnInit() {
-
         this.arrMenu = [
             /*{
                 'label': 'Dashboard',
@@ -49,15 +48,6 @@ export class SidenavComponent implements OnInit {
                 'icon': 'power_settings_new'
             }
         ];
-
-        // this.arrFooterMenu = [
-        //     {
-        //         'label': 'Log Out',
-        //         'link': '/logout',
-        //         'icon': 'power_settings_new'
-        //     }
-        // ];
-
     }
 
     toggleSidenav() {
