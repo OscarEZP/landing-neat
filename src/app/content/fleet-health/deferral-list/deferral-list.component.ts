@@ -150,7 +150,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private getSearchSignature(): SearchTask {
         return new SearchTask(
             this.infiniteScrollService.offset,
-            this.infiniteScrollService.pageSize
+            this.infiniteScrollService.pageSize,
+            false
         );
     }
 
