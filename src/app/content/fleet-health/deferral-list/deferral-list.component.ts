@@ -49,7 +49,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         private _detailsService: DetailsService,
         private _infiniteScrollService: InfiniteScrollService,
     ) {
-        this._loading = true;
         this.selectedRegister = Task.getInstance();
         this.selectedRegisterPivot = Task.getInstance();
         this.intervalToRefresh = DeferralListComponent.DEFAULT_INTERVAL;
@@ -87,10 +86,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     public getTotalRecordsSubscription(signature: SearchTask): Subscription {
         this._loading = true;
-        return this._apiRestService.search<{count: number}>(DeferralListComponent.TASK_SEARCH_COUNT_ENDPOINT, signature)
+        return this._apiRestService.search<{items: number}>(DeferralListComponent.TASK_SEARCH_COUNT_ENDPOINT, signature)
             .subscribe(
                 response => {
-                    this.infiniteScrollService.length = !isNaN(response.count) ? response.count : 0;
+                    this.infiniteScrollService.length = !isNaN(response.items) ? response.items : 0;
                     this._loading = false;
                     return this.getListSubscription(signature);
                 },
@@ -124,12 +123,12 @@ export class DeferralListComponent implements OnInit, OnDestroy {
                     this.selectedRegister = list[0];
                 }
                 this.subscribeTimer();
+                this.list = list;
                 this._loading = false;
             },
             () => this.getError()
         );
     }
-
 
     /**
      * Returns a subscription for pagination page event. Show loader and set pagination attributes in page change.

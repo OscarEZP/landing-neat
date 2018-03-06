@@ -1,97 +1,100 @@
-<div class="reg-list" *ngIf="list.length && !loading && !error">
-<!--<div class="reg-list">-->
-    <header fxLayout="row" class="">
-        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
-        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
-        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
-        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
-        <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ATA' | translate }}</div>
-        <div fxFlex="28" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DESCRIPTION' | translate }}</div>
-        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_REFERENCE' | translate }}</div>
-        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_CLASS' | translate }}</div>
-        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ALERT' | translate }}</div>
-        <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TIMELINE_STATUS' | translate }}</div>
-        <div fxFlex="11">&nbsp;</div>
-    </header>
-    <content>
-        <div fxLayout="row"
-             *ngFor="let task of list"
-             [class.active]="task.id === selectedRegister.id"
-             class="contingency-item"
-             (click)="setSelectedRegister(task)"
-        >
+<div id="deferral-list">
+    <div class="reg-list" *ngIf="list.length && !loading && !error">
+        <header fxLayout="row" class="">
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
+            <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ATA' | translate }}</div>
+            <div fxFlex="28" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DESCRIPTION' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_REFERENCE' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_CLASS' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ALERT' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TIMELINE_STATUS' | translate }}</div>
+            <div fxFlex="11">&nbsp;</div>
+        </header>
+        <content>
+            <div fxLayout="row"
+                 *ngFor="let task of list"
+                 [class.active]="task.barcode === selectedRegister.barcode"
+                 class="contingency-item"
+                 (click)="setSelectedRegister(task)"
+            >
 
-            <!--TAIL/FLEET-->
-            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                <span>{{ task.tail }}</span>
-                <span>{{ task.fleet }}</span>
-            </div>
+                <!--TAIL/FLEET-->
+                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                    <span>{{ task.tail }}</span>
+                    <span>{{ task.fleet }}</span>
+                </div>
 
-            <!-- BARCODE -->
-            <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">
-                {{ task.barcode | uppercase }}
-            </div>
+                <!-- BARCODE -->
+                <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">
+                    {{ task.barcode | uppercase }}
+                </div>
 
-            <!-- OPENING DATE -->
-            <div fxFlex="7" fxLayoutAlign="start center">
-                {{ task.creationDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}
-            </div>
+                <!-- OPENING DATE -->
+                <div fxFlex="7" fxLayoutAlign="start center">
+                    {{ task.createDate.epochTime | utcDate | date: 'dd-MM-yyyy' }}
+                </div>
 
-            <!-- DUE DATE -->
-            <div fxFlex="7" fxLayoutAlign="start center">
-                {{ task.dueDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}
-            </div>
+                <!-- DUE DATE -->
+                <div fxFlex="7" fxLayoutAlign="start center">
+                    {{ task.dueDate.epochTime | utcDate | date: 'dd-MM-yyyy' }}
+                </div>
 
-            <!-- ATA -->
-            <div fxFlex="5" fxLayoutAlign="start center">
-                {{ task.ata }}
-            </div>
+                <!-- ATA -->
+                <div fxFlex="5" fxLayoutAlign="start center">
+                    {{ task.ata }}
+                </div>
 
-            <!-- DESCRIPTION -->
-            <div fxFlex="28" fxLayoutAlign="start center" class="description">
-                {{(task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}
-            </div>
+                <!-- DESCRIPTION -->
+                <div fxFlex="28" fxLayoutAlign="start center" class="description">
+                    {{(task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}
+                </div>
 
-            <!-- DEFERRAL REFERENCE -->
-            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                {{task.deferralReference}}
-            </div>
+                <!-- DEFERRAL REFERENCE -->
+                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                    {{task.deferralReference}}
+                </div>
 
-            <!-- DEFERRAL CLASS -->
-            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                {{task.deferralClazz}}
-            </div>
+                <!-- DEFERRAL CLASS -->
+                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                    {{task.deferralClazz}}
+                </div>
 
-            <!-- ALERT -->
-            <div fxFlex="7" fxLayoutAlign="start center">
-                <span class="badge" *ngIf="task.alert.description">
-                    {{task.alert.description}}
-                </span>
-            </div>
+                <!-- ALERT -->
+                <div fxFlex="7" fxLayoutAlign="center center">
+                    <span class="badge">
+                        COMPLEX
+                    </span>
+                </div>
 
-            <!-- TIMELINE STATUS -->
-            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                <div>{{ task.status}}</div>
-            </div>
+                <!-- TIMELINE STATUS -->
+                <div fxFlex="7" fxLayoutAlign="center center">
+                    <span class="badge" *ngIf="task.timelineStatus" [ngClass]="{'open': task.timelineStatus==='OPEN'}">
+                        {{ task.timelineStatus }}
+                    </span>
+                </div>
 
-            <div fxFlex="11" fxLayoutAlign="end end" >
-                <button mat-icon-button>
-                    <mat-icon aria-label="options">more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                    <!--<button mat-menu-item (click)="openCloseContingency(deferral)" [disabled]="task.isClose">-->
-                        <!--<span>{{ 'BUTTONS.SUB_MENUS.CLOSE_CONTINGENCY' | translate }}</span>-->
-                    <!--</button>-->
-                </mat-menu>
+                <div fxFlex="11" fxLayoutAlign="end end" >
+                    <button mat-icon-button>
+                        <mat-icon aria-label="options">more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <!--<button mat-menu-item (click)="openCloseContingency(deferral)" [disabled]="task.isClose">-->
+                            <!--<span>{{ 'BUTTONS.SUB_MENUS.CLOSE_CONTINGENCY' | translate }}</span>-->
+                        <!--</button>-->
+                    </mat-menu>
+                </div>
             </div>
-        </div>
-    </content>
+        </content>
+    </div>
+    <mat-paginator #contPaginator [hidden]="!(list.length && !loading)"
+           [length]="infiniteScrollService.length"
+           [pageSize]="infiniteScrollService.pageSize"
+           [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
+    </mat-paginator>
+    <lsl-ess icon="flight_takeoff" message="ESS.NO_DEFERRALS_FOUND" *ngIf="list.length === 0 && !loading && !error"></lsl-ess>
+    <lsl-ess icon="error" message="ERRORS.DEFAULT" *ngIf="error"></lsl-ess>
+    <div class="loader-container" fxLayoutAlign="center center" *ngIf="loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>
 </div>
-<mat-paginator #contPaginator [hidden]="!(list.length && !loading)"
-       [length]="infiniteScrollService.length"
-       [pageSize]="infiniteScrollService.pageSize"
-       [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
-</mat-paginator>
-<lsl-ess icon="flight_takeoff" message="ESS.NO_DEFERRALS_FOUND" *ngIf="list.length === 0 && !loading && !error"></lsl-ess>
-<lsl-ess icon="error" message="ERRORS.DEFAULT" *ngIf="error"></lsl-ess>
-<div class="loader-container" fxLayoutAlign="center center" *ngIf="loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>

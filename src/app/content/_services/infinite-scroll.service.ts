@@ -9,14 +9,14 @@ export class InfiniteScrollService {
     private _offset: number;
 
     constructor() {
-        this.pageSize = 10;
-        this.length = 0;
-        this.pageIndex = 0;
+        this.init();
         this._pageSizeOptions = [1, 10, 25, 50, 100];
     }
 
     public init(): void {
         this.pageIndex = 0;
+        this.pageSize = 10;
+        this.length = 0;
     }
 
     get viewedRecords(): number {

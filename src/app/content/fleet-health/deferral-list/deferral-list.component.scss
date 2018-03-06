@@ -1,1 +1,12 @@
 @import '../../../../assets/style/base.scss';
+
+
+#deferral-list {
+  .badge {
+    padding: 3px 8px;
+  }
+  .open {
+    background-color: mat-color($primary);
+    color: mat-color($primary, default-contrast);
+  }
+}

@@ -2,7 +2,6 @@ import {TimeInstant} from '../timeInstant';
 import {Alert} from './alert';
 
 export class Task {
-    private _alert: Alert;
     private _ata: string;
     private _barcode: string;
     private _clazz: string;
@@ -21,6 +20,8 @@ export class Task {
     private _source: string;
     private _status: string;
     private _tail: string;
+    private _timelineStatus: string;
+
 
     constructor() {
         this._id = null;
@@ -41,7 +42,7 @@ export class Task {
         this._deferralReference = '';
         this._deferralClazz = '';
         this._creationDate = TimeInstant.getInstance();
-        this._alert = Alert.getInstance();
+        this._timelineStatus = '';
     }
 
     public static getInstance() {
@@ -192,11 +193,11 @@ export class Task {
         this._id = value;
     }
 
-    get alert(): Alert {
-        return this._alert;
+    get timelineStatus(): string {
+        return this._timelineStatus;
     }
 
-    set alert(value: Alert) {
-        this._alert = value;
+    set timelineStatus(value: string) {
+        this._timelineStatus = value;
     }
 }
