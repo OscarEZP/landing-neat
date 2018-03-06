@@ -13,7 +13,6 @@ export class SidenavComponent implements OnInit {
     private user: User;
     public userArray: { username: string, name: string, email: string };
     public arrMenu: { label: string, link: string, icon: string }[];
-    public arrFooterMenu: { label: string, link: string, icon: string }[];
 
     constructor(private sidenavService: SidenavService, private _storageService: StorageService) {
         this.userArray = {username: '', name: '', email: ''};
