@@ -41,9 +41,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-
         this._messageDataSubscription = this.messageData.currentNumberMessage.subscribe(message => this.currentDateLong = message);
-
         TimerObservable.create(0, this.interval)
             .takeWhile(() => this.alive)
             .subscribe(() => {
@@ -59,11 +57,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                         }
                     });
             });
-
         this.clockService.getClock().subscribe(time => this.time = time);
-
-        this.moduleTitle = this.routingService.getModuleTitle();
-
     }
 
     ngOnDestroy() {

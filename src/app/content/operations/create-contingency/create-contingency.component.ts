@@ -92,18 +92,18 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this.utcModel = new TimeInstant(initFakeDate, null);
         this.durationArray = [];
 
-        let flight: Flight = Flight.getInstance();
+        const flight: Flight = Flight.getInstance();
         flight.etd.epochTime = initFakeDate;
 
-        let status: Status = Status.getInstance();
+        const status: Status = Status.getInstance();
         status.creationDate.epochTime = initFakeDate;
         status.username = this._storageService.getCurrentUser().username;
         status.requestedInterval.duration = 30;
 
         this.contingency = Contingency.getInstance();
-        this.contingency.username=this._storageService.getCurrentUser().username;
-        this.contingency.status=status;
-        this.contingency.flight=flight;
+        this.contingency.username = this._storageService.getCurrentUser().username;
+        this.contingency.status = status;
+        this.contingency.flight = flight;
 
 
         // new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(initFakeDate, null), null, new Interval(new TimeInstant(null, null), null), new Interval(new TimeInstant(null, null), 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username, 0,false);
@@ -225,7 +225,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                     err => {
 
                         this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
-                        const message: string = (err.error!=null && err.error.message!=null) ? err.error.message : this.snackbarMessage;
+                        const message: string = (err.error != null && err.error.message != null) ? err.error.message : this.snackbarMessage;
                         this._messageService.openSnackBar(message);
                         this.validations.isSending = false;
                     }, () => {
@@ -453,7 +453,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                                     this.flightList[0].etd.label
                                 ));
                         } else {
-                            this.contingency.flight =Flight.getInstance();
+                            this.contingency.flight = Flight.getInstance();
                         }
 
                         this.contingencyDateModel[0].updateFromEpoch(this.contingency.flight.etd.epochTime);
@@ -481,7 +481,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @param {Flight} fl
      */
     public onSelectFlight(event: Event, fl: Flight): void {
-
         this.contingency.flight.flightNumber = fl.flightNumber;
         this.contingency.flight.origin = fl.origin;
         this.contingency.flight.destination = fl.destination;
@@ -495,7 +494,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     public onSelectOptional(checkboxName: string, itemsToValidate: string[]) {
         let i: number;
-
         for (i = 0; i < itemsToValidate.length; i++) {
             this.contingencyForm.get(itemsToValidate[i]).setValue(null);
             !this.contingencyForm.get(checkboxName).value ? this.contingencyForm.get(itemsToValidate[i]).setValidators(Validators.required) : this.contingencyForm.get(itemsToValidate[i]).clearValidators();

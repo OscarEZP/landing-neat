@@ -69,10 +69,9 @@
                 <mat-icon *ngIf="contingency.hasPendingMeeting">fiber_manual_record</mat-icon>
             </div>
             <!-- PENDINGS -->
-            <div id="cont-pendings" fxLayout="column" fxFlex="8" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
+            <div class="cont-pendings" fxLayout="column" fxFlex="8" fxLayoutAlign="center" (click)="openDetails(contingency, 'follow-up')">
                 <div *ngIf="contingency.ttlPending">{{ contingency.ttlPending>9?'9+': contingency.ttlPending}}</div>
             </div>
-
 
             <!-- FOCAL -->
             <div fxFlex="3" fxLayoutAlign="start center" *ngIf="!detailsService.open"

@@ -4,7 +4,7 @@ import { DialogService } from '../../_services/dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { StorageService } from '../../../shared/_services/storage.service';
-import { ContingencyService } from '../_services/contingency.service';
+import { ContingencyService } from '../../_services/contingency.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DataService } from '../../../shared/_services/data.service';
 import { CancelComponent } from '../cancel/cancel.component';

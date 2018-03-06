@@ -26,7 +26,7 @@ export class Contingency {
     private _type: string;
     private _username: string;
     private _ttlPending: number;
-    private _hasPendingMeeting:boolean;
+    private _hasPendingMeeting: boolean;
 
     constructor(
 
@@ -36,7 +36,7 @@ export class Contingency {
         this._barcode = null;
         this._creationDate = TimeInstant.getInstance();
         this._failure = null;
-        this._flight =Flight.getInstance();
+        this._flight = Flight.getInstance();
         this._informer = null;
         this._isBackup = false;
         this._isClose = false;
@@ -45,12 +45,12 @@ export class Contingency {
         this._safetyEvent = Safety.getInstance();
         this._status = Status.getInstance();
         this._type = null;
-        this._username =null;
+        this._username = null;
         this._ttlPending = 0;
-        this._hasPendingMeeting= false;
+        this._hasPendingMeeting = false;
     }
 
-    static getInstance():Contingency{
+    static getInstance(): Contingency {
         return new Contingency();
     }
 
@@ -214,7 +214,7 @@ export class Contingency {
     }
 
     private static parser(obj: Object): Contingency {
-        let item = new Contingency();
+        const item = new Contingency();
         item.id = obj['id'];
         item.aircraft = obj['aircraft'];
         item.barcode = obj['barcode'];
