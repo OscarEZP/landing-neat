@@ -15,4 +15,8 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
     }
+
+    public show(event: Event) {
+        console.log('show component!', event);
+    }
 }

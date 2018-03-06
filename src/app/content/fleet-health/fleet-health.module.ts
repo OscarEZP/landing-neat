@@ -15,7 +15,7 @@ import { FleetHealthComponent } from './fleet-health.component';
 import { DeferralListComponent } from './deferral-list/deferral-list.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { HistoricalReportComponent } from './historical-report/historical-report.component';
-import {TimelineTooltipComponent} from './timeline-tooltip/timeline-tooltip.component';
+import { TimelineTooltipComponent } from './timeline-tooltip/timeline-tooltip.component';
 
 @NgModule({
     imports: [

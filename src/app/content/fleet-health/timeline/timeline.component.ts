@@ -7,7 +7,6 @@ import {Task} from '../../../shared/_models/task/task';
 import {Subscription} from 'rxjs/Subscription';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import {TimelineTooltipComponent} from '../timeline-tooltip/timeline-tooltip.component';
 
 @Component({
     selector: 'lsl-timeline',
@@ -20,16 +19,23 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
     private _data$: Observable<any>;
     private _dataSub: Subscription;
-    private _data: TimelineData[];
+    private _data: {id: number, content: string, start: string}[];
+    private _tooltip: boolean;
+    private _tooltipStyle: {top: string, left: string, position: string};
 
     constructor(
         private _messageService: MessageService,
         private _dialogService: DialogService,
         private _translate: TranslateService,
         private _element: ElementRef,
-        private _timelineTooltipComponent: TimelineTooltipComponent
     ) {
         this._translate.setDefaultLang('en');
+        this.tooltip = false;
+        this.tooltipStyle = {
+            top: '50px',
+            left: '150px',
+            position: 'absolute'
+        };
     }
 
     ngOnInit() {
@@ -75,7 +81,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     private getData$(): Observable<any> {
         const obs$ = new Observable<any> (suscriber => {
             const data = [
-                {id: 1, content: 'item 1', start: '2013-04-20'},
+                {id: 1, content: 'item 1 <p>algo</p>', start: '2013-04-20'},
                 {id: 2, content: 'item 2', start: '2013-04-14'},
                 {id: 3, content: 'item 3', start: '2013-04-18'},
                 {id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19'},
@@ -89,22 +95,40 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
 
     public showTooltip(event: Event) {
-        this._timelineTooltipComponent.show(event);
+        this.tooltip = true;
+        console.log(event);
+    }
+
+
+    get tooltip(): boolean {
+        return this._tooltip;
+    }
+
+    set tooltip(value: boolean) {
+        this._tooltip = value;
+    }
+
+    get tooltipStyle(): { top: string; left: string; position: string } {
+        return this._tooltipStyle;
+    }
+
+    set tooltipStyle(value: { top: string; left: string; position: string }) {
+        this._tooltipStyle = value;
     }
 }
 
-export class TimelineData {
-    private _id: number;
-    private _content: string;
-    private _start: string;
-
-    constructor(id: number, content: string, start: string) {
-        this._id = id;
-        this._content = content;
-        this._start = start;
-    }
-
-    static getInstance(): TimelineData {
-        return new TimelineData(0, '', '');
-    }
-}
+// export class TimelineData {
+//     private _id: number;
+//     private _content: string;
+//     private _start: string;
+//
+//     constructor(id: number, content: string, start: string) {
+//         this._id = id;
+//         this._content = content;
+//         this._start = start;
+//     }
+//
+//     static getInstance(): TimelineData {
+//         return new TimelineData(0, '', '');
+//     }
+// }
