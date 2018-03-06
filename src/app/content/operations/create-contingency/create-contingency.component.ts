@@ -481,7 +481,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @param {Flight} fl
      */
     public onSelectFlight(event: Event, fl: Flight): void {
-
         this.contingency.flight.flightNumber = fl.flightNumber;
         this.contingency.flight.origin = fl.origin;
         this.contingency.flight.destination = fl.destination;
@@ -495,7 +494,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     public onSelectOptional(checkboxName: string, itemsToValidate: string[]) {
         let i: number;
-
         for (i = 0; i < itemsToValidate.length; i++) {
             this.contingencyForm.get(itemsToValidate[i]).setValue(null);
             !this.contingencyForm.get(checkboxName).value ? this.contingencyForm.get(itemsToValidate[i]).setValidators(Validators.required) : this.contingencyForm.get(itemsToValidate[i]).clearValidators();
