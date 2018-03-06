@@ -5,10 +5,12 @@ import { PipesModule } from './_pipes/pipes.module';
 import { CustomInterceptor } from './_services/apiRest.service';
 import { CountdownComponent } from './components/countdown.component/countdown.component';
 import { MaterialModule } from './modules/material.module';
+import { EssComponent } from './components/ess/ess.component';
 
 @NgModule({
     declarations: [
-        CountdownComponent
+        CountdownComponent,
+        EssComponent
     ],
     imports: [
         MaterialModule,
@@ -20,6 +22,7 @@ import { MaterialModule } from './modules/material.module';
         PipesModule,
         CountdownComponent,
         TranslateModule,
+        EssComponent
     ],
     providers: [
         {

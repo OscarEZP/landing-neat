@@ -1,0 +1,17 @@
+@import '../../../../assets/style/base';
+
+#ess {
+
+  text-align: center;
+  padding: 150px 20px;
+
+  i {
+    font-size: 280px;
+    color: mat-color($mat-grey, 200);
+  }
+
+  p {
+    font-size: 14px;
+
+  }
+}

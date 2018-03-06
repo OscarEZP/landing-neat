@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { catchError, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
-import { Count } from '../../../shared/_models/configuration/count';
-import { Contingency } from '../../../shared/_models/contingency/contingency';
-import { ApiRestService } from '../../../shared/_services/apiRest.service';
+import { Count } from '../../shared/_models/configuration/count';
+import { Contingency } from '../../shared/_models/contingency/contingency';
+import { ApiRestService } from '../../shared/_services/apiRest.service';
 import { LogService } from './log.service';
 
 @Injectable()

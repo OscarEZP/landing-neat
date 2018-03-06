@@ -24,16 +24,31 @@
     }
   },
   "ERRORS":{
-    "BAD_REQUEST": "Your request in invalid, please check it and try again",
+    "BAD_REQUEST": "Your request is invalid, please check it and try again",
     "DEFAULT": "Ooops, something went wrong",
+    "NOT_FOUND": "Your request was not found. Please, try again in few minutes",
     "SESSION": "Your session has expired",
     "UNAUTHORIZED": "You don't have permissions to access this content"
   },
   "ESS":{
     "NO_CONTINGENCIES_FOUND": "There are no contingencies. Have a nice day!",
+    "NO_DEFERRALS_FOUND": "There are no deferrals. Have a nice day!",
     "NO_HISTORICAL_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters."
   },
-
+  "FLEET_HEALTH": {
+    "LIST" : {
+      "ATA": "ATA",
+      "ALERT": "Alert",
+      "BARCODE": "Barcode",
+      "DESCRIPTION": "Description",
+      "DEFERRAL_CLASS": "Deferral Class",
+      "DEFERRAL_REFERENCE": "Deferral Reference",
+      "DUE_DATE": "Due Date",
+      "OPENING_DATE": "Opening Date",
+      "TAIL_FLEET": "Tail/Fleet",
+      "TIMELINE_STATUS": "Timeline Status"
+    }
+  },
   "OPERATIONS": {
     "ALERT": "Alert",
     "ALERTS": "Alerts",

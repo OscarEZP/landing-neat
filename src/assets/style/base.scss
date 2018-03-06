@@ -20,11 +20,6 @@ $moc-app-theme: mat-light-theme($primary, $accent, $warn);
 $foreground: map-get($moc-app-theme, foreground);
 $background: map-get($moc-app-theme, background);
 
-
-.margin-top{
-  margin-top: $base-margin;
-}
-
 .margin-top{
   margin-top: $base-margin;
 }
