@@ -80,7 +80,7 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px">
                     <mat-checkbox id="in-contingency-form-backup" labelPosition="after" fxFlex="20"
-                                  [formControl]="contingencyForm.controls['isBackup']" [(ngModel)]="contingency.isBackup" (click)="onSelectOptional('isBackup', ['station', 'slotTm', 'slotDate'])">{{
+                                  [formControl]="contingencyForm.controls['isBackup']" [(ngModel)]="contingency.isBackup" (click)="onSelectOptional('isBackup', ['station', 'slotTm', 'slotDate'], ['destination', 'dt', 'flightNumber', 'origin', 'tm'])">{{
                         'OPERATIONS.CONTINGENCY_FORM.BACKUP' | translate }}
                     </mat-checkbox>
                     <mat-form-field fxFlex="15" *ngIf="contingency.isBackup">

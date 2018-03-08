@@ -2,10 +2,12 @@ export class SearchTask {
 
     private _offSet: number;
     private _limit: number;
+    private _outOfStandard: boolean;
 
-    constructor(offSet: number, limit: number) {
+    constructor(offSet: number, limit: number, outOfStandard: boolean) {
         this._offSet = offSet;
         this._limit = limit;
+        this._outOfStandard = outOfStandard;
     }
 
     get offSet(): number {
@@ -23,5 +25,7 @@ export class SearchTask {
     set limit(value: number) {
         this._limit = value;
     }
+
+
 
 }

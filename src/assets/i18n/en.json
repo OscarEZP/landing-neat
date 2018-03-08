@@ -32,7 +32,7 @@
   },
   "ESS":{
     "NO_CONTINGENCIES_FOUND": "There are no contingencies. Have a nice day!",
-    "NO_DEFERRALS_FOUND": "There are no contingencies. Have a nice day!",
+    "NO_DEFERRALS_FOUND": "There are no deferrals. Have a nice day!",
     "NO_HISTORICAL_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters."
   },
   "FLEET_HEALTH": {

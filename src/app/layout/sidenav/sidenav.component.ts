@@ -13,7 +13,6 @@ export class SidenavComponent implements OnInit {
     private user: User;
     public userArray: { username: string, name: string, email: string };
     public arrMenu: { label: string, link: string, icon: string }[];
-    public arrFooterMenu: { label: string, link: string, icon: string }[];
 
     constructor(private sidenavService: SidenavService, private _storageService: StorageService) {
         this.userArray = {username: '', name: '', email: ''};
@@ -26,7 +25,6 @@ export class SidenavComponent implements OnInit {
     }
 
     ngOnInit() {
-
         this.arrMenu = [
             /*{
                 'label': 'Dashboard',
@@ -49,15 +47,6 @@ export class SidenavComponent implements OnInit {
                 'icon': 'power_settings_new'
             }
         ];
-
-        // this.arrFooterMenu = [
-        //     {
-        //         'label': 'Log Out',
-        //         'link': '/logout',
-        //         'icon': 'power_settings_new'
-        //     }
-        // ];
-
     }
 
     toggleSidenav() {
