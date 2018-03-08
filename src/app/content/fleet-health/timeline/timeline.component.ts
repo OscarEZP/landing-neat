@@ -96,7 +96,8 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
     public showTooltip(event: Event) {
         this.tooltip = true;
-        console.log(event);
+        console.log(event, event['pageY']);
+        this.tooltipStyle.top = event['pageY'];
     }
 
 

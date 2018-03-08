@@ -10,10 +10,6 @@ h2 {
   color: mat-color($mat-palette-custom, light-grey);
 }
 
-h3 {
-  font-size: 17px;
-}
-
 .title-dialog-container {
   margin: 0;
 }
@@ -22,9 +18,18 @@ h3 {
   margin: 0 0 25px 0;
 }
 
+/deep/
 #container-timeline {
   h3 {
     margin: 0 0 10px 0;
+    font-size: 17px;
+  }
+  .vis-timeline {
+    min-height: 150px;
+    border: none;
+  }
+  #timeline {
+    position: relative;
   }
 }
 
@@ -37,10 +42,3 @@ h3 {
   }
 }
 
-/deep/
-#container-timeline {
-  .vis-timeline {
-    min-height: 150px;
-    border: none;
-  }
-}
