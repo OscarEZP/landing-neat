@@ -11,7 +11,6 @@ import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
 import {Task} from '../../../shared/_models/task/task';
 import {SearchTask} from '../../../shared/_models/task/searchTask';
-import {HistoricalReportComponent} from '../historical-report/historical-report.component';
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -49,7 +48,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
         private _infiniteScrollService: InfiniteScrollService,
-        private _dialogService: DialogService
     ) {
         this.selectedRegister = Task.getInstance();
         this.selectedRegisterPivot = Task.getInstance();
@@ -57,21 +55,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        // Test data
-        // --------------------------
-        const def1 = new Task();
-        const def2 = new Task();
-        def1.id = 1;
-        def1.tail = 'tail 1';
-        def2.id = 2;
-        def2.tail = 'tail 2';
-        const arrDef = [def1, def2];
-        // --------------------------
-        // End test data
-        this.list = arrDef;
-        // this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
-        // this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
-        // this._paginatorSubscription = this.getPaginationSubscription();
+        this.list = [];
+        this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
+        this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
+        this._paginatorSubscription = this.getPaginationSubscription();
         this.infiniteScrollService.init();
     }
 
@@ -79,9 +66,9 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * Event when component is destroyed. Unsubscribe general subscriptions.
      */
     public ngOnDestroy() {
-        // this._reloadSubscription.unsubscribe();
-        // this._intervalRefreshSubscription.unsubscribe();
-        // this._paginatorSubscription.unsubscribe();
+        this._reloadSubscription.unsubscribe();
+        this._intervalRefreshSubscription.unsubscribe();
+        this._paginatorSubscription.unsubscribe();
         if (this._totalRecordsSubscription) {
             this._totalRecordsSubscription.unsubscribe();
         }
@@ -99,15 +86,15 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     public getTotalRecordsSubscription(signature: SearchTask): Subscription {
         this._loading = true;
-        return this._apiRestService.search(DeferralListComponent.TASK_SEARCH_COUNT_ENDPOINT, signature)
-            .subscribe(
-                count => {
-                    // this.infiniteScrollService.length = !isNaN(count) ? count : 0;
-                    // this._loading = false;
-                    return this.getListSubscription(signature);
-                },
-                () => this.getError()
-            );
+        return this._apiRestService.search<{items: number}>(DeferralListComponent.TASK_SEARCH_COUNT_ENDPOINT, signature)
+        .subscribe(
+            response => {
+                this.infiniteScrollService.length = !isNaN(response.items) ? response.items : 0;
+                this._loading = false;
+                return this.getListSubscription(signature);
+            },
+            () => this.getError()
+        );
     }
 
     /**
@@ -120,6 +107,11 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         return this._error = true;
     }
 
+    /**
+     * Subscription for get the data list
+     * @param signature
+     * @return {Subscription}
+     */
     private getListSubscription(signature: SearchTask): Subscription {
         this._loading = true;
         return this._apiRestService.search<Task[]>(DeferralListComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
@@ -131,12 +123,12 @@ export class DeferralListComponent implements OnInit, OnDestroy {
                     this.selectedRegister = list[0];
                 }
                 this.subscribeTimer();
+                this.list = list;
                 this._loading = false;
             },
             () => this.getError()
         );
     }
-
 
     /**
      * Returns a subscription for pagination page event. Show loader and set pagination attributes in page change.
@@ -157,7 +149,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private getSearchSignature(): SearchTask {
         return new SearchTask(
             this.infiniteScrollService.offset,
-            this.infiniteScrollService.pageSize
+            this.infiniteScrollService.pageSize,
+            false
         );
     }
 
@@ -217,21 +210,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     public setSelectedRegister(register: Task) {
         this.selectedRegister = register;
         this.selectedRegisterPivot = register;
-        this.openCloseContingency(register);
-    }
-
-    /**
-     * Method for open close contingency modal
-     * @param contingency
-     */
-    private openCloseContingency(task: Task) {
-        this._dialogService.openDialog(HistoricalReportComponent, {
-            data: task,
-            maxWidth: '100vw',
-            width: '100%',
-            height: '100%',
-            hasBackdrop: false
-        });
     }
 
     get list(): Task[] {

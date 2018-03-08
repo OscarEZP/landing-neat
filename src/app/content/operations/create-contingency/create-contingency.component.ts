@@ -247,8 +247,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     private isBackupCheck(): void {
         if (this.contingency.isBackup) {
-            const finalDate = DateUtil.createEpochFromTwoStrings(this.contingencyDateModel[1].dateObj, this.contingencyDateModel[1].timeString);
-            this.contingency.backup.slot.epochTime = finalDate;
+            this.contingency.backup.slot.epochTime = DateUtil.createEpochFromTwoStrings(this.contingencyDateModel[1].dateObj, this.contingencyDateModel[1].timeString);
         }
     }
 
