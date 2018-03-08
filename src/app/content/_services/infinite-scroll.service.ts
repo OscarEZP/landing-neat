@@ -17,6 +17,7 @@ export class InfiniteScrollService {
         this.pageIndex = 0;
         this.pageSize = 10;
         this.length = 0;
+        this._offset = 0;
     }
 
     get viewedRecords(): number {
