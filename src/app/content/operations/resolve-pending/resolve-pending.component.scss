@@ -3,6 +3,9 @@
 /deep/
 #resolve-form {
 
+  position: relative;
+  height: 100%;
+
   span.title-dialog {
     line-height: 22px;
     padding: 10px 0 0 0;
@@ -58,13 +61,15 @@
     }
   }
 
-
-
   .title-dialog-container {
     border-bottom: thin solid mat-color($foreground, divider);
   }
 
-  .mat-dialog-actions {
-    //border-top: thin solid mat-color($foreground, divider);
+  .mat-accordion {
+    height: calc(100% - 110px);
+    display: block;
+    overflow: auto;
+    width: 100%;
   }
+
 }
