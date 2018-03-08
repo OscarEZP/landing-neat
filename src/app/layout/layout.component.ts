@@ -12,6 +12,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {StorageService} from '../shared/_services/storage.service';
 import {Router} from '@angular/router';
 import {AuthService} from '../auth/_services/auth.service';
+import {LayoutService} from './_services/layout.service';
 
 @Component({
     selector: 'lsl-layout',
@@ -46,7 +47,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
         private _dialogService: DialogService,
         private _storageService: StorageService,
         private _authService: AuthService,
-        private _router: Router
+        private _router: Router,
+        private _layoutService: LayoutService
     ) {
         this.loading = true;
         this.mode = 'determinate';
@@ -148,4 +150,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         return this._detailsService;
     }
 
+    get layoutService(): LayoutService {
+        return this._layoutService;
+    }
 }

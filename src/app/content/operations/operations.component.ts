@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {HistoricalSearchService} from '../_services/historical-search.service';
 import {RoutingService} from '../../shared/_services/routing.service';
+import {LayoutService} from '../../layout/_services/layout.service';
 
 @Component({
     selector: 'lsl-operations',
@@ -16,7 +17,8 @@ export class OperationsComponent implements OnInit {
     constructor(
         private translate: TranslateService,
         public historicalSearchService: HistoricalSearchService,
-        private _routingService: RoutingService
+        private _routingService: RoutingService,
+        private _layoutService: LayoutService
     ) {
         this.translate.setDefaultLang('en');
         this._routingService.moduleTitle = 'Operations Module';
@@ -30,7 +32,8 @@ export class OperationsComponent implements OnInit {
                 'link': '/operations/pendings',
             }
         ];
-
+        this._layoutService.showAddButton = true;
+        this._layoutService.showRightNav = true;
     }
 
     ngOnInit() {

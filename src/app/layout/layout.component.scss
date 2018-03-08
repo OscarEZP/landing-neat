@@ -5,9 +5,14 @@
 }
 
 /deep/
-.main-panel {
+#main-panel {
   position: relative;
   width: calc(100% - #{$nav-details-width});
+}
+
+/deep/
+#main-panel.expanded {
+  width: 100%;
 }
 
 #nav-details-container {
