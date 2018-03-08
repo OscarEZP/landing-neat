@@ -7,16 +7,16 @@
 
   <lsl-toolbar></lsl-toolbar>
 
-  <section id="main-container" [ngClass]="{'expanded': detailsService.sidenav.opened }">
-    <div class="main-panel">
-      <mat-sidenav-container id="nav-details-container">
+  <section id="main-container" [ngClass]="{'expanded': detailsService.sidenav && detailsService.sidenav.opened }">
+    <div id="main-panel" [ngClass]="{'expanded': !layoutService.showRightNav }">
+      <mat-sidenav-container id="nav-details-container" >
         <router-outlet></router-outlet>
         <mat-sidenav align="end" id="details" #details mode="side">
           <lsl-details></lsl-details>
         </mat-sidenav>
       </mat-sidenav-container>
     </div>
-    <lsl-rightnav></lsl-rightnav>
+    <lsl-rightnav *ngIf="layoutService.showRightNav"></lsl-rightnav>
   </section>
-  <button (click)="openCreationContingency()" mat-icon-button id="btn-layout-add-contingency">+</button>
+  <button *ngIf="layoutService.showAddButton" (click)="openCreationContingency()" mat-icon-button id="btn-layout-add-contingency">+</button>
 </mat-sidenav-container>

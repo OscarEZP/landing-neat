@@ -1,6 +1,6 @@
 <div id="deferral-list">
     <div class="reg-list" *ngIf="list.length && !loading && !error">
-        <header fxLayout="row" class="">
+        <header fxLayout="row" class="" fxLayoutGap="10px">
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
@@ -19,6 +19,7 @@
                  [class.active]="task.barcode === selectedRegister.barcode"
                  class="contingency-item"
                  (click)="setSelectedRegister(task)"
+                 fxLayoutGap="10px"
             >
 
                 <!--TAIL/FLEET-->
@@ -63,14 +64,14 @@
                 </div>
 
                 <!-- ALERT -->
-                <div fxFlex="7" fxLayoutAlign="center center">
+                <div fxFlex="7" fxLayoutAlign="start center">
                     <span class="badge">
                         COMPLEX
                     </span>
                 </div>
 
                 <!-- TIMELINE STATUS -->
-                <div fxFlex="7" fxLayoutAlign="center center">
+                <div fxFlex="7" fxLayoutAlign="start center">
                     <span class="badge" *ngIf="task.timelineStatus" [ngClass]="{'open': task.timelineStatus==='OPEN'}">
                         {{ task.timelineStatus }}
                     </span>
