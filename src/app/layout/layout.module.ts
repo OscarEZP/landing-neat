@@ -11,6 +11,7 @@ import {DetailsModule} from '../details/details.module';
 import {RightnavComponent} from './rightnav/rightnav.component';
 import {DetailsService} from '../details/_services/details.service';
 import {ContingencyFormComponent} from '../content/operations/create-contingency/create-contingency.component';
+import {LayoutService} from './_services/layout.service';
 
 @NgModule({
     imports: [
@@ -33,7 +34,8 @@ import {ContingencyFormComponent} from '../content/operations/create-contingency
     providers: [
         SidenavService,
         StorageService,
-        DetailsService
+        DetailsService,
+        LayoutService
     ],
     entryComponents: [
         ContingencyFormComponent

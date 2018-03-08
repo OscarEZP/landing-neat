@@ -3,7 +3,6 @@ import {MatSidenav} from '@angular/material';
 import {ScrollToConfigOptions, ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
 import {Subject} from 'rxjs/Subject';
 import {Contingency} from '../../shared/_models/contingency/contingency';
-import {DataService} from '../../shared/_services/data.service';
 
 @Injectable()
 export class DetailsService {
@@ -18,7 +17,9 @@ export class DetailsService {
     private _sidenavVisibilityChange: Subject<boolean> = new Subject<boolean>();
     private _selectedContingencyChange: Subject<Contingency> = new Subject<Contingency>();
 
-    constructor(private _dataMessage: DataService, private _scrollToService: ScrollToService) {
+    constructor(
+        private _scrollToService: ScrollToService
+    ) {
         this.scrollToConfig = {
             target: this.section,
             duration: 650,
@@ -27,13 +28,71 @@ export class DetailsService {
         };
 
         this.selectedContingency = Contingency.getInstance();
-
         this.isOpen = false;
         this.activeTitle = 'Follow Up';
 
         this.sidenavVisibilityChange.subscribe((value: boolean) => {
             this.isOpen = value;
         });
+    }
+
+    public activeContingencyChanged(contingency: Contingency) {
+        if (contingency.id !== null) {
+            this.selectedContingencyChange.next(contingency);
+            this.selectedContingency = contingency;
+        }
+    }
+
+    /**
+     * Set the active title from section selected
+     * @param value
+     */
+    private setActiveTitle(value) {
+        switch (value) {
+            case 'information':
+                this.activeTitle = 'Information';
+                break;
+            case 'comments':
+                this.activeTitle = 'Comments';
+                break;
+            case 'timeline':
+                this.activeTitle = 'Timeline';
+                break;
+            case 'follow-up':
+                this.activeTitle = 'Follow up';
+                break;
+        }
+    }
+
+    /**
+     * Open sidenav
+     * @return {Promise<void>}
+     */
+    public openSidenav(): Promise<void> {
+        this.sidenavVisibilityChange.next(true);
+        return this.sidenav.open();
+    }
+
+    /**
+     * Close sidenav
+     * @return {Promise<void>}
+     */
+    public closeSidenav(): Promise<any> {
+        this.sidenavVisibilityChange.next(false);
+        return this.sidenav.close();
+    }
+
+    /**
+     *
+     * @param {string} section
+     */
+    public openDetails(section: string = 'information') {
+        this.section = section;
+        if (!this.sidenav.opened) {
+            this.openSidenav().then(() => {
+                this._scrollToService.scrollTo(this.scrollToConfig);
+            });
+        }
     }
 
     get sidenav(): MatSidenav {
@@ -99,65 +158,6 @@ export class DetailsService {
 
     set selectedContingencyChange(value: Subject<Contingency>) {
         this._selectedContingencyChange = value;
-    }
-
-    public activeContingencyChanged(contingency: Contingency) {
-        if (contingency.id !== null) {
-            this.selectedContingencyChange.next(contingency);
-            this.selectedContingency = contingency;
-        }
-    }
-
-    /**
-     * Set the active title from section selected
-     * @param value
-     */
-    private setActiveTitle(value) {
-        switch (value) {
-            case 'information':
-                this.activeTitle = 'Information';
-                break;
-            case 'comments':
-                this.activeTitle = 'Comments';
-                break;
-            case 'timeline':
-                this.activeTitle = 'Timeline';
-                break;
-            case 'follow-up':
-                this.activeTitle = 'Follow up';
-                break;
-        }
-    }
-
-    /**
-     * Open sidenav
-     * @return {Promise<void>}
-     */
-    public openSidenav(): Promise<void> {
-        this.sidenavVisibilityChange.next(true);
-        return this.sidenav.open();
-    }
-
-    /**
-     * Close sidenav
-     * @return {Promise<void>}
-     */
-    public closeSidenav(): Promise<any> {
-        this.sidenavVisibilityChange.next(false);
-        return this.sidenav.close();
-    }
-
-    /**
-     *
-     * @param {string} section
-     */
-    public openDetails(section: string = 'information') {
-        this.section = section;
-        if (!this.sidenav.opened) {
-            this.openSidenav().then(() => {
-                this._scrollToService.scrollTo(this.scrollToConfig);
-            });
-        }
     }
 
 }
