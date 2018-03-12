@@ -1,5 +1,7 @@
 @import '../../../../assets/style/base.scss';
 
+$timeline-label-height: 35px;
+
 h1 {
   font-size: 25px;
   font-weight: normal;
@@ -30,6 +32,21 @@ h2 {
   }
   #timeline {
     position: relative;
+    display: block;
+    overflow: hidden;
+    min-height: 200px;
+
+    .tooltip-container {
+      min-height: 50px;
+      width: 350px;
+      position: absolute;
+      background-color: mat-color($primary, default-contrast);
+      z-index: 10;
+    }
+
+    .vis-item-content {
+      height: $timeline-label-height;
+    }
   }
 }
 

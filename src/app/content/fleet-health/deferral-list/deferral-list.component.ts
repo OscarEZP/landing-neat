@@ -11,6 +11,7 @@ import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
 import {Task} from '../../../shared/_models/task/task';
 import {SearchTask} from '../../../shared/_models/task/searchTask';
+import {HistoricalReportComponent} from '../historical-report/historical-report.component';
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -48,6 +49,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
         private _infiniteScrollService: InfiniteScrollService,
+        private _dialogService: DialogService
     ) {
         this.selectedRegister = Task.getInstance();
         this.selectedRegisterPivot = Task.getInstance();
@@ -210,6 +212,21 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     public setSelectedRegister(register: Task) {
         this.selectedRegister = register;
         this.selectedRegisterPivot = register;
+        this.openHistoricalReport(register);
+    }
+
+    /**
+     * Method for open close contingency modal
+     * @param contingency
+     */
+    private openHistoricalReport(task: Task) {
+        this._dialogService.openDialog(HistoricalReportComponent, {
+            data: task,
+            maxWidth: '100vw',
+            width: '100%',
+            height: '100%',
+            hasBackdrop: false
+        });
     }
 
     get list(): Task[] {

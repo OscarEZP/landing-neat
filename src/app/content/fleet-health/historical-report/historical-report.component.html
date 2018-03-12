@@ -16,7 +16,7 @@
     <hr>
 
     <div class="reg-list">
-        <header fxLayout="row" class="">
+        <header fxLayout="row" class="" fxLayoutGap="10px">
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
@@ -29,13 +29,13 @@
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TIMELINE_STATUS' | translate }}</div>
         </header>
         <content>
-            <div fxLayout="row" class="contingency-item">
+            <div fxLayout="row" class="contingency-item" fxLayoutGap="10px">
                 <!--TAIL/FLEET-->
                 <div fxFlex="7" fxLayout="column" fxLayoutAlign="center"><span>{{ task.tail }}</span><span>{{ task.fleet }}</span></div>
                 <!-- BARCODE -->
                 <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">{{ task.barcode | uppercase }}</div>
                 <!-- OPENING DATE -->
-                <div fxFlex="7" fxLayoutAlign="start center">{{ task.creationDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{ task.createDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}</div>
                 <!-- DUE DATE -->
                 <div fxFlex="7" fxLayoutAlign="start center">{{ task.dueDate.epochTime | utcDate | date: 'dd-mm-YYYY' }}</div>
                 <!-- ATA -->
@@ -48,9 +48,9 @@
                 <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">{{task.deferralClazz}}</div>
                 <!-- ALERT -->
                 <div fxFlex="7" fxLayoutAlign="start center">
-                    <span class="badge" *ngIf="task.alert.description">
-                        {{task.alert.description}}
-                    </span>
+                    <!--<span class="badge" *ngIf="task.alert.description">-->
+                        <!--{{task.alert.description}}-->
+                    <!--</span>-->
                 </div>
                 <!-- TIMELINE STATUS -->
                 <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">{{ task.status}}</div>

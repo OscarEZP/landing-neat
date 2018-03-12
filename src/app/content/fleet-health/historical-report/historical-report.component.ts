@@ -30,6 +30,7 @@ export class HistoricalReportComponent implements OnInit {
 
     ngOnInit() {
         this._task = this.data;
+        console.log(this.task);
     }
 
     public openCancelDialog(): void {

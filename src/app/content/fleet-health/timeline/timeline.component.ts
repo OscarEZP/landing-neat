@@ -21,7 +21,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
     private _dataSub: Subscription;
     private _data: {id: number, content: string, start: string}[];
     private _tooltip: boolean;
-    private _tooltipStyle: {top: string, left: string, position: string};
+    private _tooltipStyle: {top: string, left: string};
+    private _timeline: any;
+    private _timelineItem: any;
 
     constructor(
         private _messageService: MessageService,
@@ -33,8 +35,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
         this.tooltip = false;
         this.tooltipStyle = {
             top: '50px',
-            left: '150px',
-            position: 'absolute'
+            left: '150px'
         };
     }
 
@@ -55,27 +56,25 @@ export class TimelineComponent implements OnInit, OnDestroy {
         // Configuration for the Timeline
         const options = null;
         // Create a Timeline
-        const timeline = new vis.Timeline(this._element.nativeElement, items, options);
-        timeline.on('click', (event) => {
-            // this.tooltipStyle.left = event['x'];
-            // this.tooltipStyle.top = event['y'];
-            // console.log(timeline);
-            // console.log(timeline['itemSet']['selection']);
-            // // console.log(timeline['itemSet']);
-            // //
-            //
-            this.showTooltip(event);
-        });
-        timeline.on('contextmenu', function (props) {
-            console.log('Right click!');
-            props.event.preventDefault();
-        });
+        this._timeline = new vis.Timeline(this._element.nativeElement, items, options);
+        this._timeline.on('click', (event) => this.showTooltip(event));
 
-        // const tooltipStyle = this.tooltipStyle;
-        // timeline.on('rangechange', function (event) {
-        //     console.log('Dragging!', timeline['itemSet'].items[1].left);
-        //     tooltipStyle.left = timeline['itemSet'].items[1].left;
-        // });
+        const tooltipStyle = this.tooltipStyle;
+        this._timeline.on('rangechange', event => {
+            this.showTooltip(event);
+            // const item = this.getTimelineItem();
+            // this.tooltipStyle.left = item ? item['left'] + 'px' : '';
+            // this.tooltipStyle.top = item ? item['top'] + 'px' : '';
+        });
+    }
+
+    private getTimelineItem(): object | null {
+        const items = this._timeline['itemSet']['items'];
+        const arrItems = Object
+        .keys(items)
+        .map(key => items[key] && items[key].selected ? items[key] : false)
+        .filter(item => item !== false);
+        return arrItems ? arrItems[0] : null;
     }
 
     private getData$(): Observable<any> {
@@ -95,9 +94,14 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
 
     public showTooltip(event: Event) {
-        this.tooltip = true;
-        console.log(event, event['pageY']);
-        this.tooltipStyle.top = event['pageY'];
+        const timelineLabelHeight = 40;
+        const item = this.getTimelineItem();
+        if (item) {
+            console.log(item);
+            this.tooltipStyle.top = parseInt(item['dom']['box']['style']['top'], 0) + timelineLabelHeight + 'px';
+            this.tooltipStyle.left = item['dom']['box']['style']['left'];
+            this.tooltip = true;
+        }
     }
 
 
@@ -109,11 +113,11 @@ export class TimelineComponent implements OnInit, OnDestroy {
         this._tooltip = value;
     }
 
-    get tooltipStyle(): { top: string; left: string; position: string } {
+    get tooltipStyle(): { top: string; left: string; } {
         return this._tooltipStyle;
     }
 
-    set tooltipStyle(value: { top: string; left: string; position: string }) {
+    set tooltipStyle(value: { top: string; left: string; }) {
         this._tooltipStyle = value;
     }
 }
