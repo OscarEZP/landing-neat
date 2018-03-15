@@ -49,6 +49,10 @@
       "TIMELINE_STATUS": "Timeline Status"
     },
     "REPORT": {
+      "ERROR": {
+        "INVALID_ATA": "ATA is invalid",
+        "REQUIRED_ATA": "ATA is required"
+      },
       "HISTORICAL_REPORTS": "Historical Reports",
       "REPORTS_TIMELINE": "Reports Timeline"
     }

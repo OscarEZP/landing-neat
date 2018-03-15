@@ -1,41 +1,40 @@
-import {Component, ElementRef, Input, OnDestroy, OnInit} from '@angular/core';
-import { MessageService } from '../../../shared/_services/message.service';
-import { DialogService } from '../../_services/dialog.service';
+import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
+import {DatePipe} from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import * as vis from 'vis';
-import {Task} from '../../../shared/_models/task/task';
 import {Subscription} from 'rxjs/Subscription';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import {FleetHealthService} from '../../_services/fleet-health.service';
+import * as moment from 'moment';
 
 @Component({
-    selector: 'lsl-timeline',
-    templateUrl: './timeline.component.html',
-    styleUrls: ['./timeline.component.scss']
+    selector: 'lsl-timeline-report',
+    templateUrl: './timeline-report.component.html',
+    styleUrls: ['./timeline-report.component.scss']
 })
-export class TimelineComponent implements OnInit, OnDestroy {
+export class TimelineReportComponent implements OnInit, OnDestroy {
 
-    @Input() task: Task;
+    private static DAYS_FROM = 30;
+    private static DAYS_TO = 2;
 
     private _data$: Observable<any>;
     private _dataSub: Subscription;
     private _data: {id: number, content: string, start: string}[];
     private _tooltip: boolean;
-    private _tooltipStyle: {top: string, left: string};
+    private _tooltipStyle: {bottom: string, left: string};
     private _timeline: any;
-    private _timelineItem: any;
 
     constructor(
-        private _messageService: MessageService,
-        private _dialogService: DialogService,
         private _translate: TranslateService,
         private _element: ElementRef,
+        private _fleetHealthService: FleetHealthService
     ) {
         this._translate.setDefaultLang('en');
         this.tooltip = false;
         this.tooltipStyle = {
-            top: '50px',
-            left: '150px'
+            bottom: '',
+            left: ''
         };
     }
 
@@ -53,18 +52,14 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
     private createTimeline() {
         const items = new vis.DataSet(this._data);
-        // Configuration for the Timeline
-        const options = null;
-        // Create a Timeline
+        const options = {
+            start: moment(this._fleetHealthService.task.createDate.epochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').format('YYYY-MM-DD'),
+            end: moment(this._fleetHealthService.task.createDate.epochTime).utc().add(TimelineReportComponent.DAYS_TO, 'days').format('YYYY-MM-DD')
+        };
         this._timeline = new vis.Timeline(this._element.nativeElement, items, options);
         this._timeline.on('click', (event) => this.showTooltip(event));
-
-        const tooltipStyle = this.tooltipStyle;
         this._timeline.on('rangechange', event => {
             this.showTooltip(event);
-            // const item = this.getTimelineItem();
-            // this.tooltipStyle.left = item ? item['left'] + 'px' : '';
-            // this.tooltipStyle.top = item ? item['top'] + 'px' : '';
         });
     }
 
@@ -79,13 +74,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
     private getData$(): Observable<any> {
         const obs$ = new Observable<any> (suscriber => {
+            const datePipe = new DatePipe('en');
+            console.log(datePipe.transform(this._fleetHealthService.task.createDate.epochTime, 'yyyy-MM-dd'));
             const data = [
-                {id: 1, content: 'item 1 <p>algo</p>', start: '2013-04-20'},
-                {id: 2, content: 'item 2', start: '2013-04-14'},
-                {id: 3, content: 'item 3', start: '2013-04-18'},
-                {id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19'},
-                {id: 5, content: 'item 5', start: '2013-04-25'},
-                {id: 6, content: 'item 6', start: '2013-04-27'}
+                {id: 1, content: 'item 1 <p>algo</p>', start: datePipe.transform(this._fleetHealthService.task.createDate.epochTime, 'yyyy-MM-dd')},
             ];
             suscriber.next(data);
             suscriber.complete();
@@ -94,16 +86,16 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
 
     public showTooltip(event: Event) {
-        const timelineLabelHeight = 40;
         const item = this.getTimelineItem();
+        const correction = 18;
         if (item) {
-            console.log(item);
-            this.tooltipStyle.top = parseInt(item['dom']['box']['style']['top'], 0) + timelineLabelHeight + 'px';
+            this.tooltipStyle.bottom = (item['top'] - correction) + 'px';
             this.tooltipStyle.left = item['dom']['box']['style']['left'];
             this.tooltip = true;
+        } else {
+            this.tooltip = false;
         }
     }
-
 
     get tooltip(): boolean {
         return this._tooltip;
@@ -113,27 +105,11 @@ export class TimelineComponent implements OnInit, OnDestroy {
         this._tooltip = value;
     }
 
-    get tooltipStyle(): { top: string; left: string; } {
+    get tooltipStyle(): { bottom: string; left: string; } {
         return this._tooltipStyle;
     }
 
-    set tooltipStyle(value: { top: string; left: string; }) {
+    set tooltipStyle(value: { bottom: string; left: string; }) {
         this._tooltipStyle = value;
     }
 }
-
-// export class TimelineData {
-//     private _id: number;
-//     private _content: string;
-//     private _start: string;
-//
-//     constructor(id: number, content: string, start: string) {
-//         this._id = id;
-//         this._content = content;
-//         this._start = start;
-//     }
-//
-//     static getInstance(): TimelineData {
-//         return new TimelineData(0, '', '');
-//     }
-// }

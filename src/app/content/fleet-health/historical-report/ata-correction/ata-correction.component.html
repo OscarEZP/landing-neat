@@ -1,0 +1,35 @@
+<button id="btn-edit-ata" mat-button type="button" (click)="open = !open">
+    <mat-icon aria-label="Edit ATA" class="">mode_edit</mat-icon>
+</button>
+
+<form [formGroup]="ataForm" #ataFormGroup="ngForm" (submit)="submitAta()" *ngIf="open" >
+    <div id="ata-input-container" fxLayout="column">
+        <div fxFlex>
+            <mat-form-field>
+                <input id="in-ata-correction-ata"
+                       type="text"
+                       matInput
+                       placeholder="search"
+                       [formControl]="ataForm.controls['ata']"
+                       [(ngModel)]="newAta"
+                       [matAutocomplete]="auto"
+                       maxlength="2"
+                >
+            </mat-form-field>
+            <mat-autocomplete #auto="matAutocomplete" [hidden]="!open">
+                <mat-option *ngFor="let ata of filteredAta | async" [value]="ata">
+                {{ ata }}
+                </mat-option>
+            </mat-autocomplete>
+        </div>
+        <div fxFlex>
+            <mat-error *ngIf="ataForm.get('ata').hasError('required')">
+                {{'FLEET_HEALTH.REPORT.ERROR.REQUIRED_ATA'|translate}}
+            </mat-error>
+            <mat-error *ngIf="ataForm.get('ata').hasError('pattern')">
+                {{'FLEET_HEALTH.REPORT.ERROR.INVALID_ATA'|translate}}
+            </mat-error>
+        </div>
+    </div>
+
+</form>

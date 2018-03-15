@@ -1,10 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MessageService } from '../../../shared/_services/message.service';
+import { Component, OnInit } from '@angular/core';
 import { DialogService } from '../../_services/dialog.service';
 import { TranslateService } from '@ngx-translate/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
 import { Task } from '../../../shared/_models/task/task';
-import {TimelineTooltipComponent} from '../timeline-tooltip/timeline-tooltip.component';
+import {TimelineTooltipComponent} from './timeline-tooltip/timeline-tooltip.component';
+import {FleetHealthService} from '../_services/fleet-health.service';
 
 
 @Component({
@@ -20,30 +19,19 @@ export class HistoricalReportComponent implements OnInit {
     private _task: Task;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        private _messageService: MessageService,
         private _dialogService: DialogService,
-        private _translate: TranslateService
+        private _translate: TranslateService,
+        private _fleetHealthService: FleetHealthService
     ) {
         this._translate.setDefaultLang('en');
     }
 
     ngOnInit() {
-        this._task = this.data;
-        console.log(this.task);
+        this._task = this._fleetHealthService.task;
     }
 
     public openCancelDialog(): void {
-        // if (this.validateFilledItems()) {
-        //     this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
-        //     this._messageService.openFromComponent(CancelComponent, {
-        //         data: {message: this.snackbarMessage},
-        //         horizontalPosition: 'center',
-        //         verticalPosition: 'top'
-        //     });
-        // } else {
         this._dialogService.closeAllDialogs();
-        // }
     }
 
     get task(): Task {

@@ -27,27 +27,10 @@ h2 {
     font-size: 17px;
   }
   .vis-timeline {
-    min-height: 150px;
     border: none;
-  }
-  #timeline {
-    position: relative;
-    display: block;
-    overflow: hidden;
     min-height: 200px;
-
-    .tooltip-container {
-      min-height: 50px;
-      width: 350px;
-      position: absolute;
-      background-color: mat-color($primary, default-contrast);
-      z-index: 10;
-    }
-
-    .vis-item-content {
-      height: $timeline-label-height;
-    }
   }
+
 }
 
 #container-historical-report {

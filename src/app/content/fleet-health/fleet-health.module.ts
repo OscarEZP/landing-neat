@@ -13,22 +13,19 @@ import { InfiniteScrollService } from '../_services/infinite-scroll.service';
 import { LogService } from '../_services/log.service';
 import { FleetHealthComponent } from './fleet-health.component';
 import { DeferralListComponent } from './deferral-list/deferral-list.component';
-import { TimelineComponent } from './timeline/timeline.component';
-import { HistoricalReportComponent } from './historical-report/historical-report.component';
-import { TimelineTooltipComponent } from './timeline-tooltip/timeline-tooltip.component';
+import {HistoricalReportModule} from './historical-report/historical-report.module';
+import {FleetHealthService} from './_services/fleet-health.service';
 
 @NgModule({
     imports: [
         BrowserModule,
         SharedModule,
-        RouterModule
+        RouterModule,
+        HistoricalReportModule
     ],
     declarations: [
         FleetHealthComponent,
         DeferralListComponent,
-        TimelineComponent,
-        HistoricalReportComponent,
-        TimelineTooltipComponent
     ],
     exports: [],
     providers: [
@@ -40,11 +37,10 @@ import { TimelineTooltipComponent } from './timeline-tooltip/timeline-tooltip.co
         InfiniteScrollService,
         HistoricalSearchService,
         {provide: MAT_DATE_LOCALE, useValue: 'es-CL'},
-        DateUtil
+        DateUtil,
+        FleetHealthService
     ],
     entryComponents: [
-        HistoricalReportComponent,
-        TimelineTooltipComponent
     ]
 })
 

@@ -12,6 +12,7 @@ import {MatPaginator} from '@angular/material';
 import {Task} from '../../../shared/_models/task/task';
 import {SearchTask} from '../../../shared/_models/task/searchTask';
 import {HistoricalReportComponent} from '../historical-report/historical-report.component';
+import {FleetHealthService} from '../_services/fleet-health.service';
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -49,7 +50,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
         private _infiniteScrollService: InfiniteScrollService,
-        private _dialogService: DialogService
+        private _dialogService: DialogService,
+        private _fleetHealthService: FleetHealthService
     ) {
         this.selectedRegister = Task.getInstance();
         this.selectedRegisterPivot = Task.getInstance();
@@ -213,6 +215,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this.selectedRegister = register;
         this.selectedRegisterPivot = register;
         this.openHistoricalReport(register);
+        this._fleetHealthService.task = register;
     }
 
     /**
@@ -221,7 +224,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private openHistoricalReport(task: Task) {
         this._dialogService.openDialog(HistoricalReportComponent, {
-            data: task,
             maxWidth: '100vw',
             width: '100%',
             height: '100%',

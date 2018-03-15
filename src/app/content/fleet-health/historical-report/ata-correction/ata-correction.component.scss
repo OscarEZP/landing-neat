@@ -1,0 +1,30 @@
+@import '../../../../../assets/style/base.scss';
+
+#btn-edit-ata {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  width: 28px;
+  min-width: 0;
+  height: 28px;
+  position: absolute;
+  right: 0;
+  z-index: 1;
+
+  .mat-icon {
+    width: 100%;
+    height: 100%;
+    vertical-align: top;
+    color: mat-color($foreground, secondary-text);
+  }
+}
+
+#ata-input-container {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  border: thin solid #ccc;
+  z-index: 1;
+  background-color: mat-color($primary, default-contrast);
+  padding: 10px;
+}
