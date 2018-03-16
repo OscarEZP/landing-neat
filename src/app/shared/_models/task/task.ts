@@ -21,6 +21,7 @@ export class Task {
     private _status: string;
     private _tail: string;
     private _timelineStatus: string;
+    private _revisionDate: TimeInstant;
 
 
     constructor() {
@@ -43,6 +44,7 @@ export class Task {
         this._deferralClazz = '';
         this._creationDate = TimeInstant.getInstance();
         this._timelineStatus = '';
+        this._revisionDate = TimeInstant.getInstance();
     }
 
     public static getInstance() {
@@ -199,5 +201,14 @@ export class Task {
 
     set timelineStatus(value: string) {
         this._timelineStatus = value;
+    }
+
+
+    get revisionDate(): TimeInstant {
+        return this._revisionDate;
+    }
+
+    set revisionDate(value: TimeInstant) {
+        this._revisionDate = value;
     }
 }
