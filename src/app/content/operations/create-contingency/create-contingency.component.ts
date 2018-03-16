@@ -104,10 +104,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this.contingency.username = this._storageService.getCurrentUser().username;
         this.contingency.status = status;
         this.contingency.flight = flight;
-
-
-        // new Contingency(null, new Aircraft(null, null, null), null, null, null, new Flight(null, null, null, new TimeInstant(initFakeDate, null)), null, false, false, new Backup(null, new TimeInstant(null, null)), null, new Safety(null, null), new Status(null, null, null, new TimeInstant(initFakeDate, null), null, new Interval(new TimeInstant(null, null), null), new Interval(new TimeInstant(null, null), 30), this._storageService.getCurrentUser().username), null, this._storageService.getCurrentUser().username, 0,false);
-
         this.contingencyType = [];
         this.operatorList = [];
         this.failureType = [];
