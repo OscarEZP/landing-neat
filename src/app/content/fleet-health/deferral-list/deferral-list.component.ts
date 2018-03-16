@@ -4,13 +4,13 @@ import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {Observable} from 'rxjs/Observable';
 import {DetailsService} from '../../../details/_services/details.service';
-import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
 import {InfiniteScrollService} from '../../_services/infinite-scroll.service';
 import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
 import {Task} from '../../../shared/_models/task/task';
 import {SearchTask} from '../../../shared/_models/task/searchTask';
+import {Pagination} from "../../../shared/_models/common/pagination";
 import {HistoricalReportComponent} from '../historical-report/historical-report.component';
 import {FleetHealthService} from '../_services/fleet-health.service';
 
@@ -148,14 +148,13 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     /**
      * Method for get a search signature for get data
-     * @return {SearchContingency}
+     * @return {SearchTask}
      */
     private getSearchSignature(): SearchTask {
-        return new SearchTask(
-            this.infiniteScrollService.offset,
-            this.infiniteScrollService.pageSize,
-            false
-        );
+        const taskSearch: SearchTask = SearchTask.getInstance();
+        taskSearch.pagination = new Pagination(this.infiniteScrollService.offset, this.infiniteScrollService.pageSize);
+        taskSearch.outOfStandard = false;
+        return taskSearch;
     }
 
     /**
