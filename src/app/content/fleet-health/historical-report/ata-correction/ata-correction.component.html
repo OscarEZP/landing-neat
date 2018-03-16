@@ -14,6 +14,7 @@
                        [(ngModel)]="newAta"
                        [matAutocomplete]="auto"
                        maxlength="2"
+                       (blur)="newAta = comboValidation(newAta, ataList)"
                 >
             </mat-form-field>
             <mat-autocomplete #auto="matAutocomplete" [hidden]="!open">
@@ -26,7 +27,7 @@
             <mat-error *ngIf="ataForm.get('ata').hasError('required')">
                 {{'FLEET_HEALTH.REPORT.ERROR.REQUIRED_ATA'|translate}}
             </mat-error>
-            <mat-error *ngIf="ataForm.get('ata').hasError('pattern')">
+            <mat-error *ngIf="ataForm.get('ata').hasError('pattern') && !ataForm.get('ata').hasError('required')">
                 {{'FLEET_HEALTH.REPORT.ERROR.INVALID_ATA'|translate}}
             </mat-error>
         </div>

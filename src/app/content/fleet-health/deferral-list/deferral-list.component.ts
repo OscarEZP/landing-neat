@@ -10,7 +10,7 @@ import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
 import {Task} from '../../../shared/_models/task/task';
 import {SearchTask} from '../../../shared/_models/task/searchTask';
-import {Pagination} from "../../../shared/_models/common/pagination";
+import {Pagination} from '../../../shared/_models/common/pagination';
 import {HistoricalReportComponent} from '../historical-report/historical-report.component';
 import {FleetHealthService} from '../_services/fleet-health.service';
 

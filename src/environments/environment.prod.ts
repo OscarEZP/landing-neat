@@ -28,11 +28,11 @@ export const environment = {
         mails : '/api/v1/configurations/mails',
         meetings: '/api/v1/contingencies/meetings',
         operator: '/api/v1/configurations/operators/',
-        pendingSearch: '/api/v1/contingencies/pendings/_search',
         pendingResolve: '/api/v1/contingencies/pendings/_resolve',
+        pendingSearch: '/api/v1/contingencies/pendings/_search',
         safetyEvent: '/api/v1/configurations/safetyEvents',
         tasks: '/api/v1/tasks/',
-        tasksCorrection: 'api/v1/tasks/_correction',
+        tasksCorrection: '/api/v1/tasks/_correction',
         tasksSearch: '/api/v1/tasks/_search',
         tasksSearchCount: '/api/v1/tasks/_search/count',
         types: '/api/v1/configurations/types'

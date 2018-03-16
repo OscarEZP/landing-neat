@@ -10,6 +10,10 @@ export class AtaCorrection {
         this._updateATAUser = updateATAUser;
     }
 
+    static getInstance() {
+        return new AtaCorrection(0, '', '');
+    }
+
     get taskId(): number {
         return this._taskId;
     }

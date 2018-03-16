@@ -3,7 +3,7 @@ import {Task} from '../../../../shared/_models/task/task';
 import {FleetHealthService} from '../../_services/fleet-health.service';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiRestService} from '../../../../shared/_services/apiRest.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {map} from 'rxjs/operators/map';
 import {Observable} from 'rxjs/Observable';
 import {AtaCorrection} from '../../../../shared/_models/task/ataCorrection';
@@ -24,7 +24,7 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     private _ataSub: Subscription;
     private _taskCorrectionSub: Subscription;
 
-    private _atas: string[];
+    private _ataList: string[];
     private _ataForm: FormGroup;
     private _filteredAta: Observable<string[]>;
     private _open: boolean;
@@ -35,14 +35,15 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
         private _fb: FormBuilder,
         private _storageService: StorageService
     ) {
+        this.ataList = [];
+        this.open = false;
+        this.newAta = this._fleetHealthService.task.ata;
     }
 
     ngOnInit(): void {
         this._ataSub = this.getAtaSub(this._fleetHealthService.task.fleet);
-        this.newAta = this._fleetHealthService.task.ata;
-        this.open = false;
         this._ataForm = this._fb.group({
-            ata: [this._fleetHealthService.task.ata, [Validators.pattern('^(\\d{1,2})$'), Validators.required]],
+            ata: [this._fleetHealthService.task.ata, [Validators.pattern('^(\\d{1,2})$'), Validators.required, this.ataValidator.bind(this)]],
         });
         this.filteredAta = this.getFilteredAta();
     }
@@ -57,21 +58,38 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     private getAtaSub(fleet: string): Subscription {
         return this._apiRestService
         .getParams<string[]>(AtaCorrectionComponent.ATA_BY_FLEET_ENDPOINT, fleet)
-        .subscribe(atas => this.atas = atas);
+        .subscribe(ataList => this.ataList = ataList);
     }
 
     private getTaskCorrectionSub(): Subscription {
         const signature = new AtaCorrection(this._fleetHealthService.task.id, this.newAta, this._storageService.getCurrentUser().username);
-        return this._apiRestService.search(AtaCorrectionComponent.TASK_CORRECTION_ENDPOINT, signature).subscribe();
+        return this._apiRestService.search(AtaCorrectionComponent.TASK_CORRECTION_ENDPOINT, signature).subscribe(
+            () => this._fleetHealthService.task.ata = this.newAta
+        );
     }
 
     public getFilteredAta(): Observable<string[]> {
         return this.ataForm.controls['ata'].valueChanges.pipe(
             map(val => {
-                const result = this.filter(val, this.atas);
-                return result.length > 0 ? result : this.atas;
+                const result = this.filter(val, this.ataList);
+                return result.length > 0 ? result : this.ataList;
             })
         );
+    }
+
+    /**
+     * Validation for selecting values only from options
+     * @param val
+     * @param list
+     * @return {string}
+     */
+    public comboValidation(val: string, list: string[]): string {
+        return val && list.filter(v => (v.toLowerCase() === val.toLowerCase())).length > 0 ? val : '';
+    }
+
+    private ataValidator(control: FormControl) {
+        const ata = control.value;
+        return this.ataList.length > 0 && this.comboValidation(ata, this.ataList) !== '' ? null : { pattern: true };
     }
 
     /**
@@ -87,6 +105,8 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
         if (this.ataForm.valid) {
             this._taskCorrectionSub = this.getTaskCorrectionSub();
             this.open = false;
+        } else {
+            console.log(this.ataForm);
         }
     }
 
@@ -94,12 +114,12 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
         return this._fleetHealthService.task;
     }
 
-    get atas(): string[] {
-        return this._atas;
+    get ataList(): string[] {
+        return this._ataList;
     }
 
-    set atas(value: string[]) {
-        this._atas = value;
+    set ataList(value: string[]) {
+        this._ataList = value;
     }
 
     get ataForm(): FormGroup {

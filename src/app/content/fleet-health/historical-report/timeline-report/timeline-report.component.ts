@@ -7,6 +7,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import {FleetHealthService} from '../../_services/fleet-health.service';
 import * as moment from 'moment';
+import {Style} from '../../../../shared/_models/style';
 
 @Component({
     selector: 'lsl-timeline-report',
@@ -22,7 +23,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _dataSub: Subscription;
     private _data: {id: number, content: string, start: string}[];
     private _tooltip: boolean;
-    private _tooltipStyle: {bottom: string, left: string};
+    private _tooltipStyle: Style;
     private _timeline: any;
 
     constructor(
@@ -32,10 +33,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     ) {
         this._translate.setDefaultLang('en');
         this.tooltip = false;
-        this.tooltipStyle = {
-            bottom: '',
-            left: ''
-        };
+        this.tooltipStyle = new Style();
     }
 
     ngOnInit() {
@@ -105,11 +103,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this._tooltip = value;
     }
 
-    get tooltipStyle(): { bottom: string; left: string; } {
+    get tooltipStyle(): Style {
         return this._tooltipStyle;
     }
 
-    set tooltipStyle(value: { bottom: string; left: string; }) {
+    set tooltipStyle(value: Style) {
         this._tooltipStyle = value;
     }
 }
