@@ -17,7 +17,7 @@ import {Style} from '../../../../shared/_models/style';
 export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private static DAYS_FROM = 30;
-    private static DAYS_TO = 2;
+    private static DAYS_TO = 1;
 
     private _data$: Observable<any>;
     private _dataSub: Subscription;
@@ -73,7 +73,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private getData$(): Observable<any> {
         const obs$ = new Observable<any> (suscriber => {
             const datePipe = new DatePipe('en');
-            console.log(datePipe.transform(this._fleetHealthService.task.createDate.epochTime, 'yyyy-MM-dd'));
+            console.log(this._fleetHealthService.task);
             const data = [
                 {id: 1, content: 'item 1 <p>algo</p>', start: datePipe.transform(this._fleetHealthService.task.createDate.epochTime, 'yyyy-MM-dd')},
             ];

@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Task } from '../../../shared/_models/task/task';
 import {TimelineTooltipComponent} from './timeline-tooltip/timeline-tooltip.component';
 import {FleetHealthService} from '../_services/fleet-health.service';
+import {DataService} from '../../../shared/_services/data.service';
 
 
 @Component({
@@ -21,7 +22,8 @@ export class HistoricalReportComponent implements OnInit {
     constructor(
         private _dialogService: DialogService,
         private _translate: TranslateService,
-        private _fleetHealthService: FleetHealthService
+        private _fleetHealthService: FleetHealthService,
+        private _messageData: DataService
     ) {
         this._translate.setDefaultLang('en');
     }
@@ -32,6 +34,7 @@ export class HistoricalReportComponent implements OnInit {
 
     public openCancelDialog(): void {
         this._dialogService.closeAllDialogs();
+        this._messageData.stringMessage('reload');
     }
 
     get task(): Task {

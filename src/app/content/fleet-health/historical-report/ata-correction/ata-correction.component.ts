@@ -8,6 +8,8 @@ import {map} from 'rxjs/operators/map';
 import {Observable} from 'rxjs/Observable';
 import {AtaCorrection} from '../../../../shared/_models/task/ataCorrection';
 import {StorageService} from '../../../../shared/_services/storage.service';
+import {TranslateService} from '@ngx-translate/core';
+import {MessageService} from '../../../../shared/_services/message.service';
 
 
 @Component({
@@ -33,14 +35,16 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
         private _fleetHealthService: FleetHealthService,
         private _apiRestService: ApiRestService,
         private _fb: FormBuilder,
-        private _storageService: StorageService
+        private _storageService: StorageService,
+        private _translateService: TranslateService,
+        private _messageService: MessageService
     ) {
         this.ataList = [];
         this.open = false;
-        this.newAta = this._fleetHealthService.task.ata;
     }
 
     ngOnInit(): void {
+        this.newAta = this._fleetHealthService.task.ata;
         this._ataSub = this.getAtaSub(this._fleetHealthService.task.fleet);
         this._ataForm = this._fb.group({
             ata: [this._fleetHealthService.task.ata, [Validators.pattern('^(\\d{1,2})$'), Validators.required, this.ataValidator.bind(this)]],
@@ -64,7 +68,10 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     private getTaskCorrectionSub(): Subscription {
         const signature = new AtaCorrection(this._fleetHealthService.task.id, this.newAta, this._storageService.getCurrentUser().username);
         return this._apiRestService.search(AtaCorrectionComponent.TASK_CORRECTION_ENDPOINT, signature).subscribe(
-            () => this._fleetHealthService.task.ata = this.newAta
+            () => {
+                this._fleetHealthService.task.ata = this.newAta;
+                this.newAta = '';
+            }
         );
     }
 
@@ -103,10 +110,10 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
 
     public submitAta() {
         if (this.ataForm.valid) {
-            this._taskCorrectionSub = this.getTaskCorrectionSub();
+            // this._taskCorrectionSub = this.getTaskCorrectionSub();
             this.open = false;
         } else {
-            console.log(this.ataForm);
+            this._translateService.get('FLEET_HEALTH.REPORT.ERROR.REQUIRED_FIELDS').subscribe((res: string) => this._messageService.openSnackBar(res));
         }
     }
 
