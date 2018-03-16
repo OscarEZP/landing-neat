@@ -34,6 +34,7 @@ export const environment = {
         tasks: ':9002/api/v1/tasks/',
         tasksCorrection: ':9002/api/v1/tasks/_correction',
         tasksSearch: ':9002/api/v1/tasks/_search',
-        types: ':9005/api/v1/configurations/types'
+        types: ':9005/api/v1/configurations/types',
+        taskRelationsSearch: ':9002/api/v1/tasks/relations/_search'
     }
 };
