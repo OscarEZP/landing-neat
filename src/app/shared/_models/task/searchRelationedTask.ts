@@ -1,7 +1,7 @@
 import {DateRange} from "../common/dateRange";
 import {Pagination} from "../common/pagination";
 
-export class searchRelationedTask {
+export class SearchRelationedTask {
 
     private _tail: string;
     private _ataGroup: string;
@@ -13,6 +13,10 @@ export class searchRelationedTask {
 
         this._pagination = Pagination.getInstance();
         this._dateRange = DateRange.getInstance();
+    }
+
+    static getInstance(): SearchRelationedTask {
+        return new SearchRelationedTask();
     }
 
     get tail(): string {

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Task} from '../../../../shared/_models/task/task';
 import {FleetHealthService} from '../../_services/fleet-health.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -30,6 +30,8 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     private _ataForm: FormGroup;
     private _filteredAta: Observable<string[]>;
     private _open: boolean;
+
+    @Output('corrected') _correctedAta: EventEmitter<any> = new EventEmitter(true);
 
     constructor(
         private _fleetHealthService: FleetHealthService,
@@ -111,6 +113,8 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     public submitAta() {
         if (this.ataForm.valid) {
             // this._taskCorrectionSub = this.getTaskCorrectionSub();
+
+            this._correctedAta.emit(true);
             this.open = false;
         } else {
             this._translateService.get('FLEET_HEALTH.REPORT.ERROR.REQUIRED_FIELDS').subscribe((res: string) => this._messageService.openSnackBar(res));
