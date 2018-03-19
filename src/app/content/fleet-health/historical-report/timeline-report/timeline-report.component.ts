@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
 import {FleetHealthService} from '../../_services/fleet-health.service';
 import * as moment from 'moment';
 import {Style} from '../../../../shared/_models/style';
+import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 
 @Component({
     selector: 'lsl-timeline-report',
@@ -25,6 +26,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _tooltip: boolean;
     private _tooltipStyle: Style;
     private _timeline: any;
+    public left = '';
 
     constructor(
         private _translate: TranslateService,
@@ -52,13 +54,14 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         const items = new vis.DataSet(this._data);
         const options = {
             start: moment(this._fleetHealthService.task.createDate.epochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').format('YYYY-MM-DD'),
-            end: moment(this._fleetHealthService.task.createDate.epochTime).utc().add(TimelineReportComponent.DAYS_TO, 'days').format('YYYY-MM-DD')
+            end: moment(this._fleetHealthService.task.createDate.epochTime).utc().add(TimelineReportComponent.DAYS_TO, 'days').format('YYYY-MM-DD'),
+            zoomMin: 1000 * 60 * 60 * 24 * 31,
+            zoomMax: 1000 * 60 * 60 * 24 * 31 * 12,
+            max: moment(this._fleetHealthService.task.createDate.epochTime).utc().add(TimelineReportComponent.DAYS_TO, 'days').format('YYYY-MM-DD')
         };
         this._timeline = new vis.Timeline(this._element.nativeElement, items, options);
         this._timeline.on('click', (event) => this.showTooltip(event));
-        this._timeline.on('rangechange', event => {
-            this.showTooltip(event);
-        });
+        this._timeline.on('rangechange', event => this.showTooltip(event));
     }
 
     private getTimelineItem(): object | null {
@@ -73,26 +76,34 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private getData$(): Observable<any> {
         const obs$ = new Observable<any> (suscriber => {
             const datePipe = new DatePipe('en');
-            console.log(this._fleetHealthService.task);
+            const timelineTask = new TimelineTask(this._fleetHealthService.task.id, this._fleetHealthService.task, datePipe.transform(this._fleetHealthService.task.createDate.epochTime, 'yyyy-MM-dd')).getJson();
             const data = [
-                {id: 1, content: 'item 1 <p>algo</p>', start: datePipe.transform(this._fleetHealthService.task.createDate.epochTime, 'yyyy-MM-dd')},
+                timelineTask,
+                {id: 2, content: 'item 2', start: '2018-01-04'},
+                {id: 3, content: 'item 3', start: '2018-01-08'},
+                {id: 4, content: 'item 4', start: '2018-01-06', end: '2018-01-09'},
+                {id: 5, content: 'item 5', start: '2018-01-05'},
+                {id: 6, content: 'item 6', start: '2018-01-07'}
             ];
+
             suscriber.next(data);
             suscriber.complete();
         });
         return obs$;
     }
 
-    public showTooltip(event: Event) {
+    public getTooltipStyle(): Style {
         const item = this.getTimelineItem();
-        const correction = 18;
         if (item) {
+            const correction = 18;
             this.tooltipStyle.bottom = (item['top'] - correction) + 'px';
             this.tooltipStyle.left = item['dom']['box']['style']['left'];
-            this.tooltip = true;
-        } else {
-            this.tooltip = false;
         }
+        return this.tooltipStyle;
+    }
+
+    public showTooltip(event: Event) {
+        this.tooltip = this.getTimelineItem() ? true : false;
     }
 
     get tooltip(): boolean {

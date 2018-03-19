@@ -1,5 +1,4 @@
 import {TimeInstant} from '../timeInstant';
-import {Alert} from './alert';
 
 export class Task {
     private _ata: string;

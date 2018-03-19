@@ -1,2 +1,2 @@
-<lsl-tooltip class="tooltip-container" *ngIf="tooltip" [ngStyle]="tooltipStyle"></lsl-tooltip>
+<lsl-tooltip class="tooltip-container" [hidden]="!tooltip" [ngStyle]="getTooltipStyle().getJson()"></lsl-tooltip>
 <lsl-ata-correction></lsl-ata-correction>
