@@ -31,7 +31,7 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     private _filteredAta: Observable<string[]>;
     private _open: boolean;
 
-    @Output('corrected') _correctedAta: EventEmitter<any> = new EventEmitter(true);
+    @Output() corrected: EventEmitter<any> = new EventEmitter(true);
 
     constructor(
         private _fleetHealthService: FleetHealthService,
@@ -113,8 +113,9 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     public submitAta() {
         if (this.ataForm.valid) {
             // this._taskCorrectionSub = this.getTaskCorrectionSub();
-
-            this._correctedAta.emit(true);
+            this._fleetHealthService.task.ata = this.newAta;
+            this.newAta = '';
+            this.corrected.emit(true);
             this.open = false;
         } else {
             this._translateService.get('FLEET_HEALTH.REPORT.ERROR.REQUIRED_FIELDS').subscribe((res: string) => this._messageService.openSnackBar(res));

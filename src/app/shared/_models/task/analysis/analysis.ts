@@ -1,10 +1,10 @@
 export class Analysis {
-    private _barcode:string;
-    private _status:string;
+    private _barcode: string;
+    private _status: string;
 
     constructor() {
-        this._barcode='';
-        this._status='';
+        this._barcode = '';
+        this._status = '';
     }
     public static getInstance() {
         return new Analysis();

@@ -1,4 +1,4 @@
-import {TimeInstant} from "../timeInstant";
+import {TimeInstant} from '../timeInstant';
 
 export class DateRange {
 

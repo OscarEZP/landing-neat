@@ -1,18 +1,29 @@
 import {Task} from './task';
+import {DatePipe} from '@angular/common';
+
 export class TimelineTask {
+
+    private static OPEN_STATUS = 'OPEN';
+    private static OPEN_ICON = 'lock_open';
+    private static CLOSE_ICON = 'lock';
 
     private _id: number;
     private _content: string;
     private _start: string;
     private _task: Task;
     private _className: string;
+    private _end: string;
+    private _active: boolean;
 
-    constructor(id: number, task: Task, start: string) {
-        this._id = id;
+    constructor(task: Task, active: boolean = false) {
         this._task = task;
-        this._start = start;
+        const datePipe = new DatePipe('en');
+        this._start = datePipe.transform(task.createDate.epochTime, 'yyyy-MM-dd');
+        this._end = datePipe.transform(task.dueDate.epochTime, 'yyyy-MM-dd');
+        this._id = task.id;
         this._content = this.getContent();
-        this._className = 'active';
+        this._active = active;
+        this._className = this.active ? 'active' : 'related';
     }
 
     private getContent(): string {
@@ -22,11 +33,11 @@ export class TimelineTask {
     }
 
     private getContentIcon() {
-        return this._task.timelineStatus === 'OPEN' ? 'lock_open' : 'lock';
+        return this._task.timelineStatus === TimelineTask.OPEN_STATUS ? TimelineTask.OPEN_ICON : TimelineTask.CLOSE_ICON;
     }
 
     static getInstance() {
-        return new TimelineTask(0, Task.getInstance(), '');
+        return new TimelineTask(Task.getInstance());
     }
 
     public getJson() {
@@ -59,5 +70,13 @@ export class TimelineTask {
 
     set className(value: string) {
         this._className = value;
+    }
+
+    get active(): boolean {
+        return this._active;
+    }
+
+    set active(value: boolean) {
+        this._active = value;
     }
 }

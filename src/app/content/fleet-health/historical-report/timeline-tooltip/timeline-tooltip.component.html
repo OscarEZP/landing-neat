@@ -2,14 +2,13 @@
     <h1 fxFlex>01 NOV 2017</h1>
     <span>DEFERRAL</span>
 </header>
-<h2>ATA-25-30 / PT-MZU / T00D1A2R</h2>
+<h2>{{ 'FLEET_HEALTH.LIST.ATA' | translate }} {{task.ata}} / {{task.fleet}} / {{task.barcode}}</h2>
 <p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi et sapien tempor, commodo libero at, tincidunt magna.
-    Sed a massa orci. Quisque augue nunc, ullamcorper at porta lobortis, ultricies in turpis.
+    {{task.description}}
 </p>
 <footer>
-    <mat-radio-group [(ngModel)]="apply">
-        <mat-radio-button value="apply">Apply</mat-radio-button>
-        <mat-radio-button value="dontApply">Don't Apply</mat-radio-button>
+    <mat-radio-group (change)="checkStatus()" [(ngModel)]="status">
+        <mat-radio-button value="apply" ngDefaultControl>Apply</mat-radio-button>
+        <mat-radio-button value="dontApply" ngDefaultControl>Don't Apply</mat-radio-button>
     </mat-radio-group>
 </footer>
