@@ -31,7 +31,8 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     private _filteredAta: Observable<string[]>;
     private _open: boolean;
 
-    @Output() corrected: EventEmitter<any> = new EventEmitter(true);
+    @Output()
+    corrected: EventEmitter<any> = new EventEmitter(true);
 
     constructor(
         private _fleetHealthService: FleetHealthService,

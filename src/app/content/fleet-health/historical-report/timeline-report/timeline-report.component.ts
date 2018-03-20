@@ -118,7 +118,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
         this.getListSubscription(signature).add(() => {
             const arr = this.taskList.map(task => {
-                return new TimelineTask(task, task.id === this._fleetHealthService.task.id).getJson();
+                return new TimelineTask(task, task.id === this._fleetHealthService.task.id, true).getJson();
             });
             this._timeline.destroy();
             this._timeline = this.createTimeline(arr);

@@ -15,7 +15,7 @@ export class TimelineTask {
     private _end: string;
     private _active: boolean;
 
-    constructor(task: Task, active: boolean = false) {
+    constructor(task: Task, active: boolean = false, corrected: boolean = false) {
         this._task = task;
         const datePipe = new DatePipe('en');
         this._start = datePipe.transform(task.createDate.epochTime, 'yyyy-MM-dd');
@@ -23,7 +23,7 @@ export class TimelineTask {
         this._id = task.id;
         this._content = this.getContent();
         this._active = active;
-        this._className = this.active ? 'active' : 'related';
+        this._className = this.active && corrected ? ' active ' : ' related ';
     }
 
     private getContent(): string {
