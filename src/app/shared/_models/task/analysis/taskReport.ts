@@ -1,10 +1,8 @@
-
-
 import {Analysis} from "./analysis";
 
 export class TaskReport {
 
-
+    private _username: string;
     private _report: string;
     private _analysis: Analysis[];
 
@@ -12,6 +10,7 @@ export class TaskReport {
     constructor() {
         this._report = '';
         this._analysis = [];
+        this._username='';
 
     }
 
@@ -35,6 +34,14 @@ export class TaskReport {
 
     set analysis(value: Analysis[]) {
         this._analysis = value;
+    }
+
+    get username(): string {
+        return this._username;
+    }
+
+    set username(value: string) {
+        this._username = value;
     }
 }
 
