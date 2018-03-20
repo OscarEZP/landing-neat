@@ -1,4 +1,4 @@
-import {Analysis} from "./analysis";
+import {Analysis} from './analysis';
 
 export class TaskReport {
 
@@ -10,7 +10,7 @@ export class TaskReport {
     constructor() {
         this._report = '';
         this._analysis = [];
-        this._username='';
+        this._username = '';
 
     }
 

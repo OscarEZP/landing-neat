@@ -21,8 +21,8 @@ export class Task {
     private _tail: string;
     private _timelineStatus: string;
     private _revisionDate: TimeInstant;
-    private _isClose:boolean;
-    private _isOpen:boolean;
+    private _isClose: boolean;
+    private _isOpen: boolean;
 
 
     constructor() {
@@ -46,7 +46,7 @@ export class Task {
         this._creationDate = TimeInstant.getInstance();
         this._timelineStatus = '';
         this._revisionDate = TimeInstant.getInstance();
-        this._isClose= false;
+        this._isClose = false;
         this._isOpen = false;
     }
 
