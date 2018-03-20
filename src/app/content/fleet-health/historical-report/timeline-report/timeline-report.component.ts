@@ -8,11 +8,11 @@ import 'rxjs/add/operator/map';
 import {FleetHealthService} from '../../_services/fleet-health.service';
 import * as moment from 'moment';
 import {Style} from '../../../../shared/_models/style';
-import {ApiRestService} from "../../../../shared/_services/apiRest.service";
-import {SearchRelationedTask} from "../../../../shared/_models/task/searchRelationedTask";
-import {Task} from "../../../../shared/_models/task/task";
-import {DateRange} from "../../../../shared/_models/common/dateRange";
-import {TimeInstant} from "../../../../shared/_models/timeInstant";
+import {ApiRestService} from '../../../../shared/_services/apiRest.service';
+import {SearchRelationedTask} from '../../../../shared/_models/task/searchRelationedTask';
+import {Task} from '../../../../shared/_models/task/task';
+import {DateRange} from '../../../../shared/_models/common/dateRange';
+import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 
 @Component({
@@ -109,28 +109,27 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this._loading = true;
         return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
             (list) => {
-
                 this.list = list;
-                console.log('list',list);
+                console.log('list', list);
                 this._loading = false;
             },
             () => this.getError()
         );
     }
 
-    public checkCorrectedATA (value:boolean){
+    public checkCorrectedATA (value: boolean) {
 
-        const signature:SearchRelationedTask  = SearchRelationedTask.getInstance();
+        const signature: SearchRelationedTask  = SearchRelationedTask.getInstance();
 
-        signature.tail=this._fleetHealthService.task.tail;
-        signature.ataGroup=this._fleetHealthService.task.ata;
+        signature.tail = this._fleetHealthService.task.tail;
+        signature.ataGroup = this._fleetHealthService.task.ata;
 
         const currentDate = new Date();
 
-        const endDate = moment(new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate())).utc().valueOf();
+        const endDate = moment(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())).utc().valueOf();
         const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
 
-        signature.dateRange=new DateRange(new TimeInstant(initDate,''),new TimeInstant(endDate,''));
+        signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
         this.getListSubscription(signature);
 
     }
