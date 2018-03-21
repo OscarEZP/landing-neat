@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, Output, OnDestroy, OnInit} from '@angular/core';
 import {Task} from '../../../../shared/_models/task/task';
 import {Analysis} from '../../../../shared/_models/task/analysis/analysis';
 
@@ -11,6 +11,10 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
 
     @Input()
     public task: Task;
+
+    @Output()
+    public onApply: EventEmitter<Analysis> = new EventEmitter();
+
     private _analysis: Analysis;
 
     constructor() {
@@ -24,8 +28,8 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
     }
 
     public checkStatus() {
-        this._analysis.barcode = this.task.barcode;
-        console.log(this.analysis);
+        this.analysis.barcode = this.task.barcode;
+        this.onApply.emit(this.analysis);
     }
 
     get analysis(): Analysis {

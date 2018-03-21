@@ -1,9 +1,10 @@
 import {Task} from './task';
 import {DatePipe} from '@angular/common';
+import {TimeInstant} from '../timeInstant';
 
 export class TimelineTask {
 
-    private static OPEN_STATUS = 'OPEN';
+    private static CLOSE_STATUS = 'COMPLETE';
     private static OPEN_ICON = 'lock_open';
     private static CLOSE_ICON = 'lock';
 
@@ -14,8 +15,15 @@ export class TimelineTask {
     private _className: string;
     private _end: string;
     private _active: boolean;
+    private _corrected: boolean;
+    private _apply: boolean | null;
+    private _group: string;
 
-    constructor(task: Task, active: boolean = false, corrected: boolean = false) {
+    static getInstance() {
+        return new TimelineTask(Task.getInstance(), false, false);
+    }
+
+    constructor(task: Task, active: boolean = false, corrected: boolean = false, apply: boolean | null = null) {
         this._task = task;
         const datePipe = new DatePipe('en');
         this._start = datePipe.transform(task.createDate.epochTime, 'yyyy-MM-dd');
@@ -23,7 +31,42 @@ export class TimelineTask {
         this._id = task.id;
         this._content = this.getContent();
         this._active = active;
-        this._className = this.active && corrected ? ' active ' : ' related ';
+        this._corrected = corrected;
+        this._apply = apply;
+        this._className = this.generateClassName();
+    }
+
+    public generateClassName(): string {
+        const arrStyles = [];
+        if (this.active) {
+            arrStyles.push('active');
+            if (this.corrected) {
+                arrStyles.push('full');
+            }
+        } else {
+            arrStyles.push('related');
+            if (this.apply === true) {
+                arrStyles.push('full');
+            }else if (this.apply === false) {
+                arrStyles.push('dont-apply');
+            }
+        }
+        return arrStyles.join(' ');
+    }
+
+
+
+    public getExtraTime(): TimelineTask[] {
+        const arr = [];
+        if (this.extendedDueDate.epochTime !== null) {
+            const extra = TimelineTask.getInstance();
+            const datePipe = new DatePipe('en');
+            extra.end = datePipe.transform(this.extendedDueDate.epochTime, 'yyyy-MM-dd');
+            extra.start = datePipe.transform(this.dueDate.epochTime, 'yyyy-MM-dd');
+            extra.id = this.id + this.createDate.epochTime;
+            arr.push(extra);
+        }
+        return arr;
     }
 
     private getContent(): string {
@@ -33,11 +76,7 @@ export class TimelineTask {
     }
 
     private getContentIcon() {
-        return this._task.timelineStatus === TimelineTask.OPEN_STATUS ? TimelineTask.OPEN_ICON : TimelineTask.CLOSE_ICON;
-    }
-
-    static getInstance() {
-        return new TimelineTask(Task.getInstance());
+        return this._task.status === TimelineTask.CLOSE_STATUS ? TimelineTask.CLOSE_ICON : TimelineTask.OPEN_ICON ;
     }
 
     public getJson() {
@@ -64,6 +103,14 @@ export class TimelineTask {
         this._start = value;
     }
 
+    get end(): string {
+        return this._end;
+    }
+
+    set end(value: string) {
+        this._end = value;
+    }
+
     get className(): string {
         return this._className;
     }
@@ -78,5 +125,49 @@ export class TimelineTask {
 
     set active(value: boolean) {
         this._active = value;
+    }
+
+    get task(): Task {
+        return this._task;
+    }
+
+    get barcode(): string {
+        return this._task.barcode;
+    }
+
+    get corrected(): boolean {
+        return this._corrected;
+    }
+
+    set corrected(value: boolean) {
+        this._corrected = value;
+    }
+
+    get apply(): boolean {
+        return this._apply;
+    }
+
+    set apply(value: boolean) {
+        this._apply = value;
+    }
+
+    get createDate(): TimeInstant{
+        return this.task.createDate;
+    }
+
+    get group(): string {
+        return this._group;
+    }
+
+    set group(value: string) {
+        this._group = value;
+    }
+
+    get extendedDueDate(): TimeInstant {
+        return this.task.extendedDueDate;
+    }
+
+    get dueDate(): TimeInstant{
+        return this.task.dueDate;
     }
 }

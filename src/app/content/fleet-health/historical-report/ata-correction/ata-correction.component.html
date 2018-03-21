@@ -1,4 +1,4 @@
-<button id="btn-edit-ata" mat-button type="button" (click)="open = !open">
+<button id="btn-edit-ata" mat-button type="button" *ngIf="!isCorrected" (click)="open = !open">
     <mat-icon aria-label="Edit ATA" class="">mode_edit</mat-icon>
 </button>
 

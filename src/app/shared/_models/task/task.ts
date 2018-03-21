@@ -230,4 +230,8 @@ export class Task {
     set isOpen(value: boolean) {
         this._isOpen = value;
     }
+
+    get createEpochTime(): number {
+        return this.createDate.epochTime;
+    }
 }

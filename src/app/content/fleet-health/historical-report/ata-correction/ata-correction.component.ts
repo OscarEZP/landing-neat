@@ -30,9 +30,10 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     private _ataForm: FormGroup;
     private _filteredAta: Observable<string[]>;
     private _open: boolean;
+    private _isCorrected: boolean;
 
     @Output()
-    corrected: EventEmitter<any> = new EventEmitter(true);
+    corrected: EventEmitter<any> = new EventEmitter();
 
     constructor(
         private _fleetHealthService: FleetHealthService,
@@ -47,10 +48,10 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.newAta = this._fleetHealthService.task.ata;
-        this._ataSub = this.getAtaSub(this._fleetHealthService.task.fleet);
+        this.newAta = this.task.ata;
+        this._ataSub = this.getAtaSub(this.task.fleet);
         this._ataForm = this._fb.group({
-            ata: [this._fleetHealthService.task.ata, [Validators.pattern('^(\\d{1,2})$'), Validators.required, this.ataValidator.bind(this)]],
+            ata: [this.task.ata, [Validators.pattern('^(\\d{1,2})$'), Validators.required, this.ataValidator.bind(this)]],
         });
         this.filteredAta = this.getFilteredAta();
     }
@@ -69,10 +70,10 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     }
 
     private getTaskCorrectionSub(): Subscription {
-        const signature = new AtaCorrection(this._fleetHealthService.task.id, this.newAta, this._storageService.getCurrentUser().username);
+        const signature = new AtaCorrection(this.task.id, this.newAta, this._storageService.getCurrentUser().username);
         return this._apiRestService.search(AtaCorrectionComponent.TASK_CORRECTION_ENDPOINT, signature).subscribe(
             () => {
-                this._fleetHealthService.task.ata = this.newAta;
+                this.task.ata = this.newAta;
                 this.newAta = '';
             }
         );
@@ -114,7 +115,8 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     public submitAta() {
         if (this.ataForm.valid) {
             // this._taskCorrectionSub = this.getTaskCorrectionSub();
-            this._fleetHealthService.task.ata = this.newAta;
+            this.task.ata = this.newAta;
+            this.isCorrected = true;
             this.newAta = '';
             this.corrected.emit(true);
             this.open = false;
@@ -165,5 +167,13 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
 
     set open(value: boolean) {
         this._open = value;
+    }
+
+    get isCorrected(): boolean {
+        return this._isCorrected;
+    }
+
+    set isCorrected(value: boolean) {
+        this._isCorrected = value;
     }
 }
