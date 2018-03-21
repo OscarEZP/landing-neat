@@ -1,18 +1,18 @@
 import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import * as vis from 'vis';
+import { DataSet, Timeline} from 'vis';
 import {Subscription} from 'rxjs/Subscription';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import {FleetHealthService} from '../../_services/fleet-health.service';
 import * as moment from 'moment';
 import {Style} from '../../../../shared/_models/style';
-import {ApiRestService} from "../../../../shared/_services/apiRest.service";
-import {SearchRelationedTask} from "../../../../shared/_models/task/searchRelationedTask";
-import {Task} from "../../../../shared/_models/task/task";
-import {DateRange} from "../../../../shared/_models/common/dateRange";
-import {TimeInstant} from "../../../../shared/_models/timeInstant";
+import {ApiRestService} from '../../../../shared/_services/apiRest.service';
+import {SearchRelationedTask} from '../../../../shared/_models/task/searchRelationedTask';
+import {Task} from '../../../../shared/_models/task/task';
+import {DateRange} from '../../../../shared/_models/common/dateRange';
+import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 
 @Component({
@@ -47,20 +47,19 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.tooltipStyle = new Style();
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this._data$ = this.getData$();
         this._dataSub = this._data$
         .subscribe(data => this._data = data)
-        .add(this.createTimeline())
-        ;
+        .add(this.createTimeline());
     }
 
-    ngOnDestroy() {
+    ngOnDestroy(): void {
         this._dataSub.unsubscribe();
     }
 
-    private createTimeline() {
-        const items = new vis.DataSet(this._data);
+    private createTimeline(): void {
+        const items = new DataSet(this._data);
         const options = {
             start: moment(this._fleetHealthService.task.createDate.epochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').format('YYYY-MM-DD'),
             end: moment(this._fleetHealthService.task.createDate.epochTime).utc().add(TimelineReportComponent.DAYS_TO, 'days').format('YYYY-MM-DD'),
@@ -68,7 +67,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             zoomMax: 1000 * 60 * 60 * 24 * 31 * 12,
             max: moment(this._fleetHealthService.task.createDate.epochTime).utc().add(TimelineReportComponent.DAYS_TO, 'days').format('YYYY-MM-DD')
         };
-        this._timeline = new vis.Timeline(this._element.nativeElement, items, options);
+        this._timeline = new Timeline(this._element.nativeElement, items, options);
         this._timeline.on('click', (event) => this.showTooltip(event));
         this._timeline.on('rangechange', event => this.showTooltip(event));
     }
@@ -83,7 +82,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     private getData$(): Observable<any> {
-        const obs$ = new Observable<any> (suscriber => {
+        return new Observable<any> (suscriber => {
             const datePipe = new DatePipe('en');
             const timelineTask = new TimelineTask(this._fleetHealthService.task.id, this._fleetHealthService.task, datePipe.transform(this._fleetHealthService.task.createDate.epochTime, 'yyyy-MM-dd')).getJson();
             const data = [
@@ -97,7 +96,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             suscriber.next(data);
             suscriber.complete();
         });
-        return obs$;
     }
 
     /**
@@ -111,26 +109,26 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             (list) => {
 
                 this.list = list;
-                console.log('list',list);
+                console.log('list', list);
                 this._loading = false;
             },
             () => this.getError()
         );
     }
 
-    public checkCorrectedATA (value:boolean){
+    public checkCorrectedATA (value: boolean) {
 
-        const signature:SearchRelationedTask  = SearchRelationedTask.getInstance();
+        const signature: SearchRelationedTask  = SearchRelationedTask.getInstance();
 
-        signature.tail=this._fleetHealthService.task.tail;
-        signature.ataGroup=this._fleetHealthService.task.ata;
+        signature.tail = this._fleetHealthService.task.tail;
+        signature.ataGroup = this._fleetHealthService.task.ata;
 
         const currentDate = new Date();
 
-        const endDate = moment(new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate())).utc().valueOf();
+        const endDate = moment(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())).utc().valueOf();
         const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
 
-        signature.dateRange=new DateRange(new TimeInstant(initDate,''),new TimeInstant(endDate,''));
+        signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
         this.getListSubscription(signature);
 
     }

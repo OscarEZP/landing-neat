@@ -156,31 +156,31 @@ export class MeetingComponent implements OnInit, OnDestroy {
      * Filter for area list
      * @return {Observable<string[]>}
      */
-    private getFilteredAreas(): Observable <string[]> {
+    private getFilteredAreas(): Observable<string[]> {
         return this.pendingForm.controls['area'].valueChanges
-        .pipe(
-            startWith(''),
-            map(val => {
-                const result = this.filter(val, this.areas);
-                return result.length > 0 ? result : this.areas;
-            })
-        );
+            .pipe(
+                startWith(''),
+                map(val => {
+                    const result = this.filter(val, this.areas);
+                    return result.length > 0 ? result : this.areas;
+                })
+            );
     }
 
     /**
      * Filter for mail list
      * @return {Observable<string[]>}
      */
-    private getFilteredOptions(): Observable <string[]> {
+    private getFilteredOptions(): Observable<string[]> {
         return this.assistantForm.controls['assistantMail'].valueChanges
-        .pipe(
-            startWith(''),
-            map(val => {
-                if (val.length >= 3) {
-                    return this.filter(val, this.mails);
-                }
-            })
-        );
+            .pipe(
+                startWith(''),
+                map(val => {
+                    if (val.length >= 3) {
+                        return this.filter(val, this.mails);
+                    }
+                })
+            );
     }
 
     /**
@@ -206,7 +206,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
      */
     private pendingValidation(): boolean {
         let valid = true;
-        const errorObj = { descriptionRequired: false, areaRequired: false, areaInvalid: false };
+        const errorObj = {descriptionRequired: false, areaRequired: false, areaInvalid: false};
         if (this.pending.area === null || this.pending.area === '') {
             valid = false;
             errorObj.areaRequired = true;
@@ -273,10 +273,10 @@ export class MeetingComponent implements OnInit, OnDestroy {
      */
     private getAreas(): Subscription {
         return this._apiRestService
-        .getAll<any[]>(MeetingComponent.AREAS_ENDPOINT)
-        .subscribe(rs => {
-            rs.forEach(area => this.areas.push(area.description));
-        });
+            .getAll<any[]>(MeetingComponent.AREAS_ENDPOINT)
+            .subscribe(rs => {
+                rs.forEach(area => this.areas.push(area.description));
+            });
     }
 
     /**
@@ -462,6 +462,7 @@ export class MeetingComponent implements OnInit, OnDestroy {
             this.meetingAssistants.splice(index, 1);
         }
     }
+
     /**
      * Delete Agreement Meeting from assistant list
      */

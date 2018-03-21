@@ -5,11 +5,14 @@ import {HistoricalReportComponent} from './historical-report.component';
 import {TimelineTooltipComponent} from './timeline-tooltip/timeline-tooltip.component';
 import {AtaCorrectionComponent} from './ata-correction/ata-correction.component';
 import {TimelineReportComponent} from './timeline-report/timeline-report.component';
+import {FroalaEditorModule, FroalaViewModule} from 'angular-froala-wysiwyg';
 
 @NgModule({
     imports: [
         BrowserModule,
         SharedModule,
+        FroalaEditorModule.forRoot(),
+        FroalaViewModule.forRoot()
     ],
     declarations: [
         TimelineReportComponent,
