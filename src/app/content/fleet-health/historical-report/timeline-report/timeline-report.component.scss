@@ -24,7 +24,7 @@ $timeline-label-height: 22px;
     height: $timeline-label-height;
     cursor: pointer;
     font-size: 9px;
-    padding: 2px 10px;
+    padding: 2px 5px 2px 15px;
 
     .head {
       display: flex;
@@ -32,6 +32,8 @@ $timeline-label-height: 22px;
 
       h1 {
         width: 50%;
+        text-transform: uppercase;
+        font-weight: bold;
       }
 
       span {
@@ -39,20 +41,48 @@ $timeline-label-height: 22px;
         width: 50%;
       }
     }
-
-
-
     .material-icons{
       font-size: 9px;
     }
   }
 
-  .vis-item.active {
+  .vis-item.active.full {
     background-color: mat-color($mat-palette-custom, tl-active-task);
     color: mat-color($primary, default-contrast);
     border-color: mat-color($mat-palette-custom, tl-active-task);
   }
 
+  .vis-item.active {
+    background-color: mat-color($mat-palette-custom, tl-related-task);
+    color: mat-color($foreground, text);
+    border: none;
+    border-left: 10px solid mat-color($mat-palette-custom, tl-active-task);
+
+    .vis-item-content{
+      padding-left: 5px;
+    }
+  }
+
+  .vis-item.related {
+    background-color: mat-color($mat-palette-custom, tl-related-task);
+    border: none;
+    color: mat-color($foreground, text);
+    border-left: 10px solid mat-color($primary);
+
+    .vis-item-content{
+      padding-left: 5px;
+    }
+  }
+
+  .vis-item.related.full {
+    background-color: mat-color($primary);
+    color: mat-color($primary, default-contrast);
+    border-color: mat-color($primary);
+  }
+
+  .vis-item.dont-apply {
+    border-left: 10px solid mat-color($foreground, disabled-text);
+  }
 
 }
 

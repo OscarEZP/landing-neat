@@ -1,9 +1,6 @@
 import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
-import {DatePipe} from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { DataSet, Timeline} from 'vis';
 import {Subscription} from 'rxjs/Subscription';
-import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import {FleetHealthService} from '../../_services/fleet-health.service';
 import * as moment from 'moment';
@@ -14,6 +11,9 @@ import {Task} from '../../../../shared/_models/task/task';
 import {DateRange} from '../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
+import {Timeline, DataSet} from 'vis';
+import {Analysis} from '../../../../shared/_models/task/analysis/analysis';
+import {Moment} from 'moment';
 
 @Component({
     selector: 'lsl-timeline-report',
@@ -26,15 +26,15 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private static DAYS_TO = 1;
     private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
 
-    private _data$: Observable<any>;
-    private _dataSub: Subscription;
-    private _data: {id: number, content: string, start: string}[];
+    private _timelineData: TimelineTask[];
     private _tooltip: boolean;
     private _tooltipStyle: Style;
-    private _timeline: any;
-    private _list: Task[];
+    private _timeline: Timeline;
+    private _taskList: Task[];
     private _loading: boolean;
     private _error: boolean;
+    private _minDate: Moment;
+    private _selectedTask: Task | null;
 
     constructor(
         private _translate: TranslateService,
@@ -45,57 +45,80 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this._translate.setDefaultLang('en');
         this.tooltip = false;
         this.tooltipStyle = new Style();
+        this.taskList = [];
+        this.selectedTask = null;
     }
 
-    ngOnInit(): void {
-        this._data$ = this.getData$();
-        this._dataSub = this._data$
-        .subscribe(data => this._data = data)
-        .add(this.createTimeline());
+    ngOnInit() {
+        this.timelineData = this.getTimelineInitData();
+        this.timeline = this.createTimeline(this.timelineData);
     }
 
-    ngOnDestroy(): void {
-        this._dataSub.unsubscribe();
+    ngOnDestroy() {
     }
 
-    private createTimeline(): void {
-        const items = new DataSet(this._data);
+    private createTimeline(data: TimelineTask[]): Timeline {
+        // data = this.getExtraTime(data).map(task => task.getJson());
+        data = data
+        // .getExtraTime(data)
+        .map(task => task.getJson());
+
+        console.log(data);
+        const items = new DataSet(data);
+        const dataMinDate = this.taskList
+        .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1)
+        .shift();
+        this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.createDateEpochtime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days');
+        const maxTime = moment(this.dueDateEpochtime).utc().add(TimelineReportComponent.DAYS_TO, 'days');
         const options = {
-            start: moment(this._fleetHealthService.task.createDate.epochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').format('YYYY-MM-DD'),
-            end: moment(this._fleetHealthService.task.createDate.epochTime).utc().add(TimelineReportComponent.DAYS_TO, 'days').format('YYYY-MM-DD'),
+            start: this.minDate.format('YYYY-MM-DD'),
+            end: maxTime.format('YYYY-MM-DD'),
             zoomMin: 1000 * 60 * 60 * 24 * 31,
             zoomMax: 1000 * 60 * 60 * 24 * 31 * 12,
-            max: moment(this._fleetHealthService.task.createDate.epochTime).utc().add(TimelineReportComponent.DAYS_TO, 'days').format('YYYY-MM-DD')
+            max: maxTime.format('YYYY-MM-DD'),
+            min: this.minDate.format('YYYY-MM-DD')
         };
-        this._timeline = new Timeline(this._element.nativeElement, items, options);
-        this._timeline.on('click', (event) => this.showTooltip(event));
-        this._timeline.on('rangechange', event => this.showTooltip(event));
+
+        let timeline: Timeline;
+
+        // console.log(this.getExtraTime(data));
+
+        if (this.timeline) {
+            this.tooltip = false;
+            timeline = this.timeline;
+            timeline.setData({items: items});
+        } else {
+            timeline = new Timeline(this.element.nativeElement, items, options);
+        }
+
+        timeline.on('click', (event) => this.showTooltip());
+        timeline.on('rangechange', event => this.showTooltip());
+        return timeline;
+    }
+
+    private getExtraTime(data: TimelineTask[]): TimelineTask[] {
+        let arrExtra = [];
+        data.forEach(item => {
+            if (item.getExtraTime().length > 0) {
+                arrExtra = data.concat(arrExtra);
+            }
+        } );
+        return arrExtra;
     }
 
     private getTimelineItem(): object | null {
-        const items = this._timeline['itemSet']['items'];
+        const items = this.timeline['itemSet']['items'];
         const arrItems = Object
         .keys(items)
         .map(key => items[key] && items[key].selected ? items[key] : false)
         .filter(item => item !== false);
-        return arrItems ? arrItems[0] : null;
+        this.selectedTask = arrItems ? arrItems[0] : null;
+        return this.selectedTask;
     }
 
-    private getData$(): Observable<any> {
-        return new Observable<any> (suscriber => {
-            const datePipe = new DatePipe('en');
-            const timelineTask = new TimelineTask(this._fleetHealthService.task.id, this._fleetHealthService.task, datePipe.transform(this._fleetHealthService.task.createDate.epochTime, 'yyyy-MM-dd')).getJson();
-            const data = [
-                timelineTask,
-                {id: 2, content: 'item 2', start: '2018-01-04'},
-                {id: 3, content: 'item 3', start: '2018-01-08'},
-                {id: 4, content: 'item 4', start: '2018-01-06', end: '2018-01-09'},
-                {id: 5, content: 'item 5', start: '2018-01-05'},
-                {id: 6, content: 'item 6', start: '2018-01-07'}
-            ];
-            suscriber.next(data);
-            suscriber.complete();
-        });
+    private getTimelineInitData(): TimelineTask[] {
+        const timelineTask = new TimelineTask(this.activeTask, true);
+        return [timelineTask];
     }
 
     /**
@@ -104,33 +127,34 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     private getListSubscription(signature: SearchRelationedTask): Subscription {
-        this._loading = true;
+        this.loading = true;
         return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
             (list) => {
-
-                this.list = list;
-                console.log('list', list);
-                this._loading = false;
+                this.taskList = list;
+                this.loading = false;
             },
             () => this.getError()
         );
     }
 
-    public checkCorrectedATA (value: boolean) {
+    public checkCorrectedATA (result: boolean) {
+        if (result) {
+            const signature: SearchRelationedTask = SearchRelationedTask.getInstance();
 
-        const signature: SearchRelationedTask  = SearchRelationedTask.getInstance();
+            signature.tail = this.activeTask.tail;
+            signature.ataGroup = this.activeTask.ata;
 
-        signature.tail = this._fleetHealthService.task.tail;
-        signature.ataGroup = this._fleetHealthService.task.ata;
+            const endDate = this.createDateEpochtime;
+            const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
 
-        const currentDate = new Date();
-
-        const endDate = moment(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())).utc().valueOf();
-        const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
-
-        signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
-        this.getListSubscription(signature);
-
+            signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
+            this.getListSubscription(signature).add(() => {
+                this.timelineData = this.taskList.map(task => {
+                    return new TimelineTask(task, task.id === this.activeTask.id, true);
+                });
+                this.timeline = this.createTimeline(this.timelineData);
+            });
+        }
     }
 
     public getTooltipStyle(): Style {
@@ -143,8 +167,22 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return this.tooltipStyle;
     }
 
-    public showTooltip(event: Event) {
-        this.tooltip = this.getTimelineItem() ? true : false;
+    public showTooltip() {
+        this.tooltip = this.getTimelineItem() && !this.getTimelineItem()['data']['active'] ? true : false;
+    }
+
+    public refreshOnApply(analysis: Analysis) {
+
+        const updatedTask = this.timelineData
+        .filter(item => item.task.barcode === analysis.barcode)
+        .map(item => {
+            return new TimelineTask(item.task, false, false, analysis.status === 'apply');
+        })[0];
+
+        const newData = this.timelineData.filter(task => task.id !== updatedTask.task.id);
+        newData.push(updatedTask);
+        this.timelineData = newData;
+        this.timeline = this.createTimeline(newData);
     }
 
     /**
@@ -152,8 +190,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @return {boolean}
      */
     private getError(): boolean {
-        this._loading = false;
-        return this._error = true;
+        this.loading = false;
+        return this.error = true;
     }
 
     get tooltip(): boolean {
@@ -172,12 +210,12 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this._tooltipStyle = value;
     }
 
-    get list(): Task[] {
-        return this._list;
+    get taskList(): Task[] {
+        return this._taskList;
     }
 
-    set list(value: Task[]) {
-        this._list = value;
+    set taskList(value: Task[]) {
+        this._taskList = value;
     }
 
     get error(): boolean {
@@ -187,5 +225,62 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     set error(value: boolean) {
         this._error = value;
     }
+
+    get selectedTask(): Task {
+        return this._selectedTask;
+    }
+
+    set selectedTask(value: Task) {
+        this._selectedTask = value;
+    }
+
+    get timelineData(): TimelineTask[] {
+        return this._timelineData;
+    }
+
+    set timelineData(value: TimelineTask[]) {
+        this._timelineData = value;
+    }
+
+    get timeline(): Timeline {
+        return this._timeline;
+    }
+
+    set timeline(value: Timeline) {
+        this._timeline = value;
+    }
+
+    get loading(): boolean {
+        return this._loading;
+    }
+
+    set loading(value: boolean) {
+        this._loading = value;
+    }
+
+    get minDate(): Moment {
+        return this._minDate;
+    }
+
+    set minDate(value: Moment) {
+        this._minDate = value;
+    }
+
+    get activeTask(): Task {
+        return this._fleetHealthService.task;
+    }
+
+    get element(): ElementRef {
+        return this._element;
+    }
+
+    get createDateEpochtime() {
+        return this._fleetHealthService.createDateEpochtime;
+    }
+
+    get dueDateEpochtime() {
+        return this._fleetHealthService.dueDateEpochtime;
+    }
+
 
 }

@@ -20,6 +20,14 @@ export class FleetHealthService {
         this._task = value;
     }
 
+    get createDateEpochtime() {
+        return this._task.createDate.epochTime;
+    }
+
+    get dueDateEpochtime() {
+        return this._task.dueDate.epochTime;
+    }
+
     get newAta(): string {
         return this._newAta;
     }
