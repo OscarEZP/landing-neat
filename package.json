@@ -31,7 +31,6 @@
     "@ngx-translate/core": "9.0.1",
     "@ngx-translate/http-loader": "2.0.0",
     "@nicky-lenaers/ngx-scroll-to": "0.5.0",
-    "angular-froala-wysiwyg": "^2.7.6",
     "core-js": "2.5.1",
     "font-awesome": "4.7.0",
     "intl": "1.2.5",
