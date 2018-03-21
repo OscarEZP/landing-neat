@@ -168,7 +168,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     public showTooltip() {
-        this.tooltip = this.getTimelineItem() && !this.getTimelineItem()['data']['active'] ? true : false;
+        this.tooltip = !!(this.getTimelineItem() && !this.getTimelineItem()['data']['active']);
     }
 
     public refreshOnApply(analysis: Analysis) {
