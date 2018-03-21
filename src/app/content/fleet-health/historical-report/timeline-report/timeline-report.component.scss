@@ -1,0 +1,88 @@
+@import '../../../../../assets/style/base';
+
+$timeline-label-height: 22px;
+
+/deep/
+#timeline {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  min-height: 200px;
+  padding: 0 0 50px 0;
+
+  .tooltip-container {
+    height: 90px;
+    width: 300px;
+    position: absolute;
+    background-color: mat-color($primary, default-contrast);
+    z-index: 10;
+    box-shadow: $box-shadow;
+    padding: 10px;
+  }
+
+  .vis-item-content {
+    height: $timeline-label-height;
+    cursor: pointer;
+    font-size: 9px;
+    padding: 2px 5px 2px 15px;
+
+    .head {
+      display: flex;
+      width: 100%;
+
+      h1 {
+        width: 50%;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+      span {
+        text-align: right;
+        width: 50%;
+      }
+    }
+    .material-icons{
+      font-size: 9px;
+    }
+  }
+
+  .vis-item.active.full {
+    background-color: mat-color($mat-palette-custom, tl-active-task);
+    color: mat-color($primary, default-contrast);
+    border-color: mat-color($mat-palette-custom, tl-active-task);
+  }
+
+  .vis-item.active {
+    background-color: mat-color($mat-palette-custom, tl-related-task);
+    color: mat-color($foreground, text);
+    border: none;
+    border-left: 10px solid mat-color($mat-palette-custom, tl-active-task);
+
+    .vis-item-content{
+      padding-left: 5px;
+    }
+  }
+
+  .vis-item.related {
+    background-color: mat-color($mat-palette-custom, tl-related-task);
+    border: none;
+    color: mat-color($foreground, text);
+    border-left: 10px solid mat-color($primary);
+
+    .vis-item-content{
+      padding-left: 5px;
+    }
+  }
+
+  .vis-item.related.full {
+    background-color: mat-color($primary);
+    color: mat-color($primary, default-contrast);
+    border-color: mat-color($primary);
+  }
+
+  .vis-item.dont-apply {
+    border-left: 10px solid mat-color($foreground, disabled-text);
+  }
+
+}
+

@@ -22,6 +22,10 @@ export class ApiRestService {
         return this.http.get<T>(this.baseUrl + environment.paths[path]);
     }
 
+    public getParams<T>(path: string, params: string): Observable<T> {
+        return this.http.get<T>(this.baseUrl + environment.paths[path] + '/' + params);
+    }
+
     public getSingle<T>(path: string, id: number | string): Observable<T> {
         return this.http.get<T>(this.baseUrl + environment.paths[path] + '/' + id);
     }

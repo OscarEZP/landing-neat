@@ -10,7 +10,9 @@ import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
 import {Task} from '../../../shared/_models/task/task';
 import {SearchTask} from '../../../shared/_models/task/searchTask';
-import {Pagination} from "../../../shared/_models/common/pagination";
+import {Pagination} from '../../../shared/_models/common/pagination';
+import {HistoricalReportComponent} from '../historical-report/historical-report.component';
+import {FleetHealthService} from '../_services/fleet-health.service';
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -48,6 +50,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
         private _infiniteScrollService: InfiniteScrollService,
+        private _dialogService: DialogService,
+        private _fleetHealthService: FleetHealthService
     ) {
         this.selectedRegister = Task.getInstance();
         this.selectedRegisterPivot = Task.getInstance();
@@ -87,14 +91,14 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     public getTotalRecordsSubscription(signature: SearchTask): Subscription {
         this._loading = true;
         return this._apiRestService.search<{items: number}>(DeferralListComponent.TASK_SEARCH_COUNT_ENDPOINT, signature)
-            .subscribe(
-                response => {
-                    this.infiniteScrollService.length = !isNaN(response.items) ? response.items : 0;
-                    this._loading = false;
-                    return this.getListSubscription(signature);
-                },
-                () => this.getError()
-            );
+        .subscribe(
+            response => {
+                this.infiniteScrollService.length = !isNaN(response.items) ? response.items : 0;
+                this._loading = false;
+                return this.getListSubscription(signature);
+            },
+            () => this.getError()
+        );
     }
 
     /**
@@ -148,8 +152,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private getSearchSignature(): SearchTask {
         const taskSearch: SearchTask = SearchTask.getInstance();
-        taskSearch.pagination=new Pagination(this.infiniteScrollService.offset,this.infiniteScrollService.pageSize)
-        taskSearch.outOfStandard=true;
+        taskSearch.pagination = new Pagination(this.infiniteScrollService.offset, this.infiniteScrollService.pageSize);
+        taskSearch.outOfStandard = true;
         return taskSearch;
     }
 
@@ -209,6 +213,21 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     public setSelectedRegister(register: Task) {
         this.selectedRegister = register;
         this.selectedRegisterPivot = register;
+        this.openHistoricalReport(register);
+        this._fleetHealthService.task = register;
+    }
+
+    /**
+     * Method for open close contingency modal
+     * @param contingency
+     */
+    private openHistoricalReport(task: Task) {
+        this._dialogService.openDialog(HistoricalReportComponent, {
+            maxWidth: '100vw',
+            width: '100%',
+            height: '100%',
+            hasBackdrop: false
+        });
     }
 
     get list(): Task[] {

@@ -47,6 +47,18 @@
       "OPENING_DATE": "Opening Date",
       "TAIL_FLEET": "Tail/Fleet",
       "TIMELINE_STATUS": "Timeline Status"
+    },
+    "REPORT": {
+      "ERROR": {
+        "INVALID_ATA": "ATA is invalid",
+        "REQUIRED_ATA": "ATA is required",
+        "REQUIRED_FIELDS": "You must fill in all required fields"
+      },
+      "HISTORICAL_REPORTS": "Historical Reports",
+      "REPORTS_TIMELINE": "Reports Timeline",
+      "SUCCESS" : {
+        "ATA_UPDATED": "ATA saved"
+      }
     }
   },
   "OPERATIONS": {

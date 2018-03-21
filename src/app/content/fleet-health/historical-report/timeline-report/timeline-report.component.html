@@ -1,0 +1,2 @@
+<lsl-tooltip (onApply)="refreshOnApply($event)" [task]="selectedTask.data.task" class="tooltip-container" *ngIf="tooltip" [ngStyle]="getTooltipStyle().getJson()"></lsl-tooltip>
+<lsl-ata-correction (corrected)="checkCorrectedATA($event)"></lsl-ata-correction>

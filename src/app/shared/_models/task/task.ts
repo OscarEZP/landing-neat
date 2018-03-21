@@ -1,5 +1,4 @@
 import {TimeInstant} from '../timeInstant';
-import {Alert} from './alert';
 
 export class Task {
     private _ata: string;
@@ -21,6 +20,9 @@ export class Task {
     private _status: string;
     private _tail: string;
     private _timelineStatus: string;
+    private _revisionDate: TimeInstant;
+    private _isClose: boolean;
+    private _isOpen: boolean;
 
 
     constructor() {
@@ -43,6 +45,9 @@ export class Task {
         this._deferralClazz = '';
         this._creationDate = TimeInstant.getInstance();
         this._timelineStatus = '';
+        this._revisionDate = TimeInstant.getInstance();
+        this._isClose = false;
+        this._isOpen = false;
     }
 
     public static getInstance() {
@@ -199,5 +204,34 @@ export class Task {
 
     set timelineStatus(value: string) {
         this._timelineStatus = value;
+    }
+
+
+    get revisionDate(): TimeInstant {
+        return this._revisionDate;
+    }
+
+    set revisionDate(value: TimeInstant) {
+        this._revisionDate = value;
+    }
+
+    get isClose(): boolean {
+        return this._isClose;
+    }
+
+    set isClose(value: boolean) {
+        this._isClose = value;
+    }
+
+    get isOpen(): boolean {
+        return this._isOpen;
+    }
+
+    set isOpen(value: boolean) {
+        this._isOpen = value;
+    }
+
+    get createEpochTime(): number {
+        return this.createDate.epochTime;
     }
 }

@@ -10,6 +10,7 @@ export const environment = {
         aircrafts: ':9002/api/v1/contingencies/configurations/aircrafts',
         aircraftsSearch: ':9005/api/v1/configurations/aircrafts/_search',
         areas: ':9002/api/v1/contingencies/pendings/areas',
+        ataByFleet: ':9005/api/v1/configurations/atas/groups',
         close: ':9002/api/v1/contingencies/_close',
         configMaxStatus: ':9005/api/v1/configurations/status/max',
         configStatus: ':9005/api/v1/configurations/status/_search',
@@ -31,7 +32,10 @@ export const environment = {
         pendingSearch: ':9002/api/v1/contingencies/pendings/_search',
         safetyEvent: ':9005/api/v1/configurations/safetyEvents',
         tasks: ':9002/api/v1/tasks/',
+        tasksCorrection: ':9002/api/v1/tasks/_correction',
         tasksSearch: ':9002/api/v1/tasks/_search',
-        types: ':9005/api/v1/configurations/types'
+        types: ':9005/api/v1/configurations/types',
+        taskRelationsSearch: ':9002/api/v1/tasks/relations/_search',
+        taskHistoricalReport:':9002/api/v1/tasks/analysis/historical'
     }
 };

@@ -67,9 +67,13 @@ $mat-palette-secondary: (
 $mat-palette-custom: (
         success: #66BB6A,
         background-grey: #f9f9f9,
+        light-grey: #7d7d7d,
         ni1: #ef5350,
         ni2: #fb8c00,
         ni3: #f3be17,
         selected-card: #e6e6e6,
-        contrast: ()
+        tl-active-task: #ffa726,
+        tl-related-task: #ddd,
+        contrast: (
+        )
 );

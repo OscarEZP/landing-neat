@@ -1,0 +1,14 @@
+<header fxLayout="row">
+    <h1 fxFlex>01 NOV 2017</h1>
+    <span>DEFERRAL</span>
+</header>
+<h2>{{ 'FLEET_HEALTH.LIST.ATA' | translate }} {{task.ata}} / {{task.fleet}} / {{task.barcode}}</h2>
+<p>
+    {{task.description}}
+</p>
+<footer>
+    <mat-radio-group (change)="checkStatus()" [(ngModel)]="status">
+        <mat-radio-button value="apply" ngDefaultControl>Apply</mat-radio-button>
+        <mat-radio-button value="dontApply" ngDefaultControl>Don't Apply</mat-radio-button>
+    </mat-radio-group>
+</footer>

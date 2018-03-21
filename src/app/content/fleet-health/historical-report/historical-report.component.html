@@ -1,0 +1,72 @@
+<form #formDir="ngForm" (ngSubmit)="submitForm()">
+    <div mat-dialog-title fxLayoutGap="30px" class="title-dialog-container" fxLayout="column">
+        <div fxLayout="row" fxFlex>
+            <h1 class="title-dialog" fxFlex>{{ 'FLEET_HEALTH.LIST.ATA' | translate }} {{task.ata}} / {{task.fleet}} / {{task.barcode}}</h1>
+            <button (click)="openCancelDialog()" id="btn-contingency-form-close-btn" type="button" class="close-btn" mat-icon-button fxFlexOffset="1">
+                <mat-icon aria-label="Example icon-button" class="material-icons close-dialog">
+                    {{ 'OPERATIONS.CONTINGENCY_FORM.CLOSE' | translate }}
+                </mat-icon>
+            </button>
+        </div>
+        <h2>
+            {{task.description}}
+        </h2>
+    </div>
+    <hr>
+
+    <div id="deferral-list" class="reg-list">
+        <header fxLayout="row" class="" fxLayoutGap="10px">
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
+            <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ATA' | translate }}</div>
+            <div fxFlex="28" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DESCRIPTION' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_REFERENCE' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_CLASS' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ALERT' | translate }}</div>
+            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TIMELINE_STATUS' | translate }}</div>
+        </header>
+        <content>
+            <div fxLayout="row" class="contingency-item" fxLayoutGap="10px">
+                <!--TAIL/FLEET-->
+                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center"><span>{{ task.tail }}</span><span>{{ task.fleet }}</span></div>
+                <!-- BARCODE -->
+                <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">{{ task.barcode | uppercase }}</div>
+                <!-- OPENING DATE -->
+                <div fxFlex="7" fxLayoutAlign="start center">{{ task.createDate.epochTime | utcDate | date: 'dd-MM-yyyy' }}</div>
+                <!-- DUE DATE -->
+                <div fxFlex="7" fxLayoutAlign="start center">{{ task.dueDate.epochTime | utcDate | date: 'dd-MM-yyyy' }}</div>
+                <!-- ATA -->
+                <div fxFlex="5" fxLayoutAlign="start center">{{ task.ata }}</div>
+                <!-- DESCRIPTION -->
+                <div fxFlex="28" fxLayoutAlign="start center" class="description">{{(task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}</div>
+                <!-- DEFERRAL REFERENCE -->
+                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">{{(task.deferralReference.length > 30) ? (task.deferralReference | slice:0:30) + '...' : task.deferralReference }}</div>
+                <!-- DEFERRAL CLASS -->
+                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">{{task.deferralClazz}}</div>
+                <!-- ALERT -->
+                <div fxFlex="7" fxLayoutAlign="start center">
+                    <span class="badge">
+                         {{task.outOfStandard ? 'OUT OF STD' : '-'}}
+                    </span>
+                </div>
+
+                <!-- TIMELINE STATUS -->
+                <div fxFlex="7" fxLayoutAlign="start center">
+                    <span class="badge" *ngIf="task.timelineStatus" [ngClass]="{'open': task.timelineStatus==='OPEN'}">
+                        {{ task.timelineStatus }}
+                    </span>
+                </div>
+            </div>
+        </content>
+    </div>
+    <hr>
+    <div id="container-timeline">
+        <h3>{{ 'FLEET_HEALTH.REPORT.REPORTS_TIMELINE' | translate }}</h3>
+        <lsl-timeline-report id="timeline"></lsl-timeline-report>
+    </div>
+    <div id="container-historical-report">
+        <h3>{{ 'FLEET_HEALTH.REPORT.HISTORICAL_REPORTS' | translate }}</h3>
+    </div>
+</form>

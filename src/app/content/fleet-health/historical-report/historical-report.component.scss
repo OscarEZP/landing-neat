@@ -1,0 +1,44 @@
+@import '../../../../assets/style/base.scss';
+
+$timeline-label-height: 35px;
+
+h1 {
+  font-size: 25px;
+  font-weight: normal;
+}
+
+h2 {
+  font-size: 13px;
+  color: mat-color($mat-palette-custom, light-grey);
+}
+
+.title-dialog-container {
+  margin: 0;
+}
+
+.reg-list {
+  margin: 0 0 25px 0;
+}
+
+/deep/
+#container-timeline {
+  h3 {
+    margin: 0 0 10px 0;
+    font-size: 17px;
+  }
+  .vis-timeline {
+    border: none;
+    min-height: 200px;
+  }
+
+}
+
+#container-historical-report {
+  h3 {
+    border-bottom: thin solid mat-color($mat-palette-custom, light-grey);
+    border-top: thin solid mat-color($mat-palette-custom, light-grey);
+    padding: 15px 0;
+    margin: 10px 0;
+  }
+}
+

@@ -1,10 +1,10 @@
-import {Pagination} from "../common/pagination";
+import {Pagination} from '../common/pagination';
 
 export class SearchTask {
 
 
     private _outOfStandard: boolean;
-    private _pagination:Pagination;
+    private _pagination: Pagination;
 
     constructor() {
         this.pagination = Pagination.getInstance();

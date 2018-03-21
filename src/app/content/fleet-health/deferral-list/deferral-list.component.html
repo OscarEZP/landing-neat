@@ -55,7 +55,7 @@
 
                 <!-- DEFERRAL REFERENCE -->
                 <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                    {{task.deferralReference}}
+                    {{(task.deferralReference.length > 30) ? (task.deferralReference | slice:0:30) + '...' : task.deferralReference }}
                 </div>
 
                 <!-- DEFERRAL CLASS -->
@@ -66,7 +66,7 @@
                 <!-- ALERT -->
                 <div fxFlex="7" fxLayoutAlign="start center">
                     <span class="badge">
-                         {{task.outOfStandard?'OUT OF STD':'-'}}
+                         {{task.outOfStandard ? 'OUT OF STD' : '-'}}
                     </span>
                 </div>
 
