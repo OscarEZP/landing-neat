@@ -2,33 +2,43 @@ import {TimeInstant} from '../../timeInstant';
 import {Name} from "../../common/name";
 
 
-export class StepLabour {
-    private _labourId:number;
+export class CorrectiveAction {
+    private _id:number;
+    private _barcode:string;
     private _name:Name;
-    private _notes:string;
+    private _description:string;
     private _createDate: TimeInstant;
     private _reviseDate: TimeInstant;
 
 
-    constructor() {
-        this._labourId = null;
+   private constructor() {
+        this._id = null;
+        this._barcode='';
         this._name = Name.getInstance();
-        this._notes = '';
+        this._description = '';
         this._createDate = TimeInstant.getInstance();
         this._reviseDate = TimeInstant.getInstance();
     }
 
     public static getInstance() {
-        return new StepLabour();
+        return new CorrectiveAction();
     }
 
 
-    get labourId(): number {
-        return this._labourId;
+    get id(): number {
+        return this._id;
     }
 
-    set labourId(value: number) {
-        this._labourId = value;
+    set id(value: number) {
+        this._id = value;
+    }
+
+    get barcode(): string {
+        return this._barcode;
+    }
+
+    set barcode(value: string) {
+        this._barcode = value;
     }
 
     get name(): Name {
@@ -39,12 +49,12 @@ export class StepLabour {
         this._name = value;
     }
 
-    get notes(): string {
-        return this._notes;
+    get description(): string {
+        return this._description;
     }
 
-    set notes(value: string) {
-        this._notes = value;
+    set description(value: string) {
+        this._description = value;
     }
 
     get createDate(): TimeInstant {

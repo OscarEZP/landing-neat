@@ -12,7 +12,7 @@ export class Step {
     private _reviseDate: TimeInstant;
     private _stepLabours: StepLabour[];
 
-    constructor() {
+    private constructor() {
         this._barcode = '';
         this._id = null;
         this._ord = null;

@@ -12,7 +12,7 @@ import {DateRange} from '../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 import {Timeline, DataSet} from 'vis';
-import {Analysis} from '../../../../shared/_models/task/analysis/analysis';
+import {Review} from '../../../../shared/_models/task/analysis/review';
 
 @Component({
     selector: 'lsl-timeline-report',
@@ -170,12 +170,12 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.tooltip = !!(this.getTimelineItem() && !this.getTimelineItem()['data']['active']);
     }
 
-    public refreshOnApply(analysis: Analysis) {
+    public refreshOnApply(review: Review) {
 
         const updatedTask = this.timelineData
-        .filter(item => item.task.barcode === analysis.barcode)
+        .filter(item => item.task.barcode === review.barcode)
         .map(item => {
-            return new TimelineTask(item.task, false, false, analysis.status === 'apply');
+            return new TimelineTask(item.task, false, false, review.status === 'apply');
         })[0];
 
         const newData = this.timelineData.filter(task => task.id !== updatedTask.task.id);
