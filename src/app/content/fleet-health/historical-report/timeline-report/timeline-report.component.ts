@@ -13,7 +13,6 @@ import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 import {Timeline, DataSet} from 'vis';
 import {Analysis} from '../../../../shared/_models/task/analysis/analysis';
-import {Moment} from 'moment';
 
 @Component({
     selector: 'lsl-timeline-report',
@@ -33,7 +32,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _taskList: Task[];
     private _loading: boolean;
     private _error: boolean;
-    private _minDate: Moment;
+    private _minDate: moment.Moment;
     private _selectedTask: Task | null;
 
     constructor(
@@ -58,31 +57,30 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     private createTimeline(data: TimelineTask[]): Timeline {
-        // data = this.getExtraTime(data).map(task => task.getJson());
-        data = data
-        // .getExtraTime(data)
+
+        data = this.getExtraTime(data)
         .map(task => task.getJson());
 
-        console.log(data);
         const items = new DataSet(data);
         const dataMinDate = this.taskList
         .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1)
         .shift();
-        this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.createDateEpochtime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days');
-        const maxTime = moment(this.dueDateEpochtime).utc().add(TimelineReportComponent.DAYS_TO, 'days');
+
+        this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days');
+
+        const max = this.activeTask.extendedEpochTime ? this.activeTask.extendedEpochTime : this.activeTask.dueDateEpochTime;
+
+        const maxTime = moment(max).utc().add(TimelineReportComponent.DAYS_TO, 'days');
         const options = {
             start: this.minDate.format('YYYY-MM-DD'),
             end: maxTime.format('YYYY-MM-DD'),
-            zoomMin: 1000 * 60 * 60 * 24 * 31,
-            zoomMax: 1000 * 60 * 60 * 24 * 31 * 12,
+            zoomMin: 1000 * 60 * 60 * 24 * 30,
+            zoomMax: 1000 * 60 * 60 * 24 * 30 * 6,
             max: maxTime.format('YYYY-MM-DD'),
             min: this.minDate.format('YYYY-MM-DD')
         };
 
         let timeline: Timeline;
-
-        // console.log(this.getExtraTime(data));
-
         if (this.timeline) {
             this.tooltip = false;
             timeline = this.timeline;
@@ -99,8 +97,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private getExtraTime(data: TimelineTask[]): TimelineTask[] {
         let arrExtra = [];
         data.forEach(item => {
+            arrExtra.push(item);
             if (item.getExtraTime().length > 0) {
-                arrExtra = data.concat(arrExtra);
+                arrExtra = arrExtra.concat(item.getExtraTime());
             }
         } );
         return arrExtra;
@@ -144,7 +143,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             signature.tail = this.activeTask.tail;
             signature.ataGroup = this.activeTask.ata;
 
-            const endDate = this.createDateEpochtime;
+            const endDate = this.activeTask.createEpochTime;
             const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
 
             signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
@@ -258,11 +257,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this._loading = value;
     }
 
-    get minDate(): Moment {
+    get minDate(): moment.Moment {
         return this._minDate;
     }
 
-    set minDate(value: Moment) {
+    set minDate(value: moment.Moment) {
         this._minDate = value;
     }
 
@@ -273,14 +272,5 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     get element(): ElementRef {
         return this._element;
     }
-
-    get createDateEpochtime() {
-        return this._fleetHealthService.createDateEpochtime;
-    }
-
-    get dueDateEpochtime() {
-        return this._fleetHealthService.dueDateEpochtime;
-    }
-
 
 }

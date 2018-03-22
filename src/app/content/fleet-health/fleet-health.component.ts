@@ -14,14 +14,27 @@ export class FleetHealthComponent implements OnInit {
     constructor(
         private translate: TranslateService,
         private _routingService: RoutingService,
-        private _layoutService: LayoutService
+        private _layoutService: LayoutService,
     ) {
         this.translate.setDefaultLang('en');
-        this._routingService.moduleTitle = 'Fleet Health Module';
-        this._layoutService.showAddButton = false;
-        this._layoutService.showRightNav = false;
+        this.moduleTitle = 'Fleet Health Module';
+        this.showAddButton = false;
+        this.showRightNav = false;
     }
 
     ngOnInit() {
     }
+
+    set moduleTitle(value: string) {
+        this._routingService.moduleTitle = value;
+    }
+
+    set showAddButton(value: boolean) {
+        this._layoutService.showAddButton = value;
+    }
+
+    set showRightNav(value: boolean) {
+        this._layoutService.showRightNav = value;
+    }
+
 }

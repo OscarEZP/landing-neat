@@ -74,6 +74,16 @@ $timeline-label-height: 22px;
     }
   }
 
+  .vis-item.vis-background {
+    height: 22px !important;
+    margin-top: -10px;
+    border-right: none;
+    border-left: none;
+    border-top: thin dashed #ccc;
+    border-bottom: thin dashed #ccc;
+    background-color: mat-color($mat-palette-custom, tl-background-extended);
+  }
+
   .vis-item.related.full {
     background-color: mat-color($primary);
     color: mat-color($primary, default-contrast);
