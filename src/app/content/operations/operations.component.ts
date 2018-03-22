@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {HistoricalSearchService} from '../_services/historical-search.service';
 import {RoutingService} from '../../shared/_services/routing.service';
 import {LayoutService} from '../../layout/_services/layout.service';
+import {DetailsService} from '../../details/_services/details.service';
 
 @Component({
     selector: 'lsl-operations',
@@ -10,7 +11,7 @@ import {LayoutService} from '../../layout/_services/layout.service';
     styleUrls: ['./operations.component.scss']
 })
 
-export class OperationsComponent implements OnInit {
+export class OperationsComponent implements OnInit, OnDestroy {
 
     public arrMenu: { label: string, link: string }[];
 
@@ -18,7 +19,8 @@ export class OperationsComponent implements OnInit {
         private translate: TranslateService,
         public historicalSearchService: HistoricalSearchService,
         private _routingService: RoutingService,
-        private _layoutService: LayoutService
+        private _layoutService: LayoutService,
+        private _detailsService: DetailsService
     ) {
         this.translate.setDefaultLang('en');
         this._routingService.moduleTitle = 'Operations Module';
@@ -37,5 +39,9 @@ export class OperationsComponent implements OnInit {
     }
 
     ngOnInit() {
+    }
+
+    ngOnDestroy() {
+        this._detailsService.closeSidenav();
     }
 }

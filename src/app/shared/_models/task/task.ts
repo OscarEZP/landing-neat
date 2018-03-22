@@ -234,4 +234,12 @@ export class Task {
     get createEpochTime(): number {
         return this.createDate.epochTime;
     }
+
+    get extendedEpochTime(): number {
+        return this.extendedDueDate.epochTime;
+    }
+
+    get dueDateEpochTime(): number {
+        return this.dueDate.epochTime;
+    }
 }

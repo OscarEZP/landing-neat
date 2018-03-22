@@ -18,6 +18,8 @@ export class TimelineTask {
     private _corrected: boolean;
     private _apply: boolean | null;
     private _group: string;
+    private _subgroup: string;
+    private _type: string;
 
     static getInstance() {
         return new TimelineTask(Task.getInstance(), false, false);
@@ -34,6 +36,9 @@ export class TimelineTask {
         this._corrected = corrected;
         this._apply = apply;
         this._className = this.generateClassName();
+        this._group = task.barcode;
+        this._subgroup = task.barcode;
+        this._type = '';
     }
 
     public generateClassName(): string {
@@ -64,15 +69,19 @@ export class TimelineTask {
             extra.end = datePipe.transform(this.extendedDueDate.epochTime, 'yyyy-MM-dd');
             extra.start = datePipe.transform(this.dueDate.epochTime, 'yyyy-MM-dd');
             extra.id = this.id + this.createDate.epochTime;
+            extra.group = this.barcode;
+            extra.subgroup = this.barcode;
+            extra.type = 'background';
+            extra.content = extra.getContent(false);
             arr.push(extra);
         }
         return arr;
     }
 
-    private getContent(): string {
+    public getContent(content: boolean = true): string {
         const head = '<div class="head"> <h1>' + 'Deferral' + '</h1><span><i class="material-icons">' + this.getContentIcon() + '</i></span> </div>';
         const body = '<p>' + this._task.ata + '/'  + this._task.barcode + '</p>' ;
-        return head + body;
+        return content ? head + body : '';
     }
 
     private getContentIcon() {
@@ -89,6 +98,10 @@ export class TimelineTask {
 
     set id(value: number) {
         this._id = value;
+    }
+
+    set content(value: string) {
+        this._content = value;
     }
 
     get content(): string {
@@ -169,5 +182,21 @@ export class TimelineTask {
 
     get dueDate(): TimeInstant{
         return this.task.dueDate;
+    }
+
+    get subgroup(): string {
+        return this._subgroup;
+    }
+
+    set subgroup(value: string) {
+        this._subgroup = value;
+    }
+
+    get type(): string {
+        return this._type;
+    }
+
+    set type(value: string) {
+        this._type = value;
     }
 }

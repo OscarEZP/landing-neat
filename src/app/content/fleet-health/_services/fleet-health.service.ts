@@ -17,15 +17,7 @@ export class FleetHealthService {
     }
 
     set task(value: Task) {
-        this._task = value;
-    }
-
-    get createDateEpochtime() {
-        return this._task.createDate.epochTime;
-    }
-
-    get dueDateEpochtime() {
-        return this._task.dueDate.epochTime;
+        this._task = Object.assign(new Task(), value);
     }
 
     get newAta(): string {
