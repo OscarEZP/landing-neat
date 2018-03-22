@@ -13,7 +13,7 @@ export class HistoricalReport {
     private _steps: Step[];
 
 
-    constructor() {
+   private constructor() {
         this._ata = '';
         this._barcode = '';
         this._description = '';

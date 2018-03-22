@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, OnDestroy, OnInit} from '@angular/core';
 import {Task} from '../../../../shared/_models/task/task';
-import {Analysis} from '../../../../shared/_models/task/analysis/analysis';
+import {Review} from '../../../../shared/_models/task/analysis/review';
 
 @Component({
     selector: 'lsl-tooltip',
@@ -13,12 +13,12 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
     public task: Task;
 
     @Output()
-    public onApply: EventEmitter<Analysis> = new EventEmitter();
+    public onApply: EventEmitter<Review> = new EventEmitter();
 
-    private _analysis: Analysis;
+    private _review: Review;
 
     constructor() {
-        this._analysis = Analysis.getInstance();
+        this._review = Review.getInstance();
     }
 
     ngOnInit(): void {
@@ -28,24 +28,24 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
     }
 
     public checkStatus() {
-        this.analysis.barcode = this.task.barcode;
-        this.onApply.emit(this.analysis);
+        this.review.barcode = this.task.barcode;
+        this.onApply.emit(this.review);
     }
 
-    get analysis(): Analysis {
-        return this._analysis;
+    get review(): Review {
+        return this._review;
     }
 
-    set analysis(value: Analysis) {
-        this._analysis = value;
+    set review(value:Review) {
+        this._review = value;
     }
 
     get status(): string {
-        return this._analysis.status;
+        return this._review.status;
     }
 
     set status(value: string) {
-        this._analysis.status = value;
+        this._review.status = value;
     }
 
 }
