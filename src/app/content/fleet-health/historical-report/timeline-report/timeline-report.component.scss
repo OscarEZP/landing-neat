@@ -93,6 +93,8 @@ $timeline-label-height: 22px;
   .vis-item.dont-apply {
     border-left: 10px solid mat-color($foreground, disabled-text);
   }
-
+  i.icon-red {
+    color: red;
+  }
 }
 

@@ -1,6 +1,5 @@
 <header fxLayout="row">
-    <h1 fxFlex>01 NOV 2017</h1>
-    <span>DEFERRAL</span>
+    <h1 fxFlex>{{ task.createDate.epochTime | utcDate | date: 'dd-MM-yyyy' }}</h1>
 </header>
 <h2>{{ 'FLEET_HEALTH.LIST.ATA' | translate }} {{task.ata}} / {{task.fleet}} / {{task.barcode}}</h2>
 <p>

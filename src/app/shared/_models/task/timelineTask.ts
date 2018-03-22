@@ -4,7 +4,6 @@ import {TimeInstant} from '../timeInstant';
 
 export class TimelineTask {
 
-    private static CLOSE_STATUS = 'COMPLETE';
     private static OPEN_ICON = 'lock_open';
     private static CLOSE_ICON = 'lock';
 
@@ -79,13 +78,13 @@ export class TimelineTask {
     }
 
     public getContent(content: boolean = true): string {
-        const head = '<div class="head"> <h1>' + 'Deferral' + '</h1><span><i class="material-icons">' + this.getContentIcon() + '</i></span> </div>';
-        const body = '<p>' + this._task.ata + '/'  + this._task.barcode + '</p>' ;
+        const head = '<div class="head"> <span>'+(this.isOpen?'<i class="material-icons icon-red">':'<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
+        const body = '<p>' + this.task.ata + '/'  + this.task.barcode + '</p>' ;
         return content ? head + body : '';
     }
 
     private getContentIcon() {
-        return this._task.status === TimelineTask.CLOSE_STATUS ? TimelineTask.CLOSE_ICON : TimelineTask.OPEN_ICON ;
+        return this.isClose ? TimelineTask.CLOSE_ICON : TimelineTask.OPEN_ICON ;
     }
 
     public getJson() {
@@ -199,4 +198,14 @@ export class TimelineTask {
     set type(value: string) {
         this._type = value;
     }
+
+    get isOpen():boolean{
+        return this.task.isOpen;
+
+    }
+    get isClose():boolean{
+        return this.task.isClose;
+
+    }
+
 }
