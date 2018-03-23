@@ -36,7 +36,7 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
         return this._review;
     }
 
-    set review(value:Review) {
+    set review(value: Review) {
         this._review = value;
     }
 

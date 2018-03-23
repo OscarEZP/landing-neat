@@ -4,7 +4,6 @@ import {TimeInstant} from '../timeInstant';
 
 export class TimelineTask {
 
-    private static CLOSE_STATUS = 'COMPLETE';
     private static OPEN_ICON = 'lock_open';
     private static CLOSE_ICON = 'lock';
 
@@ -28,8 +27,9 @@ export class TimelineTask {
     constructor(task: Task, active: boolean = false, corrected: boolean = false, apply: boolean | null = null) {
         this._task = task;
         const datePipe = new DatePipe('en');
-        this._start = datePipe.transform(task.createDate.epochTime, 'yyyy-MM-dd');
-        this._end = datePipe.transform(task.dueDate.epochTime, 'yyyy-MM-dd');
+
+        this._start = datePipe.transform(this.startDateEpochTime, 'yyyy-MM-dd');
+        this._end = datePipe.transform(this.endDateEpochTime, 'yyyy-MM-dd');
         this._id = task.id;
         this._content = this.getContent();
         this._active = active;
@@ -63,7 +63,7 @@ export class TimelineTask {
 
     public getExtraTime(): TimelineTask[] {
         const arr = [];
-        if (this.extendedDueDate.epochTime !== null) {
+        if (this.isOpen && this.extendedDueDate.epochTime !== null) {
             const extra = TimelineTask.getInstance();
             const datePipe = new DatePipe('en');
             extra.end = datePipe.transform(this.extendedDueDate.epochTime, 'yyyy-MM-dd');
@@ -79,13 +79,14 @@ export class TimelineTask {
     }
 
     public getContent(content: boolean = true): string {
-        const head = '<div class="head"> <h1>' + 'Deferral' + '</h1><span><i class="material-icons">' + this.getContentIcon() + '</i></span> </div>';
-        const body = '<p>' + this._task.ata + '/'  + this._task.barcode + '</p>' ;
+        const head = '<div class="head"><h1>'+'TASK'+'</h1> <span>'+(this.isOpen?'<i class="material-icons icon-red">':'<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
+        const body = '<p>' + this.task.ata + '/'  + this.task.barcode + '</p>' ;
+
         return content ? head + body : '';
     }
 
     private getContentIcon() {
-        return this._task.status === TimelineTask.CLOSE_STATUS ? TimelineTask.CLOSE_ICON : TimelineTask.OPEN_ICON ;
+        return this.isClose ? TimelineTask.CLOSE_ICON : TimelineTask.OPEN_ICON ;
     }
 
     public getJson() {
@@ -199,4 +200,20 @@ export class TimelineTask {
     set type(value: string) {
         this._type = value;
     }
+
+    get isOpen():boolean{
+        return this.task.isOpen;
+
+    }
+    get isClose():boolean{
+        return this.task.isClose;
+
+    }
+    get endDateEpochTime():number{
+       return this.task.isClose ? this.task.revisionDate.epochTime : this.task.dueDate.epochTime;
+    }
+    get startDateEpochTime():number{
+        return this.task.createDate.epochTime;
+    }
+
 }

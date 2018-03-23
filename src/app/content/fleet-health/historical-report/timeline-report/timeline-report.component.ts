@@ -13,6 +13,7 @@ import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 import {Timeline, DataSet} from 'vis';
 import {Review} from '../../../../shared/_models/task/analysis/review';
+import {Analysis} from "../../../../shared/_models/task/analysis/analysis";
 
 @Component({
     selector: 'lsl-timeline-report',
@@ -34,6 +35,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _error: boolean;
     private _minDate: moment.Moment;
     private _selectedTask: Task | null;
+    private _analysis: Analysis;
 
     constructor(
         private _translate: TranslateService,
@@ -46,6 +48,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.tooltipStyle = new Style();
         this.taskList = [];
         this.selectedTask = null;
+        this.analysis = Analysis.getInstance();
     }
 
     ngOnInit() {
@@ -68,9 +71,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
         this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days');
 
-        const max = this.activeTask.extendedEpochTime ? this.activeTask.extendedEpochTime : this.activeTask.dueDateEpochTime;
-
-        const maxTime = moment(max).utc().add(TimelineReportComponent.DAYS_TO, 'days');
+        const maxTime = moment(this.maxTime).utc().add(TimelineReportComponent.DAYS_TO, 'days');
         const options = {
             start: this.minDate.format('YYYY-MM-DD'),
             end: maxTime.format('YYYY-MM-DD'),
@@ -136,7 +137,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         );
     }
 
-    public checkCorrectedATA (result: boolean) {
+    public checkCorrectedATA(result: boolean) {
         if (result) {
             const signature: SearchRelationedTask = SearchRelationedTask.getInstance();
 
@@ -151,7 +152,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                 this.timelineData = this.taskList.map(task => {
                     return new TimelineTask(task, task.id === this.activeTask.id, true);
                 });
-                this.timeline = this.createTimeline(this.timelineData);
+
+                const findTask = this.timelineData.filter(value => value.barcode === this.activeTask.barcode)
+
+                if (findTask.length === 0) {
+                    this.timelineData.push(new TimelineTask(this.activeTask, true));
+                    this.timeline = this.createTimeline(this.timelineData);
+                }
             });
         }
     }
@@ -182,7 +189,24 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         newData.push(updatedTask);
         this.timelineData = newData;
         this.timeline = this.createTimeline(newData);
+        this.updateReview(review);
     }
+
+
+
+    /**
+     * Update review method
+     */
+    private updateReview(review: Review): void {
+
+        const findReview = this.reviews.find(x => x.barcode === review.barcode);
+        if (typeof findReview === 'undefined') {
+            this.reviews.push(review);
+        }else {
+            findReview.status = review.status;
+        }
+    }
+
 
     /**
      * Handler for error process on api request
@@ -271,6 +295,20 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     get element(): ElementRef {
         return this._element;
+    }
+
+    get analysis(): Analysis {
+        return this._analysis;
+    }
+
+    set analysis(value: Analysis) {
+        this._analysis = value;
+    }
+    get reviews(): Review[]{
+        return this.analysis.reviews;
+    }
+    get maxTime(): number{
+        return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime : this.activeTask.extendedDueDate.epochTime ? this.activeTask.extendedDueDate.epochTime : this.activeTask.dueDate.epochTime;
     }
 
 }
