@@ -5,7 +5,6 @@ export class Task {
     private _barcode: string;
     private _clazz: string;
     private _createDate: TimeInstant;
-    private _creationDate: TimeInstant;
     private _deferralClazz: string;
     private _deferralReference: string;
     private _description: string;
@@ -25,7 +24,7 @@ export class Task {
     private _isOpen: boolean;
 
 
-    constructor() {
+    private constructor() {
         this._id = null;
         this._tail = '';
         this._fleet = '';
@@ -43,7 +42,6 @@ export class Task {
         this._finishEvaluation = false;
         this._deferralReference = '';
         this._deferralClazz = '';
-        this._creationDate = TimeInstant.getInstance();
         this._timelineStatus = '';
         this._revisionDate = TimeInstant.getInstance();
         this._isClose = false;
@@ -182,13 +180,7 @@ export class Task {
         this._deferralClazz = value;
     }
 
-    get creationDate(): TimeInstant {
-        return this._creationDate;
-    }
 
-    set creationDate(value: TimeInstant) {
-        this._creationDate = value;
-    }
 
     get id(): number {
         return this._id;
@@ -242,4 +234,5 @@ export class Task {
     get dueDateEpochTime(): number {
         return this.dueDate.epochTime;
     }
+
 }

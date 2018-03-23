@@ -8,7 +8,7 @@ export class FleetHealthService {
     private _newAta: string;
 
     constructor() {
-        this.task = new Task();
+        this.task = Task.getInstance();
         this.newAta = '';
     }
 
@@ -17,7 +17,7 @@ export class FleetHealthService {
     }
 
     set task(value: Task) {
-        this._task = Object.assign(new Task(), value);
+        this._task = Object.assign(Task.getInstance(), value);
     }
 
     get newAta(): string {
@@ -27,4 +27,6 @@ export class FleetHealthService {
     set newAta(value: string) {
         this._newAta = value;
     }
+
+
 }

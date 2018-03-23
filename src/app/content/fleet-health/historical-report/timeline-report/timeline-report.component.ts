@@ -71,9 +71,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
         this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days');
 
-        const max = this.activeTask.extendedEpochTime ? this.activeTask.extendedEpochTime : this.activeTask.dueDateEpochTime;
-
-        const maxTime = moment(max).utc().add(TimelineReportComponent.DAYS_TO, 'days');
+        const maxTime = moment(this.maxTime).utc().add(TimelineReportComponent.DAYS_TO, 'days');
         const options = {
             start: this.minDate.format('YYYY-MM-DD'),
             end: maxTime.format('YYYY-MM-DD'),
@@ -303,4 +301,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     get reviews():Review[]{
         return this.analysis.reviews;
     }
+    get maxTime():number{
+        return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime : this.activeTask.extendedDueDate.epochTime?this.activeTask.extendedDueDate.epochTime:this.activeTask.dueDate.epochTime;
+    }
+
 }
