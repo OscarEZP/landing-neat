@@ -114,10 +114,9 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
 
     public submitAta() {
         if (this.ataForm.valid) {
-            // this._taskCorrectionSub = this.getTaskCorrectionSub();
+            this._taskCorrectionSub = this.getTaskCorrectionSub();
             this.task.ata = this.newAta;
             this.isCorrected = true;
-            this.newAta = '';
             this.corrected.emit(true);
             this.open = false;
         } else {

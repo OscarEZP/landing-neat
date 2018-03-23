@@ -48,7 +48,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.tooltipStyle = new Style();
         this.taskList = [];
         this.selectedTask = null;
-        this.analysis=Analysis.getInstance();
+        this.analysis = Analysis.getInstance();
     }
 
     ngOnInit() {
@@ -183,7 +183,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         newData.push(updatedTask);
         this.timelineData = newData;
         this.timeline = this.createTimeline(newData);
-        this.updateReview(review)
+        this.updateReview(review);
     }
 
 
@@ -298,11 +298,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     set analysis(value: Analysis) {
         this._analysis = value;
     }
-    get reviews():Review[]{
+    get reviews(): Review[]{
         return this.analysis.reviews;
     }
-    get maxTime():number{
-        return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime : this.activeTask.extendedDueDate.epochTime?this.activeTask.extendedDueDate.epochTime:this.activeTask.dueDate.epochTime;
+    get maxTime(): number{
+        return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime : this.activeTask.extendedDueDate.epochTime ? this.activeTask.extendedDueDate.epochTime : this.activeTask.dueDate.epochTime;
     }
 
 }
