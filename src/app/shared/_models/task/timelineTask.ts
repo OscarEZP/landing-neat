@@ -27,6 +27,7 @@ export class TimelineTask {
     constructor(task: Task, active: boolean = false, corrected: boolean = false, apply: boolean | null = null) {
         this._task = task;
         const datePipe = new DatePipe('en');
+
         this._start = datePipe.transform(this.startDateEpochTime, 'yyyy-MM-dd');
         this._end = datePipe.transform(this.endDateEpochTime, 'yyyy-MM-dd');
         this._id = task.id;
@@ -78,8 +79,9 @@ export class TimelineTask {
     }
 
     public getContent(content: boolean = true): string {
-        const head = '<div class="head"> <span>'+(this.isOpen?'<i class="material-icons icon-red">':'<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
+        const head = '<div class="head"><h1>'+'TASK'+'</h1> <span>'+(this.isOpen?'<i class="material-icons icon-red">':'<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
         const body = '<p>' + this.task.ata + '/'  + this.task.barcode + '</p>' ;
+
         return content ? head + body : '';
     }
 
@@ -213,4 +215,5 @@ export class TimelineTask {
     get startDateEpochTime():number{
         return this.task.createDate.epochTime;
     }
+
 }

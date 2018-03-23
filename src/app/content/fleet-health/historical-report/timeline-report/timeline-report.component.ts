@@ -137,7 +137,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         );
     }
 
-    public checkCorrectedATA (result: boolean) {
+    public checkCorrectedATA(result: boolean) {
         if (result) {
             const signature: SearchRelationedTask = SearchRelationedTask.getInstance();
 
@@ -152,7 +152,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                 this.timelineData = this.taskList.map(task => {
                     return new TimelineTask(task, task.id === this.activeTask.id, true);
                 });
-                this.timeline = this.createTimeline(this.timelineData);
+
+                const findTask = this.timelineData.filter(value => value.barcode === this.activeTask.barcode)
+
+                if (findTask.length === 0) {
+                    this.timelineData.push(new TimelineTask(this.activeTask, true));
+                    this.timeline = this.createTimeline(this.timelineData);
+                }
             });
         }
     }
