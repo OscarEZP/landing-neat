@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from "@angular/core";
+import moment = require("moment");
 
 @Injectable()
 export class DateUtil {
@@ -81,5 +82,10 @@ export class DateUtil {
      */
     private static modifyHourToMillis (hour: number): number {
         return hour !== undefined ? hour * 60 * 60 * 1000 : 0;
+    }
+
+
+    public static formatDate(epochTime:number,format:string):string{
+        return moment(epochTime).utc().format(format);
     }
 }

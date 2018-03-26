@@ -1,6 +1,6 @@
-import {Task} from './task';
-import {TimeInstant} from '../timeInstant';
-import * as moment from 'moment';
+import {Task} from "./task";
+import {TimeInstant} from "../timeInstant";
+import {DateUtil} from "../../util/dateUtil";
 
 export class TimelineTask {
 
@@ -27,8 +27,8 @@ export class TimelineTask {
     constructor(task: Task, active: boolean = false, corrected: boolean = false, apply: boolean | null = null) {
         this._task = task;
 
-        this._start = this.formatDate(this.startDateEpochTime, 'YYYY-MM-DD');
-        this._end = this.formatDate(this.endDateEpochTime, 'YYYY-MM-DD');
+        this._start = DateUtil.formatDate(this.startDateEpochTime, 'YYYY-MM-DD');
+        this._end = DateUtil.formatDate(this.endDateEpochTime, 'YYYY-MM-DD');
         this._id = task.id;
         this._content = this.getContent();
         this._active = active;
@@ -65,8 +65,8 @@ export class TimelineTask {
         if (this.isOpen && this.extendedDueDate.epochTime !== null) {
             const extra = TimelineTask.getInstance();
 
-            extra.end = this.formatDate(this.extendedDueDate.epochTime, 'YYYY-MM-DD');
-            extra.start = this.formatDate(this.dueDate.epochTime, 'YYYY-MM-DD');
+            extra.end = DateUtil.formatDate(this.extendedDueDate.epochTime, 'YYYY-MM-DD');
+            extra.start = DateUtil.formatDate(this.dueDate.epochTime, 'YYYY-MM-DD');
             extra.id = this.id + this.createDate.epochTime;
             extra.group = this.barcode;
             extra.subgroup = this.barcode;
@@ -92,9 +92,6 @@ export class TimelineTask {
         return JSON.parse(JSON.stringify(this).replace(/\b[_]/g, ''));
     }
 
-    private formatDate(epochTime:number,format:string):string{
-        return moment(epochTime).utc().format(format);
-    }
 
     get id(): number {
         return this._id;
