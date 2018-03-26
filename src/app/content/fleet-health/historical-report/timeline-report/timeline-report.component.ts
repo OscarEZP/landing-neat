@@ -13,7 +13,7 @@ import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 import {Timeline, DataSet} from 'vis';
 import {Review} from '../../../../shared/_models/task/analysis/review';
-import {Analysis} from "../../../../shared/_models/task/analysis/analysis";
+import {Analysis} from '../../../../shared/_models/task/analysis/analysis';
 
 @Component({
     selector: 'lsl-timeline-report',
@@ -88,10 +88,15 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             timeline.setData({items: items});
         } else {
             timeline = new Timeline(this.element.nativeElement, items, options);
+            timeline.on('click', () => {
+                this.tooltip = false;
+                this.getTimelineItem();
+                console.log(this.timelineTaskData);
+                this.showTooltip();
+            });
+            timeline.on('rangechange', () => this.showTooltip());
         }
 
-        timeline.on('click', () => this.showTooltip());
-        timeline.on('rangechange', () => this.showTooltip());
         return timeline;
     }
 
@@ -150,7 +155,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
             this.getListSubscription(signature).add(() => {
                 this.timelineData = this.taskList.map(task => {
-                    return new TimelineTask(task,task.id === this.activeTask.id,true);
+                    return new TimelineTask(task, task.id === this.activeTask.id, true);
                 });
 
                 const findTask = this.timelineData.find(value => value.barcode === this.activeTask.barcode);

@@ -65,10 +65,9 @@ export class TimelineTask {
         const arr = [];
         if (this.isOpen && this.extendedDueDate.epochTime !== null) {
             const extra = TimelineTask.getInstance();
-
             extra.end = this.formatDate(this.extendedDueDate.epochTime, 'YYYY-MM-DD');
             extra.start = this.formatDate(this.dueDate.epochTime, 'YYYY-MM-DD');
-            extra.id = this.id + this.createDate.epochTime;
+            extra.id = this.createDate.epochTime;
             extra.group = this.barcode;
             extra.subgroup = this.barcode;
             extra.type = 'background';
@@ -79,9 +78,8 @@ export class TimelineTask {
     }
 
     public getContent(content: boolean = true): string {
-        const head = '<div class="head"><h1>'+'TASK'+'</h1> <span>'+(this.isOpen?'<i class="material-icons icon-red">':'<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
+        const head = '<div class="head"><h1>' + 'TASK' + '</h1> <span>' + (this.isOpen ? '<i class="material-icons icon-red">' : '<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
         const body = '<p>' + this.task.ata + '/'  + this.task.barcode + '</p>' ;
-
         return content ? head + body : '';
     }
 
@@ -93,7 +91,7 @@ export class TimelineTask {
         return JSON.parse(JSON.stringify(this).replace(/\b[_]/g, ''));
     }
 
-    private formatDate(epochTime:number,format:string):string{
+    private formatDate(epochTime: number, format: string): string {
         return moment(epochTime).utc().format(format);
     }
 
@@ -205,19 +203,19 @@ export class TimelineTask {
         this._type = value;
     }
 
-    get isOpen():boolean{
+    get isOpen(): boolean{
         return this.task.isOpen;
 
     }
-    get isClose():boolean{
+    get isClose(): boolean{
         return this.task.isClose;
 
     }
-    get endDateEpochTime():number{
+    get endDateEpochTime(): number{
 
        return this.task.isClose ? this.task.revisionDate.epochTime : this.task.dueDate.epochTime;
     }
-    get startDateEpochTime():number{
+    get startDateEpochTime(): number{
 
         return this.task.createDate.epochTime;
     }

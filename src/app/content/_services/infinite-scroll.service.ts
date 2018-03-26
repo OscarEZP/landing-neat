@@ -10,7 +10,7 @@ export class InfiniteScrollService {
 
     constructor() {
         this.init();
-        this._pageSizeOptions = [1, 10, 25, 50, 100];
+        this._pageSizeOptions = [1, 10, 25, 50, 100, 1000];
     }
 
     public init(): void {
