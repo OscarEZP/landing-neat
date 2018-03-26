@@ -91,7 +91,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             timeline.on('click', () => {
                 this.tooltip = false;
                 this.getTimelineItem();
-                console.log(this.timelineTaskData);
                 this.showTooltip();
             });
             timeline.on('rangechange', () => this.showTooltip());
