@@ -6,6 +6,7 @@ export class TimelineTask {
 
     private static OPEN_ICON = 'lock_open';
     private static CLOSE_ICON = 'lock';
+    private static DATE_FORMAT = 'YYYY-MM-DD';
 
     private _id: number;
     private _content: string;
@@ -27,8 +28,8 @@ export class TimelineTask {
     constructor(task: Task, active: boolean = false, corrected: boolean = false, apply: boolean | null = null) {
         this._task = task;
 
-        this._start = this.formatDate(this.startDateEpochTime, 'YYYY-MM-DD');
-        this._end = this.formatDate(this.endDateEpochTime, 'YYYY-MM-DD');
+        this._start = this.formatDate(this.startDateEpochTime, TimelineTask.DATE_FORMAT);
+        this._end = this.formatDate(this.endDateEpochTime, TimelineTask.DATE_FORMAT);
         this._id = task.id;
         this._content = this.getContent();
         this._active = active;
