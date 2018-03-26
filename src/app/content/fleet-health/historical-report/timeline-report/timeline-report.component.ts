@@ -34,7 +34,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _loading: boolean;
     private _error: boolean;
     private _minDate: moment.Moment;
-    private _selectedTask: Task | null;
+    private _timelineTaskData: object | null;
     private _analysis: Analysis;
 
     constructor(
@@ -47,7 +47,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.tooltip = false;
         this.tooltipStyle = new Style();
         this.taskList = [];
-        this.selectedTask = null;
+        this._timelineTaskData = null;
         this.analysis = Analysis.getInstance();
     }
 
@@ -90,8 +90,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             timeline = new Timeline(this.element.nativeElement, items, options);
         }
 
-        timeline.on('click', (event) => this.showTooltip());
-        timeline.on('rangechange', event => this.showTooltip());
+        timeline.on('click', () => this.showTooltip());
+        timeline.on('rangechange', () => this.showTooltip());
         return timeline;
     }
 
@@ -112,8 +112,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         .keys(items)
         .map(key => items[key] && items[key].selected ? items[key] : false)
         .filter(item => item !== false);
-        this.selectedTask = arrItems ? arrItems[0] : null;
-        return this.selectedTask;
+        this.timelineTaskData = arrItems.length > 0 ? arrItems[0] : null;
+        return this.timelineTaskData;
     }
 
     private getTimelineInitData(): TimelineTask[] {
@@ -150,15 +150,15 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
             this.getListSubscription(signature).add(() => {
                 this.timelineData = this.taskList.map(task => {
-                    return new TimelineTask(task, task.id === this.activeTask.id, true);
+                    return new TimelineTask(task,task.id === this.activeTask.id,true);
                 });
 
-                const findTask = this.timelineData.filter(value => value.barcode === this.activeTask.barcode)
+                const findTask = this.timelineData.find(value => value.barcode === this.activeTask.barcode);
 
-                if (findTask.length === 0) {
-                    this.timelineData.push(new TimelineTask(this.activeTask, true));
-                    this.timeline = this.createTimeline(this.timelineData);
+                if (typeof findTask === 'undefined') {
+                    this.timelineData.push(new TimelineTask(this.activeTask, true, true));
                 }
+                this.timeline = this.createTimeline(this.timelineData);
             });
         }
     }
@@ -178,7 +178,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     public refreshOnApply(review: Review) {
-
         const updatedTask = this.timelineData
         .filter(item => item.task.barcode === review.barcode)
         .map(item => {
@@ -249,12 +248,12 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this._error = value;
     }
 
-    get selectedTask(): Task {
-        return this._selectedTask;
+    get timelineTaskData(): object | null {
+        return this._timelineTaskData;
     }
 
-    set selectedTask(value: Task) {
-        this._selectedTask = value;
+    set timelineTaskData(value: object | null) {
+        this._timelineTaskData = value;
     }
 
     get timelineData(): TimelineTask[] {

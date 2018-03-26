@@ -1,11 +1,12 @@
 import {Task} from './task';
-import {DatePipe} from '@angular/common';
 import {TimeInstant} from '../timeInstant';
+import * as moment from 'moment';
 
 export class TimelineTask {
 
     private static OPEN_ICON = 'lock_open';
     private static CLOSE_ICON = 'lock';
+    private static DATE_FORMAT = 'YYYY-MM-DD';
 
     private _id: number;
     private _content: string;
@@ -26,10 +27,9 @@ export class TimelineTask {
 
     constructor(task: Task, active: boolean = false, corrected: boolean = false, apply: boolean | null = null) {
         this._task = task;
-        const datePipe = new DatePipe('en');
 
-        this._start = datePipe.transform(this.startDateEpochTime, 'yyyy-MM-dd');
-        this._end = datePipe.transform(this.endDateEpochTime, 'yyyy-MM-dd');
+        this._start = this.formatDate(this.startDateEpochTime, TimelineTask.DATE_FORMAT);
+        this._end = this.formatDate(this.endDateEpochTime, TimelineTask.DATE_FORMAT);
         this._id = task.id;
         this._content = this.getContent();
         this._active = active;
@@ -65,9 +65,9 @@ export class TimelineTask {
         const arr = [];
         if (this.isOpen && this.extendedDueDate.epochTime !== null) {
             const extra = TimelineTask.getInstance();
-            const datePipe = new DatePipe('en');
-            extra.end = datePipe.transform(this.extendedDueDate.epochTime, 'yyyy-MM-dd');
-            extra.start = datePipe.transform(this.dueDate.epochTime, 'yyyy-MM-dd');
+
+            extra.end = this.formatDate(this.extendedDueDate.epochTime, 'YYYY-MM-DD');
+            extra.start = this.formatDate(this.dueDate.epochTime, 'YYYY-MM-DD');
             extra.id = this.id + this.createDate.epochTime;
             extra.group = this.barcode;
             extra.subgroup = this.barcode;
@@ -91,6 +91,10 @@ export class TimelineTask {
 
     public getJson() {
         return JSON.parse(JSON.stringify(this).replace(/\b[_]/g, ''));
+    }
+
+    private formatDate(epochTime:number,format:string):string{
+        return moment(epochTime).utc().format(format);
     }
 
     get id(): number {
@@ -210,9 +214,11 @@ export class TimelineTask {
 
     }
     get endDateEpochTime():number{
+
        return this.task.isClose ? this.task.revisionDate.epochTime : this.task.dueDate.epochTime;
     }
     get startDateEpochTime():number{
+
         return this.task.createDate.epochTime;
     }
 
