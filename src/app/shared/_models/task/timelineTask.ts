@@ -6,6 +6,7 @@ export class TimelineTask {
 
     private static OPEN_ICON = 'lock_open';
     private static CLOSE_ICON = 'lock';
+    private static DATE_FORMAT = 'YYYY-MM-DD';
 
     private _id: number;
     private _content: string;
@@ -27,8 +28,8 @@ export class TimelineTask {
     constructor(task: Task, active: boolean = false, corrected: boolean = false, apply: boolean | null = null) {
         this._task = task;
 
-        this._start = DateUtil.formatDate(this.startDateEpochTime, 'YYYY-MM-DD');
-        this._end = DateUtil.formatDate(this.endDateEpochTime, 'YYYY-MM-DD');
+        this._start = DateUtil.formatDate(this.startDateEpochTime, TimelineTask.DATE_FORMAT);
+        this._end = DateUtil.formatDate(this.endDateEpochTime, TimelineTask.DATE_FORMAT);
         this._id = task.id;
         this._content = this.getContent();
         this._active = active;
@@ -65,8 +66,8 @@ export class TimelineTask {
         if (this.isOpen && this.extendedDueDate.epochTime !== null) {
             const extra = TimelineTask.getInstance();
 
-            extra.end = DateUtil.formatDate(this.extendedDueDate.epochTime, 'YYYY-MM-DD');
-            extra.start = DateUtil.formatDate(this.dueDate.epochTime, 'YYYY-MM-DD');
+            extra.end = DateUtil.formatDate(this.extendedDueDate.epochTime,TimelineTask.DATE_FORMAT);
+            extra.start = DateUtil.formatDate(this.dueDate.epochTime,TimelineTask.DATE_FORMAT);
             extra.id = this.id + this.createDate.epochTime;
             extra.group = this.barcode;
             extra.subgroup = this.barcode;
