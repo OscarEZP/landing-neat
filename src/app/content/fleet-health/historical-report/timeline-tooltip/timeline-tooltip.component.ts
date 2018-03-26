@@ -36,7 +36,7 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
     }
 
     public checkStatus() {
-        this.review.barcode = this.timelineTaskData.data.task.barcode;
+        this.review.barcode = this.timelineTask.task.barcode;
         this.onApply.emit(this.review);
     }
 
