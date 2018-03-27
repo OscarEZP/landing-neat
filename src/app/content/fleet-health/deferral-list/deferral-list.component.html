@@ -66,7 +66,8 @@
                 <!-- ALERT -->
                 <div fxFlex="7" fxLayoutAlign="start center">
                     <span class="badge">
-                         {{task.outOfStandard ? 'OUT OF STD' : '-'}}
+                        {{task.evaluationCategory.displayAlert}}
+
                     </span>
                 </div>
 

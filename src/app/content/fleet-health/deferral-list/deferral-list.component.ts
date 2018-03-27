@@ -24,8 +24,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     @ViewChild('contPaginator') public paginator: MatPaginator;
 
-    private static TASK_SEARCH_ENDPOINT = 'tasksSearch';
-    private static TASK_SEARCH_COUNT_ENDPOINT = 'tasksSearchCount';
+    private static TASK_FLEETHEALTH_ENDPOINT = 'tasksFleethealthSearch';
+    private static TASK_FLEETHEALTH_COUNT_ENDPOINT = 'tasksFleethealthSearchCount';
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
     private static DEFAULT_INTERVAL = 30;
@@ -88,9 +88,9 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * Returns a subscription for get total records count and set it in infinite scroll service
      * @return {Subscription}
      */
-    public getTotalRecordsSubscription(signature: SearchTask): Subscription {
+    public getTotalRecordsSubscription(signature: Pagination): Subscription {
         this._loading = true;
-        return this._apiRestService.search<{items: number}>(DeferralListComponent.TASK_SEARCH_COUNT_ENDPOINT, signature)
+        return this._apiRestService.search<{items: number}>(DeferralListComponent.TASK_FLEETHEALTH_COUNT_ENDPOINT, signature)
         .subscribe(
             response => {
                 this.infiniteScrollService.length = !isNaN(response.items) ? response.items : 0;
@@ -116,9 +116,9 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @param signature
      * @return {Subscription}
      */
-    private getListSubscription(signature: SearchTask): Subscription {
+    private getListSubscription(signature: Pagination): Subscription {
         this._loading = true;
-        return this._apiRestService.search<Task[]>(DeferralListComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
+        return this._apiRestService.search<Task[]>(DeferralListComponent.TASK_FLEETHEALTH_ENDPOINT, signature).subscribe(
             (list) => {
                 const ctgInArray = list.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
                 if (this.selectedRegisterPivot.id !== null && ctgInArray === 1) {
@@ -150,11 +150,9 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * Method for get a search signature for get data
      * @return {SearchTask}
      */
-    private getSearchSignature(): SearchTask {
-        const taskSearch: SearchTask = SearchTask.getInstance();
-        taskSearch.pagination = new Pagination(this.infiniteScrollService.offset, this.infiniteScrollService.pageSize);
-        taskSearch.outOfStandard = true;
-        return taskSearch;
+    private getSearchSignature(): Pagination{
+       return new Pagination(this.infiniteScrollService.offset, this.infiniteScrollService.pageSize);
+
     }
 
     /**
