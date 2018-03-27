@@ -11,7 +11,10 @@ import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 export class TimelineTooltipComponent implements OnInit, OnDestroy {
 
     @Input()
-    public timelineTaskData: object;
+    set timelineTaskData (value: object) {
+        this._timelineTaskData = value;
+        this.updateTask();
+    }
 
     @Output()
     public onApply: EventEmitter<Review> = new EventEmitter();
@@ -19,20 +22,25 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
     private _review: Review;
     private _timelineTask: TimelineTask;
     private _task: Task;
+    private _timelineTaskData: object;
 
     constructor() {
         this._review = Review.getInstance();
     }
 
     ngOnInit(): void {
+        this.updateTask();
+    }
+
+    ngOnDestroy(): void {
+    }
+
+    private updateTask() {
         this.timelineTask = this.timelineTaskData['data'];
         this.task = this.timelineTask.task;
         if (this.timelineTask.apply !== null) {
             this.review.status = this.timelineTask.apply ? 'apply' : 'dontApply';
         }
-    }
-
-    ngOnDestroy(): void {
     }
 
     public checkStatus() {
@@ -66,5 +74,9 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
 
     set task(value: Task) {
         this._task = value;
+    }
+
+    get timelineTaskData(): object {
+        return this._timelineTaskData;
     }
 }

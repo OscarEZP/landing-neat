@@ -1,6 +1,6 @@
-import {Task} from './task';
-import {TimeInstant} from '../timeInstant';
-import * as moment from 'moment';
+import {Task} from "./task";
+import {TimeInstant} from "../timeInstant";
+import {DateUtil} from "../../util/dateUtil";
 
 export class TimelineTask {
 
@@ -28,8 +28,8 @@ export class TimelineTask {
     constructor(task: Task, active: boolean = false, corrected: boolean = false, apply: boolean | null = null) {
         this._task = task;
 
-        this._start = this.formatDate(this.startDateEpochTime, TimelineTask.DATE_FORMAT);
-        this._end = this.formatDate(this.endDateEpochTime, TimelineTask.DATE_FORMAT);
+        this._start = DateUtil.formatDate(this.startDateEpochTime, TimelineTask.DATE_FORMAT);
+        this._end = DateUtil.formatDate(this.endDateEpochTime, TimelineTask.DATE_FORMAT);
         this._id = task.id;
         this._content = this.getContent();
         this._active = active;
@@ -66,8 +66,8 @@ export class TimelineTask {
         if (this.isOpen && this.extendedDueDate.epochTime !== null) {
             const extra = TimelineTask.getInstance();
 
-            extra.end = this.formatDate(this.extendedDueDate.epochTime, 'YYYY-MM-DD');
-            extra.start = this.formatDate(this.dueDate.epochTime, 'YYYY-MM-DD');
+            extra.end = DateUtil.formatDate(this.extendedDueDate.epochTime,TimelineTask.DATE_FORMAT);
+            extra.start = DateUtil.formatDate(this.dueDate.epochTime,TimelineTask.DATE_FORMAT);
             extra.id = this.id + this.createDate.epochTime;
             extra.group = this.barcode;
             extra.subgroup = this.barcode;
@@ -79,9 +79,8 @@ export class TimelineTask {
     }
 
     public getContent(content: boolean = true): string {
-        const head = '<div class="head"><h1>'+'TASK'+'</h1> <span>'+(this.isOpen?'<i class="material-icons icon-red">':'<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
+        const head = '<div class="head"><h1>' + 'TASK' + '</h1> <span>' + (this.isOpen ? '<i class="material-icons icon-red">' : '<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
         const body = '<p>' + this.task.ata + '/'  + this.task.barcode + '</p>' ;
-
         return content ? head + body : '';
     }
 
@@ -93,9 +92,6 @@ export class TimelineTask {
         return JSON.parse(JSON.stringify(this).replace(/\b[_]/g, ''));
     }
 
-    private formatDate(epochTime:number,format:string):string{
-        return moment(epochTime).utc().format(format);
-    }
 
     get id(): number {
         return this._id;
@@ -205,19 +201,19 @@ export class TimelineTask {
         this._type = value;
     }
 
-    get isOpen():boolean{
+    get isOpen(): boolean{
         return this.task.isOpen;
 
     }
-    get isClose():boolean{
+    get isClose(): boolean{
         return this.task.isClose;
 
     }
-    get endDateEpochTime():number{
+    get endDateEpochTime(): number{
 
        return this.task.isClose ? this.task.revisionDate.epochTime : this.task.dueDate.epochTime;
     }
-    get startDateEpochTime():number{
+    get startDateEpochTime(): number{
 
         return this.task.createDate.epochTime;
     }
