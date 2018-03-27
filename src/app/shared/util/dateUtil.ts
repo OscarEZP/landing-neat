@@ -1,5 +1,5 @@
-import {Injectable} from "@angular/core";
-import moment = require("moment");
+import {Injectable} from '@angular/core';
+import * as moment from 'moment';
 
 @Injectable()
 export class DateUtil {
@@ -85,7 +85,7 @@ export class DateUtil {
     }
 
 
-    public static formatDate(epochTime:number,format:string):string{
+    public static formatDate(epochTime: number, format: string): string {
         return moment(epochTime).utc().format(format);
     }
 }
