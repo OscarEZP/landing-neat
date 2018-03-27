@@ -1,4 +1,5 @@
 import {TimeInstant} from '../timeInstant';
+import {EvaluationCategory} from "./fleethealth/evaluationCategory";
 
 export class Task {
     private _ata: string;
@@ -22,6 +23,7 @@ export class Task {
     private _revisionDate: TimeInstant;
     private _isClose: boolean;
     private _isOpen: boolean;
+    private _evaluationCategory: EvaluationCategory;
 
 
     private constructor() {
@@ -46,6 +48,7 @@ export class Task {
         this._revisionDate = TimeInstant.getInstance();
         this._isClose = false;
         this._isOpen = false;
+        this._evaluationCategory = EvaluationCategory.getInstance();
     }
 
     public static getInstance() {
@@ -235,4 +238,11 @@ export class Task {
         return this.dueDate.epochTime;
     }
 
+    get evaluationCategory(): EvaluationCategory {
+        return this._evaluationCategory;
+    }
+
+    set evaluationCategory(value: EvaluationCategory) {
+        this._evaluationCategory = value;
+    }
 }

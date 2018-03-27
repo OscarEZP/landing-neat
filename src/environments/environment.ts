@@ -38,6 +38,8 @@ export const environment = {
         types: '/api/v1/configurations/types',
         taskRelationsSearch: '/api/v1/tasks/relations/_search',
         taskHistoricalReport:'/api/v1/tasks/analysis/historical',
-        taskSaveAnalysis:'/api/v1/tasks/analysis'
+        taskSaveAnalysis:'/api/v1/tasks/analysis',
+        tasksFleethealthSearchCount: '/api/v1/tasks/fleethealth/_search/count',
+        tasksFleethealthSearch: '/api/v1/tasks/fleethealth/_search'
     }
 };
