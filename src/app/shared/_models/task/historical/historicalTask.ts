@@ -1,8 +1,8 @@
 import {TimeInstant} from '../../timeInstant';
-import {CorrectiveAction} from "./correctiveAction";
-import {Step} from "./step";
+import {CorrectiveAction} from './correctiveAction';
+import {Step} from './step';
 
-export class HistoricalReport {
+export class HistoricalTask {
 
 
     private _barcode: string;
@@ -24,7 +24,7 @@ export class HistoricalReport {
     }
 
     public static getInstance() {
-        return new HistoricalReport();
+        return new HistoricalTask();
     }
 
 

@@ -32,10 +32,13 @@
     "@ngx-translate/http-loader": "2.0.0",
     "@nicky-lenaers/ngx-scroll-to": "0.5.0",
     "angular2-moment": "^1.8.0",
+    "codemirror": "^5.36.0",
     "core-js": "2.5.1",
     "font-awesome": "4.7.0",
     "intl": "1.2.5",
     "material-dashboard": "1.0.0",
+    "ngx-bootstrap": "^2.0.3",
+    "ngx-editor": "^3.3.0-rc.13",
     "notosans-fontface": "1.0.1",
     "roboto-fontface": "0.8.0",
     "rxjs": "5.5.2",
@@ -44,7 +47,7 @@
     "zone.js": "0.8.18"
   },
   "devDependencies": {
-    "@angular/cli": "1.6.5",
+    "@angular/cli": "^1.7.3",
     "@angular/compiler-cli": "5.0.3",
     "@angular/language-service": "5.0.3",
     "@compodoc/compodoc": "^1.0.5",
