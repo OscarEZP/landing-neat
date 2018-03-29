@@ -8,14 +8,14 @@ import {TimelineReportComponent} from './timeline-report/timeline-report.compone
 import {MomentModule} from 'angular2-moment';
 import {AnalysisReportComponent} from './analysis-report/analysis-report.component';
 import {HistoricalTaskComponent} from './historical-task/historical-task.component';
-import {NgxEditorModule} from 'ngx-editor';
+import {QuillModule} from 'ngx-quill';
 
 @NgModule({
     imports: [
         BrowserModule,
         SharedModule,
         MomentModule,
-        NgxEditorModule
+        QuillModule
     ],
     declarations: [
         TimelineReportComponent,
