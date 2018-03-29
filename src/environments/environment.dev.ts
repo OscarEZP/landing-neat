@@ -32,11 +32,13 @@ export const environment = {
         pendingSearch: ':9002/api/v1/contingencies/pendings/_search',
         safetyEvent: ':9005/api/v1/configurations/safetyEvents',
         tasks: ':9002/api/v1/tasks/',
-        tasksCorrection: ':9002/api/v1/tasks/_correction',
-        tasksSearch: ':9002/api/v1/tasks/_search',
+        tasksCorrection: ':9006/api/v1/tasks/_correction',
+        tasksSearch: ':9006/api/v1/tasks/_search',
         types: ':9005/api/v1/configurations/types',
-        taskRelationsSearch: ':9002/api/v1/tasks/relations/_search',
-        taskHistoricalReport: ':9002/api/v1/tasks/analysis/historical',
-        taskSaveAnalysis: ':9002/api/v1/tasks/analysis'
+        taskRelationsSearch: ':9006/api/v1/tasks/relations/_search',
+        taskHistoricalReport:':9006/api/v1/tasks/analysis/historical',
+        taskSaveAnalysis:':9006/api/v1/tasks/analysis',
+        tasksFleethealthSearchCount: '9006/api/v1/tasks/fleethealth/_search/count',
+        tasksFleethealthSearch: '9006/api/v1/tasks/fleethealth/_search'
     }
 };

@@ -56,7 +56,7 @@ $timeline-label-height: 22px;
     background-color: mat-color($mat-palette-custom, tl-related-task);
     color: mat-color($foreground, text);
     border: none;
-    border-left: 10px solid mat-color($mat-palette-custom, tl-active-task);
+    border-left: 10px solid mat-color($mat-palette-custom, selected-card);
 
     .vis-item-content{
       padding-left: 5px;

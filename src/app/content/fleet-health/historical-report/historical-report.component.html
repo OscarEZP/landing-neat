@@ -40,15 +40,15 @@
                 <!-- ATA -->
                 <div fxFlex="5" fxLayoutAlign="start center">{{ task.ata }}</div>
                 <!-- DESCRIPTION -->
-                <div fxFlex="28" fxLayoutAlign="start center" class="description">{{(task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}</div>
+                <div fxFlex="28" fxLayoutAlign="start center" class="description">{{(task.description && task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}</div>
                 <!-- DEFERRAL REFERENCE -->
-                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">{{(task.deferralReference.length > 30) ? (task.deferralReference | slice:0:30) + '...' : task.deferralReference }}</div>
+                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">{{(task.deferralReference && task.deferralReference.length > 30) ? (task.deferralReference | slice:0:30) + '...' : task.deferralReference }}</div>
                 <!-- DEFERRAL CLASS -->
                 <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">{{task.deferralClazz}}</div>
                 <!-- ALERT -->
                 <div fxFlex="7" fxLayoutAlign="start center">
                     <span class="badge">
-                         {{task.outOfStandard ? 'OUT OF STD' : '-'}}
+                        {{task.evaluationCategory.displayAlert}}
                     </span>
                 </div>
 

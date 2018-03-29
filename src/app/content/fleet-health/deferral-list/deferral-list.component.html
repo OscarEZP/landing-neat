@@ -50,12 +50,12 @@
 
                 <!-- DESCRIPTION -->
                 <div fxFlex="28" fxLayoutAlign="start center" class="description">
-                    {{(task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}
+                    {{(task.description && task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}
                 </div>
 
                 <!-- DEFERRAL REFERENCE -->
                 <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                    {{(task.deferralReference.length > 30) ? (task.deferralReference | slice:0:30) + '...' : task.deferralReference }}
+                    {{(task.deferralReference && task.deferralReference.length > 30) ? (task.deferralReference | slice:0:30) + '...' : task.deferralReference }}
                 </div>
 
                 <!-- DEFERRAL CLASS -->
@@ -66,7 +66,8 @@
                 <!-- ALERT -->
                 <div fxFlex="7" fxLayoutAlign="start center">
                     <span class="badge">
-                         {{task.outOfStandard ? 'OUT OF STD' : '-'}}
+                        {{task.evaluationCategory.displayAlert}}
+
                     </span>
                 </div>
 
@@ -78,14 +79,14 @@
                 </div>
 
                 <div fxFlex="11" fxLayoutAlign="end end" >
-                    <button mat-icon-button>
-                        <mat-icon aria-label="options">more_vert</mat-icon>
-                    </button>
-                    <mat-menu #menu="matMenu">
+                    <!--<button mat-icon-button>-->
+                        <!--<mat-icon aria-label="options">more_vert</mat-icon>-->
+                    <!--</button>-->
+                    <!--<mat-menu #menu="matMenu">-->
                         <!--<button mat-menu-item (click)="openCloseContingency(deferral)" [disabled]="task.isClose">-->
                             <!--<span>{{ 'BUTTONS.SUB_MENUS.CLOSE_CONTINGENCY' | translate }}</span>-->
                         <!--</button>-->
-                    </mat-menu>
+                    <!--</mat-menu>-->
                 </div>
             </div>
         </content>

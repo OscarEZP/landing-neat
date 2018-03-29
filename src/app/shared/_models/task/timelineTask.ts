@@ -1,11 +1,12 @@
-import {Task} from './task';
-import {DatePipe} from '@angular/common';
-import {TimeInstant} from '../timeInstant';
+import {Task} from "./task";
+import {TimeInstant} from "../timeInstant";
+import {DateUtil} from "../../util/dateUtil";
 
 export class TimelineTask {
 
     private static OPEN_ICON = 'lock_open';
     private static CLOSE_ICON = 'lock';
+    private static DATE_FORMAT = 'YYYY-MM-DD';
 
     private _id: number;
     private _content: string;
@@ -26,10 +27,9 @@ export class TimelineTask {
 
     constructor(task: Task, active: boolean = false, corrected: boolean = false, apply: boolean | null = null) {
         this._task = task;
-        const datePipe = new DatePipe('en');
 
-        this._start = datePipe.transform(this.startDateEpochTime, 'yyyy-MM-dd');
-        this._end = datePipe.transform(this.endDateEpochTime, 'yyyy-MM-dd');
+        this._start = DateUtil.formatDate(this.startDateEpochTime, TimelineTask.DATE_FORMAT);
+        this._end = DateUtil.formatDate(this.endDateEpochTime, TimelineTask.DATE_FORMAT);
         this._id = task.id;
         this._content = this.getContent();
         this._active = active;
@@ -65,9 +65,9 @@ export class TimelineTask {
         const arr = [];
         if (this.isOpen && this.extendedDueDate.epochTime !== null) {
             const extra = TimelineTask.getInstance();
-            const datePipe = new DatePipe('en');
-            extra.end = datePipe.transform(this.extendedDueDate.epochTime, 'yyyy-MM-dd');
-            extra.start = datePipe.transform(this.dueDate.epochTime, 'yyyy-MM-dd');
+
+            extra.end = DateUtil.formatDate(this.extendedDueDate.epochTime,TimelineTask.DATE_FORMAT);
+            extra.start = DateUtil.formatDate(this.dueDate.epochTime,TimelineTask.DATE_FORMAT);
             extra.id = this.id + this.createDate.epochTime;
             extra.group = this.barcode;
             extra.subgroup = this.barcode;
@@ -79,9 +79,8 @@ export class TimelineTask {
     }
 
     public getContent(content: boolean = true): string {
-        const head = '<div class="head"><h1>'+'TASK'+'</h1> <span>'+(this.isOpen?'<i class="material-icons icon-red">':'<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
+        const head = '<div class="head"><h1>' + 'TASK' + '</h1> <span>' + (this.isOpen ? '<i class="material-icons icon-red">' : '<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
         const body = '<p>' + this.task.ata + '/'  + this.task.barcode + '</p>' ;
-
         return content ? head + body : '';
     }
 
@@ -92,6 +91,7 @@ export class TimelineTask {
     public getJson() {
         return JSON.parse(JSON.stringify(this).replace(/\b[_]/g, ''));
     }
+
 
     get id(): number {
         return this._id;
@@ -201,18 +201,20 @@ export class TimelineTask {
         this._type = value;
     }
 
-    get isOpen():boolean{
+    get isOpen(): boolean{
         return this.task.isOpen;
 
     }
-    get isClose():boolean{
+    get isClose(): boolean{
         return this.task.isClose;
 
     }
-    get endDateEpochTime():number{
+    get endDateEpochTime(): number{
+
        return this.task.isClose ? this.task.revisionDate.epochTime : this.task.dueDate.epochTime;
     }
-    get startDateEpochTime():number{
+    get startDateEpochTime(): number{
+
         return this.task.createDate.epochTime;
     }
 
