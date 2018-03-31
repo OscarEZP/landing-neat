@@ -1,3 +1,49 @@
-<p>
-  historical-task works! {{ historicalTask | json }}
-</p>
+<section>
+    <header>
+        <div fxLayout="row">
+            <div fxFlex="">
+                <span class="badge">Report</span>
+            </div>
+            <div fxFlexAlign="end center" fxLayout="row" fxLayoutGap="20px">
+                <div>
+                    <mat-icon>today</mat-icon>
+                    <span>29.NOV.2017</span>
+                </div>
+                <div>
+                    <mat-icon>access_time</mat-icon>
+                    <span>05:18 AM</span>
+                </div>
+            </div>
+        </div>
+        <div fxLayout="row">
+            <div fxFlex="">
+                <h1>{{ historicalTask.ata }} / {{ historicalTask.barcode }}</h1>
+            </div>
+            <div fxFlexAlign="end center" fxLayout="row" >
+                <button mat-raised-button>Copy text</button>
+            </div>
+        </div>
+    </header>
+    <hr>
+    <content>
+        <div id="description">
+            <h2>Description</h2>
+            <p>{{historicalTask.description}}</p>
+        </div>
+        <hr class="segment">
+        <div id="job-steps">
+            <h2>Job Steps</h2>
+            <ol>
+                <li *ngFor="let step of historicalTask.steps" [innerHTML]="step.description"></li>
+            </ol>
+        </div>
+        <hr class="segment">
+        <div id="maintenance-actions">
+            <h2>Maintenance Actions</h2>
+            <ol>
+                <li></li>
+            </ol>
+        </div>
+        <!--historical-task works! {{ historicalTask | json }}-->
+    </content>
+</section>

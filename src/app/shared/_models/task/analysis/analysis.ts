@@ -1,21 +1,18 @@
 import {Review} from './review';
-import {Remark} from "./remark";
 
 export class Analysis {
-    private _barcode:string
+    private _barcode: string;
     private _username: string;
     private _alertCode: string;
-    private _remarks: Remark[];
+    private _remark: string;
     private _reviews: Review[];
 
-
-
     private constructor() {
-        this._remarks = [];
+        this._remark = '';
         this._reviews = [];
         this._username = '';
-        this._barcode='';
-        this._alertCode='';
+        this._barcode = '';
+        this._alertCode = '';
 
     }
 
@@ -39,12 +36,12 @@ export class Analysis {
         this._alertCode = value;
     }
 
-    get remarks(): Remark[] {
-        return this._remarks;
+    get remark(): string {
+        return this._remark;
     }
 
-    set remarks(value: Remark[]) {
-        this._remarks = value;
+    set remark(value: string) {
+        this._remark = value;
     }
 
     get reviews(): Review[] {

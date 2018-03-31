@@ -7,7 +7,7 @@ import {HttpClient} from '@angular/common/http';
 @Component({
   selector: 'lsl-historical-task',
   templateUrl: './historical-task.component.html',
-  styleUrls: ['./historical-task.component.css']
+  styleUrls: ['./historical-task.component.scss']
 })
 export class HistoricalTaskComponent implements OnInit {
 
