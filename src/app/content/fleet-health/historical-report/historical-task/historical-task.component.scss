@@ -1,6 +1,6 @@
 @import '../../../../../assets/style/base.scss';
 
-$top-header-size: 13px;
+$top-header-size: 11px;
 
 section {
   padding: 10px;
@@ -14,6 +14,24 @@ section {
       }
       .mat-icon {
         width: $top-header-size;
+      }
+      .mat-raised-button {
+        padding: 5px;
+        margin: 0;
+        line-height: normal;
+        text-transform: uppercase;
+        font-size: $top-header-size;
+      }
+      h1 {
+        font-size: 15px;
+      }
+      .badge {
+        border-radius: 2px;
+        background-color: mat-color($primary);
+        color: mat-color($primary, default-contrast);
+        text-transform: uppercase;
+        font-weight: bold;
+        padding: 0px 5px;
       }
     }
   }
