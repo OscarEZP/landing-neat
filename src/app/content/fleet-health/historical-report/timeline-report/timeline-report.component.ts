@@ -147,6 +147,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
             signature.tail = this.activeTask.tail;
             signature.ataGroup = this.activeTask.ata;
+            signature.barcode = this.activeTask.barcode;
 
             const endDate = this.activeTask.createEpochTime;
             const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
@@ -156,7 +157,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                 this.timelineData = this.taskList.map(task => {
                     return new TimelineTask(task, task.id === this.activeTask.id, true);
                 });
-
                 const findTask = this.timelineData.find(value => value.barcode === this.activeTask.barcode);
 
                 if (typeof findTask === 'undefined') {

@@ -7,12 +7,17 @@ export class SearchRelationedTask {
     private _ataGroup: string;
     private _pagination: Pagination;
     private _dateRange: DateRange;
+    private _barcode: string;
 
 
     constructor() {
 
-        this._pagination = Pagination.getInstance();
-        this._dateRange = DateRange.getInstance();
+        this.pagination = Pagination.getInstance();
+        this.dateRange = DateRange.getInstance();
+        this.tail = '';
+        this.ataGroup = '';
+        this.barcode = '';
+
     }
 
     static getInstance(): SearchRelationedTask {
@@ -49,5 +54,13 @@ export class SearchRelationedTask {
 
     set dateRange(value: DateRange) {
         this._dateRange = value;
+    }
+
+    get barcode(): string {
+        return this._barcode;
+    }
+
+    set barcode(value: string) {
+        this._barcode = value;
     }
 }
