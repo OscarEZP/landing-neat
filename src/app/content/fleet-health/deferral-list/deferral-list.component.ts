@@ -12,7 +12,7 @@ import {Task} from '../../../shared/_models/task/task';
 import {SearchTask} from '../../../shared/_models/task/searchTask';
 import {Pagination} from '../../../shared/_models/common/pagination';
 import {HistoricalReportComponent} from '../historical-report/historical-report.component';
-import {FleetHealthService} from '../_services/fleet-health.service';
+import {HistoricalReportService} from '../historical-report/_services/historical-report.service';
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -35,7 +35,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private _timerSubscription: Subscription;
     private _intervalRefreshSubscription: Subscription;
     private _paginatorSubscription: Subscription;
-    private _totalRecordsSubscription: Subscription;
 
     private _list: Task[];
 
@@ -51,7 +50,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         private _detailsService: DetailsService,
         private _infiniteScrollService: InfiniteScrollService,
         private _dialogService: DialogService,
-        private _fleetHealthService: FleetHealthService
+        private _historicalReportService: HistoricalReportService
     ) {
         this.selectedRegister = Task.getInstance();
         this.selectedRegisterPivot = Task.getInstance();
@@ -60,9 +59,9 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.list = [];
-        this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
-        this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
-        this._paginatorSubscription = this.getPaginationSubscription();
+        this.reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
+        this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
+        this.paginatorSubscription = this.getPaginationSubscription();
         this.infiniteScrollService.init();
     }
 
@@ -70,17 +69,14 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * Event when component is destroyed. Unsubscribe general subscriptions.
      */
     public ngOnDestroy() {
-        this._reloadSubscription.unsubscribe();
-        this._intervalRefreshSubscription.unsubscribe();
-        this._paginatorSubscription.unsubscribe();
-        if (this._totalRecordsSubscription) {
-            this._totalRecordsSubscription.unsubscribe();
+        this.reloadSubscription.unsubscribe();
+        this.intervalRefreshSubscription.unsubscribe();
+        this.paginatorSubscription.unsubscribe();
+        if (this.listSubscription) {
+            this.listSubscription.unsubscribe();
         }
-        if (this._listSubscription) {
-            this._listSubscription.unsubscribe();
-        }
-        if (this._timerSubscription) {
-            this._timerSubscription.unsubscribe();
+        if (this.timerSubscription) {
+            this.timerSubscription.unsubscribe();
         }
     }
 
@@ -89,12 +85,12 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     public getTotalRecordsSubscription(signature: Pagination): Subscription {
-        this._loading = true;
+        this.loading = true;
         return this._apiRestService.search<{items: number}>(DeferralListComponent.TASK_FLEETHEALTH_COUNT_ENDPOINT, signature)
         .subscribe(
             response => {
                 this.infiniteScrollService.length = !isNaN(response.items) ? response.items : 0;
-                this._loading = false;
+                this.loading = false;
                 return this.getListSubscription(signature);
             },
             () => this.getError()
@@ -107,7 +103,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private getError(): boolean {
         this.infiniteScrollService.length = 0;
-        this._loading = false;
+        this.loading = false;
         return this._error = true;
     }
 
@@ -117,7 +113,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     private getListSubscription(signature: Pagination): Subscription {
-        this._loading = true;
+        this.loading = true;
         return this._apiRestService.search<Task[]>(DeferralListComponent.TASK_FLEETHEALTH_ENDPOINT, signature).subscribe(
             (list) => {
                 const ctgInArray = list.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
@@ -128,7 +124,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
                 }
                 this.subscribeTimer();
                 this.list = list;
-                this._loading = false;
+                this.loading = false;
             },
             () => this.getError()
         );
@@ -150,9 +146,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * Method for get a search signature for get data
      * @return {SearchTask}
      */
-    private getSearchSignature(): Pagination{
+    private getSearchSignature(): Pagination {
        return new Pagination(this.infiniteScrollService.offset, this.infiniteScrollService.pageSize);
-
     }
 
     /**
@@ -161,7 +156,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private getList(): Subscription {
         const signature = this.getSearchSignature();
-        return this._listSubscription = this.getTotalRecordsSubscription(signature);
+        return this.listSubscription = this.getTotalRecordsSubscription(signature);
     }
 
     /**
@@ -169,10 +164,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     private subscribeTimer(): Subscription {
-        if (this._timerSubscription) {
-            this._timerSubscription.unsubscribe();
+        if (this.timerSubscription) {
+            this.timerSubscription.unsubscribe();
         }
-        return this._timerSubscription = Observable.timer(this.intervalToRefresh).first().subscribe(() => {
+        return this.timerSubscription = Observable.timer(this.intervalToRefresh).first().subscribe(() => {
             this.getList();
         });
     }
@@ -182,14 +177,14 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     private getIntervalToRefresh(): Subscription {
-        this._loading = true;
+        this.loading = true;
         return this._apiRestService.getSingle('configTypes', DeferralListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(
             rs => {
                 const res = rs as GroupTypes;
                 this.intervalToRefresh = Number(res.types[0].code) * 1000;
-                this._loading = false;
+                this.loading = false;
             },
-            () => this._loading = false
+            () => this.loading = false
         );
     }
 
@@ -212,7 +207,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this.selectedRegister = register;
         this.selectedRegisterPivot = register;
         this.openHistoricalReport(register);
-        this._fleetHealthService.task = register;
+        this.serviceTask = register;
     }
 
     /**
@@ -273,12 +268,60 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this._infiniteScrollService = value;
     }
 
+    set loading(value: boolean) {
+        this._loading = value;
+    }
+
     get loading(): boolean {
         return this._loading;
     }
 
     get error(): boolean {
         return this._error;
+    }
+
+    set serviceTask(value: Task) {
+        this._historicalReportService.task = value;
+    }
+
+    get listSubscription(): Subscription {
+        return this._listSubscription;
+    }
+
+    set listSubscription(value: Subscription) {
+        this._listSubscription = value;
+    }
+
+    get reloadSubscription(): Subscription {
+        return this._reloadSubscription;
+    }
+
+    set reloadSubscription(value: Subscription) {
+        this._reloadSubscription = value;
+    }
+
+    get timerSubscription(): Subscription {
+        return this._timerSubscription;
+    }
+
+    set timerSubscription(value: Subscription) {
+        this._timerSubscription = value;
+    }
+
+    get intervalRefreshSubscription(): Subscription {
+        return this._intervalRefreshSubscription;
+    }
+
+    set intervalRefreshSubscription(value: Subscription) {
+        this._intervalRefreshSubscription = value;
+    }
+
+    get paginatorSubscription(): Subscription {
+        return this._paginatorSubscription;
+    }
+
+    set paginatorSubscription(value: Subscription) {
+        this._paginatorSubscription = value;
     }
 
 }

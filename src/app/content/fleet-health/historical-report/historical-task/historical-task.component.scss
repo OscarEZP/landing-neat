@@ -1,0 +1,67 @@
+@import '../../../../../assets/style/base.scss';
+
+$top-header-size: 11px;
+
+section {
+  padding: 10px;
+  background-color: mat-color($mat-palette-custom, background-grey);
+
+  header {
+    padding: 5px 0;
+    div {
+      div, .mat-icon {
+        font-size: $top-header-size;
+      }
+      .mat-icon {
+        width: $top-header-size;
+      }
+      .mat-raised-button {
+        padding: 5px;
+        margin: 0;
+        line-height: normal;
+        text-transform: uppercase;
+        font-size: $top-header-size;
+      }
+      h1 {
+        font-size: 15px;
+      }
+      .badge {
+        border-radius: 2px;
+        background-color: mat-color($primary);
+        color: mat-color($primary, default-contrast);
+        text-transform: uppercase;
+        font-weight: bold;
+        padding: 0px 5px;
+      }
+    }
+  }
+
+  content {
+    #description {
+      p {
+        color: mat-color($foreground, secondary-text);
+        font-size: 12px;
+      }
+    }
+    #job-steps {
+      ol {
+        list-style: inside decimal;
+        color: mat-color($foreground, secondary-text);
+        font-size: 12px;
+      }
+    }
+    h2 {
+      text-transform: uppercase;
+      padding: 5px 0 15px 0;
+    }
+  }
+
+  hr {
+    color: mat-color($foreground, divider);
+    border-color: mat-color($foreground, divider);
+  }
+
+  hr.segment {
+    border-style: dashed;
+  }
+}

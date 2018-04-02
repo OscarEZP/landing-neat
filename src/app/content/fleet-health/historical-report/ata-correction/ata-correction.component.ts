@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Task} from '../../../../shared/_models/task/task';
-import {FleetHealthService} from '../../_services/fleet-health.service';
+import {HistoricalReportService} from '../_services/historical-report.service';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiRestService} from '../../../../shared/_services/apiRest.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -36,7 +36,7 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     corrected: EventEmitter<any> = new EventEmitter();
 
     constructor(
-        private _fleetHealthService: FleetHealthService,
+        private _historicalReportService: HistoricalReportService,
         private _apiRestService: ApiRestService,
         private _fb: FormBuilder,
         private _storageService: StorageService,
@@ -124,7 +124,7 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     }
 
     get task(): Task {
-        return this._fleetHealthService.task;
+        return this._historicalReportService.task;
     }
 
     get ataList(): string[] {
@@ -152,11 +152,11 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     }
 
     get newAta(): string {
-        return this._fleetHealthService.newAta;
+        return this._historicalReportService.newAta;
     }
 
     set newAta(value: string) {
-        this._fleetHealthService.newAta = value;
+        this._historicalReportService.newAta = value;
     }
 
     get open(): boolean {

@@ -19,7 +19,7 @@ export class ScrollTriggerDirective {
 
     @HostListener('window:scroll', [])
     onWindowScroll() {
-        let number = this.document.documentElement.scrollTop || this.document.body.scrollTop || 0;
+        const number = this.document.documentElement.scrollTop || this.document.body.scrollTop || 0;
         console.log(number);
     }
 

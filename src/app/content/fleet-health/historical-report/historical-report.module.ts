@@ -5,19 +5,25 @@ import {HistoricalReportComponent} from './historical-report.component';
 import {TimelineTooltipComponent} from './timeline-tooltip/timeline-tooltip.component';
 import {AtaCorrectionComponent} from './ata-correction/ata-correction.component';
 import {TimelineReportComponent} from './timeline-report/timeline-report.component';
-import { MomentModule } from 'angular2-moment';
+import {MomentModule} from 'angular2-moment';
+import {AnalysisReportComponent} from './analysis-report/analysis-report.component';
+import {HistoricalTaskComponent} from './historical-task/historical-task.component';
+import {QuillModule} from 'ngx-quill';
 
 @NgModule({
     imports: [
         BrowserModule,
         SharedModule,
-        MomentModule
+        MomentModule,
+        QuillModule
     ],
     declarations: [
         TimelineReportComponent,
         HistoricalReportComponent,
         TimelineTooltipComponent,
-        AtaCorrectionComponent
+        AtaCorrectionComponent,
+        AnalysisReportComponent,
+        HistoricalTaskComponent
     ],
     exports: [
         TimelineReportComponent,
