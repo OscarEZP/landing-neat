@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
 import {HistoricalReportService} from '../_services/historical-report.service';
@@ -37,12 +37,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _timelineTaskData: object | null;
     private _analysis: Analysis;
 
-    constructor(
-        private _translate: TranslateService,
-        private _element: ElementRef,
-        private _historicalReportService: HistoricalReportService,
-        private _apiRestService: ApiRestService,
-    ) {
+    constructor(private _translate: TranslateService,
+                private _element: ElementRef,
+                private _historicalReportService: HistoricalReportService,
+                private _apiRestService: ApiRestService,) {
         this._translate.setDefaultLang('en');
         this.tooltip = false;
         this.tooltipStyle = new Style();
@@ -62,12 +60,12 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private createTimeline(data: TimelineTask[]): Timeline {
 
         data = this.getExtraTime(data)
-        .map(task => task.getJson());
+            .map(task => task.getJson());
 
         const items = new DataSet(data);
         const dataMinDate = this.taskList
-        .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1)
-        .shift();
+            .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1)
+            .shift();
 
         this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days');
 
@@ -106,16 +104,16 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             if (item.getExtraTime().length > 0) {
                 arrExtra = arrExtra.concat(item.getExtraTime());
             }
-        } );
+        });
         return arrExtra;
     }
 
     private getTimelineItem(): object | null {
         const items = this.timeline['itemSet']['items'];
         const arrItems = Object
-        .keys(items)
-        .map(key => items[key] && items[key].selected ? items[key] : false)
-        .filter(item => item !== false);
+            .keys(items)
+            .map(key => items[key] && items[key].selected ? items[key] : false)
+            .filter(item => item !== false);
         this.timelineTaskData = arrItems.length > 0 ? arrItems[0] : null;
         return this.timelineTaskData;
     }
@@ -155,7 +153,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
             this.getListSubscription(signature).add(() => {
                 this.timelineData = this.taskList.map(task => {
-                    return new TimelineTask(task, task.id === this.activeTask.id, true);
+                    return new TimelineTask(task, task.id === this.activeTask.id, true, this.validateApply(task.review));
                 });
                 const findTask = this.timelineData.find(value => value.barcode === this.activeTask.barcode);
 
@@ -165,6 +163,18 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                 this.timeline = this.createTimeline(this.timelineData);
             });
         }
+    }
+
+    private validateApply(review: Review): boolean {
+        let apply: boolean = null;
+        if (review != null) {
+            if (review.apply) {
+                this.updateReview(review)
+            }
+            apply = review.apply;
+        }
+        return apply;
+
     }
 
     public getTooltipStyle(): Style {
@@ -183,10 +193,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     public refreshOnApply(review: Review) {
         const updatedTask = this.timelineData
-        .filter(item => item.task.barcode === review.barcode)
-        .map(item => {
-            return new TimelineTask(item.task, false, false, review.status === 'apply');
-        })[0];
+            .filter(item => item.task.barcode === review.barcode)
+            .map(item => {
+                return new TimelineTask(item.task, false, false, review.apply === true);
+            })[0];
 
         const newData = this.timelineData.filter(task => task.id !== updatedTask.task.id);
         newData.push(updatedTask);
@@ -194,7 +204,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.timeline = this.createTimeline(newData);
         this.updateReview(review);
     }
-
 
 
     /**
@@ -205,8 +214,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         const findReview = this.reviews.find(x => x.barcode === review.barcode);
         if (typeof findReview === 'undefined') {
             this.reviews.push(review);
-        }else {
-            findReview.status = review.status;
+        } else {
+            findReview.apply = review.apply;
         }
     }
 
@@ -307,13 +316,12 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     set analysis(value: Analysis) {
         this._analysis = value;
     }
-    get reviews(): Review[]{
+
+    get reviews(): Review[] {
         return this.analysis.reviews;
     }
-    get maxTime(): number{
+
+    get maxTime(): number {
         return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime : this.activeTask.extendedDueDate.epochTime ? this.activeTask.extendedDueDate.epochTime : this.activeTask.dueDate.epochTime;
     }
-
-
-
 }
