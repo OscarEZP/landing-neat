@@ -2,7 +2,7 @@ import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
-import {FleetHealthService} from '../../_services/fleet-health.service';
+import {HistoricalReportService} from '../_services/historical-report.service';
 import * as moment from 'moment';
 import {Style} from '../../../../shared/_models/style';
 import {ApiRestService} from '../../../../shared/_services/apiRest.service';
@@ -40,14 +40,14 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     constructor(
         private _translate: TranslateService,
         private _element: ElementRef,
-        private _fleetHealthService: FleetHealthService,
+        private _historicalReportService: HistoricalReportService,
         private _apiRestService: ApiRestService,
     ) {
         this._translate.setDefaultLang('en');
         this.tooltip = false;
         this.tooltipStyle = new Style();
         this.taskList = [];
-        this._timelineTaskData = null;
+        this.timelineTaskData = null;
         this.analysis = Analysis.getInstance();
     }
 
@@ -293,7 +293,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     get activeTask(): Task {
-        return this._fleetHealthService.task;
+        return this._historicalReportService.task;
     }
 
     get element(): ElementRef {
@@ -313,5 +313,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     get maxTime(): number{
         return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime : this.activeTask.extendedDueDate.epochTime ? this.activeTask.extendedDueDate.epochTime : this.activeTask.dueDate.epochTime;
     }
+
+
 
 }

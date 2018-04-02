@@ -6,6 +6,7 @@ import { CustomInterceptor } from './_services/apiRest.service';
 import { CountdownComponent } from './components/countdown.component/countdown.component';
 import { MaterialModule } from './modules/material.module';
 import { EssComponent } from './components/ess/ess.component';
+import { DirectivesModule } from './_directives/directives.module';
 
 @NgModule({
     declarations: [
@@ -15,14 +16,16 @@ import { EssComponent } from './components/ess/ess.component';
     imports: [
         MaterialModule,
         PipesModule,
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        DirectivesModule
     ],
     exports: [
         MaterialModule,
         PipesModule,
         CountdownComponent,
         TranslateModule,
-        EssComponent
+        EssComponent,
+        DirectivesModule
     ],
     providers: [
         {

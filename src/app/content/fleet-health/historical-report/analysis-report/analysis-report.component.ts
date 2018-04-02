@@ -1,4 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {HistoricalReportService} from '../_services/historical-report.service';
+import {QuillEditorComponent} from 'ngx-quill';
 
 @Component({
     selector: 'lsl-analysis-report',
@@ -7,31 +9,19 @@ import {Component, OnInit} from '@angular/core';
 })
 export class AnalysisReportComponent implements OnInit {
 
-    constructor() {
-    }
-
     private _editorConfig: object;
 
-    get editorConfig(): object {
-        return this._editorConfig;
+    @ViewChild('quill')
+    set quillEditor(qe: QuillEditorComponent) {
+        this._historicalReportService.quillEditor = qe;
     }
 
-    set editorConfig(value: object) {
-        this._editorConfig = value;
-    }
-
-    private _editorContent: string;
-
-    get editorContent(): string {
-        return this._editorContent;
-    }
-
-    set editorContent(value: string) {
-        this._editorContent = value;
+    constructor(
+        private _historicalReportService: HistoricalReportService
+    ) {
     }
 
     ngOnInit() {
-
         this.editorConfig = {
             'style': {'height': '250px'},
             'placeholder': 'Enter text here...',
@@ -50,6 +40,22 @@ export class AnalysisReportComponent implements OnInit {
                 ]
             }
         };
-
     }
+
+    get editorConfig(): object {
+        return this._editorConfig;
+    }
+
+    set editorConfig(value: object) {
+        this._editorConfig = value;
+    }
+
+    get editorContent(): string {
+        return this._historicalReportService.editorContent;
+    }
+
+    set editorContent(value: string) {
+        this._historicalReportService.editorContent = value;
+    }
+
 }

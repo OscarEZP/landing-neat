@@ -14,7 +14,7 @@ import { LogService } from '../_services/log.service';
 import { FleetHealthComponent } from './fleet-health.component';
 import { DeferralListComponent } from './deferral-list/deferral-list.component';
 import {HistoricalReportModule} from './historical-report/historical-report.module';
-import {FleetHealthService} from './_services/fleet-health.service';
+import {HistoricalReportService} from './historical-report/_services/historical-report.service';
 
 @NgModule({
     imports: [
@@ -38,7 +38,7 @@ import {FleetHealthService} from './_services/fleet-health.service';
         HistoricalSearchService,
         {provide: MAT_DATE_LOCALE, useValue: 'es-CL'},
         DateUtil,
-        FleetHealthService
+        HistoricalReportService
     ],
     entryComponents: [
     ]
