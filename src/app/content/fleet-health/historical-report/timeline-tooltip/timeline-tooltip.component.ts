@@ -11,7 +11,7 @@ import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 export class TimelineTooltipComponent implements OnInit, OnDestroy {
 
     @Input()
-    set timelineTaskData (value: object) {
+    set timelineTaskData(value: object) {
         this._timelineTaskData = value;
         this.updateTask();
     }
@@ -39,7 +39,7 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
         this.timelineTask = this.timelineTaskData['data'];
         this.task = this.timelineTask.task;
         if (this.timelineTask.apply !== null) {
-            this.review.status = this.timelineTask.apply ? 'apply' : 'dontApply';
+            this.review.apply = this.timelineTask.apply;
         }
     }
 
@@ -52,12 +52,16 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
         return this._review;
     }
 
-    get status(): string {
-        return this._review.status;
+    get apply(): string {
+        if (this.review.apply != null) {
+            return this.review.apply.toString();
+        } else {
+            return '';
+        }
     }
 
-    set status(value: string) {
-        this._review.status = value;
+    set apply(value: string) {
+        this.review.apply = value === 'true';
     }
 
     get timelineTask(): TimelineTask {

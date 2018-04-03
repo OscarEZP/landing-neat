@@ -1,11 +1,13 @@
 export class Review {
     private _barcode: string;
-    private _status: string;
+    private _apply: boolean;
 
     constructor() {
-        this._barcode = '';
-        this._status = '';
+        this.barcode = '';
+        this.apply = null;
+
     }
+
     public static getInstance() {
         return new Review();
     }
@@ -20,11 +22,12 @@ export class Review {
     }
 
 
-    get status(): string {
-        return this._status;
+    get apply(): boolean {
+        return this._apply;
     }
 
-    set status(value: string) {
-        this._status = value;
+    set apply(value: boolean) {
+        this._apply = value;
     }
+
 }
