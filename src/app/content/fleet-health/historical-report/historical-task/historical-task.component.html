@@ -33,9 +33,22 @@
         <hr class="segment">
         <div id="job-steps">
             <h2>Job Steps</h2>
-            <ol>
-                <li *ngFor="let step of historicalTask.steps" [innerHTML]="step.description"></li>
-            </ol>
+            <mat-accordion>
+                <mat-expansion-panel *ngFor="let step of historicalTask.steps; let i = index" [expanded]="i === 0">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Step {{step.ord}} | {{step.status}}
+                        </mat-panel-title>
+                        <mat-panel-description>
+                             {{ step.createDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div [innerHtml]="step.description"></div>
+                    <ol>
+                        <li *ngFor="let labours of step.stepLabours"></li>
+                    </ol>
+                </mat-expansion-panel>
+            </mat-accordion>
         </div>
         <hr class="segment">
         <div id="maintenance-actions">

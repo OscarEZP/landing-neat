@@ -24,7 +24,8 @@ export class HistoricalTaskComponent implements OnInit {
 
     ngOnInit() {
         this.historicalTask = HistoricalTask.getInstance();
-        this.getHistoricalTask('T009R9LM'); // test propose only
+        // test propose only
+        this.getHistoricalTask('T009R9LM');
     }
 
     @Input()
@@ -70,6 +71,5 @@ export class HistoricalTaskComponent implements OnInit {
     get editorContent(): string {
         return this._historicalReportService.editorContent;
     }
-
 
 }

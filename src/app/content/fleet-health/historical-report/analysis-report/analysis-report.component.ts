@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {HistoricalReportService} from '../_services/historical-report.service';
 import {QuillEditorComponent} from 'ngx-quill';
 
@@ -22,6 +22,7 @@ export class AnalysisReportComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.editorContent = '';
         this.editorConfig = {
             'style': {'height': '250px'},
             'placeholder': 'Enter text here...',

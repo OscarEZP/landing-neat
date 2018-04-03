@@ -58,6 +58,11 @@ section {
       text-transform: uppercase;
       padding: 5px 0 15px 0;
     }
+    .mat-accordion {
+      .mat-expansion-panel {
+        box-shadow: none;
+      }
+    }
   }
 
   hr {
