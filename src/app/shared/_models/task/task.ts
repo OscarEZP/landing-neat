@@ -1,5 +1,6 @@
 import {TimeInstant} from '../timeInstant';
 import {EvaluationCategory} from "./fleethealth/evaluationCategory";
+import {Review} from "./analysis/review";
 
 export class Task {
     private _ata: string;
@@ -24,31 +25,34 @@ export class Task {
     private _isClose: boolean;
     private _isOpen: boolean;
     private _evaluationCategory: EvaluationCategory;
+    private _review: Review;
 
 
     private constructor() {
-        this._id = null;
-        this._tail = '';
-        this._fleet = '';
-        this._barcode = '';
-        this._source = '';
-        this._description = '';
-        this._clazz = '';
-        this._status = '';
-        this._estimatedDuration = 0;
-        this._createDate = TimeInstant.getInstance();
-        this._ata = '';
-        this._dueDate = TimeInstant.getInstance();
-        this._extendedDueDate = TimeInstant.getInstance();
-        this._finalDueDate = TimeInstant.getInstance();
-        this._finishEvaluation = false;
-        this._deferralReference = '';
-        this._deferralClazz = '';
-        this._timelineStatus = '';
-        this._revisionDate = TimeInstant.getInstance();
-        this._isClose = false;
-        this._isOpen = false;
-        this._evaluationCategory = EvaluationCategory.getInstance();
+        this.id = null;
+        this.tail = '';
+        this.fleet = '';
+        this.barcode = '';
+        this.source = '';
+        this.description = '';
+        this.clazz = '';
+        this.status = '';
+        this.estimatedDuration = 0;
+        this.createDate = TimeInstant.getInstance();
+        this.ata = '';
+        this.dueDate = TimeInstant.getInstance();
+        this.extendedDueDate = TimeInstant.getInstance();
+        this.finalDueDate = TimeInstant.getInstance();
+        this.finishEvaluation = false;
+        this.deferralReference = '';
+        this.deferralClazz = '';
+        this.timelineStatus = '';
+        this.revisionDate = TimeInstant.getInstance();
+        this.isClose = false;
+        this.isOpen = false;
+        this.evaluationCategory = EvaluationCategory.getInstance();
+        this.review = Review.getInstance();
+
     }
 
     public static getInstance() {
@@ -244,5 +248,13 @@ export class Task {
 
     set evaluationCategory(value: EvaluationCategory) {
         this._evaluationCategory = value;
+    }
+
+    get review(): Review {
+        return this._review;
+    }
+
+    set review(value: Review) {
+        this._review = value;
     }
 }
