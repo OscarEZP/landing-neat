@@ -168,10 +168,10 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     }
 
     get isCorrected(): boolean {
-        return this._isCorrected;
+        return this._historicalReportService.isAtaCorrected;
     }
 
     set isCorrected(value: boolean) {
-        this._isCorrected = value;
+        this._historicalReportService.isAtaCorrected = value;
     }
 }

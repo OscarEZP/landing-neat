@@ -33,12 +33,29 @@ h2 {
 
 }
 
+/deep/
 #container-historical-report {
   h3 {
     border-bottom: thin solid mat-color($mat-palette-custom, light-grey);
     border-top: thin solid mat-color($mat-palette-custom, light-grey);
     padding: 15px 0;
     margin: 10px 0;
+  }
+
+  #ess {
+    padding: 40px 0;
+
+    i,p {
+      color: mat-color($foreground, icon);
+    }
+
+    i {
+      font-size: 100px;
+    }
+
+    p {
+      font-size: 20px;
+    }
   }
 }
 

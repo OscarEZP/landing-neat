@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { DialogService } from '../../_services/dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Task } from '../../../shared/_models/task/task';
@@ -15,7 +15,7 @@ import {DataService} from '../../../shared/_services/data.service';
         TimelineTooltipComponent
     ]
 })
-export class HistoricalReportComponent implements OnInit {
+export class HistoricalReportComponent implements OnInit, OnDestroy {
 
     private _task: Task;
 
@@ -32,6 +32,10 @@ export class HistoricalReportComponent implements OnInit {
         this.task = this._historicalReportService.task;
     }
 
+    ngOnDestroy() {
+        this._historicalReportService.isAtaCorrected = false;
+    }
+
     public openCancelDialog(): void {
         this._dialogService.closeAllDialogs();
         this._messageData.stringMessage('reload');
@@ -43,5 +47,17 @@ export class HistoricalReportComponent implements OnInit {
 
     set task(value: Task) {
         this._task = value;
+    }
+
+    get newAta(): string {
+        return this._historicalReportService.newAta;
+    }
+
+    get isAtaCorrected(): boolean {
+        return this._historicalReportService.isAtaCorrected;
+    }
+
+    set isAtaCorrected(value: boolean) {
+        this._historicalReportService.isAtaCorrected = value;
     }
 }

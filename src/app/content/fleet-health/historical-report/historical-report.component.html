@@ -68,9 +68,12 @@
     </div>
     <div id="container-historical-report">
         <h3>{{ 'FLEET_HEALTH.REPORT.HISTORICAL_REPORTS' | translate }}</h3>
-        <div fxLayout="row" fxLayoutGap="10px">
+        <div *ngIf="isAtaCorrected" fxLayout="row" fxLayoutGap="10px">
             <lsl-historical-task fxFlex="50"></lsl-historical-task>
             <lsl-analysis-report fxFlex="50"></lsl-analysis-report>
         </div>
+        <lsl-ess *ngIf="!isAtaCorrected" icon="assignment" message="FLEET_HEALTH.REPORT.START_NEW_PROJECT"></lsl-ess>
     </div>
+
+
 </form>
