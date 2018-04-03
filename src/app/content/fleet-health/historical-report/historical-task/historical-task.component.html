@@ -44,8 +44,8 @@
                         </mat-panel-description>
                     </mat-expansion-panel-header>
                     <div [innerHtml]="step.description"></div>
-                    <ol>
-                        <li *ngFor="let labours of step.stepLabours"></li>
+                    <ol *ngIf="step.stepLabours.length > 0">
+                        <li *ngFor="let labour of step.stepLabours">{{labour | json}}</li>
                     </ol>
                 </mat-expansion-panel>
             </mat-accordion>
