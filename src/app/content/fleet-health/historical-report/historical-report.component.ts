@@ -26,6 +26,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         private _messageData: DataService
     ) {
         this._translate.setDefaultLang('en');
+        // T00AKS
     }
 
     ngOnInit() {

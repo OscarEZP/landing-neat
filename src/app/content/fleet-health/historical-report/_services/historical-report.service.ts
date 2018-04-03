@@ -10,9 +10,11 @@ export class HistoricalReportService {
     private _editorContent: string;
     private _quillEditor: QuillEditorComponent;
     private _isAtaCorrected: boolean;
+    private _taskAnalized: Task;
 
     constructor() {
         this.task = Task.getInstance();
+        this.taskAnalized = Task.getInstance();
         this.newAta = '';
         this.editorContent = '';
         this.isAtaCorrected = false;
@@ -56,5 +58,13 @@ export class HistoricalReportService {
 
     set isAtaCorrected(value: boolean) {
         this._isAtaCorrected = value;
+    }
+
+    get taskAnalized(): Task {
+        return this._taskAnalized;
+    }
+
+    set taskAnalized(value: Task) {
+        this._taskAnalized = value;
     }
 }

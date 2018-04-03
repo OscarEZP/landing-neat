@@ -5,7 +5,7 @@ import {QuillEditorComponent} from 'ngx-quill';
 @Component({
     selector: 'lsl-analysis-report',
     templateUrl: './analysis-report.component.html',
-    styleUrls: ['./analysis-report.component.css']
+    styleUrls: ['./analysis-report.component.scss']
 })
 export class AnalysisReportComponent implements OnInit {
 
