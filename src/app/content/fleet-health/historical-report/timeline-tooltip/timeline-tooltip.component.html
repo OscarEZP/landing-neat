@@ -7,8 +7,8 @@
     {{task.description}}
 </p>
 <footer>
-    <mat-radio-group (change)="checkStatus()" [(ngModel)]="status">
-        <mat-radio-button value="apply" ngDefaultControl>Apply</mat-radio-button>
-        <mat-radio-button value="dontApply" ngDefaultControl>Don't Apply</mat-radio-button>
+    <mat-radio-group (change)="checkStatus()" [(ngModel)]="apply">
+        <mat-radio-button value='true' ngDefaultControl>Apply</mat-radio-button>
+        <mat-radio-button value='false' ngDefaultControl>Don't Apply</mat-radio-button>
     </mat-radio-group>
 </footer>
