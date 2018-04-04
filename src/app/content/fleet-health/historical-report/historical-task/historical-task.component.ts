@@ -50,7 +50,7 @@ export class HistoricalTaskComponent implements OnInit {
     }
 
     /**
-     * Copy text to editor when the analyzed task is apply
+     * Copy text to editor when the analyzed task is checked
      */
     public copyText() {
         const selection = this.getSelection();
