@@ -5,6 +5,7 @@ import { Task } from '../../../shared/_models/task/task';
 import {TimelineTooltipComponent} from './timeline-tooltip/timeline-tooltip.component';
 import {HistoricalReportService} from './_services/historical-report.service';
 import {DataService} from '../../../shared/_services/data.service';
+import {TimelineTask} from '../../../shared/_models/task/timelineTask';
 
 
 @Component({
@@ -18,6 +19,7 @@ import {DataService} from '../../../shared/_services/data.service';
 export class HistoricalReportComponent implements OnInit, OnDestroy {
 
     private _task: Task;
+    private _analyzedTask: TimelineTask;
 
     constructor(
         private _dialogService: DialogService,
@@ -26,10 +28,10 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         private _messageData: DataService
     ) {
         this._translate.setDefaultLang('en');
-        // T00AKS
     }
 
     ngOnInit() {
+        this.analyzedTask = TimelineTask.getInstance();
         this.task = this._historicalReportService.task;
     }
 
@@ -40,6 +42,10 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     public openCancelDialog(): void {
         this._dialogService.closeAllDialogs();
         this._messageData.stringMessage('reload');
+    }
+
+    public setAnalizedTask(task: TimelineTask) {
+        this.analyzedTask = task;
     }
 
     get task(): Task {
@@ -54,11 +60,12 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         return this._historicalReportService.newAta;
     }
 
-    get isAtaCorrected(): boolean {
-        return this._historicalReportService.isAtaCorrected;
+    set analyzedTask(value: TimelineTask) {
+        this._analyzedTask = value;
     }
 
-    set isAtaCorrected(value: boolean) {
-        this._historicalReportService.isAtaCorrected = value;
+    get analyzedTask(): TimelineTask {
+        return this._analyzedTask;
     }
+
 }

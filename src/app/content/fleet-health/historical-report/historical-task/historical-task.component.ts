@@ -4,6 +4,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {ApiRestService} from '../../../../shared/_services/apiRest.service';
 import {HttpClient} from '@angular/common/http';
 import {HistoricalReportService} from '../_services/historical-report.service';
+import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 
 @Component({
     selector: 'lsl-historical-task',
@@ -14,6 +15,15 @@ export class HistoricalTaskComponent implements OnInit {
 
     private _historicalTask: HistoricalTask;
     private _apiRestService: ApiRestService;
+    private _analyzedTask: TimelineTask;
+
+    @Input()
+    set analyzedTask(value: TimelineTask) {
+        if (!value.active) {
+            this.getHistoricalTask(value.task.barcode);
+            this._analyzedTask = value;
+        }
+    }
 
     constructor(
         httpClient: HttpClient,
@@ -24,8 +34,6 @@ export class HistoricalTaskComponent implements OnInit {
 
     ngOnInit() {
         this.historicalTask = HistoricalTask.getInstance();
-        // test propose only
-        this.getHistoricalTask('T009R9LM');
     }
 
     @Input()
@@ -38,14 +46,15 @@ export class HistoricalTaskComponent implements OnInit {
     }
 
     public copyText() {
-        let text = '';
-        if (window.getSelection) {
-            text = window.getSelection().toString();
-        } else if (document['selection'] && document['selection'].type !== 'Control') {
-            text = document['selection'].createRange().text;
+        if (this.analyzedTask.apply) {
+            let text = '';
+            if (window.getSelection) {
+                text = window.getSelection().toString();
+            } else if (document['selection'] && document['selection'].type !== 'Control') {
+                text = document['selection'].createRange().text;
+            }
+            this.editorContent = this.editorContent ? this.editorContent + text : text;
         }
-
-        this.editorContent = this.editorContent ? this.editorContent + text : text;
     }
 
     get historicalTask(): HistoricalTask {
@@ -72,4 +81,7 @@ export class HistoricalTaskComponent implements OnInit {
         return this._historicalReportService.editorContent;
     }
 
+    get analyzedTask(): TimelineTask {
+        return this._analyzedTask;
+    }
 }
