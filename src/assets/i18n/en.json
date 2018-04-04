@@ -49,12 +49,17 @@
       "TIMELINE_STATUS": "Timeline Status"
     },
     "REPORT": {
+      "DESCRIPTION": "Description",
       "ERROR": {
         "INVALID_ATA": "ATA is invalid",
         "REQUIRED_ATA": "ATA is required",
         "REQUIRED_FIELDS": "You must fill in all required fields"
       },
       "HISTORICAL_REPORTS": "Historical Reports",
+      "JOB_STEP": "Step",
+      "JOB_STEPS": "Job Steps",
+      "MAINTENANCE_ACTION": "Action",
+      "MAINTENANCE_ACTIONS": "Maintenance Actions",
       "REPORTS_TIMELINE": "Reports Timeline",
       "START_NEW_PROJECT": "Start new project",
       "SUCCESS" : {

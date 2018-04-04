@@ -41,11 +41,15 @@ export class HistoricalReportService {
     }
 
     set editorContent(value: string) {
-        this._editorContent = value;
+        this._editorContent = value === null ? '' : value;
     }
 
     get quillEditor(): QuillEditorComponent {
         return this._quillEditor;
+    }
+
+    get qEditorInstance(): any {
+        return this._quillEditor.quillEditor;
     }
 
     set quillEditor(value: QuillEditorComponent) {
