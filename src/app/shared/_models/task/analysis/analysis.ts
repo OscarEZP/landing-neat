@@ -6,13 +6,15 @@ export class Analysis {
     private _alertCode: string;
     private _remark: string;
     private _reviews: Review[];
+    private _ata: string;
 
     private constructor() {
-        this._remark = '';
-        this._reviews = [];
-        this._username = '';
-        this._barcode = '';
-        this._alertCode = '';
+        this.remark = '';
+        this.reviews = [];
+        this.username = '';
+        this.barcode = '';
+        this.alertCode = '';
+        this.ata = '';
 
     }
 
@@ -58,6 +60,14 @@ export class Analysis {
 
     set username(value: string) {
         this._username = value;
+    }
+
+    get ata(): string {
+        return this._ata;
+    }
+
+    set ata(value: string) {
+        this._ata = value;
     }
 }
 
