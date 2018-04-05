@@ -54,7 +54,7 @@ export class HistoricalTaskComponent implements OnInit {
      */
     public copyText() {
         const selection = this.getSelection();
-        if (this.analyzedTask.apply && selection.length > 0 && selection.indexOf(this.header) === -1) {
+        if (selection.length > 0 && selection.indexOf(this.header) === -1) {
             this.addHeader();
             this.editorContent = this.editorContent ? this.editorContent + selection : selection;
         }

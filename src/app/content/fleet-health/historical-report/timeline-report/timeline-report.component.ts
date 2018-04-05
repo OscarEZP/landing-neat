@@ -63,20 +63,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
     }
 
-    private createTimeline(data: TimelineTask[]): Timeline {
-
-        data = this.getExtraTime(data)
-            .map(task => task.getJson());
-
-        const items = new DataSet(data);
-        const dataMinDate = this.taskList
-            .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1)
-            .shift();
-
-        this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days');
-
-        const maxTime = moment(this.maxTime).utc().add(TimelineReportComponent.DAYS_TO, 'days');
-        const options = {
+    private setTimelineOptions(maxTime: moment.Moment) {
+        return {
             start: this.minDate.format('YYYY-MM-DD'),
             end: maxTime.format('YYYY-MM-DD'),
             zoomMin: 1000 * 60 * 60 * 24 * 30,
@@ -84,6 +72,17 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             max: maxTime.format('YYYY-MM-DD'),
             min: this.minDate.format('YYYY-MM-DD')
         };
+    }
+
+    private createTimeline(data: TimelineTask[]): Timeline {
+        data = this.getExtraTime(data)
+            .map(task => task.getJson());
+
+        const items = new DataSet(data);
+        const dataMinDate = this.taskList
+            .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1)
+            .shift();
+        this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days');
 
         let timeline: Timeline;
         if (this.timeline) {
@@ -91,18 +90,27 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             timeline = this.timeline;
             timeline.setData({items: items});
         } else {
-            timeline = new Timeline(this.element.nativeElement, items, options);
-            timeline.on('click', () => {
-                this.tooltip = false;
-                this.getTimelineItem();
-                this.showTooltip();
-                if (this.timelineTaskData !== null) {
-                    this.onAnalyzedTaskSelected.emit(this.timelineTaskData['data']);
-                }
-            });
-            timeline.on('rangechange', () => this.showTooltip());
+            timeline = this.getNewTimeline(items);
         }
 
+        return timeline;
+    }
+
+    private getNewTimeline(items: DataSet<object>): Timeline {
+        const maxTime = moment(this.maxTime).utc().add(TimelineReportComponent.DAYS_TO, 'days');
+        const options = this.setTimelineOptions(maxTime);
+
+        const timeline = new Timeline(this.element.nativeElement, items, options);
+
+        timeline.on('click', () => {
+            this.tooltip = false;
+            this.getTimelineItem();
+            this.showTooltip();
+            if (this.timelineTaskData !== null && !this.timelineTaskData['data']['active']) {
+                this.onAnalyzedTaskSelected.emit(this.timelineTaskData['data']);
+            }
+        });
+        timeline.on('rangechange', () => this.showTooltip());
         return timeline;
     }
 
@@ -133,7 +141,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Subscription for get the data list
+     * Subscription for get a data list
      * @param signature
      * @return {Subscription}
      */

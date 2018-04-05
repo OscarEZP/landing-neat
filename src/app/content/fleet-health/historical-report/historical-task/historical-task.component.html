@@ -12,7 +12,7 @@
                 <h1>{{ historicalTask.ata }} / {{ historicalTask.barcode }}</h1>
             </div>
             <div fxFlexAlign="end center" fxLayout="row" >
-                <button [color]="primary" [disabled]="!analyzedTask.apply" (click)="copyText()" mat-raised-button type="button">Copy text</button>
+                <button [color]="primary" (click)="copyText()" mat-raised-button type="button">Copy text</button>
             </div>
         </div>
     </header>
