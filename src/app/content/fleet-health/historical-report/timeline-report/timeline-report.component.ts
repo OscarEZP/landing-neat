@@ -14,7 +14,6 @@ import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 import {Timeline, DataSet} from 'vis';
 import {Review} from '../../../../shared/_models/task/analysis/review';
 import {Analysis} from '../../../../shared/_models/task/analysis/analysis';
-import {Moment} from 'moment';
 
 @Component({
     selector: 'lsl-timeline-report',
@@ -64,7 +63,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
     }
 
-    private setTimelineOptions(maxTime: Moment) {
+    private setTimelineOptions(maxTime: moment.Moment) {
         return {
             start: this.minDate.format('YYYY-MM-DD'),
             end: maxTime.format('YYYY-MM-DD'),
