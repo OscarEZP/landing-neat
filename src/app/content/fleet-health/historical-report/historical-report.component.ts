@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { DialogService } from '../../_services/dialog.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Task } from '../../../shared/_models/task/task';
 import {TimelineTooltipComponent} from './timeline-tooltip/timeline-tooltip.component';
 import {HistoricalReportService} from './_services/historical-report.service';
 import {DataService} from '../../../shared/_services/data.service';
+import {TimelineTask} from '../../../shared/_models/task/timelineTask';
 
 
 @Component({
@@ -15,9 +16,10 @@ import {DataService} from '../../../shared/_services/data.service';
         TimelineTooltipComponent
     ]
 })
-export class HistoricalReportComponent implements OnInit {
+export class HistoricalReportComponent implements OnInit, OnDestroy {
 
     private _task: Task;
+    private _analyzedTask: TimelineTask;
 
     constructor(
         private _dialogService: DialogService,
@@ -29,12 +31,21 @@ export class HistoricalReportComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.analyzedTask = TimelineTask.getInstance();
         this.task = this._historicalReportService.task;
+    }
+
+    ngOnDestroy() {
+        this._historicalReportService.isAtaCorrected = false;
     }
 
     public openCancelDialog(): void {
         this._dialogService.closeAllDialogs();
         this._messageData.stringMessage('reload');
+    }
+
+    public setAnalizedTask(task: TimelineTask) {
+        this.analyzedTask = task;
     }
 
     get task(): Task {
@@ -44,4 +55,17 @@ export class HistoricalReportComponent implements OnInit {
     set task(value: Task) {
         this._task = value;
     }
+
+    get newAta(): string {
+        return this._historicalReportService.newAta;
+    }
+
+    set analyzedTask(value: TimelineTask) {
+        this._analyzedTask = value;
+    }
+
+    get analyzedTask(): TimelineTask {
+        return this._analyzedTask;
+    }
+
 }

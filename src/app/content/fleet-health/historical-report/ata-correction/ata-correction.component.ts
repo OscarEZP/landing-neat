@@ -6,7 +6,6 @@ import {ApiRestService} from '../../../../shared/_services/apiRest.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {map} from 'rxjs/operators/map';
 import {Observable} from 'rxjs/Observable';
-import {AtaCorrection} from '../../../../shared/_models/task/ataCorrection';
 import {StorageService} from '../../../../shared/_services/storage.service';
 import {TranslateService} from '@ngx-translate/core';
 import {MessageService} from '../../../../shared/_services/message.service';
@@ -21,7 +20,6 @@ import {MessageService} from '../../../../shared/_services/message.service';
 export class AtaCorrectionComponent implements OnInit, OnDestroy {
 
     private static ATA_BY_FLEET_ENDPOINT = 'ataByFleet';
-    private static TASK_CORRECTION_ENDPOINT = 'tasksCorrection';
 
     private _ataSub: Subscription;
     private _taskCorrectionSub: Subscription;
@@ -67,16 +65,6 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
         return this._apiRestService
         .getParams<string[]>(AtaCorrectionComponent.ATA_BY_FLEET_ENDPOINT, fleet)
         .subscribe(ataList => this.ataList = ataList);
-    }
-
-    private getTaskCorrectionSub(): Subscription {
-        const signature = new AtaCorrection(this.task.id, this.newAta, this._storageService.getCurrentUser().username);
-        return this._apiRestService.search(AtaCorrectionComponent.TASK_CORRECTION_ENDPOINT, signature).subscribe(
-            () => {
-                this.task.ata = this.newAta;
-                this.newAta = '';
-            }
-        );
     }
 
     public getFilteredAta(): Observable<string[]> {
@@ -168,10 +156,10 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     }
 
     get isCorrected(): boolean {
-        return this._isCorrected;
+        return this._historicalReportService.isAtaCorrected;
     }
 
     set isCorrected(value: boolean) {
-        this._isCorrected = value;
+        this._historicalReportService.isAtaCorrected = value;
     }
 }

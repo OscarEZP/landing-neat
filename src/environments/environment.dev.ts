@@ -32,7 +32,6 @@ export const environment = {
         pendingSearch: ':9002/api/v1/contingencies/pendings/_search',
         safetyEvent: ':9005/api/v1/configurations/safetyEvents',
         tasks: ':9002/api/v1/tasks/',
-        tasksCorrection: ':9006/api/v1/tasks/_correction',
         tasksSearch: ':9006/api/v1/tasks/_search',
         types: ':9005/api/v1/configurations/types',
         taskRelationsSearch: ':9006/api/v1/tasks/relations/_search',

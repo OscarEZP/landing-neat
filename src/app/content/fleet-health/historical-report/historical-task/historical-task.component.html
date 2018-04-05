@@ -5,14 +5,6 @@
                 <span class="badge">Report</span>
             </div>
             <div fxFlexAlign="end center" fxLayout="row" fxLayoutGap="20px">
-                <!--<div>-->
-                    <!--<mat-icon>today</mat-icon>-->
-                    <!--<span>29.NOV.2017</span>-->
-                <!--</div>-->
-                <!--<div>-->
-                    <!--<mat-icon>access_time</mat-icon>-->
-                    <!--<span>05:18 AM</span>-->
-                <!--</div>-->
             </div>
         </div>
         <div fxLayout="row">
@@ -20,30 +12,57 @@
                 <h1>{{ historicalTask.ata }} / {{ historicalTask.barcode }}</h1>
             </div>
             <div fxFlexAlign="end center" fxLayout="row" >
-                <button (click)="copyText()" mat-raised-button type="button">Copy text</button>
+                <button [color]="primary" [disabled]="!analyzedTask.apply" (click)="copyText()" mat-raised-button type="button">Copy text</button>
             </div>
         </div>
     </header>
     <hr>
     <content>
         <div id="description">
-            <h2>Description</h2>
+            <h2>{{'FLEET_HEALTH.REPORT.DESCRIPTION' | translate}}</h2>
             <p>{{historicalTask.description}}</p>
         </div>
-        <hr class="segment">
-        <div id="job-steps">
-            <h2>Job Steps</h2>
-            <ol>
-                <li *ngFor="let step of historicalTask.steps" [innerHTML]="step.description"></li>
-            </ol>
+        <div id="job-steps" *ngIf="historicalTask.steps.length > 0">
+            <hr class="segment">
+            <h2>{{'FLEET_HEALTH.REPORT.JOB_STEPS' | translate}}</h2>
+            <mat-accordion>
+                <mat-expansion-panel *ngFor="let step of historicalTask.steps; let i = index" [expanded]="i === 0">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{'FLEET_HEALTH.REPORT.JOB_STEP' | translate}} {{step.ord}} | {{step.status}}
+                        </mat-panel-title>
+                        <mat-panel-description>
+                             {{ step.createDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div [innerHtml]="step.description"></div>
+                    <ol *ngIf="step.stepLabours.length > 0">
+                        <li *ngFor="let labour of step.stepLabours">
+                            <span>Id: {{labour.labourId}} | Creation: {{labour.createDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}} | Update: {{labour.reviseDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</span>
+                            <div [innerHtml]="labour.notes"></div>
+                        </li>
+                    </ol>
+                </mat-expansion-panel>
+            </mat-accordion>
         </div>
-        <hr class="segment">
-        <div id="maintenance-actions">
-            <h2>Maintenance Actions</h2>
-            <ol>
-                <li></li>
-            </ol>
+        <div id="maintenance-actions" *ngIf="historicalTask.correctiveActions.length > 0">
+            <hr class="segment">
+            <h2>{{'FLEET_HEALTH.REPORT.MAINTENANCE_ACTIONS' | translate}}</h2>
+            <mat-accordion>
+                <mat-expansion-panel *ngFor="let action of historicalTask.correctiveActions; let i = index" [expanded]="i === 0">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{'FLEET_HEALTH.REPORT.MAINTENANCE_ACTION' | translate}} {{i+1}}
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            {{ action.actionDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }} |
+                            {{ action.updateDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <p>{{action.name.firstName}} {{action.name.lastName}}</p>
+                    <div [innerHtml]="action.description"></div>
+                </mat-expansion-panel>
+            </mat-accordion>
         </div>
-        <!--historical-task works! {{ historicalTask | json }}-->
     </content>
 </section>

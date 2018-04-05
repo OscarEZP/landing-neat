@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
@@ -26,6 +26,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private static DAYS_TO = 1;
     private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
 
+    @Output()
+    onAnalyzedTaskSelected: EventEmitter<any> = new EventEmitter();
+
     private _timelineData: TimelineTask[];
     private _tooltip: boolean;
     private _tooltipStyle: Style;
@@ -37,10 +40,12 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _timelineTaskData: object | null;
     private _analysis: Analysis;
 
-    constructor(private _translate: TranslateService,
-                private _element: ElementRef,
-                private _historicalReportService: HistoricalReportService,
-                private _apiRestService: ApiRestService,) {
+    constructor(
+        private _translate: TranslateService,
+        private _element: ElementRef,
+        private _historicalReportService: HistoricalReportService,
+        private _apiRestService: ApiRestService
+    ) {
         this._translate.setDefaultLang('en');
         this.tooltip = false;
         this.tooltipStyle = new Style();
@@ -52,6 +57,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.timelineData = this.getTimelineInitData();
         this.timeline = this.createTimeline(this.timelineData);
+
     }
 
     ngOnDestroy() {
@@ -90,6 +96,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                 this.tooltip = false;
                 this.getTimelineItem();
                 this.showTooltip();
+                if (this.timelineTaskData !== null) {
+                    this.onAnalyzedTaskSelected.emit(this.timelineTaskData['data']);
+                }
             });
             timeline.on('rangechange', () => this.showTooltip());
         }
@@ -169,7 +178,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         let apply: boolean = null;
         if (review != null) {
             if (review.apply) {
-                this.updateReview(review)
+                this.updateReview(review);
             }
             apply = review.apply;
         }
@@ -203,6 +212,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.timelineData = newData;
         this.timeline = this.createTimeline(newData);
         this.updateReview(review);
+        this.onAnalyzedTaskSelected.emit(updatedTask);
     }
 
 
@@ -324,4 +334,5 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     get maxTime(): number {
         return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime : this.activeTask.extendedDueDate.epochTime ? this.activeTask.extendedDueDate.epochTime : this.activeTask.dueDate.epochTime;
     }
+
 }

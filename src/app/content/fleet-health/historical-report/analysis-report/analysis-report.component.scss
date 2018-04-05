@@ -1,0 +1,15 @@
+@import '../../../../../assets/style/base.scss';
+
+/deep/
+.ql-editor {
+  .header {
+    font-weight: bold;
+    color: mat-color($warn);
+  }
+  strong {
+    font-weight: bold;
+  }
+  em {
+    font-style: italic;
+  }
+}
