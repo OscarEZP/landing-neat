@@ -1,6 +1,7 @@
 import {Task} from '../../../../shared/_models/task/task';
 import { Injectable } from '@angular/core';
 import {QuillEditorComponent} from 'ngx-quill';
+import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 
 @Injectable()
 export class HistoricalReportService {
@@ -11,6 +12,7 @@ export class HistoricalReportService {
     private _quillEditor: QuillEditorComponent;
     private _isAtaCorrected: boolean;
     private _analyzedTask: Task;
+    private _timelineData: TimelineTask[];
 
     constructor() {
         this.task = Task.getInstance();
@@ -18,6 +20,7 @@ export class HistoricalReportService {
         this.newAta = '';
         this.editorContent = '';
         this.isAtaCorrected = false;
+        this.timelineData = [];
     }
 
     get task(): Task {
@@ -64,11 +67,16 @@ export class HistoricalReportService {
         this._isAtaCorrected = value;
     }
 
-    get analyzedTask(): Task {
-        return this._analyzedTask;
-    }
-
     set analyzedTask(value: Task) {
         this._analyzedTask = value;
     }
+
+    get timelineData(): TimelineTask[] {
+        return this._timelineData;
+    }
+
+    set timelineData(value: TimelineTask[]) {
+        this._timelineData = value;
+    }
+
 }

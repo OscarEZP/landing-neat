@@ -1,8 +1,8 @@
-<section>
+<section *ngIf="timelineTaskValidation(analyzedTask)">
     <header>
         <div fxLayout="row">
             <div fxFlex="">
-                <span class="badge">Report</span>
+                <span class="badge">Task</span>
             </div>
             <div fxFlexAlign="end center" fxLayout="row" fxLayoutGap="20px">
             </div>
@@ -17,7 +17,7 @@
         </div>
     </header>
     <hr>
-    <content>
+    <div class="content">
         <div id="description">
             <h2>{{'FLEET_HEALTH.REPORT.DESCRIPTION' | translate}}</h2>
             <p>{{historicalTask.description}}</p>
@@ -64,5 +64,10 @@
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
-    </content>
+    </div>
+</section>
+
+<section *ngIf="!timelineTaskValidation(analyzedTask)">
+    <p *ngIf="getRelatedTimelineData().length > 0">{{'FLEET_HEALTH.REPORT.MSG.NO_TASK_SELECTED' | translate}}</p>
+    <p *ngIf="getRelatedTimelineData().length === 0">{{'FLEET_HEALTH.REPORT.MSG.NO_TASKS' | translate}}</p>
 </section>

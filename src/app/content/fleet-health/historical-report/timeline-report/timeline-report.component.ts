@@ -29,7 +29,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     @Output()
     onAnalyzedTaskSelected: EventEmitter<any> = new EventEmitter();
 
-    private _timelineData: TimelineTask[];
+    @Output()
+    onAtaCorrected: EventEmitter<any> = new EventEmitter();
+
     private _tooltip: boolean;
     private _tooltipStyle: Style;
     private _timeline: Timeline;
@@ -178,6 +180,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                     this.timelineData.push(new TimelineTask(this.activeTask, true, true));
                 }
                 this.timeline = this.createTimeline(this.timelineData);
+
+                this.onAtaCorrected.emit(result);
             });
         }
     }
@@ -288,11 +292,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     get timelineData(): TimelineTask[] {
-        return this._timelineData;
+        return this._historicalReportService.timelineData;
     }
 
     set timelineData(value: TimelineTask[]) {
-        this._timelineData = value;
+        this._historicalReportService.timelineData = value;
     }
 
     get timeline(): Timeline {

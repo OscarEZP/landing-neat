@@ -60,6 +60,10 @@
       "JOB_STEPS": "Job Steps",
       "MAINTENANCE_ACTION": "Action",
       "MAINTENANCE_ACTIONS": "Maintenance Actions",
+      "MSG": {
+        "NO_TASK_SELECTED": "No task selected. To see a report, please select a related task",
+        "NO_TASKS": "There are no related tasks for this ATA"
+      },
       "REPORTS_TIMELINE": "Reports Timeline",
       "START_NEW_PROJECT": "Start new project",
       "SUCCESS" : {

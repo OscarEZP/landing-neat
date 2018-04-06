@@ -13,13 +13,15 @@ import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 })
 export class HistoricalTaskComponent implements OnInit {
 
+    private static TASK_HISTORICAL_REPORT_ENDPOINT = 'taskHistoricalReport';
+
     private _historicalTask: HistoricalTask;
     private _apiRestService: ApiRestService;
     private _analyzedTask: TimelineTask;
 
     @Input()
     set analyzedTask(value: TimelineTask) {
-        if (!value.active) {
+        if (this.timelineTaskValidation(value)) {
             this.getHistoricalTask(value.task.barcode);
             this._analyzedTask = value;
         }
@@ -36,6 +38,10 @@ export class HistoricalTaskComponent implements OnInit {
         this.historicalTask = HistoricalTask.getInstance();
     }
 
+    public timelineTaskValidation(value: TimelineTask) {
+        return value && !value.active && value.task.barcode;
+    }
+
     /**
      * Get the historical task by a barcode
      * @param {string} barcode
@@ -43,7 +49,7 @@ export class HistoricalTaskComponent implements OnInit {
      */
     public getHistoricalTask(barcode: string): Subscription {
         return this.apiRestService
-            .getSingle<HistoricalTask>('taskHistoricalReport', barcode)
+            .getSingle<HistoricalTask>(HistoricalTaskComponent.TASK_HISTORICAL_REPORT_ENDPOINT, barcode)
             .subscribe((response: HistoricalTask) => {
                 this.historicalTask = response;
             });
@@ -67,7 +73,7 @@ export class HistoricalTaskComponent implements OnInit {
     private addHeader() {
         if (this.editorContent.indexOf(this.header) === -1) {
             const init = this.editorContent.length > 0 ? this.quillEditor.getText().length : 0;
-            this.quillEditor.insertText(init, 'REPORT', 'bold', true);
+            this.quillEditor.insertText(init, 'TASK', 'bold', true);
             this.quillEditor.insertText(this.quillEditor.getText().length, this.header, 'bold', true);
         }
     }
@@ -120,5 +126,13 @@ export class HistoricalTaskComponent implements OnInit {
 
     get quillEditor() {
         return this._historicalReportService.qEditorInstance;
+    }
+
+    get isAtaCorrected(): boolean {
+        return this._historicalReportService.isAtaCorrected;
+    }
+
+    public getRelatedTimelineData(): TimelineTask[] {
+        return this._historicalReportService.timelineData.filter(data => data.active === false);
     }
 }

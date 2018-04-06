@@ -6,7 +6,7 @@ import {TimelineTooltipComponent} from './timeline-tooltip/timeline-tooltip.comp
 import {HistoricalReportService} from './_services/historical-report.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {TimelineTask} from '../../../shared/_models/task/timelineTask';
-
+import {Validation} from '../../../shared/_models/validation';
 
 @Component({
     selector: 'lsl-historical-report',
@@ -20,6 +20,8 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
 
     private _task: Task;
     private _analyzedTask: TimelineTask;
+    private _validations: Validation;
+    private _ready: boolean;
 
     constructor(
         private _dialogService: DialogService,
@@ -28,6 +30,9 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         private _messageData: DataService
     ) {
         this._translate.setDefaultLang('en');
+        this.validations = new Validation(false, true, true, false);
+        this.ready = false;
+
     }
 
     ngOnInit() {
@@ -39,6 +44,10 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         this._historicalReportService.isAtaCorrected = false;
     }
 
+    public updateAta(value: boolean) {
+        this.ready = this.timelineData.filter(data => data.active !== true ).length === 0;
+    }
+
     public openCancelDialog(): void {
         this._dialogService.closeAllDialogs();
         this._messageData.stringMessage('reload');
@@ -46,6 +55,17 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
 
     public setAnalizedTask(task: TimelineTask) {
         this.analyzedTask = task;
+    }
+
+    public submitForm() {
+        if (this.validateForm()) {
+            console.log('entró');
+        }
+    }
+
+    public validateForm() {
+        const noAnalyzedTask = this.timelineData.find(data => data.apply === null && data.active === false);
+        return !noAnalyzedTask && this.isCorrected;
     }
 
     get task(): Task {
@@ -56,16 +76,36 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         this._task = value;
     }
 
-    get newAta(): string {
-        return this._historicalReportService.newAta;
-    }
-
     set analyzedTask(value: TimelineTask) {
         this._analyzedTask = value;
     }
 
     get analyzedTask(): TimelineTask {
         return this._analyzedTask;
+    }
+
+    get validations(): Validation {
+        return this._validations;
+    }
+
+    set validations(value: Validation) {
+        this._validations = value;
+    }
+
+    get ready(): boolean {
+        return this._ready;
+    }
+
+    set ready(value: boolean) {
+        this._ready = value;
+    }
+
+    get timelineData(): TimelineTask[] {
+        return this._historicalReportService.timelineData;
+    }
+
+    get isCorrected(): boolean {
+        return this._historicalReportService.isAtaCorrected;
     }
 
 }
