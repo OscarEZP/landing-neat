@@ -1,6 +1,6 @@
-import {Task} from "./task";
-import {TimeInstant} from "../timeInstant";
-import {DateUtil} from "../../util/dateUtil";
+import {Task} from './task';
+import {TimeInstant} from '../timeInstant';
+import {DateUtil} from '../../util/dateUtil';
 
 export class TimelineTask {
 
@@ -65,9 +65,8 @@ export class TimelineTask {
         const arr = [];
         if (this.isOpen && this.extendedDueDate.epochTime !== null) {
             const extra = TimelineTask.getInstance();
-
-            extra.end = DateUtil.formatDate(this.extendedDueDate.epochTime,TimelineTask.DATE_FORMAT);
-            extra.start = DateUtil.formatDate(this.dueDate.epochTime,TimelineTask.DATE_FORMAT);
+            extra.end = DateUtil.formatDate(this.extendedDueDate.epochTime, TimelineTask.DATE_FORMAT);
+            extra.start = DateUtil.formatDate(this.dueDate.epochTime, TimelineTask.DATE_FORMAT);
             extra.id = this.id + this.createDate.epochTime;
             extra.group = this.barcode;
             extra.subgroup = this.barcode;
@@ -109,10 +108,6 @@ export class TimelineTask {
         return this._content;
     }
 
-    get start(): string {
-        return this._start;
-    }
-
     set start(value: string) {
         this._start = value;
     }
@@ -123,14 +118,6 @@ export class TimelineTask {
 
     set end(value: string) {
         this._end = value;
-    }
-
-    get className(): string {
-        return this._className;
-    }
-
-    set className(value: string) {
-        this._className = value;
     }
 
     get active(): boolean {
@@ -151,10 +138,6 @@ export class TimelineTask {
 
     get corrected(): boolean {
         return this._corrected;
-    }
-
-    set corrected(value: boolean) {
-        this._corrected = value;
     }
 
     get apply(): boolean {
@@ -183,10 +166,6 @@ export class TimelineTask {
 
     get dueDate(): TimeInstant{
         return this.task.dueDate;
-    }
-
-    get subgroup(): string {
-        return this._subgroup;
     }
 
     set subgroup(value: string) {
