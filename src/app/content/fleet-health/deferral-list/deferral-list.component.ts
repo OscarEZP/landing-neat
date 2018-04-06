@@ -204,10 +204,13 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @param task
      */
     public setSelectedRegister(register: Task) {
-        this.selectedRegister = register;
-        this.selectedRegisterPivot = register;
-        this.openHistoricalReport(register);
-        this.serviceTask = register;
+
+        if (register.timelineStatus==='OPEN') {
+            this.selectedRegister = register;
+            this.selectedRegisterPivot = register;
+            this.openHistoricalReport(register);
+            this.serviceTask = register;
+        }
     }
 
     /**
