@@ -28,7 +28,6 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
     private _ataForm: FormGroup;
     private _filteredAta: Observable<string[]>;
     private _open: boolean;
-    private _isCorrected: boolean;
 
     @Output()
     corrected: EventEmitter<any> = new EventEmitter();

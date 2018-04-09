@@ -2,6 +2,7 @@ import {Task} from '../../../../shared/_models/task/task';
 import { Injectable } from '@angular/core';
 import {QuillEditorComponent} from 'ngx-quill';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
+import {Review} from '../../../../shared/_models/task/analysis/review';
 
 @Injectable()
 export class HistoricalReportService {
@@ -77,6 +78,13 @@ export class HistoricalReportService {
 
     set timelineData(value: TimelineTask[]) {
         this._timelineData = value;
+    }
+
+    get reviews(): Review[] {
+        return this.timelineData.map(data => {
+            const review = new Review(data.barcode, data.apply);
+            return review;
+        });
     }
 
 }

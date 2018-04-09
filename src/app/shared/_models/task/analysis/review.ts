@@ -1,17 +1,15 @@
 export class Review {
     private _barcode: string;
-    private _apply: boolean;
+    private _apply: boolean | null;
 
-    constructor() {
-        this.barcode = '';
-        this.apply = null;
-
+    constructor(barcode: string = '', apply: boolean | null = null) {
+        this.barcode = barcode;
+        this.apply = apply;
     }
 
     public static getInstance() {
         return new Review();
     }
-
 
     get barcode(): string {
         return this._barcode;
@@ -22,11 +20,11 @@ export class Review {
     }
 
 
-    get apply(): boolean {
+    get apply(): boolean | null {
         return this._apply;
     }
 
-    set apply(value: boolean) {
+    set apply(value: boolean | null) {
         this._apply = value;
     }
 

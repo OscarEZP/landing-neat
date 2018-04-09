@@ -65,7 +65,7 @@
     <div>
         <div id="container-timeline">
             <h3>{{ 'FLEET_HEALTH.REPORT.REPORTS_TIMELINE' | translate }}</h3>
-            <lsl-timeline-report (onAtaCorrected)="updateAta($event)" (onAnalyzedTaskSelected)="setAnalizedTask($event)" id="timeline"></lsl-timeline-report>
+            <lsl-timeline-report (onAnalyzedTaskSelected)="setAnalizedTask($event)" id="timeline"></lsl-timeline-report>
         </div>
         <div id="container-historical-report">
             <h3>{{ 'FLEET_HEALTH.REPORT.HISTORICAL_REPORTS' | translate }}</h3>
@@ -82,7 +82,7 @@
             {{'OPERATIONS.CONTINGENCY_FORM.CANCEL_LABEL'|translate}}
         </button>
         <button id="btn-contingency-form-submit" type="submit" mat-button mat-raised-button color="primary"
-                [disabled]="validations.isSending || !ready">
+                [disabled]="validations.isSending">
             {{'OPERATIONS.CONTINGENCY_FORM.CREATE_LABEL'|translate}}
         </button>
     </div>
