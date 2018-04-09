@@ -53,7 +53,7 @@
       "ERROR": {
         "INVALID_ATA": "ATA is invalid",
         "REQUIRED_ATA": "ATA is required",
-        "REQUIRED_FIELDS": "You must fill in all required fields"
+        "REQUIRED_REVIEWS": "You must fill in all related task"
       },
       "HISTORICAL_REPORTS": "Historical Reports",
       "JOB_STEP": "Step",
@@ -62,13 +62,11 @@
       "MAINTENANCE_ACTIONS": "Maintenance Actions",
       "MSG": {
         "NO_TASK_SELECTED": "No task selected. To see a report, please select a related task",
-        "NO_TASKS": "There are no related tasks for this ATA"
+        "NO_TASKS": "There are no related tasks for this ATA",
+        "SAVED_ANALYSIS": "Saved analysis"
       },
       "REPORTS_TIMELINE": "Reports Timeline",
-      "START_NEW_PROJECT": "Start new project",
-      "SUCCESS" : {
-        "ATA_UPDATED": "ATA saved"
-      }
+      "START_NEW_PROJECT": "Start new project"
     }
   },
   "OPERATIONS": {

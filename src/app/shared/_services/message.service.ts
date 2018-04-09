@@ -16,7 +16,7 @@ export class MessageService {
      * @param message
      * @param time
      */
-    openSnackBar(message: string, time: number = 5000) {
+    openSnackBar(message: string, time: number = 2500) {
         if (!this.active) {
             this.active = true;
             this._matSnackBar.open(message, '', <MatSnackBarConfig>{

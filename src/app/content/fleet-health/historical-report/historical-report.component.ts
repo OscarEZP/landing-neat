@@ -65,10 +65,15 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
             const signature = this.getSignature();
             this._apiRestService
                 .search<any>(HistoricalReportComponent.TASK_SAVE_ANALYSIS, signature)
-                .subscribe((response: any) => {
-                    // this.historicalTask = response;
-                    console.log(response);
-                });
+                .subscribe(
+                    response => {
+                        this.getTranslateString('FLEET_HEALTH.REPORT.MSG.SAVED_ANALYSIS');
+                        this.openCancelDialog();
+                    },
+                    error => {
+                        this.getTranslateString('ERRORS.DEFAULT');
+                    }
+                );
         }
     }
 
@@ -78,13 +83,17 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         analysis.ata = this.newAta;
         analysis.reviews = this.reviews;
         analysis.username = this.user;
+        analysis.alertCode = 'LIMP';
         return analysis;
     }
 
     public validateForm() {
         const noAnalyzedTask = this.timelineData.find(data => data.apply === null && data.active === false);
-        if (noAnalyzedTask || !this.isCorrected) {
-            this.getTranslateString('FLEET_HEALTH.REPORT.ERROR.REQUIRED_FIELDS');
+        if (noAnalyzedTask) {
+            this.getTranslateString('FLEET_HEALTH.REPORT.ERROR.REQUIRED_REVIEWS');
+        }
+        if (!this.isCorrected) {
+            this.getTranslateString('FLEET_HEALTH.REPORT.ERROR.REQUIRED_ATA');
         }
         return !noAnalyzedTask && this.isCorrected;
     }

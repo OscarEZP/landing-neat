@@ -81,7 +81,9 @@ export class HistoricalReportService {
     }
 
     get reviews(): Review[] {
-        return this.timelineData.map(data => {
+        return this.timelineData
+            .filter( data => data.active === false)
+            .map(data => {
             const review = new Review(data.barcode, data.apply);
             return review;
         });
