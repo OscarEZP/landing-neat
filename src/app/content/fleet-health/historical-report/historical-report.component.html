@@ -79,11 +79,11 @@
     <div mat-dialog-actions fxLayoutAlign="end">
         <button id="btn-contingency-form-cancel" type="button" mat-button (click)="openCancelDialog()"
                 [disabled]="validations.isSending">
-            {{'OPERATIONS.CONTINGENCY_FORM.CANCEL_LABEL'|translate}}
+            {{'BUTTONS.CANCEL'|translate}}
         </button>
         <button id="btn-contingency-form-submit" type="submit" mat-button mat-raised-button color="primary"
                 [disabled]="validations.isSending">
-            {{'OPERATIONS.CONTINGENCY_FORM.CREATE_LABEL'|translate}}
+            {{'BUTTONS.SAVE'|translate}}
         </button>
     </div>
 </form>

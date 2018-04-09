@@ -12,12 +12,10 @@ export class HistoricalReportService {
     private _editorContent: string;
     private _quillEditor: QuillEditorComponent;
     private _isAtaCorrected: boolean;
-    private _analyzedTask: Task;
     private _timelineData: TimelineTask[];
 
     constructor() {
         this.task = Task.getInstance();
-        this.analyzedTask = Task.getInstance();
         this.newAta = '';
         this.editorContent = '';
         this.isAtaCorrected = false;
@@ -68,10 +66,6 @@ export class HistoricalReportService {
         this._isAtaCorrected = value;
     }
 
-    set analyzedTask(value: Task) {
-        this._analyzedTask = value;
-    }
-
     get timelineData(): TimelineTask[] {
         return this._timelineData;
     }
@@ -82,11 +76,24 @@ export class HistoricalReportService {
 
     get reviews(): Review[] {
         return this.timelineData
-            .filter( data => data.active === false)
+            .filter(data => data.active === false)
             .map(data => {
-            const review = new Review(data.barcode, data.apply);
-            return review;
-        });
+                const review = new Review(data.barcode, data.apply);
+                return review;
+            });
     }
 
+    get relatedTasks(): Task[] {
+        return this.timelineData
+            .filter(data => data.active === false)
+            .map(data => data.task);
+    }
+
+    get noAnalyzedTask(): TimelineTask {
+        return this.timelineData.find(data => data.apply === null && data.active === false);
+    }
+
+    get analyzedList(): TimelineTask[] {
+        return this.timelineData.filter(data => data.apply !== null && data.active === false);
+    }
 }

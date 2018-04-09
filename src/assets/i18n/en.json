@@ -53,7 +53,8 @@
       "ERROR": {
         "INVALID_ATA": "ATA is invalid",
         "REQUIRED_ATA": "ATA is required",
-        "REQUIRED_REVIEWS": "You must fill in all related task"
+        "REQUIRED_REVIEWS": "You must review all related tasks",
+        "REQUIRED_REPORT": "You must insert a report"
       },
       "HISTORICAL_REPORTS": "Historical Reports",
       "JOB_STEP": "Step",

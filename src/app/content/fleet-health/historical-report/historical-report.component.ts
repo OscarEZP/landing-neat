@@ -12,6 +12,8 @@ import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {Analysis} from '../../../shared/_models/task/analysis/analysis';
 import {Review} from '../../../shared/_models/task/analysis/review';
 import {StorageService} from '../../../shared/_services/storage.service';
+import {CancelComponent} from '../../operations/cancel/cancel.component';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
     selector: 'lsl-historical-report',
@@ -52,8 +54,22 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     }
 
     public openCancelDialog(): void {
-        this._dialogService.closeAllDialogs();
-        this._messageData.stringMessage('reload');
+        if (this.validateFilledItems()) {
+            this._translate.get('OPERATIONS.CANCEL_COMPONENT.MESSAGE')
+                .subscribe((res: string) => {
+                this._messageService.openFromComponent(CancelComponent, {
+                    data: {message: res},
+                    horizontalPosition: 'center',
+                    verticalPosition: 'top'
+                });
+            });
+        } else {
+            this._dialogService.closeAllDialogs();
+        }
+    }
+
+    private validateFilledItems(): boolean {
+        return this.isCorrected || this.editorContent !== '' || this.analyzedList.length > 0;
     }
 
     public setAnalizedTask(task: TimelineTask) {
@@ -68,7 +84,8 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
                 .subscribe(
                     response => {
                         this.getTranslateString('FLEET_HEALTH.REPORT.MSG.SAVED_ANALYSIS');
-                        this.openCancelDialog();
+                        this._dialogService.closeAllDialogs();
+                        this._messageData.stringMessage('reload');
                     },
                     error => {
                         this.getTranslateString('ERRORS.DEFAULT');
@@ -83,23 +100,26 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         analysis.ata = this.newAta;
         analysis.reviews = this.reviews;
         analysis.username = this.user;
-        analysis.alertCode = 'LIMP';
+        analysis.alertCode = 'OTSD';
+        analysis.remark = this.editorContent;
         return analysis;
     }
 
     public validateForm() {
-        const noAnalyzedTask = this.timelineData.find(data => data.apply === null && data.active === false);
-        if (noAnalyzedTask) {
+        if (this.noAnalyzedTask) {
             this.getTranslateString('FLEET_HEALTH.REPORT.ERROR.REQUIRED_REVIEWS');
         }
         if (!this.isCorrected) {
             this.getTranslateString('FLEET_HEALTH.REPORT.ERROR.REQUIRED_ATA');
         }
-        return !noAnalyzedTask && this.isCorrected;
+        if (this.editorContent === '' && this.relatedTasks.length === 0) {
+            this.getTranslateString('FLEET_HEALTH.REPORT.ERROR.REQUIRED_REPORT');
+        }
+        return !this.noAnalyzedTask && this.isCorrected;
     }
 
-    private getTranslateString(toTranslate: string) {
-        this._translate.get(toTranslate).subscribe((res: string) => {
+    private getTranslateString(toTranslate: string): Subscription {
+        return this._translate.get(toTranslate).subscribe((res: string) => {
             this._messageService.openSnackBar(res);
         });
     }
@@ -146,6 +166,22 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
 
     get user(): string {
         return this._storageService.username;
+    }
+
+    get editorContent(): string {
+        return this._historicalReportService.editorContent;
+    }
+
+    get relatedTasks(): Task[] {
+        return this._historicalReportService.relatedTasks;
+    }
+
+    get noAnalyzedTask(): TimelineTask {
+        return this._historicalReportService.noAnalyzedTask;
+    }
+
+    get analyzedList(): TimelineTask[] {
+        return this._historicalReportService.analyzedList;
     }
 
 }
