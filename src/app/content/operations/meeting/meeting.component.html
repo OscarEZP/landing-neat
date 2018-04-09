@@ -3,7 +3,7 @@
         <div fxLayout="row" fxFlex>
             <span class="title-dialog" fxFlex>{{'OPERATIONS.MEETING_FORM.MEETING_SUMMARY' | translate}}</span>
             <span class="date-title-dialog">{{ utcModel.label | utcDate | date: 'dd MMM yyyy'}} | {{ timeClock | utcDate | date: 'HH:mm:ss' }} UTC</span>
-            <button (click)="closeDialog()" id="btn-contingency-form-close-btn" type="button" class="close-btn" mat-icon-button
+            <button (click)="closeDialog()" id="btn-meeting-close" type="button" class="close-btn" mat-icon-button
                     fxFlexOffset="1">
                 <mat-icon aria-label="Example icon-button" class="material-icons close-dialog">{{ 'OPERATIONS.CONTINGENCY_FORM.CLOSE' | translate }}
                 </mat-icon>
@@ -110,7 +110,7 @@
                             </div>
                         </div>
                         <div fxFlex="20" fxLayoutGap="10px" fxLayoutAlign="end center">
-                            <button type="submit" mat-button color="primary" >
+                            <button id="btn-meeting-add-assistant" type="submit" mat-button color="primary" >
                                 {{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT'|translate}}
                             </button>
                         </div>
@@ -121,7 +121,7 @@
                             <div fxFlex="10"><mat-icon matSuffix>person</mat-icon></div>
                             <div fxFlex="75">{{assistant.mail}}</div>
                             <div fxFlex="15">
-                                <button mat-button (click)="deleteAssistantMeeting(i)">
+                                <button id="btn-meeting-delete-assistant" mat-button (click)="deleteAssistantMeeting(i)">
                                     <mat-icon matSuffix>delete</mat-icon>
                                 </button>
                             </div>
@@ -180,7 +180,7 @@
                             </div>
                         </div>
                         <div fxFlex="20" fxLayoutGap="10px" fxLayoutAlign="end center" class="actions-container">
-                            <button type="submit" mat-button color="primary" >
+                            <button id="btn-meeting-add-pending" type="submit" mat-button color="primary" >
                                 {{'BUTTONS.ADD'|translate}}
                             </button>
                         </div>
@@ -194,7 +194,11 @@
                                 <ul>
                                     <li class="separator-border" *ngFor="let tempPending of tempGroup; let i = index">
                                         <div>{{i+1}}- {{tempPending._description}}</div>
-                                        <div fxLayoutAlign="end"><button class="delete" type="button" (click)="deletePending(tempPending)" mat-button><mat-icon matSuffix>delete</mat-icon></button></div>
+                                        <div fxLayoutAlign="end">
+                                            <button id="btn-meeting-delete-pending" class="delete" type="button" (click)="deletePending(tempPending)" mat-button>
+                                                <mat-icon matSuffix>delete</mat-icon>
+                                            </button>
+                                        </div>
                                     </li>
                                 </ul>
                             </mat-expansion-panel>
@@ -248,7 +252,7 @@
                 </div>
                 <div fxLayout="row" class="actions-container">
                     <div fxFlex="100" fxLayoutGap="10px" fxLayoutAlign="end center">
-                        <button type="submit" mat-button color="primary" >
+                        <button id="btn-meeting-add-agreement" type="submit" mat-button color="primary" >
                             {{'OPERATIONS.MEETING_FORM.ADD_ASSISTANT'|translate}}
                         </button>
                     </div>
@@ -262,7 +266,7 @@
                             <div class="separator-border">
                                 <div>{{agreement.description}}</div>
                                 <div fxLayout="row" fxLayoutAlign="end center">
-                                    <button class="delete" mat-button (click)="deleteAgreementMeeting(i)">
+                                    <button id="btn-meeting-delete-agreement" class="delete" mat-button (click)="deleteAgreementMeeting(i)">
                                         <mat-icon matSuffix>delete</mat-icon>
                                     </button>
                                 </div>
@@ -275,10 +279,10 @@
         </div>
     </div>
     <div mat-dialog-actions fxLayoutAlign="end">
-        <button id="btn-contingency-form-cancel" type="button" mat-button (click)="closeDialog()">
+        <button id="btn-meeting-cancel" type="button" mat-button (click)="closeDialog()">
             {{'OPERATIONS.CONTINGENCY_FORM.CANCEL_LABEL'|translate}}
         </button>
-        <button id="btn-contingency-form-submit" type="submit" mat-button mat-raised-button color="primary">
+        <button id="btn-meeting-submit" type="submit" mat-button mat-raised-button color="primary">
             {{'OPERATIONS.CONTINGENCY_FORM.CREATE_LABEL'|translate}}
         </button>
     </div>
