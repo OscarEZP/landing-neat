@@ -160,7 +160,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
      */
     private getTranslateString(toTranslate: string): Subscription {
         return this._translate.get(toTranslate).subscribe((res: string) => {
-            this._messageService.openSnackBar(res);
+            this._messageService.openSnackBar(res, 2500);
         });
     }
 
