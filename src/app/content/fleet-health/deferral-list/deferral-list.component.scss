@@ -9,4 +9,8 @@
     background-color: mat-color($primary);
     color: mat-color($primary, default-contrast);
   }
+  .close {
+    background-color: mat-color($mat-palette-custom, success);
+    color: mat-color($primary, default-contrast);
+  }
 }

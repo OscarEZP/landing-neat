@@ -114,7 +114,7 @@
             </div>
 
             <div fxFlex="5" fxLayoutAlign="start center" >
-                <button mat-icon-button [matMenuTriggerFor]="menu" (click)="setSelectedContingency(contingency)">
+                <button id="btn-contingency-list-{{ contingency.aircraft.tail }}" mat-icon-button [matMenuTriggerFor]="menu" (click)="setSelectedContingency(contingency)">
                     <mat-icon aria-label="options">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">

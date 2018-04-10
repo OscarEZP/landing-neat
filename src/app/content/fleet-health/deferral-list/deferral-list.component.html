@@ -73,7 +73,7 @@
 
                 <!-- TIMELINE STATUS -->
                 <div fxFlex="7" fxLayoutAlign="start center">
-                    <span class="badge" *ngIf="task.timelineStatus" [ngClass]="{'open': task.timelineStatus==='OPEN'}">
+                    <span class="badge" *ngIf="task.timelineStatus" [ngClass]="{'open': task.timelineStatus==='OPEN', 'close': task.timelineStatus==='CLOSE'}">
                         {{ task.timelineStatus }}
                     </span>
                 </div>

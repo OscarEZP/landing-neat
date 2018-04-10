@@ -20,6 +20,7 @@ import {MessageService} from '../../../../shared/_services/message.service';
 export class AtaCorrectionComponent implements OnInit, OnDestroy {
 
     private static ATA_BY_FLEET_ENDPOINT = 'ataByFleet';
+    private static INVALID_ATA = 'FLEET_HEALTH.REPORT.ERROR.INVALID_ATA';
 
     private _ataSub: Subscription;
     private _taskCorrectionSub: Subscription;
@@ -60,6 +61,11 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Subscription for get ATAs
+     * @param {string} fleet
+     * @returns {Subscription}
+     */
     private getAtaSub(fleet: string): Subscription {
         return this._apiRestService
         .getParams<string[]>(AtaCorrectionComponent.ATA_BY_FLEET_ENDPOINT, fleet)
@@ -85,7 +91,12 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
         return val && list.filter(v => (v.toLowerCase() === val.toLowerCase())).length > 0 ? val : '';
     }
 
-    private ataValidator(control: FormControl) {
+    /**
+     * Validation for accept just a valid ATA
+     * @param {FormControl} control
+     * @returns {{pattern: boolean}}
+     */
+    private ataValidator(control: FormControl): { pattern: true } | null {
         const ata = control.value;
         return this.ataList.length > 0 && this.comboValidation(ata, this.ataList) !== '' ? null : { pattern: true };
     }
@@ -99,6 +110,9 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
         return list.filter(option => option.toLowerCase().indexOf(val.toLowerCase()) === 0);
     }
 
+    /**
+     * Method for update ATA
+     */
     public submitAta() {
         if (this.ataForm.valid) {
             this.task.ata = this.newAta;
@@ -106,7 +120,7 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
             this.corrected.emit(true);
             this.open = false;
         } else {
-            this._translateService.get('FLEET_HEALTH.REPORT.ERROR.REQUIRED_FIELDS').subscribe((res: string) => this._messageService.openSnackBar(res));
+            this._translateService.get(AtaCorrectionComponent.INVALID_ATA).subscribe((res: string) => this._messageService.openSnackBar(res));
         }
     }
 
