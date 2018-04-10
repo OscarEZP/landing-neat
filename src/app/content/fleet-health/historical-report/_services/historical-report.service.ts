@@ -22,6 +22,46 @@ export class HistoricalReportService {
         this.timelineData = [];
     }
 
+    /**
+     * Reviews from timeline data
+     * @returns {Review[]}
+     */
+    get reviews(): Review[] {
+        return this.timelineData
+            .filter(data => data.active === false)
+            .map(data => {
+                return new Review(data.barcode, data.apply);
+            });
+    }
+
+    /**
+     * Get just related tasks from tineline data
+     * @returns {Task[]}
+     */
+    get relatedTasks(): Task[] {
+        return this.timelineData
+            .filter(data => data.active === false)
+            .map(data => data.task);
+    }
+
+    /**
+     * Get a unparsed TimelineTask from timeline data
+     * @returns {TimelineTask}
+     */
+    get unparsedTask(): TimelineTask {
+        return this.timelineData
+            .find(data => data.apply === null && data.active === false);
+    }
+
+    /**
+     * Get just related TimelineTasks with apply true or false
+     * @returns {TimelineTask[]}
+     */
+    get analyzedList(): TimelineTask[] {
+        return this.timelineData
+            .filter(data => data.apply !== null && data.active === false);
+    }
+
     get task(): Task {
         return this._task;
     }
@@ -74,26 +114,5 @@ export class HistoricalReportService {
         this._timelineData = value;
     }
 
-    get reviews(): Review[] {
-        return this.timelineData
-            .filter(data => data.active === false)
-            .map(data => {
-                const review = new Review(data.barcode, data.apply);
-                return review;
-            });
-    }
 
-    get relatedTasks(): Task[] {
-        return this.timelineData
-            .filter(data => data.active === false)
-            .map(data => data.task);
-    }
-
-    get noAnalyzedTask(): TimelineTask {
-        return this.timelineData.find(data => data.apply === null && data.active === false);
-    }
-
-    get analyzedList(): TimelineTask[] {
-        return this.timelineData.filter(data => data.apply !== null && data.active === false);
-    }
 }

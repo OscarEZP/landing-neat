@@ -25,7 +25,14 @@ import {Subscription} from 'rxjs/Subscription';
 })
 export class HistoricalReportComponent implements OnInit, OnDestroy {
 
-    private static TASK_SAVE_ANALYSIS = 'taskSaveAnalysis';
+    private static TASK_SAVE_ANALYSIS_ENDPOINT = 'taskSaveAnalysis';
+    private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
+    private static SAVED_ANALYSIS = 'FLEET_HEALTH.REPORT.MSG.SAVED_ANALYSIS';
+    private static REQUIRED_REVIEWS = 'FLEET_HEALTH.REPORT.ERROR.REQUIRED_REVIEWS';
+    private static REQUIRED_ATA = 'FLEET_HEALTH.REPORT.ERROR.REQUIRED_ATA';
+    private static REQUIRED_REPORT = 'FLEET_HEALTH.REPORT.ERROR.REQUIRED_REPORT';
+    private static DEFAULT_ERROR = 'ERRORS.DEFAULT';
+
 
     private _task: Task;
     private _analyzedTask: TimelineTask;
@@ -53,9 +60,12 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         this._historicalReportService.isAtaCorrected = false;
     }
 
+    /**
+     * Open a dialog for confirm the form cancellation
+     */
     public openCancelDialog(): void {
         if (this.validateFilledItems()) {
-            this._translate.get('OPERATIONS.CANCEL_COMPONENT.MESSAGE')
+            this._translate.get(HistoricalReportComponent.CANCEL_COMPONENT_MESSAGE)
                 .subscribe((res: string) => {
                 this._messageService.openFromComponent(CancelComponent, {
                     data: {message: res},
@@ -68,56 +78,86 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Validation for check touched elements
+     * @returns {boolean}
+     */
     private validateFilledItems(): boolean {
         return this.isCorrected || this.editorContent !== '' || this.analyzedList.length > 0;
     }
 
+    /**
+     * Set the analyzed task from subcomponents
+     * @param {TimelineTask} task
+     */
     public setAnalizedTask(task: TimelineTask) {
         this.analyzedTask = task;
     }
 
+    /**
+     * Save form data and reload the deferral list
+     */
     public submitForm() {
         if (this.validateForm()) {
             const signature = this.getSignature();
             this._apiRestService
-                .search<any>(HistoricalReportComponent.TASK_SAVE_ANALYSIS, signature)
+                .search<any>(HistoricalReportComponent.TASK_SAVE_ANALYSIS_ENDPOINT, signature)
                 .subscribe(
-                    response => {
-                        this.getTranslateString('FLEET_HEALTH.REPORT.MSG.SAVED_ANALYSIS');
+                    () => {
+                        this.getTranslateString(HistoricalReportComponent.SAVED_ANALYSIS);
                         this._dialogService.closeAllDialogs();
                         this._messageData.stringMessage('reload');
                     },
-                    error => {
-                        this.getTranslateString('ERRORS.DEFAULT');
+                    () => {
+                        this.getTranslateString(HistoricalReportComponent.DEFAULT_ERROR);
                     }
                 );
         }
     }
 
+    /**
+     * Get analysis for saving process
+     * @returns {Analysis}
+     */
     private getSignature(): Analysis {
         const analysis = Analysis.getInstance();
         analysis.barcode = this.task.barcode;
         analysis.ata = this.newAta;
         analysis.reviews = this.reviews;
         analysis.username = this.user;
-        analysis.alertCode = 'OTSD';
+        analysis.alertCode = this.alertCode;
         analysis.remark = this.editorContent;
         return analysis;
     }
 
+    /**
+     * This validation process returns false; if:
+     * - There isn't analyzed task
+     * - The ATA isn't updated
+     * - The editor content is empty when there aren't related tasks
+     * @returns {boolean}
+     */
     public validateForm() {
-        if (this.noAnalyzedTask) {
-            this.getTranslateString('FLEET_HEALTH.REPORT.ERROR.REQUIRED_REVIEWS');
+        if (this.unparsedTask) {
+            this.getTranslateString(HistoricalReportComponent.REQUIRED_REVIEWS);
+            return false;
         }
         if (!this.isCorrected) {
-            this.getTranslateString('FLEET_HEALTH.REPORT.ERROR.REQUIRED_ATA');
+            this.getTranslateString(HistoricalReportComponent.REQUIRED_ATA);
+            return false;
         }
         if (this.editorContent === '' && this.relatedTasks.length === 0) {
-            this.getTranslateString('FLEET_HEALTH.REPORT.ERROR.REQUIRED_REPORT');
+            this.getTranslateString(HistoricalReportComponent.REQUIRED_REPORT);
+            return false;
         }
-        return !this.noAnalyzedTask && this.isCorrected;
+        return true;
     }
 
+    /**
+     * Subscription that translate a string and show a message
+     * @param {string} toTranslate
+     * @returns {Subscription}
+     */
     private getTranslateString(toTranslate: string): Subscription {
         return this._translate.get(toTranslate).subscribe((res: string) => {
             this._messageService.openSnackBar(res);
@@ -148,10 +188,6 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         this._validations = value;
     }
 
-    get timelineData(): TimelineTask[] {
-        return this._historicalReportService.timelineData;
-    }
-
     get isCorrected(): boolean {
         return this._historicalReportService.isAtaCorrected;
     }
@@ -176,12 +212,16 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         return this._historicalReportService.relatedTasks;
     }
 
-    get noAnalyzedTask(): TimelineTask {
-        return this._historicalReportService.noAnalyzedTask;
+    get unparsedTask(): TimelineTask {
+        return this._historicalReportService.unparsedTask;
     }
 
     get analyzedList(): TimelineTask[] {
         return this._historicalReportService.analyzedList;
+    }
+
+    get alertCode(): string {
+        return this.task.alertCode;
     }
 
 }

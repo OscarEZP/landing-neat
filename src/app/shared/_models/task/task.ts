@@ -1,6 +1,6 @@
 import {TimeInstant} from '../timeInstant';
-import {EvaluationCategory} from "./fleethealth/evaluationCategory";
-import {Review} from "./analysis/review";
+import {EvaluationCategory} from './fleethealth/evaluationCategory';
+import {Review} from './analysis/review';
 
 export class Task {
     private _ata: string;
@@ -187,8 +187,6 @@ export class Task {
         this._deferralClazz = value;
     }
 
-
-
     get id(): number {
         return this._id;
     }
@@ -204,7 +202,6 @@ export class Task {
     set timelineStatus(value: string) {
         this._timelineStatus = value;
     }
-
 
     get revisionDate(): TimeInstant {
         return this._revisionDate;
@@ -256,5 +253,9 @@ export class Task {
 
     set review(value: Review) {
         this._review = value;
+    }
+
+    get alertCode(): string {
+        return this.evaluationCategory.alertCode;
     }
 }
