@@ -62,18 +62,28 @@
         </content>
     </div>
     <hr>
-    <div id="container-timeline" >
-        <h3>{{ 'FLEET_HEALTH.REPORT.REPORTS_TIMELINE' | translate }}</h3>
-        <lsl-timeline-report (onAnalyzedTaskSelected)="setAnalizedTask($event)" id="timeline"></lsl-timeline-report>
-    </div>
-    <div id="container-historical-report">
-        <h3>{{ 'FLEET_HEALTH.REPORT.HISTORICAL_REPORTS' | translate }}</h3>
-        <div *ngIf="analyzedTask.barcode !== ''" fxLayout="row" fxLayoutGap="10px">
-            <lsl-historical-task [analyzedTask]="analyzedTask" fxFlex="50"></lsl-historical-task>
-            <lsl-analysis-report fxFlex="50"></lsl-analysis-report>
+    <div>
+        <div id="container-timeline">
+            <h3>{{ 'FLEET_HEALTH.REPORT.REPORTS_TIMELINE' | translate }}</h3>
+            <lsl-timeline-report (onAnalyzedTaskSelected)="setAnalizedTask($event)" id="timeline"></lsl-timeline-report>
         </div>
-        <lsl-ess *ngIf="analyzedTask.barcode === ''" icon="assignment" message="FLEET_HEALTH.REPORT.START_NEW_PROJECT"></lsl-ess>
+        <div id="container-historical-report">
+            <h3>{{ 'FLEET_HEALTH.REPORT.HISTORICAL_REPORTS' | translate }}</h3>
+            <div *ngIf="isCorrected" fxLayout="row" fxLayoutGap="10px">
+                <lsl-historical-task [analyzedTask]="analyzedTask" fxFlex="50"></lsl-historical-task>
+                <lsl-analysis-report fxFlex="50"></lsl-analysis-report>
+            </div>
+            <lsl-ess *ngIf="!isCorrected" icon="assignment" message="FLEET_HEALTH.REPORT.START_NEW_PROJECT"></lsl-ess>
+        </div>
     </div>
-
-
+    <div mat-dialog-actions fxLayoutAlign="end">
+        <button id="btn-contingency-form-cancel" type="button" mat-button (click)="openCancelDialog()"
+                [disabled]="validations.isSending">
+            {{'BUTTONS.CANCEL'|translate}}
+        </button>
+        <button id="btn-contingency-form-submit" type="submit" mat-button mat-raised-button color="primary"
+                [disabled]="validations.isSending">
+            {{'BUTTONS.SAVE'|translate}}
+        </button>
+    </div>
 </form>

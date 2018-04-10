@@ -1,6 +1,8 @@
 import {Task} from '../../../../shared/_models/task/task';
 import { Injectable } from '@angular/core';
 import {QuillEditorComponent} from 'ngx-quill';
+import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
+import {Review} from '../../../../shared/_models/task/analysis/review';
 
 @Injectable()
 export class HistoricalReportService {
@@ -10,14 +12,54 @@ export class HistoricalReportService {
     private _editorContent: string;
     private _quillEditor: QuillEditorComponent;
     private _isAtaCorrected: boolean;
-    private _analyzedTask: Task;
+    private _timelineData: TimelineTask[];
 
     constructor() {
         this.task = Task.getInstance();
-        this.analyzedTask = Task.getInstance();
         this.newAta = '';
         this.editorContent = '';
         this.isAtaCorrected = false;
+        this.timelineData = [];
+    }
+
+    /**
+     * Reviews from timeline data
+     * @returns {Review[]}
+     */
+    get reviews(): Review[] {
+        return this.timelineData
+            .filter(data => data.active === false)
+            .map(data => {
+                return new Review(data.barcode, data.apply);
+            });
+    }
+
+    /**
+     * Get just related tasks from tineline data
+     * @returns {Task[]}
+     */
+    get relatedTasks(): Task[] {
+        return this.timelineData
+            .filter(data => data.active === false)
+            .map(data => data.task);
+    }
+
+    /**
+     * Get a unparsed TimelineTask from timeline data
+     * @returns {TimelineTask}
+     */
+    get unparsedTask(): TimelineTask {
+        return this.timelineData
+            .find(data => data.apply === null && data.active === false);
+    }
+
+    /**
+     * Get just related TimelineTasks with apply true or false
+     * @returns {TimelineTask[]}
+     */
+    get analyzedList(): TimelineTask[] {
+        return this.timelineData
+            .filter(data => data.apply !== null && data.active === false);
     }
 
     get task(): Task {
@@ -64,11 +106,13 @@ export class HistoricalReportService {
         this._isAtaCorrected = value;
     }
 
-    get analyzedTask(): Task {
-        return this._analyzedTask;
+    get timelineData(): TimelineTask[] {
+        return this._timelineData;
     }
 
-    set analyzedTask(value: Task) {
-        this._analyzedTask = value;
+    set timelineData(value: TimelineTask[]) {
+        this._timelineData = value;
     }
+
+
 }

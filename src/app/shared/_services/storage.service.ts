@@ -87,4 +87,8 @@ export class StorageService {
         StorageService.removeSessionStorage(StorageService.RECOVER_DESTINATION);
     }
 
+    get username(): string{
+        return this.getCurrentUser().username;
+    }
+
 }

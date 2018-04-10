@@ -4,17 +4,18 @@ export class EvaluationCategory {
     private _outOfStandard: boolean;
     private _partReplacement: boolean;
     private _complexLimops: boolean;
+    private _alertCode: string;
 
-    constructor(displayAlert: string, outOfStandard: boolean, partReplacement: boolean, complexLimops: boolean) {
+    constructor(displayAlert: string, outOfStandard: boolean, partReplacement: boolean, complexLimops: boolean, alertCode: string) {
         this._displayAlert = displayAlert;
         this._outOfStandard = outOfStandard;
         this._partReplacement = partReplacement;
-        this._complexLimops = complexLimops
-
+        this._complexLimops = complexLimops;
+        this._alertCode = alertCode;
     }
 
     static getInstance(): EvaluationCategory {
-        return new EvaluationCategory(null, null, null, null);
+        return new EvaluationCategory(null, null, null, null, null);
     }
 
 
@@ -48,5 +49,13 @@ export class EvaluationCategory {
 
     set complexLimops(value: boolean) {
         this._complexLimops = value;
+    }
+
+    get alertCode(): string {
+        return this._alertCode;
+    }
+
+    set alertCode(value: string) {
+        this._alertCode = value;
     }
 }
