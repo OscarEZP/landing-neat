@@ -169,11 +169,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.loading = true;
         return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
             (list) => {
-                this.taskList = list.map(x => {
-                    console.log(x);
-                    x.taskType = 'DEFERRAL';
-                    return x;
-                });
+                this.taskList = list;
                 this.loading = false;
             },
             () => this.getError()
