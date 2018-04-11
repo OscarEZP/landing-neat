@@ -26,6 +26,7 @@ export class Task {
     private _isOpen: boolean;
     private _evaluationCategory: EvaluationCategory;
     private _review: Review;
+    private _taskType: string;
 
 
     private constructor() {
@@ -52,7 +53,7 @@ export class Task {
         this.isOpen = false;
         this.evaluationCategory = EvaluationCategory.getInstance();
         this.review = Review.getInstance();
-
+        this.taskType = '';
     }
 
     public static getInstance() {
@@ -257,5 +258,13 @@ export class Task {
 
     get alertCode(): string {
         return this.evaluationCategory.alertCode;
+    }
+
+    get taskType(): string {
+        return this._taskType;
+    }
+
+    set taskType(value: string) {
+        this._taskType = value;
     }
 }

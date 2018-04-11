@@ -124,6 +124,10 @@ export class HistoricalTaskComponent implements OnInit {
         return this._analyzedTask;
     }
 
+    get taskType(): string {
+        return this.analyzedTask.task.taskType;
+    }
+
     get quillEditor() {
         return this._historicalReportService.qEditorInstance;
     }

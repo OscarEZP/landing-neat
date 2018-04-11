@@ -41,6 +41,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _minDate: moment.Moment;
     private _timelineTaskData: object | null;
     private _analysis: Analysis;
+    private _event: object;
 
     constructor(
         private _translate: TranslateService,
@@ -59,7 +60,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.timelineData = this.getTimelineInitData();
         this.timeline = this.createTimeline(this.timelineData);
-
+        this.event = null;
     }
 
     ngOnDestroy() {
@@ -70,9 +71,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             start: this.minDate.format('YYYY-MM-DD'),
             end: maxTime.format('YYYY-MM-DD'),
             zoomMin: 1000 * 60 * 60 * 24 * 30,
-            zoomMax: 1000 * 60 * 60 * 24 * 30 * 6,
+            zoomMax: 1000 * 60 * 60 * 24 * 30 * 12,
             max: maxTime.format('YYYY-MM-DD'),
-            min: this.minDate.format('YYYY-MM-DD')
+            min: this.minDate.format('YYYY-MM-DD'),
+            stack: false,
         };
     }
 
@@ -94,17 +96,32 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         } else {
             timeline = this.getNewTimeline(items);
         }
-
+        if (this.timelineData.length > 0) {
+            timeline.setGroups(this.getGroups(this.timelineData));
+        }
         return timeline;
+    }
+
+    private getGroups(data: TimelineTask[]): DataSet<object> {
+        const arr = data.map(item => {
+            return {
+                id: item.barcode,
+                content: item.barcode,
+                subgroupStack: {
+                    subgroup: false
+                }
+            };
+        });
+        return new DataSet(arr);
     }
 
     private getNewTimeline(items: DataSet<object>): Timeline {
         const maxTime = moment(this.maxTime).utc().add(TimelineReportComponent.DAYS_TO, 'days');
         const options = this.setTimelineOptions(maxTime);
-
         const timeline = new Timeline(this.element.nativeElement, items, options);
 
-        timeline.on('click', () => {
+        timeline.on('click', (event: object) => {
+            this.event = event;
             this.tooltip = false;
             this.getTimelineItem();
             this.showTooltip();
@@ -112,7 +129,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                 this.onAnalyzedTaskSelected.emit(this.timelineTaskData['data']);
             }
         });
-        timeline.on('rangechange', () => this.showTooltip());
+        timeline.on('rangechange', () => {
+            this.showTooltip();
+        });
         return timeline;
     }
 
@@ -138,8 +157,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     private getTimelineInitData(): TimelineTask[] {
-        const timelineTask = new TimelineTask(this.activeTask, true);
-        return [timelineTask];
+        return [new TimelineTask(this.activeTask, true)];
     }
 
     /**
@@ -151,7 +169,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.loading = true;
         return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
             (list) => {
-                this.taskList = list;
+                this.taskList = list.map(x => {
+                    console.log(x);
+                    x.taskType = 'DEFERRAL';
+                    return x;
+                });
                 this.loading = false;
             },
             () => this.getError()
@@ -180,7 +202,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                     this.timelineData.push(new TimelineTask(this.activeTask, true, true));
                 }
                 this.timeline = this.createTimeline(this.timelineData);
-
                 this.onAtaCorrected.emit(result);
             });
         }
@@ -199,11 +220,12 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     public getTooltipStyle(): Style {
-        const item = this.getTimelineItem();
+        const item = this.timelineTaskData;
         if (item) {
-            const correction = 18;
-            this.tooltipStyle.bottom = (item['top'] - correction) + 'px';
-            this.tooltipStyle.left = item['dom']['box']['style']['left'];
+            const correctionLeft = this.timeline['body']['dom']['left']['clientWidth'];
+            this.tooltipStyle.top = this.event['y'] + 'px';
+            this.tooltipStyle.left = (item['left'] + correctionLeft) + 'px';
+            this.tooltipStyle.display = item['left'] <= 0 ? 'none' : 'block';
         }
         return this.tooltipStyle;
     }
@@ -213,18 +235,19 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     public refreshOnApply(review: Review) {
-        const updatedTask = this.timelineData
-            .filter(item => item.task.barcode === review.barcode)
-            .map(item => {
-                return new TimelineTask(item.task, false, false, review.apply === true);
-            })[0];
-
-        const newData = this.timelineData.filter(task => task.id !== updatedTask.task.id);
-        newData.push(updatedTask);
+        let updatedTimelineTask = TimelineTask.getInstance();
+        const newData = this.timelineData.map(item => {
+            if (item.task.barcode === review.barcode) {
+                updatedTimelineTask = new TimelineTask(item.task, false, false, review.apply === true);
+                return updatedTimelineTask;
+            } else {
+                return item;
+            }
+        });
         this.timelineData = newData;
         this.timeline = this.createTimeline(newData);
         this.updateReview(review);
-        this.onAnalyzedTaskSelected.emit(updatedTask);
+        this.onAnalyzedTaskSelected.emit(updatedTimelineTask);
     }
 
 
@@ -347,4 +370,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime : this.activeTask.extendedDueDate.epochTime ? this.activeTask.extendedDueDate.epochTime : this.activeTask.dueDate.epochTime;
     }
 
+    get event(): object {
+        return this._event;
+    }
+
+    set event(value: object) {
+        this._event = value;
+    }
 }

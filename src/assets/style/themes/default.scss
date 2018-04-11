@@ -72,9 +72,12 @@ $mat-palette-custom: (
         ni2: #fb8c00,
         ni3: #f3be17,
         selected-card: #e6e6e6,
-        tl-active-task: #ffa726,
-        tl-related-task: #ddd,
-        tl-background-extended: #f8f8f8,
+        tl-deferral-task: #ffa726,
+        tl-default-background: #ddd,
+        tl-default-font:#1a1a1a,
+        tl-extended-background: #f8f8f8,
+        tl-no-apply-bar: #9B9B9B,
+        tl-preventive: #4caf50,
         contrast: (
         )
 );
