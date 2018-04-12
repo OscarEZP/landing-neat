@@ -39,9 +39,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _loading: boolean;
     private _error: boolean;
     private _minDate: moment.Moment;
-    private _timelineTaskData: object | null;
     private _analysis: Analysis;
     private _event: object;
+    private _listSubscription: Subscription;
 
     constructor(
         private _translate: TranslateService,
@@ -53,8 +53,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.tooltip = false;
         this.tooltipStyle = new Style();
         this.taskList = [];
-        this.timelineTaskData = null;
         this.analysis = Analysis.getInstance();
+        this.listSubscription = null;
     }
 
     ngOnInit() {
@@ -64,8 +64,16 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        if (this.listSubscription) {
+            this.listSubscription.unsubscribe();
+        }
     }
 
+    /**
+     * Get options for Timeline creation by a Moment object
+     * @param {moment.Moment} maxTime
+     * @returns {{start: string; end: string; zoomMin: number; zoomMax: number; max: string; min: string; stack: boolean}}
+     */
     private setTimelineOptions(maxTime: moment.Moment) {
         return {
             start: this.minDate.format('YYYY-MM-DD'),
@@ -78,6 +86,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         };
     }
 
+    /**
+     * Return a Timeline object by a TimelineTask list; if there is a Timeline object, this method update it, else is created
+     * @param {TimelineTask[]} data
+     * @returns {Timeline}
+     */
     private createTimeline(data: TimelineTask[]): Timeline {
         data = this.getExtraTime(data)
             .map(task => task.getJson());
@@ -102,6 +115,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return timeline;
     }
 
+    /**
+     * Set groups for every TimelineTask
+     * @param {TimelineTask[]} data
+     * @returns {DataSet<object>}
+     */
     private getGroups(data: TimelineTask[]): DataSet<object> {
         const arr = data.map(item => {
             return {
@@ -115,6 +133,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return new DataSet(arr);
     }
 
+    /**
+     * Return a new Timeline by a DataSet
+     * @param {DataSet<object>} items
+     * @returns {Timeline}
+     */
     private getNewTimeline(items: DataSet<object>): Timeline {
         const maxTime = moment(this.maxTime).utc().add(TimelineReportComponent.DAYS_TO, 'days');
         const options = this.setTimelineOptions(maxTime);
@@ -123,10 +146,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         timeline.on('click', (event: object) => {
             this.event = event;
             this.tooltip = false;
-            this.getTimelineItem();
             this.showTooltip();
-            if (this.timelineTaskData !== null && !this.timelineTaskData['data']['active']) {
-                this.onAnalyzedTaskSelected.emit(this.timelineTaskData['data']);
+            if (this.timelineTaskSelected !== null && !this.timelineTaskSelected['data']['active']) {
+                this.onAnalyzedTaskSelected.emit(this.timelineTaskSelected['data']);
             }
         });
         timeline.on('rangechange', () => {
@@ -135,6 +157,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return timeline;
     }
 
+    /**
+     * Method for insert extended Due Date
+     * @param {TimelineTask[]} data
+     * @returns {TimelineTask[]}
+     */
     private getExtraTime(data: TimelineTask[]): TimelineTask[] {
         let arrExtra = [];
         data.forEach(item => {
@@ -146,14 +173,17 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return arrExtra;
     }
 
-    private getTimelineItem(): object | null {
+    /**
+     * Returns Timeline Task selected
+     * @returns {object | null}
+     */
+    get timelineTaskSelected(): object | null {
         const items = this.timeline['itemSet']['items'];
         const arrItems = Object
             .keys(items)
             .map(key => items[key] && items[key].selected ? items[key] : false)
             .filter(item => item !== false);
-        this.timelineTaskData = arrItems.length > 0 ? arrItems[0] : null;
-        return this.timelineTaskData;
+        return arrItems.length > 0 ? arrItems[0] : null;
     }
 
     private getTimelineInitData(): TimelineTask[] {
@@ -176,6 +206,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         );
     }
 
+    /**
+     * Update the ATA
+     * @param {boolean} result
+     */
     public checkCorrectedATA(result: boolean) {
         if (result) {
             const signature: SearchRelationedTask = SearchRelationedTask.getInstance();
@@ -188,7 +222,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
 
             signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
-            this.getListSubscription(signature).add(() => {
+            this.listSubscription = this.getListSubscription(signature).add(() => {
                 this.timelineData = this.taskList.map(task => {
                     return new TimelineTask(task, task.id === this.activeTask.id, true, this.validateApply(task.review));
                 });
@@ -212,11 +246,14 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             apply = review.apply;
         }
         return apply;
-
     }
 
+    /**
+     * Get style for tooltip
+     * @returns {Style}
+     */
     public getTooltipStyle(): Style {
-        const item = this.timelineTaskData;
+        const item = this.timelineTaskSelected;
         if (item) {
             const correctionLeft = this.timeline['body']['dom']['left']['clientWidth'];
             this.tooltipStyle.top = this.event['y'] + 'px';
@@ -226,11 +263,18 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return this.tooltipStyle;
     }
 
-    public showTooltip() {
-        this.tooltip = !!(this.getTimelineItem() && !this.getTimelineItem()['data']['active']);
+    /**
+     * Show tooltip if there is a TimelineTask selected and isn't the active task (first task)
+     */
+    public showTooltip(): void {
+        this.tooltip = !!(this.timelineTaskSelected && !this.timelineTaskSelected['data']['active']);
     }
 
-    public refreshOnApply(review: Review) {
+    /**
+     * Refresh the timeline after apply a task
+     * @param {Review} review
+     */
+    public refreshOnApply(review: Review): void {
         let updatedTimelineTask = TimelineTask.getInstance();
         const newData = this.timelineData.map(item => {
             if (item.task.barcode === review.barcode) {
@@ -246,12 +290,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.onAnalyzedTaskSelected.emit(updatedTimelineTask);
     }
 
-
     /**
-     * Update review method
+     * Update the reviews list for analysis
+     * @param {Review} review
      */
     private updateReview(review: Review): void {
-
         const findReview = this.reviews.find(x => x.barcode === review.barcode);
         if (typeof findReview === 'undefined') {
             this.reviews.push(review);
@@ -300,14 +343,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     set error(value: boolean) {
         this._error = value;
-    }
-
-    get timelineTaskData(): object | null {
-        return this._timelineTaskData;
-    }
-
-    set timelineTaskData(value: object | null) {
-        this._timelineTaskData = value;
     }
 
     get timelineData(): TimelineTask[] {
@@ -372,5 +407,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     set event(value: object) {
         this._event = value;
+    }
+
+    get listSubscription(): Subscription {
+        return this._listSubscription;
+    }
+
+    set listSubscription(value: Subscription) {
+        this._listSubscription = value;
     }
 }
