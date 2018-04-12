@@ -40,7 +40,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _error: boolean;
     private _minDate: moment.Moment;
     private _analysis: Analysis;
-    private _event: object;
+    private _clickEvent: object;
     private _listSubscription: Subscription;
 
     constructor(
@@ -60,7 +60,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.timelineData = this.getTimelineInitData();
         this.timeline = this.createTimeline(this.timelineData);
-        this.event = null;
+        this.clickEvent = null;
     }
 
     ngOnDestroy() {
@@ -72,7 +72,17 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     /**
      * Get options for Timeline creation by a Moment object
      * @param {moment.Moment} maxTime
-     * @returns {{start: string; end: string; zoomMin: number; zoomMax: number; max: string; min: string; stack: boolean}}
+     * @returns {
+     * {
+     * start: string;
+     * end: string;
+     * zoomMin: number;
+     * zoomMax: number;
+     * max: string;
+     * min: string;
+     * stack: boolean
+     * }
+     * }
      */
     private setTimelineOptions(maxTime: moment.Moment) {
         return {
@@ -144,11 +154,12 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         const timeline = new Timeline(this.element.nativeElement, items, options);
 
         timeline.on('click', (event: object) => {
-            this.event = event;
-            this.tooltip = false;
-            this.showTooltip();
-            if (this.timelineTaskSelected !== null && !this.timelineTaskSelected['data']['active']) {
+            this.clickEvent = event;
+            if (event.what === 'item') {
+                this.showTooltip();
                 this.onAnalyzedTaskSelected.emit(this.timelineTaskSelected['data']);
+            } else {
+                this.tooltip = false;
             }
         });
         timeline.on('rangechange', () => {
@@ -256,7 +267,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         const item = this.timelineTaskSelected;
         if (item) {
             const correctionLeft = this.timeline['body']['dom']['left']['clientWidth'];
-            this.tooltipStyle.top = this.event['y'] + 'px';
+            this.tooltipStyle.top = this.clickEvent['y'] + 'px';
             this.tooltipStyle.left = (item['left'] + correctionLeft) + 'px';
             this.tooltipStyle.display = item['left'] <= 0 ? 'none' : 'block';
         }
@@ -401,12 +412,12 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime : this.activeTask.extendedDueDate.epochTime ? this.activeTask.extendedDueDate.epochTime : this.activeTask.dueDate.epochTime;
     }
 
-    get event(): object {
-        return this._event;
+    get clickEvent(): object {
+        return this._clickEvent;
     }
 
-    set event(value: object) {
-        this._event = value;
+    set clickEvent(value: object) {
+        this._clickEvent = value;
     }
 
     get listSubscription(): Subscription {

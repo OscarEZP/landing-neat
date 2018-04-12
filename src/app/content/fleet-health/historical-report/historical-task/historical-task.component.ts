@@ -21,7 +21,7 @@ export class HistoricalTaskComponent implements OnInit {
 
     @Input()
     set analyzedTask(value: TimelineTask) {
-        if (this.timelineTaskValidation(value)) {
+        if (value && !value.active && value.task.barcode) {
             this.getHistoricalTask(value.task.barcode);
             this._analyzedTask = value;
         }
@@ -32,14 +32,11 @@ export class HistoricalTaskComponent implements OnInit {
         private _historicalReportService: HistoricalReportService
     ) {
         this.apiRestService = new ApiRestService(httpClient);
+        this._analyzedTask = null;
     }
 
     ngOnInit() {
         this.historicalTask = HistoricalTask.getInstance();
-    }
-
-    public timelineTaskValidation(value: TimelineTask) {
-        return value && !value.active && value.task.barcode;
     }
 
     /**
