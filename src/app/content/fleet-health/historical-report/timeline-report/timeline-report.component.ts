@@ -155,7 +155,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
         timeline.on('click', (event: object) => {
             this.clickEvent = event;
-            if (event.what === 'item') {
+            if (event['what'] === 'item') {
                 this.showTooltip();
                 this.onAnalyzedTaskSelected.emit(this.timelineTaskSelected['data']);
             } else {
