@@ -41,34 +41,26 @@ $timeline-label-height: 22px;
         width: 50%;
       }
     }
-    .material-icons{
+    .material-icons {
       font-size: 9px;
     }
   }
 
   .vis-item.active.full {
-    background-color: mat-color($mat-palette-custom, tl-active-task);
+    background-color: mat-color($warn);
     color: mat-color($primary, default-contrast);
-    border-color: mat-color($mat-palette-custom, tl-active-task);
-  }
+    border-color: mat-color($warn);
 
-  .vis-item.active {
-    background-color: mat-color($mat-palette-custom, tl-related-task);
-    color: mat-color($foreground, text);
-    border: none;
-    border-left: 10px solid mat-color($mat-palette-custom, selected-card);
-
-    .vis-item-content{
-      padding-left: 5px;
+    .material-icons {
+      color: mat-color($primary, default-contrast);
     }
   }
 
-  .vis-item.related {
-    background-color: mat-color($mat-palette-custom, tl-related-task);
-    border: none;
+  .vis-item.active {
+    background-color: mat-color($mat-palette-custom, tl-default-background);
     color: mat-color($foreground, text);
-    border-left: 10px solid mat-color($mat-palette-custom, selected-card);
-
+    border: none;
+    border-left: 10px solid mat-color($warn);
 
     .vis-item-content{
       padding-left: 5px;
@@ -76,26 +68,68 @@ $timeline-label-height: 22px;
   }
 
   .vis-item.vis-background {
-    height: 30px !important;
-    margin-top: -10px;
+    height: 22px !important;
+    margin-top: 5px;
     border-right: none;
     border-left: none;
     border-top: thin dashed #ccc;
     border-bottom: thin dashed #ccc;
-    background-color: mat-color($mat-palette-custom, tl-background-extended);
+    background-color: mat-color($mat-palette-custom, tl-extended-background);
+  }
+
+  .vis-item.related {
+    background-color: mat-color($mat-palette-custom, tl-default-background);
+    border: none;
+    color: mat-color($foreground, text);
+    border-left: 10px solid mat-color($primary);
+
+    .vis-item-content{
+      padding-left: 5px;
+    }
   }
 
   .vis-item.related.full {
     background-color: mat-color($primary);
     color: mat-color($primary, default-contrast);
-    border-color: mat-color($primary);
+    border-color: mat-color($mat-palette-custom, tl-deferral-task);
+  }
+
+  .vis-item.preventive {
+    background-color: mat-color($mat-palette-custom, tl-default-background);
+    border-color: mat-color($mat-palette-custom, tl-preventive);
+  }
+
+  .vis-item.preventive.full {
+    background-color: mat-color($mat-palette-custom, tl-preventive);
+    color: mat-color($primary, default-contrast);
+    border-color: mat-color($mat-palette-custom, tl-preventive);
+  }
+
+  .vis-item.deferral {
+    background-color: mat-color($mat-palette-custom, tl-default-background);
+    border-color: mat-color($mat-palette-custom, tl-deferral-task);
+  }
+
+  .vis-item.deferral.full {
+    background-color: mat-color($mat-palette-custom, tl-deferral-task);
+    color: mat-color($primary, default-contrast);
+    border-color: mat-color($mat-palette-custom, tl-deferral-task);
   }
 
   .vis-item.dont-apply {
-    border-left: 10px solid mat-color($foreground, disabled-text);
+    border-left: 10px solid mat-color($mat-palette-custom, tl-no-apply-bar);
   }
+
   i.icon-red {
     color: red;
+  }
+
+  .vis-background {
+    .vis-group {
+      .vis-item.vis-background.active {
+          margin-top: -10px;
+      }
+    }
   }
 }
 

@@ -2,7 +2,7 @@
     <div mat-dialog-title class="title-dialog-container" fxLayout="column">
         <div >
             <span class="title-dialog" fxFlex>{{currentContingency.aircraft.tail}} {{currentContingency.aircraft.fleet}} {{currentContingency.flight.flightNumber}} {{currentContingency.flight.origin}}-{{currentContingency.flight.destination}} {{currentContingency.flight.etd.epochTime|date : 'HH:mm'}}</span>
-                        <button (click)="closeDialog()" id="btn-resol-pending-form-close-btn" type="button" class="close-btn" mat-icon-button
+                        <button (click)="closeDialog()" id="btn-resolve-pending-close" type="button" class="close-btn" mat-icon-button
                     fxFlexOffset="1">
                 <mat-icon aria-label="Example icon-button" class="material-icons close-dialog">{{ 'OPERATIONS.CONTINGENCY_FORM.CLOSE' | translate }}
                 </mat-icon>
@@ -28,10 +28,10 @@
         </mat-expansion-panel>
     </mat-accordion>
     <div mat-dialog-actions fxLayoutAlign="end end">
-        <button id="btn-contingency-form-cancel" type="button" mat-button (click)="closeDialog()">
+        <button id="btn-resolve-pending-cancel" type="button" mat-button (click)="closeDialog()">
             {{'OPERATIONS.CONTINGENCY_FORM.CANCEL_LABEL'|translate}}
         </button>
-        <button id="btn-contingency-form-submit" type="submit" mat-button mat-raised-button color="primary">
+        <button id="btn-resolve-pending-submit" type="submit" mat-button mat-raised-button color="primary">
             {{'BUTTONS.SAVE'|translate}}
         </button>
     </div>

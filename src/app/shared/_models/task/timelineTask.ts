@@ -7,6 +7,13 @@ export class TimelineTask {
     private static OPEN_ICON = 'lock_open';
     private static CLOSE_ICON = 'lock';
     private static DATE_FORMAT = 'YYYY-MM-DD';
+    private static TASK_DEFAULT_TITLE = 'TASK';
+
+    private static ACTIVE_CLASS = 'active';
+    private static FULL_CLASS = 'full';
+    private static RELATED_CLASS = 'related';
+    private static DONT_APPLY_CLASS = 'dont-apply';
+
 
     private _id: number;
     private _content: string;
@@ -27,33 +34,33 @@ export class TimelineTask {
 
     constructor(task: Task, active: boolean = false, corrected: boolean = false, apply: boolean | null = null) {
         this._task = task;
-
         this._start = DateUtil.formatDate(this.startDateEpochTime, TimelineTask.DATE_FORMAT);
         this._end = DateUtil.formatDate(this.endDateEpochTime, TimelineTask.DATE_FORMAT);
         this._id = task.id;
-        this._content = this.getContent();
         this._active = active;
         this._corrected = corrected;
         this._apply = apply;
         this._className = this.generateClassName();
         this._group = task.barcode;
-        this._subgroup = task.barcode;
+        this._subgroup = 'subgroup';
         this._type = '';
+        this._content = this.getContent();
     }
 
     public generateClassName(): string {
         const arrStyles = [];
         if (this.active) {
-            arrStyles.push('active');
+            arrStyles.push(TimelineTask.ACTIVE_CLASS);
             if (this.corrected) {
-                arrStyles.push('full');
+                arrStyles.push(TimelineTask.FULL_CLASS);
             }
         } else {
-            arrStyles.push('related');
+            arrStyles.push(this.task.taskType.toLowerCase());
+            arrStyles.push(TimelineTask.RELATED_CLASS);
             if (this.apply === true) {
-                arrStyles.push('full');
+                arrStyles.push(TimelineTask.FULL_CLASS);
             }else if (this.apply === false) {
-                arrStyles.push('dont-apply');
+                arrStyles.push(TimelineTask.DONT_APPLY_CLASS);
             }
         }
         return arrStyles.join(' ');
@@ -69,16 +76,18 @@ export class TimelineTask {
             extra.start = DateUtil.formatDate(this.dueDate.epochTime, TimelineTask.DATE_FORMAT);
             extra.id = this.id + this.createDate.epochTime;
             extra.group = this.barcode;
-            extra.subgroup = this.barcode;
+            extra.subgroup = this.subgroup;
             extra.type = 'background';
             extra.content = extra.getContent(false);
+            extra.className = this.active ? TimelineTask.ACTIVE_CLASS : '';
             arr.push(extra);
         }
         return arr;
     }
 
     public getContent(content: boolean = true): string {
-        const head = '<div class="head"><h1>' + 'TASK' + '</h1> <span>' + (this.isOpen ? '<i class="material-icons icon-red">' : '<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
+        const title = this.active === true ? TimelineTask.TASK_DEFAULT_TITLE : this.task.taskType;
+        const head = '<div class="head"><h1>' + title + '</h1> <span>' + (this.isOpen ? '<i class="material-icons icon-red">' : '<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
         const body = '<p>' + this.task.ata + '/'  + this.task.barcode + '</p>' ;
         return content ? head + body : '';
     }
@@ -172,6 +181,10 @@ export class TimelineTask {
         this._subgroup = value;
     }
 
+    get subgroup(): string {
+        return this._subgroup;
+    }
+
     get type(): string {
         return this._type;
     }
@@ -189,12 +202,18 @@ export class TimelineTask {
 
     }
     get endDateEpochTime(): number{
-
        return this.task.isClose ? this.task.revisionDate.epochTime : this.task.dueDate.epochTime;
     }
     get startDateEpochTime(): number{
-
         return this.task.createDate.epochTime;
+    }
+
+    get className(): string {
+        return this._className;
+    }
+
+    set className(value: string) {
+        this._className = value;
     }
 
 }

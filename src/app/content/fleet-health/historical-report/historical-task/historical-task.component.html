@@ -1,8 +1,8 @@
-<section *ngIf="timelineTaskValidation(analyzedTask)">
+<section *ngIf="analyzedTask">
     <header>
         <div fxLayout="row">
             <div fxFlex="">
-                <span class="badge">Task</span>
+                <span class="badge">{{taskType}}</span>
             </div>
             <div fxFlexAlign="end center" fxLayout="row" fxLayoutGap="20px">
             </div>
@@ -67,7 +67,7 @@
     </div>
 </section>
 
-<section *ngIf="!timelineTaskValidation(analyzedTask)">
+<section *ngIf="analyzedTask === null">
     <p *ngIf="getRelatedTimelineData().length > 0">{{'FLEET_HEALTH.REPORT.MSG.NO_TASK_SELECTED' | translate}}</p>
     <p *ngIf="getRelatedTimelineData().length === 0">{{'FLEET_HEALTH.REPORT.MSG.NO_TASKS' | translate}}</p>
 </section>
