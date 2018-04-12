@@ -47,16 +47,20 @@ $timeline-label-height: 22px;
   }
 
   .vis-item.active.full {
-    background-color: mat-color($secondary);
+    background-color: mat-color($warn);
     color: mat-color($primary, default-contrast);
-    border-color: mat-color($secondary);
+    border-color: mat-color($warn);
+
+    .material-icons {
+      color: mat-color($primary, default-contrast);
+    }
   }
 
   .vis-item.active {
     background-color: mat-color($mat-palette-custom, tl-default-background);
     color: mat-color($foreground, text);
     border: none;
-    border-left: 10px solid mat-color($secondary);
+    border-left: 10px solid mat-color($warn);
 
     .vis-item-content{
       padding-left: 5px;
