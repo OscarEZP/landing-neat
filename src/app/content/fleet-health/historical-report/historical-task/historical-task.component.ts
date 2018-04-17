@@ -57,10 +57,26 @@ export class HistoricalTaskComponent implements OnInit {
      */
     public copyText() {
         const selection = this.getSelection();
-        if (selection.length > 0 && selection.indexOf(this.header) === -1) {
+        if (selection.length > 0 && selection.indexOf(this.header) === -1 && this.validateCopiedData(selection)) {
             this.addHeader();
             this.editorContent = this.editorContent ? this.editorContent + selection : selection;
         }
+    }
+
+    public validateCopiedData(text: string): boolean {
+        const cleanText = text.trim();
+        if (this.historicalTask.description.indexOf(cleanText) !== -1) {
+            return true;
+        }
+        const inActions = this.historicalTask.correctiveActions.find(action => action.description.indexOf(cleanText) !== -1);
+        if (inActions) {
+            return true;
+        }
+        const inSteps = this.historicalTask.steps.find(action => action.description.indexOf(cleanText) !== -1);
+        if (inSteps) {
+            return true;
+        }
+        return false;
     }
 
     /**

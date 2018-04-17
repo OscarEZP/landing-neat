@@ -67,6 +67,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         if (this.listSubscription) {
             this.listSubscription.unsubscribe();
         }
+        this.timeline.destroy();
     }
 
     /**

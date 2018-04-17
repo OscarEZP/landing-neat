@@ -91,7 +91,7 @@
             </div>
         </content>
     </div>
-    <mat-paginator #contPaginator [hidden]="!(list.length && !loading)"
+    <mat-paginator #contPaginator [hidden]="!(list.length && !loading && !error)"
            [length]="infiniteScrollService.length"
            [pageSize]="infiniteScrollService.pageSize"
            [pageSizeOptions]="infiniteScrollService.pageSizeOptions">

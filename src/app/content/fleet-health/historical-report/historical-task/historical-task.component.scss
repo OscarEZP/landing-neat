@@ -38,6 +38,14 @@ section {
     div:first-child {
       margin: 0 0 3px 0;
     }
+    span.badge.deferral {
+      background-color: mat-color($mat-palette-custom, tl-deferral-task);
+      color: mat-color($primary, default-contrast);
+    }
+    span.badge.preventive {
+      background-color: mat-color($mat-palette-custom, tl-preventive);
+      color: mat-color($primary, default-contrast);
+    }
   }
 
   .content {

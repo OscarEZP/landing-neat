@@ -35,6 +35,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private _timerSubscription: Subscription;
     private _intervalRefreshSubscription: Subscription;
     private _paginatorSubscription: Subscription;
+    private _totalRecordsSubscription: Subscription;
 
     private _list: Task[];
 
@@ -72,6 +73,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this.reloadSubscription.unsubscribe();
         this.intervalRefreshSubscription.unsubscribe();
         this.paginatorSubscription.unsubscribe();
+        this.totalRecordsSubscription.unsubscribe();
         if (this.listSubscription) {
             this.listSubscription.unsubscribe();
         }
@@ -91,7 +93,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
             response => {
                 this.infiniteScrollService.length = !isNaN(response.items) ? response.items : 0;
                 this.loading = false;
-                return this.getListSubscription(signature);
             },
             () => this.getError()
         );
@@ -151,23 +152,23 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Returns a subscription with data list.
-     * @return {Subscription}
+     * Set a subscription for get total amount of records and data list.
      */
-    private getList(): Subscription {
+    private getList(): void {
         const signature = this.getSearchSignature();
-        return this.listSubscription = this.getTotalRecordsSubscription(signature);
+        this.totalRecordsSubscription = this.getTotalRecordsSubscription(signature).add(() => {
+            this.listSubscription = this.getListSubscription(signature);
+        });
     }
 
     /**
-     * Subscription for data list reload.
-     * @return {Subscription}
+     * Set a subscription for data list reload.
      */
-    private subscribeTimer(): Subscription {
+    private subscribeTimer(): void {
         if (this.timerSubscription) {
             this.timerSubscription.unsubscribe();
         }
-        return this.timerSubscription = Observable.timer(this.intervalToRefresh).first().subscribe(() => {
+        this.timerSubscription = Observable.timer(this.intervalToRefresh).first().subscribe(() => {
             this.getList();
         });
     }
@@ -204,8 +205,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @param task
      */
     public setSelectedRegister(register: Task) {
-
-        if (register.timelineStatus==='OPEN') {
+        if (register.timelineStatus === 'OPEN') {
             this.selectedRegister = register;
             this.selectedRegisterPivot = register;
             this.openHistoricalReport(register);
@@ -327,4 +327,11 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this._paginatorSubscription = value;
     }
 
+    get totalRecordsSubscription(): Subscription {
+        return this._totalRecordsSubscription;
+    }
+
+    set totalRecordsSubscription(value: Subscription) {
+        this._totalRecordsSubscription = value;
+    }
 }
