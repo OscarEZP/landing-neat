@@ -1,14 +1,14 @@
 export class Name {
 
     private _firstName: string;
-    private _lastNme: string;
+    private _lastName: string;
 
     constructor( firstName: string, lastName: string) {
-        this.firstName= firstName;
-        this._lastNme = lastName;
+        this._firstName = firstName;
+        this._lastName = lastName;
     }
-    static getInstance():Name{
-        return new Name(null,null);
+    static getInstance(): Name {
+        return new Name(null, null);
     }
 
     get firstName(): string {
@@ -17,5 +17,13 @@ export class Name {
 
     set firstName(value: string) {
         this._firstName = value;
+    }
+
+    get lastName(): string {
+        return this._lastName;
+    }
+
+    set lastName(value: string) {
+        this._lastName = value;
     }
 }

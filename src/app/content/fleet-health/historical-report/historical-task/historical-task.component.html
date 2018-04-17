@@ -2,7 +2,7 @@
     <header>
         <div fxLayout="row">
             <div fxFlex="">
-                <span class="badge">{{taskType}}</span>
+                <span class="badge" [ngClass]="taskType.toLowerCase()">{{taskType}}</span>
             </div>
             <div fxFlexAlign="end center" fxLayout="row" fxLayoutGap="20px">
             </div>
