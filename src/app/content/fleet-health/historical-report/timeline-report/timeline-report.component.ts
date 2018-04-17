@@ -14,6 +14,7 @@ import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 import {Timeline, DataSet} from 'vis';
 import {Review} from '../../../../shared/_models/task/analysis/review';
 import {Analysis} from '../../../../shared/_models/task/analysis/analysis';
+import {TimelineOptions} from '../../../../shared/_models/task/timelineOptions';
 
 @Component({
     selector: 'lsl-timeline-report',
@@ -73,28 +74,15 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     /**
      * Get options for Timeline creation by a Moment object
      * @param {moment.Moment} maxTime
-     * @returns {
-     * {
-     * start: string;
-     * end: string;
-     * zoomMin: number;
-     * zoomMax: number;
-     * max: string;
-     * min: string;
-     * stack: boolean
-     * }
-     * }
+     * @returns {TimelineOptions}
      */
-    private setTimelineOptions(maxTime: moment.Moment) {
-        return {
-            start: this.minDate.format('YYYY-MM-DD'),
-            end: maxTime.format('YYYY-MM-DD'),
-            zoomMin: 1000 * 60 * 60 * 24 * 30,
-            zoomMax: 1000 * 60 * 60 * 24 * 30 * 12,
-            max: maxTime.format('YYYY-MM-DD'),
-            min: this.minDate.format('YYYY-MM-DD'),
-            stack: false,
-        };
+    private getTimelineOptions(maxTime: moment.Moment): TimelineOptions {
+        return new TimelineOptions(
+            this.minDate.format('YYYY-MM-DD'),
+            maxTime.format('YYYY-MM-DD'),
+            30,
+            30 * 12
+        );
     }
 
     /**
@@ -151,7 +139,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private getNewTimeline(items: DataSet<object>): Timeline {
         const maxTime = moment(this.maxTime).utc().add(TimelineReportComponent.DAYS_TO, 'days');
-        const options = this.setTimelineOptions(maxTime);
+        const options = this.getTimelineOptions(maxTime).getJson();
         const timeline = new Timeline(this.element.nativeElement, items, options);
 
         timeline.on('click', (event: object) => {

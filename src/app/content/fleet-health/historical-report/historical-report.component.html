@@ -71,19 +71,22 @@
             <h3>{{ 'FLEET_HEALTH.REPORT.HISTORICAL_REPORTS' | translate }}</h3>
             <div *ngIf="isCorrected" fxLayout="row" fxLayoutGap="10px">
                 <lsl-historical-task [analyzedTask]="analyzedTask" fxFlex="50"></lsl-historical-task>
-                <lsl-analysis-report fxFlex="50"></lsl-analysis-report>
+                <div fxLayout="column" fxFlex="50">
+                    <lsl-analysis-report></lsl-analysis-report>
+                    <div mat-dialog-actions fxLayoutAlign="end">
+                        <button id="btn-contingency-form-cancel" type="button" mat-button (click)="openCancelDialog()"
+                                [disabled]="validations.isSending">
+                            {{'BUTTONS.CANCEL'|translate}}
+                        </button>
+                        <button id="btn-contingency-form-submit" type="submit" mat-button mat-raised-button color="primary"
+                                [disabled]="validations.isSending">
+                            {{'BUTTONS.SAVE'|translate}}
+                        </button>
+                    </div>
+                </div>
             </div>
             <lsl-ess *ngIf="!isCorrected" icon="assignment" message="FLEET_HEALTH.REPORT.START_NEW_PROJECT"></lsl-ess>
         </div>
     </div>
-    <div mat-dialog-actions fxLayoutAlign="end">
-        <button id="btn-contingency-form-cancel" type="button" mat-button (click)="openCancelDialog()"
-                [disabled]="validations.isSending">
-            {{'BUTTONS.CANCEL'|translate}}
-        </button>
-        <button id="btn-contingency-form-submit" type="submit" mat-button mat-raised-button color="primary"
-                [disabled]="validations.isSending">
-            {{'BUTTONS.SAVE'|translate}}
-        </button>
-    </div>
+
 </form>

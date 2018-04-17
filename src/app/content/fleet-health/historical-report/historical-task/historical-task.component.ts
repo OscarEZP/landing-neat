@@ -57,22 +57,47 @@ export class HistoricalTaskComponent implements OnInit {
      */
     public copyText() {
         const selection = this.getSelection();
-        if (selection.length > 0 && selection.indexOf(this.header) === -1 && this.validateCopiedData(selection)) {
+        if (selection.length > 0 && selection.indexOf(this.header) === -1 && this.validateCopiedText(selection)) {
             this.addHeader();
             this.editorContent = this.editorContent ? this.editorContent + selection : selection;
         }
     }
 
-    public validateCopiedData(text: string): boolean {
-        const cleanText = text.trim();
-        if (this.historicalTask.description.indexOf(cleanText) !== -1) {
+    /**
+     * Validation for copied text; checks Historical Task description, steps and corrective actions
+     * @param {string} text
+     * @returns {boolean}
+     */
+    public validateCopiedText(text: string): boolean {
+        const cleanText = text
+            .trim()
+            .split(' ')
+            .join('');
+        if (
+            this.historicalTask.description
+                .split(' ')
+                .join('')
+                .indexOf(cleanText) !== -1
+        ) {
             return true;
         }
-        const inActions = this.historicalTask.correctiveActions.find(action => action.description.indexOf(cleanText) !== -1);
+        const inActions = this.historicalTask.correctiveActions
+            .find(
+                action => action.description
+                    .split(' ')
+                    .join('')
+                    .indexOf(cleanText) !== -1
+            );
         if (inActions) {
             return true;
         }
-        const inSteps = this.historicalTask.steps.find(action => action.description.indexOf(cleanText) !== -1);
+        const inSteps = this.historicalTask.steps
+            .find(
+                action => action.description
+                    .split(' ')
+                    .join('')
+                    .indexOf(cleanText) !== -1
+            );
         if (inSteps) {
             return true;
         }
@@ -86,7 +111,7 @@ export class HistoricalTaskComponent implements OnInit {
     private addHeader() {
         if (this.editorContent.indexOf(this.header) === -1) {
             const init = this.editorContent.length > 0 ? this.quillEditor.getText().length : 0;
-            this.quillEditor.insertText(init, 'TASK', 'bold', true);
+            this.quillEditor.insertText(init, this.taskType.toUpperCase(), 'bold', true);
             this.quillEditor.insertText(this.quillEditor.getText().length, this.header, 'bold', true);
         }
     }
