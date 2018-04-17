@@ -8,7 +8,7 @@ export class TimelineOptions {
     private _zoomMax: number;
     private _zoomMin: number;
 
-    constructor(start: string = '', end: string = '', zoomMin: number = 0, zoomMax: number = 0, stack: boolean = false) {
+    constructor(start: string = '', end: string = '', zoomMin: number = 0, zoomMax: number = 0, stack: boolean = true) {
         this._start = start;
         this._end = end;
         this.zoomMin = zoomMin;
