@@ -81,7 +81,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             this.minDate.format('YYYY-MM-DD'),
             maxTime.format('YYYY-MM-DD'),
             30,
-            30 * 12
+            30 * 12,
+            true
         );
     }
 
@@ -108,9 +109,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         } else {
             timeline = this.getNewTimeline(items);
         }
-        if (this.timelineData.length > 0) {
-            timeline.setGroups(this.getGroups(this.timelineData));
-        }
+        // if (this.timelineData.length > 0) {
+        //     timeline.setGroups(this.getGroups(this.timelineData));
+        // }
         return timeline;
     }
 
