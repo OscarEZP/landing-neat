@@ -32,6 +32,11 @@ export class SidenavComponent implements OnInit {
                 'icon': 'assessment'
             },*/
             {
+               'label': 'Management',
+               'link': '/management/',
+               'icon': 'settings'
+            },
+            {
                 'label': 'Operations Module',
                 'link': '/operations/',
                 'icon': 'build'

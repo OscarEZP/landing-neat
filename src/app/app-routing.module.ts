@@ -13,6 +13,7 @@ import { ContingencyListComponent } from './content/operations/contingency-list/
 import { PendingListComponent } from './content/operations/pending-list/pending-list.component';
 import {FleetHealthComponent} from './content/fleet-health/fleet-health.component';
 import {DeferralListComponent} from './content/fleet-health/deferral-list/deferral-list.component';
+import {ManagementComponent} from './content/management/management.component';
 
 const ROUTES: Routes = [
     {
@@ -73,10 +74,16 @@ const ROUTES: Routes = [
                         canActivate: [AuthGuardService],
                     }
                 ]
-            }
+            },
+            {
+                path: 'management',
+                canActivate: [AuthGuardService],
+                component: ManagementComponent
+            },
         ],
         canActivate: [AuthGuardService]
     },
+
     {
         path: 'login',
         component: LoginComponent
