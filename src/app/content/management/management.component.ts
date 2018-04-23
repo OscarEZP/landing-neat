@@ -9,6 +9,8 @@ import {LayoutService} from '../../layout/_services/layout.service';
 })
 export class ManagementComponent implements OnInit {
 
+    public arrMenu: { label: string, link: string }[];
+
     constructor(
         private _routingService: RoutingService,
         private _layoutService: LayoutService
@@ -16,6 +18,12 @@ export class ManagementComponent implements OnInit {
         this.moduleTitle = 'Management Module';
         this.showAddButton = false;
         this.showRightNav = false;
+        this.arrMenu = [
+            {
+                'label': 'MANAGEMENT.USER_MANAGEMENT',
+                'link': '/management/user-management',
+            }
+        ];
     }
 
     ngOnInit() {

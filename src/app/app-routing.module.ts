@@ -14,6 +14,7 @@ import { PendingListComponent } from './content/operations/pending-list/pending-
 import {FleetHealthComponent} from './content/fleet-health/fleet-health.component';
 import {DeferralListComponent} from './content/fleet-health/deferral-list/deferral-list.component';
 import {ManagementComponent} from './content/management/management.component';
+import {UserManagementComponent} from './content/management/user-management/user-management.component';
 
 const ROUTES: Routes = [
     {
@@ -78,7 +79,19 @@ const ROUTES: Routes = [
             {
                 path: 'management',
                 canActivate: [AuthGuardService],
-                component: ManagementComponent
+                component: ManagementComponent,
+                children: [
+                    {
+                        path: '',
+                        redirectTo: '/management/user-management',
+                        pathMatch: 'full',
+                    },
+                    {
+                        path: 'user-management',
+                        component: UserManagementComponent,
+                        canActivate: [AuthGuardService],
+                    }
+                ]
             },
         ],
         canActivate: [AuthGuardService]

@@ -31,6 +31,7 @@
       color: mat-color($primary);
       padding: 10px 20px;
       display: inline-block;
+      text-transform: uppercase;
     }
     a.active {
       background-color: mat-color($primary);

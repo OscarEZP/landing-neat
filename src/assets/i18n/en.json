@@ -70,10 +70,13 @@
       "START_NEW_PROJECT": "Start new project"
     }
   },
+  "MANAGEMENT": {
+    "USER_MANAGEMENT": "User Management"
+  },
   "OPERATIONS": {
     "ALERT": "Alert",
     "ALERTS": "Alerts",
-    "CONTINGENCY": "CONTINGENCY",
+    "CONTINGENCY": "Contingency",
     "SELECT_ALL": "SELECT ALL",
     "CANCEL_COMPONENT": {
       "MESSAGE": "Are you sure that you want to Cancel? (The filled information will be lost)",
@@ -82,7 +85,7 @@
     },
     "CLOSE_COMPONENT": {
       "TITLE": "Close Contingency",
-      "CONTINGENCY_INFO": "CONTINGENCY INFO",
+      "CONTINGENCY_INFO": "Contingency Info",
       "AC": "A/C:",
       "OPERATOR": "Operator:",
       "FLIGHT": "Flight:",
@@ -210,7 +213,7 @@
     "OPERATOR": "Operator",
     "OF": "of",
     "PIT_STOP": "PIT STOP",
-    "PENDINGS": "PENDINGS",
+    "PENDINGS": "Pendings",
     "PROGRESS": "Progress",
     "SAFETY_EVENT": "Safety Event",
     "TOTAL_PENDINGS":"Pendings",

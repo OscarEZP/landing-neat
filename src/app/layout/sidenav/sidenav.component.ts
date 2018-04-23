@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import { User } from '../../shared/_models/user/user';
+import {User} from '../../shared/_models/user/user';
 import {SidenavService} from '../_services/sidenav.service';
 import {StorageService} from '../../shared/_services/storage.service';
+import {Menu} from '../../shared/_models/menu';
 
 @Component({
     selector: 'lsl-sidenav',
@@ -12,7 +13,7 @@ export class SidenavComponent implements OnInit {
 
     private user: User;
     public userArray: { username: string, name: string, email: string };
-    public arrMenu: { label: string, link: string, icon: string }[];
+    public arrMenu: Menu[];
 
     constructor(private sidenavService: SidenavService, private _storageService: StorageService) {
         this.userArray = {username: '', name: '', email: ''};
@@ -26,36 +27,33 @@ export class SidenavComponent implements OnInit {
 
     ngOnInit() {
         this.arrMenu = [
-            /*{
-                'label': 'Dashboard',
-                'link': '/dashboard/',
-                'icon': 'assessment'
-            },*/
-            {
-               'label': 'Management',
-               'link': '/management/',
-               'icon': 'settings'
-            },
-            {
-                'label': 'Operations Module',
-                'link': '/operations/',
-                'icon': 'build'
-            },
-            {
-                'label': 'Fleet Health Module',
-                'link': '/fleet-health/',
-                'icon': 'airplanemode_active'
-            },
-            {
-                'label': 'Log Out',
-                'link': '/logout',
-                'icon': 'power_settings_new'
-            }
+            new Menu('Operations', 'build', '', false, [
+                new Menu('Contingencies', '', '/operations/contingencies', false),
+                new Menu('Pendings', '', '/operations/pendings', false)
+            ]),
+            new Menu('Fleet Health', 'airplanemode_active', '', false, [
+                new Menu('Deferrals', '', '/fleet-health/deferrals', false)
+            ]),
+            new Menu('Management', 'settings', '', true, [
+                new Menu('General', 'person ', '', false, [
+                    new Menu('Users'),
+                    new Menu('Rules'),
+                ]),
+                new Menu('Operations', 'build', '', false, [
+                    new Menu('Emails Maintainer'),
+                    new Menu('Meeting Mails')
+                ]),
+                new Menu('Fleet Health', 'airplanemode_active', '', false, [
+                    new Menu('ATEC')
+                ])
+            ]),
+            new Menu('Log Out', 'power_settings_new', '/logout'),
         ];
     }
 
     toggleSidenav() {
-        this.sidenavService.closeSidenav().then(() => {});
+        this.sidenavService.closeSidenav().then(() => {
+        });
     }
 
 }
