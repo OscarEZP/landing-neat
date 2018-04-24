@@ -11,6 +11,7 @@ export class AuthService {
     static HEMICYCLE_GROUP_NAME = 'mcp_hemicycle';
     static HEMICYCLE_URL = '/hemicycle/contingencies';
     static LOGIN_ENDPOINT = 'login';
+    static AUTH_ENDPOINT = '';
 
     private isLoggedIn: boolean;
     private redirectUrl: string;
@@ -35,11 +36,9 @@ export class AuthService {
     }
 
     logIn(username: string, password: string): Promise<User> {
-
         let user: User = new User();
         user.username = username;
         user.password = password;
-
         return this.apiService
             .search<User>(AuthService.LOGIN_ENDPOINT, user)
             .toPromise()
@@ -56,15 +55,30 @@ export class AuthService {
             }).catch((reason: HttpErrorResponse) => {
                 return Promise.reject(reason.error.message);
             });
-
     }
 
-    logOut() {
+    logOut(): void {
         this.isLoggedIn = false;
         this.storageService.removeCurrentUser();
     }
 
-    getIsLoggedIn() {
+    /*getPermissions(): Promise<User> {
+        this.apiService
+            .search<User>(AuthService.AUTH_ENDPOINT, user)
+            .toPromise()
+            .then((value: User) => {
+                return Promise.resolve(user);
+            }).catch((reason: HttpErrorResponse) => {
+            return Promise.reject(reason.error.message);
+        });
+    }*/
+
+    getIsAuth(path: string): boolean {
+        console.log(path);
+        return true;
+    }
+
+    getIsLoggedIn(): boolean {
         return this.storageService.hasCurrentUser();
     }
 
@@ -76,7 +90,7 @@ export class AuthService {
         return this.loginUrl;
     }
 
-    getData() {
+    getData(): { username: string, password: string } {
         return this.data;
     }
 

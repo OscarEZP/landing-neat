@@ -7,23 +7,11 @@ export class StorageService {
     private static RECOVER_DESTINATION = 'recoverDestination';
     private static CURRENT_USER = 'currentUser';
 
-    private _expired: boolean;
-
     constructor() {
-        this.expired = false;
-    }
-
-    get expired(): boolean {
-        return this._expired;
-    }
-
-    set expired(value: boolean) {
-        this._expired = value;
     }
 
     private static removeLocalStorage(key: string) {
         localStorage.removeItem(key);
-
     }
 
     private static addLocalStorage(key: string, item: string) {

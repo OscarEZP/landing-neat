@@ -5,10 +5,6 @@
         <p>{{ userArray.username }}</p>
     </header>
     <nav class="margin-nav">
-       <!-- <a id="lnk-sidenav-{{menu.link.split('/').join('')}}"  routerLink="{{menu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
-            <i class="material-icons" [innerHtml]="menu.icon"></i>
-            <span [innerHtml]="menu.label"></span>
-        </a>-->
         <div *ngFor="let menu of arrMenu">
             <mat-expansion-panel *ngIf="menu.submenu.length > 0 && menu.collapse === true">
                 <mat-expansion-panel-header class="title">
@@ -16,7 +12,7 @@
                     <mat-panel-title [innerHtml]="menu.label"></mat-panel-title>
                 </mat-expansion-panel-header>
                 <div *ngFor="let submenu of menu.submenu">
-                    <a *ngIf="submenu.link !== ''" id="lnk-sidenav-{{menu.slug}}" routerLink="{{submenu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
+                    <a (click)="toggleSidenav()" *ngIf="submenu.link !== ''" id="lnk-sidenav-{{menu.slug}}" routerLink="{{submenu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
                         <i class="material-icons" [innerHtml]="menu.icon"></i>
                         <span [innerHtml]="submenu.label"></span>
                     </a>
@@ -26,7 +22,7 @@
                             <span>{{submenu.label}}</span>
                         </div>
                         <div>
-                            <a *ngFor="let subSubmenu of submenu.submenu" routerLink="{{subSubmenu.link}}">{{subSubmenu.label}}</a>
+                            <a (click)="toggleSidenav()" *ngFor="let subSubmenu of submenu.submenu" routerLink="{{subSubmenu.link}}">{{subSubmenu.label}}</a>
                         </div>
                     </div>
                 </div>
@@ -38,7 +34,7 @@
                     <span>{{menu.label}}</span>
                 </div>
                 <div *ngFor="let submenu of menu.submenu">
-                    <a routerLink="{{submenu.link}}">{{submenu.label}}</a>
+                    <a (click)="toggleSidenav()" routerLink="{{submenu.link}}">{{submenu.label}}</a>
                 </div>
             </div>
 

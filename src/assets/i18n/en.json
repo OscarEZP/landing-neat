@@ -73,6 +73,20 @@
   "MANAGEMENT": {
     "USER_MANAGEMENT": "User Management"
   },
+  "MENU" : {
+    "ATEC": "ATEC",
+    "CONTINGENCIES": "Contingencies",
+    "DEFERRALS": "Deferrals",
+    "EMAILS_MANTAINER": "Emails maintainer",
+    "FLEET_HEALTH": "Fleet Health",
+    "GENERAL": "General",
+    "LOG_OUT": "Log out",
+    "MANAGEMENT": "Management",
+    "OPERATIONS": "Operations",
+    "PENDINGS": "Pendings",
+    "RULES": "Rules",
+    "USERS": "Users"
+  },
   "OPERATIONS": {
     "ALERT": "Alert",
     "ALERTS": "Alerts",
