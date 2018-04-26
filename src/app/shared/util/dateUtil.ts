@@ -98,52 +98,32 @@ export class DateUtil {
      * @returns {number}
      */
     public static changeTime(epochDate: number, diff: number, scale: string, action: string): number {
-        const scaleValue = DateUtil.scaleTimeToLong(scale, diff);
 
         const math_operation = {
             'add': (x, y) => x + y,
             'minus': (x, y) => x - y
         };
 
-        return math_operation[action](epochDate, scaleValue);
+        const scaleMap = DateUtil.scaleMap();
+
+        return math_operation[action](epochDate, scaleMap.get(scale[diff]));
     }
 
     /**
-     * Return scale of time accordingly the string value in argument
-     * @param {string} scale
-     * @param {number} value
-     * @returns {number}
+     * Create a time scale map
+     * @returns {Map}
      */
-    private static scaleTimeToLong(scale: string, value: number): number {
-        let scaleValue;
+    private static scaleMap(): Map {
+        const scaleMap = new Map();
 
-        switch (scale) {
-            case 'year':
-                scaleValue = 31536000000;
-                break;
-            case 'month':
-                scaleValue = 2628000000;
-                break;
-            case 'week':
-                scaleValue = 604800000;
-                break;
-            case 'day':
-                scaleValue = 86400000;
-                break;
-            case 'hour':
-                scaleValue = 3600000;
-                break;
-            case 'minute':
-                scaleValue = 60000;
-                break;
-            case 'second':
-                scaleValue = 1000;
-                break;
-            default:
-                scaleValue = 1000;
-                break;
-        }
+        scaleMap.set('year', (x) => 31536000000 * x);
+        scaleMap.set('month', (x) => 2628000000 * x);
+        scaleMap.set('week', (x) => 604800000 * x);
+        scaleMap.set('day', (x) => 86400000 * x);
+        scaleMap.set('hour', (x) => 3600000 * x);
+        scaleMap.set('minute', (x) => 60000 * x);
+        scaleMap.set('second', (x) => 1000 * x);
 
-        return scaleValue * value;
+        return scaleMap;
     }
 }
