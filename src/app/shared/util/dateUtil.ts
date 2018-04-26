@@ -113,17 +113,14 @@ export class DateUtil {
      * Create a time scale map
      * @returns {Map}
      */
-    private static scaleMap(): Map {
-        const scaleMap = new Map();
-
-        scaleMap.set('year', (x) => 31536000000 * x);
-        scaleMap.set('month', (x) => 2628000000 * x);
-        scaleMap.set('week', (x) => 604800000 * x);
-        scaleMap.set('day', (x) => 86400000 * x);
-        scaleMap.set('hour', (x) => 3600000 * x);
-        scaleMap.set('minute', (x) => 60000 * x);
-        scaleMap.set('second', (x) => 1000 * x);
-
-        return scaleMap;
+    private static scaleMap(): Map<string, object> {
+        return new Map([
+                ['year', (x) => 31536000000 * x ],
+                ['month', (x) => 2628000000 * x ],
+                ['day', (x) => 86400000 * x ],
+                ['hour', (x) => 3600000 * x ],
+                ['minute', (x) => 60000 * x ],
+                ['second', (x) => 1000 * x ]
+            ]);
     }
 }
