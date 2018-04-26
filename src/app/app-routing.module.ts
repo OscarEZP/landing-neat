@@ -83,11 +83,16 @@ const ROUTES: Routes = [
                 children: [
                     {
                         path: '',
-                        redirectTo: '/management/general',
+                        redirectTo: '/management/general/users',
                         pathMatch: 'full',
                     },
                     {
                         path: 'general',
+                        redirectTo: '/management/general/users',
+                        pathMatch: 'full',
+                    },
+                    {
+                        path: 'general/users',
                         component: UserManagementComponent,
                         canActivate: [AuthGuardService],
                     }

@@ -18,7 +18,7 @@ export class RoutingService {
             ]),
             new Menu('MENU.MANAGEMENT', 'settings', '/management/', true, [
                 new Menu('MENU.GENERAL', 'person ', '', false, [
-                    new Menu('MENU.USERS', '', '/general/users'),
+                    new Menu('MENU.USERS', '', '/management/general/users'),
                     new Menu('MENU.RULES'),
                 ]),
                 new Menu('MENU.OPERATIONS', 'build', '', false, [
