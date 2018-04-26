@@ -66,7 +66,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         private _dataService: DataService,
         private http: HttpClient) {
         this.followUp = Status.getInstance();
-        this.followUp.username=this._storageService.getCurrentUser().userId;
+        this.followUp.username = this._storageService.getCurrentUser().userId;
         this.apiRestService = new ApiRestService(http);
 
         this.currentUTCTime = 0;

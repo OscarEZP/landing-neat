@@ -20,7 +20,8 @@
       "CLOSE_CONTINGENCY": "Close Contingency",
       "MEETING": "Meeting",
       "FOLLOW_UP": "Follow up",
-      "PENDING": "Pending"
+      "PENDING": "Pending",
+      "DONE": "Done"
     }
   },
   "ERRORS":{
