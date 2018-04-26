@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {RoutingService} from '../../shared/_services/routing.service';
 import {LayoutService} from '../../layout/_services/layout.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'lsl-management',
@@ -13,8 +14,10 @@ export class ManagementComponent implements OnInit {
 
     constructor(
         private _routingService: RoutingService,
+        private _translate: TranslateService,
         private _layoutService: LayoutService
     ) {
+        this._translate.setDefaultLang('en');
         this.moduleTitle = 'Management Module';
         this.showAddButton = false;
         this.showRightNav = false;

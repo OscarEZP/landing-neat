@@ -26,6 +26,7 @@ export const environment = {
         locations: '/api/v1/configurations/locations',
         login: '/api/security/users/_login',
         mails : '/api/v1/configurations/mails',
+        managementUsers: '/api/v1/management/users',
         meetings: '/api/v1/contingencies/meetings',
         operator: '/api/v1/configurations/operators/',
         pendingResolve: '/api/v1/contingencies/pendings/_resolve',
@@ -36,8 +37,8 @@ export const environment = {
         tasksSearchCount: '/api/v1/tasks/_search/count',
         types: '/api/v1/configurations/types',
         taskRelationsSearch: '/api/v1/tasks/relations/_search',
-        taskHistoricalReport:'/api/v1/tasks/analysis/historical',
-        taskSaveAnalysis:'/api/v1/tasks/analysis',
+        taskHistoricalReport: '/api/v1/tasks/analysis/historical',
+        taskSaveAnalysis: '/api/v1/tasks/analysis',
         tasksFleethealthSearchCount: '/api/v1/tasks/fleethealth/_search/count',
         tasksFleethealthSearch: '/api/v1/tasks/fleethealth/_search'
     }

@@ -2,22 +2,18 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ManagementComponent} from './management.component';
 import {SharedModule} from '../../shared/shared.module';
-import { AtecFilterComponent } from './atec-filter/atec-filter.component';
-import { UserManagementComponent } from './user-management/user-management.component';
-import { EmailMaintainerComponent } from './email-maintainer/email-maintainer.component';
 import {RouterModule} from '@angular/router';
+import {UserManagementModule} from './mng-general/user-management/user-management.module';
 
 @NgModule({
     imports: [
         CommonModule,
         SharedModule,
-        RouterModule
+        RouterModule,
+        UserManagementModule
     ],
     declarations: [
-        ManagementComponent,
-        AtecFilterComponent,
-        UserManagementComponent,
-        EmailMaintainerComponent,
+        ManagementComponent
     ]
 })
 export class ManagementModule {

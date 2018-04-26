@@ -4,6 +4,8 @@ import 'rxjs/add/operator/toPromise';
 import { User } from '../../shared/_models/user/user';
 import { StorageService } from '../../shared/_services/storage.service';
 import { ApiRestService } from '../../shared/_services/apiRest.service';
+import { ManagementUser } from '../../shared/_models/management/managementUser';
+import {Module} from '../../shared/_models/management/module';
 
 @Injectable()
 export class AuthService {
@@ -11,20 +13,41 @@ export class AuthService {
     static HEMICYCLE_GROUP_NAME = 'mcp_hemicycle';
     static HEMICYCLE_URL = '/hemicycle/contingencies';
     static LOGIN_ENDPOINT = 'login';
-    static AUTH_ENDPOINT = '';
+    static MANAGEMENT_USERS_ENDPOINT = 'managementUsers';
+    static MANAGEMENT_ENDPOINT = 'management';
+    static USER_MODE = 'user';
+    static ADMIN_MODE = 'admin';
 
     private isLoggedIn: boolean;
     private redirectUrl: string;
     private loginUrl: string;
     public data: { username: string, password: string };
     private _apiService: ApiRestService;
+    private _modulesConfig: { code: string, module: string }[];
 
-    constructor(private http: HttpClient, private storageService: StorageService) {
+    constructor(
+        private http: HttpClient,
+        private _storageService: StorageService
+    ) {
         this.isLoggedIn = this.getIsLoggedIn();
         this.redirectUrl = '/operations';
         this.loginUrl = '/login';
         this.reset();
         this.apiService = new ApiRestService(this.http);
+        this.modulesConfig = [
+            {
+                code: 'OP',
+                module: 'operations'
+            },
+            {
+                code: 'FH',
+                module: 'fleet-health'
+            },
+            {
+                code: 'GE',
+                module: 'general'
+            }
+        ];
     }
 
     get apiService(): ApiRestService {
@@ -59,27 +82,55 @@ export class AuthService {
 
     logOut(): void {
         this.isLoggedIn = false;
-        this.storageService.removeCurrentUser();
+        this._storageService.removeCurrentUser();
+        this._storageService.removeUserManagement();
     }
 
-    /*getPermissions(): Promise<User> {
-        this.apiService
-            .search<User>(AuthService.AUTH_ENDPOINT, user)
+    getRoles(username: string): Promise<any> {
+        return this.apiService
+            .getParams<ManagementUser>(AuthService.MANAGEMENT_USERS_ENDPOINT, username)
             .toPromise()
-            .then((value: User) => {
-                return Promise.resolve(user);
+            .then((res: ManagementUser) => {
+                this.userManagement = res;
+                return Promise.resolve(res);
             }).catch((reason: HttpErrorResponse) => {
-            return Promise.reject(reason.error.message);
-        });
-    }*/
+                return Promise.reject(reason.error.message);
+            }
+        );
+    }
 
     getIsAuth(path: string): boolean {
-        console.log(path);
-        return true;
+        const arrSegments = path.split('/').filter(x => x !== '');
+        const segment = arrSegments.shift();
+        if (this.userManagement && this.userManagement.modules.length !== 0) {
+            let find = this.findModule(segment);
+            if (!find && segment === AuthService.MANAGEMENT_ENDPOINT) {
+                find = this.findModule(arrSegments.shift());
+            }
+            if (!find && segment !== AuthService.MANAGEMENT_ENDPOINT) {
+                return false;
+            }
+            const result = segment === AuthService.MANAGEMENT_ENDPOINT ?
+                !!this.userManagement.modules.find(m => !!m.roles.find(r => r === AuthService.ADMIN_MODE)) :
+                !!find.roles.find(r => r === AuthService.USER_MODE || r === AuthService.ADMIN_MODE);
+            return result;
+        } else {
+            return false;
+        }
+    }
+
+    private findModule(segment: string): Module {
+        return this.userManagement.modules
+            .find(
+                module => {
+                    const configFind = this.modulesConfig.find(config => segment === config.module);
+                    return configFind ? configFind.code === module.code : false;
+                }
+            );
     }
 
     getIsLoggedIn(): boolean {
-        return this.storageService.hasCurrentUser();
+        return this._storageService.hasCurrentUser();
     }
 
     getRedirectUrl(): string {
@@ -98,4 +149,19 @@ export class AuthService {
         this.data = {username: '', password: ''};
     }
 
+    get userManagement(): ManagementUser {
+        return this._storageService.userManagement;
+    }
+
+    set userManagement(value: ManagementUser) {
+        this._storageService.userManagement = value;
+    }
+
+    get modulesConfig(): { code: string; module: string }[] {
+        return this._modulesConfig;
+    }
+
+    set modulesConfig(value: { code: string; module: string }[]) {
+        this._modulesConfig = value;
+    }
 }

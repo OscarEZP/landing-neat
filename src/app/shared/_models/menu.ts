@@ -15,9 +15,11 @@ export class Menu {
     }
 
     get slug(): string {
-        // console.log(this.link.split('/').pop());
-        // return this.link;
         return this.link !== '' ? this.link.split('/').pop() : '';
+    }
+
+    get endpoint(): string {
+        return this.link !== '' ? this.link : this.slug;
     }
 
     get label(): string {
@@ -59,4 +61,5 @@ export class Menu {
     set collapse(value: boolean) {
         this._collapse = value;
     }
+
 }

@@ -70,13 +70,16 @@ export class LoginComponent implements OnInit {
 
     logIn(form: NgForm) {
         this.activateLoadingBar(true);
-
         if (form.valid && !this.disableButton) {
             this.disableButton = true;
             const data = this.authService.getData();
             this.authService.logIn(data.username, data.password).then(value => {
                 this._storageService.addCurrentUser(value);
-                this.router.navigate([this.authService.getRedirectUrl()]);
+
+                this.authService.getRoles(data.username).then(() => {
+                    this.router.navigate([this.authService.getRedirectUrl()]);
+                });
+
                 this.activateLoadingBar(false);
                 this.disableButton = false;
             }).catch(reason => {

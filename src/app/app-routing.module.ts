@@ -14,7 +14,7 @@ import { PendingListComponent } from './content/operations/pending-list/pending-
 import {FleetHealthComponent} from './content/fleet-health/fleet-health.component';
 import {DeferralListComponent} from './content/fleet-health/deferral-list/deferral-list.component';
 import {ManagementComponent} from './content/management/management.component';
-import {UserManagementComponent} from './content/management/user-management/user-management.component';
+import {UserManagementComponent} from './content/management/mng-general/user-management/user-management.component';
 
 const ROUTES: Routes = [
     {
@@ -83,11 +83,11 @@ const ROUTES: Routes = [
                 children: [
                     {
                         path: '',
-                        redirectTo: '/management/user-management',
+                        redirectTo: '/management/general',
                         pathMatch: 'full',
                     },
                     {
-                        path: 'user-management',
+                        path: 'general',
                         component: UserManagementComponent,
                         canActivate: [AuthGuardService],
                     }
