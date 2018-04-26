@@ -88,4 +88,62 @@ export class DateUtil {
     public static formatDate(epochTime: number, format: string): string {
         return moment(epochTime).utc().format(format);
     }
+
+    /**
+     * Return the modified time accordingly method arguments
+     * @param {number} epochDate
+     * @param {number} diff
+     * @param {string} scale
+     * @param {string} action
+     * @returns {number}
+     */
+    public static changeTime(epochDate: number, diff: number, scale: string, action: string): number {
+        const scaleValue = DateUtil.scaleTimeToLong(scale, diff);
+
+        const math_operation = {
+            'add': (x, y) => x + y,
+            'minus': (x, y) => x - y
+        };
+
+        return math_operation[action](epochDate, scaleValue);
+    }
+
+    /**
+     * Return scale of time accordingly the string value in argument
+     * @param {string} scale
+     * @param {number} value
+     * @returns {number}
+     */
+    private static scaleTimeToLong(scale: string, value: number): number {
+        let scaleValue;
+
+        switch (scale) {
+            case 'year':
+                scaleValue = 31536000000;
+                break;
+            case 'month':
+                scaleValue = 2628000000;
+                break;
+            case 'week':
+                scaleValue = 604800000;
+                break;
+            case 'day':
+                scaleValue = 86400000;
+                break;
+            case 'hour':
+                scaleValue = 3600000;
+                break;
+            case 'minute':
+                scaleValue = 60000;
+                break;
+            case 'second':
+                scaleValue = 1000;
+                break;
+            default:
+                scaleValue = 1000;
+                break;
+        }
+
+        return scaleValue * value;
+    }
 }
