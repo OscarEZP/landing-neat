@@ -50,7 +50,7 @@ export class ApiRestService {
         return this.http.post<T>(this.baseUrl + finalPath, toAdd);
     }
 
-    public update<T>(path: string, id: number, itemToUpdate: any): Observable<T> {
+    public update<T>(path: string, id: number | string, itemToUpdate: any): Observable<T> {
         return this.http.put<T>(this.baseUrl + environment.paths[path] + '/' + id, JSON.stringify(itemToUpdate));
     }
 

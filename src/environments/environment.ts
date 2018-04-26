@@ -36,8 +36,9 @@ export const environment = {
         tasksSearchCount: '/api/v1/tasks/_search/count',
         types: '/api/v1/configurations/types',
         taskRelationsSearch: '/api/v1/tasks/relations/_search',
-        taskHistoricalReport:'/api/v1/tasks/analysis/historical',
-        taskSaveAnalysis:'/api/v1/tasks/analysis',
+        taskHistoricalReport: '/api/v1/tasks/analysis/historical',
+        taskSaveAnalysis: '/api/v1/tasks/analysis',
+        tasksFleethealthDone: '/api/v1/tasks/fleethealth/manualstate/_apply',
         tasksFleethealthSearchCount: '/api/v1/tasks/fleethealth/_search/count',
         tasksFleethealthSearch: '/api/v1/tasks/fleethealth/_search'
     }
