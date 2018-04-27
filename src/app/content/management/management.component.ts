@@ -18,7 +18,6 @@ export class ManagementComponent implements OnInit {
         private _layoutService: LayoutService
     ) {
         this._translate.setDefaultLang('en');
-        this.moduleTitle = 'Management Module';
         this.showAddButton = false;
         this.showRightNav = false;
         this.arrMenu = [
@@ -30,7 +29,12 @@ export class ManagementComponent implements OnInit {
     }
 
     ngOnInit() {
-
+        this._translate.get('MANAGEMENT.MANAGEMENT_MODULE')
+            .toPromise()
+            .then(res => {
+                this.moduleTitle = res;
+            }
+        );
     }
 
     set moduleTitle(value: string) {
