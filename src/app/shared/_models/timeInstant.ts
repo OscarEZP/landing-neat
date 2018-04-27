@@ -8,8 +8,8 @@ export class TimeInstant {
         this._label = label;
     }
 
-    static getInstance():TimeInstant{
-        return new TimeInstant(null,null);
+    static getInstance(): TimeInstant {
+        return new TimeInstant(null, null);
     }
 
     get epochTime (): number {
