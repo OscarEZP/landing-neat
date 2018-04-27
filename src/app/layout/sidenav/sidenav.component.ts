@@ -35,20 +35,33 @@ export class SidenavComponent implements OnInit {
         this.userArray.name = this.user.firstName + ' ' + this.user.lastName;
     }
 
-    ngOnInit() {
-        this.arrMenu = this._routingService.arrMenu
-        .filter(menu =>
-            this._authService.getIsAuth(menu.link, ) ||
-            menu.slug === SidenavComponent.MANAGEMENT_ENDPOINT ||
-            menu.link.split('/').join('') === SidenavComponent.LOGOUT_ENDPOINT
-        ).map(menu => {
-            menu.submenu = menu.submenu.filter(submenu => this._authService.getIsAuth(submenu.link));
-            return menu;
-        }).filter(menu => !(menu.slug === SidenavComponent.MANAGEMENT_ENDPOINT && menu.submenu.length === 0));
 
+    ngOnInit() {
+        this.arrMenu = this.filterMenu(this._routingService.arrMenu);
         this.arrMenu.map(menu => this.translateMenu(menu));
     }
 
+    /**
+     * Filter for get just enabled sections
+     * @param {Menu[]} arrMenu
+     * @returns {Menu[]}
+     */
+    private filterMenu (arrMenu: Menu[]): Menu[] {
+        return arrMenu
+            .filter(menu =>
+                this._authService.getIsAuth(menu.link   ) ||
+                menu.slug === SidenavComponent.MANAGEMENT_ENDPOINT ||
+                menu.slug === SidenavComponent.LOGOUT_ENDPOINT
+            ).map(menu => {
+            menu.submenu = menu.submenu.filter(submenu => this._authService.getIsAuth(submenu.link));
+            return menu;
+        }).filter(menu => !(menu.slug === SidenavComponent.MANAGEMENT_ENDPOINT && menu.submenu.length === 0));
+    }
+
+    /**
+     * Translate all labels
+     * @param {Menu} menu
+     */
     private translateMenu(menu: Menu) {
         this._translate
             .get(menu.label)

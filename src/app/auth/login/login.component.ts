@@ -6,7 +6,7 @@ import { MessageService } from '../../shared/_services/message.service';
 import { StorageService } from '../../shared/_services/storage.service';
 import { AuthService } from '../_services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
-import {DataService} from '../../shared/_services/data.service';
+import {RoutingService} from '../../shared/_services/routing.service';
 
 
 @Component({
@@ -15,6 +15,10 @@ import {DataService} from '../../shared/_services/data.service';
     styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+
+    private static ADMIN_MODE = 'admin';
+    private static USER_MODE = 'user';
+
     usernameFormControl = new FormControl('', [
         Validators.required
     ]);
@@ -36,14 +40,14 @@ export class LoginComponent implements OnInit {
     loginForm: FormGroup;
 
     constructor(
-        protected authService: AuthService,
+        protected _authService: AuthService,
         private _storageService: StorageService,
         private router: Router,
         private route: ActivatedRoute,
         private fb: FormBuilder,
         private  _messageService: MessageService,
         private _translate: TranslateService,
-        private _dataService: DataService
+        private _routingService: RoutingService
     ) {
         this._translate.setDefaultLang('en');
     }
@@ -53,33 +57,33 @@ export class LoginComponent implements OnInit {
         this.disableButton = false;
         this.activateLoadingBar(false);
 
-        this.authService.reset();
+        this._authService.reset();
         this.loginForm = this.fb.group({
             'usernameFormControl': this.usernameFormControl,
             'passwordFormControl': this.passwordFormControl
         });
         this.routeData = this.route.data.subscribe((data: { logout: string }) => {
-            if (data.logout && this.authService.getIsLoggedIn()) {
-                this.authService.logOut();
-                this.router.navigate([this.authService.getLoginUrl()]);
-            } else if (this.authService.getIsLoggedIn()) {
-                this.router.navigate([this.authService.getRedirectUrl()]);
+            if (data.logout && this._authService.getIsLoggedIn()) {
+                this._authService.logOut();
+                this.router.navigate([this._authService.getLoginUrl()]);
+            } else if (this._authService.getIsLoggedIn()) {
+                this.router.navigate([this._authService.getRedirectUrl()]);
             }
         });
     }
 
+    /**
+     * Method for get an access token, if success, the user will be redirected to any section enabled
+     * @param {NgForm} form
+     */
     logIn(form: NgForm) {
         this.activateLoadingBar(true);
         if (form.valid && !this.disableButton) {
             this.disableButton = true;
-            const data = this.authService.getData();
-            this.authService.logIn(data.username, data.password).then(value => {
+            const data = this._authService.getData();
+            this._authService.logIn(data.username, data.password).then(value => {
                 this._storageService.addCurrentUser(value);
-
-                this.authService.getRoles(data.username).then(() => {
-                    this.router.navigate([this.authService.getRedirectUrl()]);
-                });
-
+                this.redirect(data.username);
                 this.activateLoadingBar(false);
                 this.disableButton = false;
             }).catch(reason => {
@@ -90,6 +94,33 @@ export class LoginComponent implements OnInit {
 
         }
     }
+
+    /**
+     * Redirect to a enabled section if the role is 'admin' or 'user'
+     * @param {string} username
+     */
+    private redirect(username: string) {
+        this._authService.getRoles(username).then(
+        res => {
+            const role = this._routingService.arrMenu.find(menu => {
+                const moduleConfig = this._authService.modulesConfig.find(
+                    mod => {
+                        const modUser = res.modules
+                            .find(m => !!m.roles.find(r => r === LoginComponent.ADMIN_MODE || r === LoginComponent.USER_MODE));
+                        return modUser ? modUser.code === mod.code : false;
+                    }
+                );
+                return moduleConfig ?
+                    moduleConfig.module === menu.slug || !!menu.submenu.find(sub => sub.slug === moduleConfig.module) :
+                    false;
+            });
+            if (role) {
+                this._authService.setRedirectUrl(role.link);
+                this.router.navigate([this._authService.getRedirectUrl()]);
+            }
+        }).catch(error => this._messageService.openSnackBar(error));
+    }
+
     activateLoadingBar(show: boolean) {
         if (show) {
             this.loading = true;
@@ -100,6 +131,14 @@ export class LoginComponent implements OnInit {
             this.mode = 'determinate';
             this.value = 100;
         }
+    }
+
+    get data(): { username: string, password: string } {
+        return this._authService.data;
+    }
+
+    set data(value: { username: string, password: string }){
+        return this._authService.data = value;
     }
 }
 

@@ -19,7 +19,7 @@ export class AuthService {
     static ADMIN_MODE = 'admin';
 
     private isLoggedIn: boolean;
-    private redirectUrl: string;
+    private _redirectUrl: string;
     private loginUrl: string;
     public data: { username: string, password: string };
     private _modulesConfig: { code: string, module: string }[];
@@ -30,7 +30,7 @@ export class AuthService {
         private _apiService: ApiRestService
     ) {
         this.isLoggedIn = this.getIsLoggedIn();
-        this.redirectUrl = '/operations';
+        this._redirectUrl = '/operations';
         this.loginUrl = '/login';
         this.reset();
         this.modulesConfig = [
@@ -67,7 +67,7 @@ export class AuthService {
                 user = value;
                 for (i = 0; i < user.groupList.length; i++) {
                     if (user.groupList[i].name.toLocaleLowerCase() === AuthService.HEMICYCLE_GROUP_NAME.toLocaleLowerCase()) {
-                        this.redirectUrl = AuthService.HEMICYCLE_URL;
+                        this._redirectUrl = AuthService.HEMICYCLE_URL;
                     }
                     user.principalGroup = user.groupList[i].name;
                 }
@@ -77,12 +77,20 @@ export class AuthService {
             });
     }
 
+    /**
+     * Logout of App
+     */
     logOut(): void {
         this.isLoggedIn = false;
         this._storageService.removeCurrentUser();
         this._storageService.removeUserManagement();
     }
 
+    /**
+     * Get roles from API
+     * @param {string} username
+     * @returns {Promise<any>}
+     */
     getRoles(username: string): Promise<any> {
         return this.apiService
             .getParams<ManagementUser>(AuthService.MANAGEMENT_USERS_ENDPOINT, username)
@@ -96,6 +104,11 @@ export class AuthService {
         );
     }
 
+    /**
+     * Validate if a module link is valid for current user
+     * @param {string} path
+     * @returns {boolean}
+     */
     getIsAuth(path: string): boolean {
         const arrSegments = path.split('/').filter(x => x !== '');
         const segment = arrSegments.shift();
@@ -109,6 +122,12 @@ export class AuthService {
         }
     }
 
+    /**
+     * Validate if a submodule link is valid for current user
+     * @param {string} segment
+     * @param {string[]} arrSegments
+     * @returns {boolean}
+     */
     getIsAuthSubModule(segment: string, arrSegments: string[]): boolean {
         if (segment === AuthService.MANAGEMENT_ENDPOINT) {
             const find = this.findModule(arrSegments.shift());
@@ -118,6 +137,11 @@ export class AuthService {
         }
     }
 
+    /**
+     * Find a module by a code
+     * @param {string} segment
+     * @returns {Module}
+     */
     private findModule(segment: string): Module {
         return this.userManagement.modules
             .find(
@@ -133,7 +157,11 @@ export class AuthService {
     }
 
     getRedirectUrl(): string {
-        return this.redirectUrl;
+        return this._redirectUrl;
+    }
+
+    setRedirectUrl(value: string) {
+        this._redirectUrl = value;
     }
 
     getLoginUrl(): string {
