@@ -13,6 +13,8 @@ import {SearchTask} from '../../../shared/_models/task/searchTask';
 import {Pagination} from '../../../shared/_models/common/pagination';
 import {HistoricalReportComponent} from '../historical-report/historical-report.component';
 import {HistoricalReportService} from '../historical-report/_services/historical-report.service';
+import {StorageService} from '../../../shared/_services/storage.service';
+import {MessageService} from '../../../shared/_services/message.service';
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -51,7 +53,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         private _detailsService: DetailsService,
         private _infiniteScrollService: InfiniteScrollService,
         private _dialogService: DialogService,
-        private _historicalReportService: HistoricalReportService
+        private _historicalReportService: HistoricalReportService,
+        private _localStorage: StorageService,
+        private _messageService: MessageService,
+        private _dataService: DataService,
     ) {
         this.selectedRegister = Task.getInstance();
         this.selectedRegisterPivot = Task.getInstance();
@@ -224,6 +229,33 @@ export class DeferralListComponent implements OnInit, OnDestroy {
             height: '100%',
             hasBackdrop: false
         });
+    }
+
+    /**
+     * Method that allow manually mark any task as done
+     * @param {string} barcode
+     * @returns {Subscription}
+     */
+    public markAsDone(barcode: string): Subscription {
+        this.loading = true;
+
+        const localStorage = this._localStorage.getCurrentUser();
+
+        const user = {
+            'username' : localStorage.username,
+            'firstName' : localStorage.firstName,
+            'lastName' : localStorage.lastName
+        };
+
+        return this._apiRestService
+            .add('tasksFleethealthDone', user, barcode)
+            .subscribe(() => {
+                this.loading = false;
+                this._dataService.stringMessage('reload');
+            }, error => {
+                this._messageService.openSnackBar(error.message);
+                this._dataService.stringMessage('reload');
+            });
     }
 
     get list(): Task[] {
