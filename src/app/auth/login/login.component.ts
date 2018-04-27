@@ -96,7 +96,7 @@ export class LoginComponent implements OnInit {
     }
 
     /**
-     * Redirect to a enabled section if the role is 'admin' or 'user'
+     * Redirect to a enabled section if the user role is 'admin' or 'user'
      * @param {string} username
      */
     private redirect(username: string) {
