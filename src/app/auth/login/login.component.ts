@@ -138,7 +138,7 @@ export class LoginComponent implements OnInit {
     }
 
     set data(value: { username: string, password: string }){
-        return this._authService.data = value;
+        this._authService.data = value;
     }
 }
 
