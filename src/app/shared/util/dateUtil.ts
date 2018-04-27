@@ -9,6 +9,7 @@ export class DateUtil {
     constructor() {
     }
 
+
     /**
      * Return hour:minutes from epochDate as string
      * @param {number} epochDate
