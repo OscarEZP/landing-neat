@@ -110,10 +110,8 @@ export class AuthService {
     }
 
     getIsAuthSubModule(segment: string, arrSegments: string[]): boolean {
-        let find: Module;
         if (segment === AuthService.MANAGEMENT_ENDPOINT) {
-            find = this.findModule(arrSegments.shift());
-            console.log(segment,                                                                                                                                                find);
+            const find = this.findModule(arrSegments.shift());
             return find ? !!find.roles.find(r => r === AuthService.ADMIN_MODE) : false;
         } else {
             return false;

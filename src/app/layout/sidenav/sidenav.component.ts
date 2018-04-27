@@ -42,13 +42,10 @@ export class SidenavComponent implements OnInit {
             menu.slug === SidenavComponent.MANAGEMENT_ENDPOINT ||
             menu.link.split('/').join('') === SidenavComponent.LOGOUT_ENDPOINT
         ).map(menu => {
-            menu.submenu.filter(submenu => {
-                // console.log(submenu);
-                // this._authService.getIsAuth(submenu.link)
-            });
             menu.submenu = menu.submenu.filter(submenu => this._authService.getIsAuth(submenu.link));
             return menu;
-        });
+        }).filter(menu => !(menu.slug === SidenavComponent.MANAGEMENT_ENDPOINT && menu.submenu.length === 0));
+
         this.arrMenu.map(menu => this.translateMenu(menu));
     }
 
