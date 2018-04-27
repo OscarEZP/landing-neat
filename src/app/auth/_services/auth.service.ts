@@ -22,18 +22,17 @@ export class AuthService {
     private redirectUrl: string;
     private loginUrl: string;
     public data: { username: string, password: string };
-    private _apiService: ApiRestService;
     private _modulesConfig: { code: string, module: string }[];
 
     constructor(
         private http: HttpClient,
-        private _storageService: StorageService
+        private _storageService: StorageService,
+        private _apiService: ApiRestService
     ) {
         this.isLoggedIn = this.getIsLoggedIn();
         this.redirectUrl = '/operations';
         this.loginUrl = '/login';
         this.reset();
-        this.apiService = new ApiRestService(this.http);
         this.modulesConfig = [
             {
                 code: 'OP',
@@ -50,14 +49,12 @@ export class AuthService {
         ];
     }
 
-    get apiService(): ApiRestService {
-        return this._apiService;
-    }
-
-    set apiService(value: ApiRestService) {
-        this._apiService = value;
-    }
-
+    /**
+     * Login method that returns a promise with user object or an error reason
+     * @param {string} username
+     * @param {string} password
+     * @returns {Promise<User>}
+     */
     logIn(username: string, password: string): Promise<User> {
         let user: User = new User();
         user.username = username;
@@ -103,17 +100,21 @@ export class AuthService {
         const arrSegments = path.split('/').filter(x => x !== '');
         const segment = arrSegments.shift();
         if (this.userManagement && this.userManagement.modules.length !== 0) {
-            let find = this.findModule(segment);
-            if (!find && segment === AuthService.MANAGEMENT_ENDPOINT) {
-                find = this.findModule(arrSegments.shift());
-            }
-            if (!find && segment !== AuthService.MANAGEMENT_ENDPOINT) {
-                return false;
-            }
-            const result = segment === AuthService.MANAGEMENT_ENDPOINT ?
-                !!this.userManagement.modules.find(m => !!m.roles.find(r => r === AuthService.ADMIN_MODE)) :
-                !!find.roles.find(r => r === AuthService.USER_MODE || r === AuthService.ADMIN_MODE);
-            return result;
+            const find = this.findModule(segment);
+            return find ?
+                !!find.roles.find(r => r === AuthService.USER_MODE || r === AuthService.ADMIN_MODE) :
+                this.getIsAuthSubModule(segment, arrSegments);
+        } else {
+            return false;
+        }
+    }
+
+    getIsAuthSubModule(segment: string, arrSegments: string[]): boolean {
+        let find: Module;
+        if (segment === AuthService.MANAGEMENT_ENDPOINT) {
+            find = this.findModule(arrSegments.shift());
+            console.log(segment,                                                                                                                                                find);
+            return find ? !!find.roles.find(r => r === AuthService.ADMIN_MODE) : false;
         } else {
             return false;
         }
@@ -124,7 +125,7 @@ export class AuthService {
             .find(
                 module => {
                     const configFind = this.modulesConfig.find(config => segment === config.module);
-                    return configFind ? configFind.code === module.code : false;
+                    return configFind && configFind.code === module.code;
                 }
             );
     }
@@ -141,12 +142,24 @@ export class AuthService {
         return this.loginUrl;
     }
 
+    getHemicycleGroupName() {
+        return AuthService.HEMICYCLE_GROUP_NAME;
+    }
+
+    getHemicycleUrl() {
+        return AuthService.HEMICYCLE_URL;
+    }
+
     getData(): { username: string, password: string } {
         return this.data;
     }
 
     reset() {
         this.data = {username: '', password: ''};
+    }
+
+    get apiService(): ApiRestService {
+        return this._apiService;
     }
 
     get userManagement(): ManagementUser {

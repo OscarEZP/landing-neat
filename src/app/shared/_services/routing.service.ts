@@ -17,15 +17,15 @@ export class RoutingService {
                 new Menu('MENU.DEFERRALS', '', '/fleet-health/deferrals', false)
             ]),
             new Menu('MENU.MANAGEMENT', 'settings', '/management/', true, [
-                new Menu('MENU.GENERAL', 'person ', '', false, [
+                new Menu('MENU.GENERAL', 'person ', '/management/general', false, [
                     new Menu('MENU.USERS', '', '/management/general/users'),
                     new Menu('MENU.RULES'),
                 ]),
-                new Menu('MENU.OPERATIONS', 'build', '', false, [
-                    new Menu('MENU.EMAILS_MANTAINER'),
+                new Menu('MENU.OPERATIONS', 'build', '/management/operations', false, [
+                    new Menu('MENU.EMAILS_MANTAINER', '', '/management/operations/emails'),
                 ]),
-                new Menu('MENU.FLEET_HEALTH', 'airplanemode_active', '', false, [
-                    new Menu('MENU.ATEC')
+                new Menu('MENU.FLEET_HEALTH', 'airplanemode_active', '/management/fleet-health', false, [
+                    new Menu('MENU.ATEC', '', '/management/fleet-health/atec')
                 ])
             ]),
             new Menu('MENU.LOG_OUT', 'power_settings_new', '/logout'),

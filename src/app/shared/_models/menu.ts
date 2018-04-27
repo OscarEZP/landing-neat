@@ -15,11 +15,7 @@ export class Menu {
     }
 
     get slug(): string {
-        return this.link !== '' ? this.link.split('/').pop() : '';
-    }
-
-    get endpoint(): string {
-        return this.link !== '' ? this.link : this.slug;
+        return this.link !== '' ? this.link.split('/').filter(v => v !== '').pop() : '';
     }
 
     get label(): string {

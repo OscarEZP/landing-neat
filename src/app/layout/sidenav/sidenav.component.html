@@ -12,11 +12,11 @@
                     <mat-panel-title [innerHtml]="menu.label"></mat-panel-title>
                 </mat-expansion-panel-header>
                 <div *ngFor="let submenu of menu.submenu">
-                    <a (click)="toggleSidenav()" *ngIf="submenu.link !== ''" id="lnk-sidenav-{{menu.slug}}" routerLink="{{submenu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
+                    <a (click)="toggleSidenav()" *ngIf="submenu.submenu.length === 0" id="lnk-sidenav-{{menu.slug}}" routerLink="{{submenu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
                         <i class="material-icons" [innerHtml]="menu.icon"></i>
                         <span [innerHtml]="submenu.label"></span>
                     </a>
-                    <div *ngIf="submenu.link === ''" >
+                    <div *ngIf="submenu.submenu.length !== 0" >
                         <div class="title">
                             <i class="material-icons" [innerHtml]="submenu.icon"></i>
                             <span>{{submenu.label}}</span>

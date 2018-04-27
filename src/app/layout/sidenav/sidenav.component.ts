@@ -14,10 +14,12 @@ import {AuthService} from '../../auth/_services/auth.service';
 })
 export class SidenavComponent implements OnInit {
 
-    private static LOGOUT = 'logout';
+    private static LOGOUT_ENDPOINT = 'logout';
+    private static MANAGEMENT_ENDPOINT = 'management';
 
     private user: User;
     public userArray: { username: string, name: string, email: string };
+    private _arrMenu: Menu[];
 
     constructor(
         private _translate: TranslateService,
@@ -34,6 +36,19 @@ export class SidenavComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.arrMenu = this._routingService.arrMenu
+        .filter(menu =>
+            this._authService.getIsAuth(menu.link, ) ||
+            menu.slug === SidenavComponent.MANAGEMENT_ENDPOINT ||
+            menu.link.split('/').join('') === SidenavComponent.LOGOUT_ENDPOINT
+        ).map(menu => {
+            menu.submenu.filter(submenu => {
+                // console.log(submenu);
+                // this._authService.getIsAuth(submenu.link)
+            });
+            menu.submenu = menu.submenu.filter(submenu => this._authService.getIsAuth(submenu.link));
+            return menu;
+        });
         this.arrMenu.map(menu => this.translateMenu(menu));
     }
 
@@ -52,9 +67,10 @@ export class SidenavComponent implements OnInit {
     }
 
     get arrMenu() {
-        return this._routingService.arrMenu.filter(menu => {
-            return this._authService.getIsAuth(menu.link) || menu.link.split('/').join('') === SidenavComponent.LOGOUT;
-        });
+        return this._arrMenu;
     }
 
+    set arrMenu(value: Menu[]) {
+        this._arrMenu = value;
+    }
 }

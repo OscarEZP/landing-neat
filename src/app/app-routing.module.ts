@@ -95,6 +95,16 @@ const ROUTES: Routes = [
                         path: 'general/users',
                         component: UserManagementComponent,
                         canActivate: [AuthGuardService],
+                    },
+                    {
+                        path: 'operations/emails',
+                        component: UserManagementComponent,
+                        canActivate: [AuthGuardService],
+                    },
+                    {
+                        path: 'fleet-health/atec',
+                        component: UserManagementComponent,
+                        canActivate: [AuthGuardService],
                     }
                 ]
             },
