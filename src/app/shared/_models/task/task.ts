@@ -228,18 +228,6 @@ export class Task {
         this._isOpen = value;
     }
 
-    get createEpochTime(): number {
-        return this.createDate.epochTime;
-    }
-
-    get extendedEpochTime(): number {
-        return this.extendedDueDate.epochTime;
-    }
-
-    get dueDateEpochTime(): number {
-        return this.dueDate.epochTime;
-    }
-
     get evaluationCategory(): EvaluationCategory {
         return this._evaluationCategory;
     }
@@ -267,4 +255,5 @@ export class Task {
     set taskType(value: string) {
         this._taskType = value;
     }
+
 }

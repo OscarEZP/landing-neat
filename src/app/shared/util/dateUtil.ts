@@ -3,7 +3,9 @@ import * as moment from 'moment';
 
 @Injectable()
 export class DateUtil {
-
+    public static ADD = 'add';
+    public static MINUS = 'minus';
+    public static DAY = 'day';
     constructor() {
     }
 
@@ -57,6 +59,7 @@ export class DateUtil {
      */
     public static getStringDate(epochDate: number, modifier?: number): string {
         const date = new Date(epochDate);
+
         return new Date((date.getTime() + this.modifyHourToMillis(modifier)) + date.getTimezoneOffset() * 60000).toISOString();
     }
 
@@ -98,7 +101,6 @@ export class DateUtil {
      * @returns {number}
      */
     public static changeTime(epochDate: number, diff: number, scale: string, action: string): number {
-
         const math_operation = {
             'add': (x, y) => x + y,
             'minus': (x, y) => x - y
