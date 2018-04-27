@@ -201,9 +201,30 @@ export class TimelineTask {
         return this.task.isClose;
 
     }
+
     get endDateEpochTime(): number{
        return this.task.isClose ? this.task.revisionDate.epochTime : this.task.dueDate.epochTime;
     }
+
+    /*private calculateDateEndTaskNotDeferred(task: Task): number {
+        return  DateUtil.changeTime(task.createDate.epochTime, 1, 'day', 'add');
+    }
+
+    get endDateEpochTime(): number {
+        let endDate: number = null;
+
+        if (this.task.dueDate.epochTime) {
+            if (this.task.isClose) {
+                endDate = this.task.revisionDate.epochTime;
+            } else {
+                endDate = this.extendedDueDate.epochTime ? this.extendedDueDate.epochTime : this.dueDate.epochTime;
+            }
+        } else {
+            endDate = this.calculateDateEndTaskNotDeferred(this.task);
+        }
+        return endDate;
+    }*/
+
     get startDateEpochTime(): number{
         return this.task.createDate.epochTime;
     }
