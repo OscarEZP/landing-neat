@@ -22,7 +22,7 @@
                             <span>{{submenu.label}}</span>
                         </div>
                         <div>
-                            <a (click)="toggleSidenav()" *ngFor="let subSubmenu of submenu.submenu" routerLink="{{subSubmenu.link}}">{{subSubmenu.label}}</a>
+                            <a id="lnk-sidenav-{{submenu.slug}}-{{subSubmenu.slug}}" (click)="toggleSidenav()" *ngFor="let subSubmenu of submenu.submenu" routerLink="{{subSubmenu.link}}">{{subSubmenu.label}}</a>
                         </div>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                     <span>{{menu.label}}</span>
                 </div>
                 <div *ngFor="let submenu of menu.submenu">
-                    <a (click)="toggleSidenav()" routerLink="{{submenu.link}}">{{submenu.label}}</a>
+                    <a id="lnk-sidenav-{{submenu.slug}}" (click)="toggleSidenav()" routerLink="{{submenu.link}}">{{submenu.label}}</a>
                 </div>
             </div>
 
