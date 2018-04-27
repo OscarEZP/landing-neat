@@ -92,8 +92,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @returns {Timeline}
      */
     private createTimeline(data: TimelineTask[]): Timeline {
-        data = this.getExtraTime(data)
-            .map(task => task.getJson());
+        data = data.map(task => task.getJson());
 
         const items = new DataSet(data);
         const dataMinDate = this.taskList
@@ -109,14 +108,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         } else {
             timeline = this.getNewTimeline(items);
         }
-        // if (this.timelineData.length > 0) {
-        //     timeline.setGroups(this.getGroups(this.timelineData));
-        // }
         return timeline;
     }
 
     /**
-     * Set groups for every TimelineTask
+     * Set groups for every TimelineTaskS
      * @param {TimelineTask[]} data
      * @returns {DataSet<object>}
      */

@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
 
     private static ADMIN_MODE = 'admin';
     private static USER_MODE = 'user';
+    private static GENERAL_CODE = 'GE';
 
     usernameFormControl = new FormControl('', [
         Validators.required
@@ -106,7 +107,9 @@ export class LoginComponent implements OnInit {
                 const moduleConfig = this._authService.modulesConfig.find(
                     mod => {
                         const modUser = res.modules
-                            .find(m => !!m.roles.find(r => r === LoginComponent.ADMIN_MODE || r === LoginComponent.USER_MODE));
+                            .find(m => !!m.roles.find(r => r === LoginComponent.ADMIN_MODE ||
+                                    (r === LoginComponent.USER_MODE && m.code !== LoginComponent.GENERAL_CODE)
+                            ));
                         return modUser ? modUser.code === mod.code : false;
                     }
                 );
