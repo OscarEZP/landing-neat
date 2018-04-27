@@ -10,6 +10,10 @@ export class Group {
         this._name = name;
     }
 
+    public static getInstance() {
+        return new Group('', 0, '');
+    }
+
     get description(): string {
         return this._description;
     }

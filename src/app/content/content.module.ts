@@ -4,6 +4,7 @@ import { SharedModule } from '../shared/shared.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { OperationsModule } from './operations/operations.module';
 import { FleetHealthModule } from './fleet-health/fleet-health.module';
+import {ManagementModule} from './management/management.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { FleetHealthModule } from './fleet-health/fleet-health.module';
         CommonModule,
         OperationsModule,
         FleetHealthModule,
-        SharedModule
+        SharedModule,
+        ManagementModule
     ],
     declarations: [
         DashboardComponent,

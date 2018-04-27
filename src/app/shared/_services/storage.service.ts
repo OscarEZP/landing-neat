@@ -1,38 +1,31 @@
 import {Injectable} from '@angular/core';
 import { User } from '../_models/user/user';
+import {ManagementUser} from '../_models/management/managementUser';
 
 @Injectable()
 export class StorageService {
     private static RECOVER_ACCOUNT = 'recoverAccount';
     private static RECOVER_DESTINATION = 'recoverDestination';
     private static CURRENT_USER = 'currentUser';
-
-    private _expired: boolean;
+    private static USER_MANAGEMENT = 'userManagement';
 
     constructor() {
-        this.expired = false;
-    }
-
-    get expired(): boolean {
-        return this._expired;
-    }
-
-    set expired(value: boolean) {
-        this._expired = value;
     }
 
     private static removeLocalStorage(key: string) {
         localStorage.removeItem(key);
-
     }
 
     private static addLocalStorage(key: string, item: string) {
         localStorage.setItem(key, item);
     }
 
+    private static getLocalStorage(key: string) {
+        return localStorage.getItem(key);
+    }
+
     private static removeSessionStorage(key: string) {
         sessionStorage.removeItem(key);
-
     }
 
     private static addSessionStorage(key: string, item: string) {
@@ -69,8 +62,8 @@ export class StorageService {
     }
 
     public addRecoverPassword(username: string, destination: string) {
-       StorageService.addSessionStorage(StorageService.RECOVER_ACCOUNT, username);
-       StorageService.addSessionStorage(StorageService.RECOVER_DESTINATION, destination);
+        StorageService.addSessionStorage(StorageService.RECOVER_ACCOUNT, username);
+        StorageService.addSessionStorage(StorageService.RECOVER_DESTINATION, destination);
     }
 
     public getRecoverAccount(): string {
@@ -87,8 +80,19 @@ export class StorageService {
         StorageService.removeSessionStorage(StorageService.RECOVER_DESTINATION);
     }
 
-    get username(): string{
+    get username(): string {
         return this.getCurrentUser().username;
     }
 
+    set userManagement(value: any) {
+        StorageService.addLocalStorage(StorageService.USER_MANAGEMENT, JSON.stringify(value));
+    }
+
+    get userManagement(): any {
+        return Object.assign(ManagementUser.getInstance(), JSON.parse(StorageService.getLocalStorage(StorageService.USER_MANAGEMENT)));
+    }
+
+    public removeUserManagement() {
+        StorageService.removeLocalStorage(StorageService.USER_MANAGEMENT);
+    }
 }

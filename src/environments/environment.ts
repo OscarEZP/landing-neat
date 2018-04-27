@@ -26,6 +26,7 @@ export const environment = {
         locations: '/api/v1/configurations/locations',
         login: '/api/security/users/_login',
         mails : '/api/v1/configurations/mails',
+        managementUsers: '/api/v1/management/users',
         meetings: '/api/v1/contingencies/meetings',
         operator: '/api/v1/configurations/operators/',
         pendingResolve: '/api/v1/contingencies/pendings/_resolve',

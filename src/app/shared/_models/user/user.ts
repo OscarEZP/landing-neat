@@ -96,10 +96,11 @@ export class User {
     }
 
     get groupList(): Group[] {
-        return this._groupList;
+        return this._groupList ? this._groupList.map(v => Object.assign(Group.getInstance(), v)) : this._groupList;
     }
 
     set groupList(value: Group[]) {
+        value.map(v => Object.assign(Group.getInstance(), v));
         this._groupList = value;
     }
 

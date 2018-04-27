@@ -5,8 +5,13 @@
     "ENTER_YOUR_CODE": "Please enter your Verification Code",
     "ENTER_YOUR_CONFIRM_PASSWORD": "Please enter your confirm password",
     "ENTER_YOUR_PASSWORD": "Please enter your password",
+    "ENTER_YOUR_USERNAME": "Please enter your username",
+    "NEED_HELP": "Need Help?",
+    "PASSWORD": "Password",
     "PASSWORD_VALIDATION": "The password must be at least 8 characters long, with numbers, a capital letter and a special character.",
-    "TO_FIND_YOUR_CODE": "to find your verification code and enter it here"
+    "SIGN_IN": "Sign in",
+    "TO_FIND_YOUR_CODE": "to find your verification code and enter it here",
+    "USERNAME": "Username"
   },
   "BUTTONS": {
     "ADD": "ADD",
@@ -71,10 +76,28 @@
       "START_NEW_PROJECT": "Start new project"
     }
   },
+  "MANAGEMENT": {
+    "MANAGEMENT_MODULE": "Management Module",
+    "USER_MANAGEMENT": "User Management"
+  },
+  "MENU" : {
+    "ATEC": "ATEC",
+    "CONTINGENCIES": "Contingencies",
+    "DEFERRALS": "Deferrals",
+    "EMAILS_MANTAINER": "Emails maintainer",
+    "FLEET_HEALTH": "Fleet Health",
+    "GENERAL": "General",
+    "LOG_OUT": "Log out",
+    "MANAGEMENT": "Management",
+    "OPERATIONS": "Operations",
+    "PENDINGS": "Pendings",
+    "RULES": "Rules",
+    "USERS": "Users"
+  },
   "OPERATIONS": {
     "ALERT": "Alert",
     "ALERTS": "Alerts",
-    "CONTINGENCY": "CONTINGENCY",
+    "CONTINGENCY": "Contingency",
     "SELECT_ALL": "SELECT ALL",
     "CANCEL_COMPONENT": {
       "MESSAGE": "Are you sure that you want to Cancel? (The filled information will be lost)",
@@ -83,7 +106,7 @@
     },
     "CLOSE_COMPONENT": {
       "TITLE": "Close Contingency",
-      "CONTINGENCY_INFO": "CONTINGENCY INFO",
+      "CONTINGENCY_INFO": "Contingency Info",
       "AC": "A/C:",
       "OPERATOR": "Operator:",
       "FLIGHT": "Flight:",
@@ -211,7 +234,7 @@
     "OPERATOR": "Operator",
     "OF": "of",
     "PIT_STOP": "PIT STOP",
-    "PENDINGS": "PENDINGS",
+    "PENDINGS": "Pendings",
     "PROGRESS": "Progress",
     "SAFETY_EVENT": "Safety Event",
     "TOTAL_PENDINGS":"Pendings",

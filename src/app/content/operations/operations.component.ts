@@ -23,7 +23,7 @@ export class OperationsComponent implements OnInit, OnDestroy {
         private _detailsService: DetailsService
     ) {
         this.translate.setDefaultLang('en');
-        this._routingService.moduleTitle = 'Operations Module';
+        this.moduleTitle = 'Operations Module';
         this.arrMenu = [
             {
                 'label': 'OPERATIONS.CONTINGENCY',
@@ -34,8 +34,8 @@ export class OperationsComponent implements OnInit, OnDestroy {
                 'link': '/operations/pendings',
             }
         ];
-        this._layoutService.showAddButton = true;
-        this._layoutService.showRightNav = true;
+        this.showAddButton = true;
+        this.showRightNav = true;
     }
 
     ngOnInit() {
@@ -43,5 +43,17 @@ export class OperationsComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this._detailsService.closeSidenav();
+    }
+
+    set moduleTitle(value: string) {
+        this._routingService.moduleTitle = value;
+    }
+
+    set showAddButton(value: boolean) {
+        this._layoutService.showAddButton = value;
+    }
+
+    set showRightNav(value: boolean) {
+        this._layoutService.showRightNav = value;
     }
 }

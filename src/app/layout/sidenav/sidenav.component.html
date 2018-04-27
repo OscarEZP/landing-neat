@@ -5,9 +5,43 @@
         <p>{{ userArray.username }}</p>
     </header>
     <nav class="margin-nav">
-        <a id="lnk-sidenav-{{menu.link.split('/').join('')}}" *ngFor="let menu of arrMenu" routerLink="{{menu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
-            <i class="material-icons" [innerHtml]="menu.icon"></i>
-            <span [innerHtml]="menu.label"></span>
-        </a>
+        <div *ngFor="let menu of arrMenu">
+            <mat-expansion-panel *ngIf="menu.submenu.length > 0 && menu.collapse === true">
+                <mat-expansion-panel-header class="title">
+                    <i class="material-icons" [innerHtml]="menu.icon"></i>
+                    <mat-panel-title [innerHtml]="menu.label"></mat-panel-title>
+                </mat-expansion-panel-header>
+                <div *ngFor="let submenu of menu.submenu">
+                    <a (click)="toggleSidenav()" *ngIf="submenu.submenu.length === 0" id="lnk-sidenav-{{menu.slug}}" routerLink="{{submenu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
+                        <i class="material-icons" [innerHtml]="menu.icon"></i>
+                        <span [innerHtml]="submenu.label"></span>
+                    </a>
+                    <div *ngIf="submenu.submenu.length !== 0" >
+                        <div class="title">
+                            <i class="material-icons" [innerHtml]="submenu.icon"></i>
+                            <span>{{submenu.label}}</span>
+                        </div>
+                        <div>
+                            <a (click)="toggleSidenav()" *ngFor="let subSubmenu of submenu.submenu" routerLink="{{subSubmenu.link}}">{{subSubmenu.label}}</a>
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+
+            <div *ngIf="menu.submenu.length > 0 && menu.collapse === false">
+                <div class="title">
+                    <i class="material-icons" [innerHtml]="menu.icon"></i>
+                    <span>{{menu.label}}</span>
+                </div>
+                <div *ngFor="let submenu of menu.submenu">
+                    <a (click)="toggleSidenav()" routerLink="{{submenu.link}}">{{submenu.label}}</a>
+                </div>
+            </div>
+
+            <a class="just-link" *ngIf="menu.submenu.length === 0" id="lnk-sidenav-{{menu.slug}}"  routerLink="{{menu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
+                <i class="material-icons" [innerHtml]="menu.icon"></i>
+                <span [innerHtml]="menu.label"></span>
+            </a>
+        </div>
     </nav>
 </div>

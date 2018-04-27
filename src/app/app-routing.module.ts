@@ -13,6 +13,8 @@ import { ContingencyListComponent } from './content/operations/contingency-list/
 import { PendingListComponent } from './content/operations/pending-list/pending-list.component';
 import {FleetHealthComponent} from './content/fleet-health/fleet-health.component';
 import {DeferralListComponent} from './content/fleet-health/deferral-list/deferral-list.component';
+import {ManagementComponent} from './content/management/management.component';
+import {UserManagementComponent} from './content/management/mng-general/user-management/user-management.component';
 
 const ROUTES: Routes = [
     {
@@ -73,10 +75,43 @@ const ROUTES: Routes = [
                         canActivate: [AuthGuardService],
                     }
                 ]
-            }
+            },
+            {
+                path: 'management',
+                canActivate: [AuthGuardService],
+                component: ManagementComponent,
+                children: [
+                    {
+                        path: '',
+                        redirectTo: '/management/general/users',
+                        pathMatch: 'full',
+                    },
+                    {
+                        path: 'general',
+                        redirectTo: '/management/general/users',
+                        pathMatch: 'full',
+                    },
+                    {
+                        path: 'general/users',
+                        component: UserManagementComponent,
+                        canActivate: [AuthGuardService],
+                    },
+                    {
+                        path: 'operations/emails',
+                        component: UserManagementComponent,
+                        canActivate: [AuthGuardService],
+                    },
+                    {
+                        path: 'fleet-health/atec',
+                        component: UserManagementComponent,
+                        canActivate: [AuthGuardService],
+                    }
+                ]
+            },
         ],
         canActivate: [AuthGuardService]
     },
+
     {
         path: 'login',
         component: LoginComponent
