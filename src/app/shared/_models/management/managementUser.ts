@@ -1,4 +1,5 @@
 import {Module} from './module';
+import {Location} from './location';
 import {TimeInstant} from '../timeInstant';
 
 export class ManagementUser {
@@ -6,27 +7,24 @@ export class ManagementUser {
     private _firstname: string;
     private _lastname: string;
     private _email: string;
-    private _locations: string[];
+    private _location: Location;
     private _modules: Module[];
     private _enable: boolean;
     private _createDate: TimeInstant;
     private _updateDate: TimeInstant;
 
 
-    constructor(username: string, firstname: string, lastname: string, email: string, locations: string[], modules: Module[], enable: boolean, createDate: TimeInstant, updateDate: TimeInstant) {
+    constructor(username: string, firstname: string, lastname: string, email: string, location: Location, modules: Module[]) {
         this._username = username;
         this._firstname = firstname;
         this._lastname = lastname;
         this._email = email;
-        this._locations = locations;
+        this._location = location;
         this._modules = modules;
-        this._enable = enable;
-        this._createDate = createDate;
-        this._updateDate = updateDate;
     }
 
     public static getInstance() {
-        return new ManagementUser('', '', '', '', [], [], false, TimeInstant.getInstance(), TimeInstant.getInstance());
+        return new ManagementUser('', '', '', '', Location.getInstance(), []);
     }
 
     get username(): string {
@@ -61,12 +59,13 @@ export class ManagementUser {
         this._email = value;
     }
 
-    get locations(): string[] {
-        return this._locations;
+
+    get location(): Location {
+        return this._location;
     }
 
-    set locations(value: string[]) {
-        this._locations = value;
+    set location(value: Location) {
+        this._location = value;
     }
 
     get modules(): Module[] {
