@@ -43,7 +43,7 @@ export class AuthService {
                 module: 'fleet-health'
             },
             {
-                code: 'GE',
+                code: 'SYC',
                 module: 'general'
             }
         ];
