@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
 
     private static ADMIN_MODE = 'admin';
     private static USER_MODE = 'user';
-    private static GENERAL_CODE = 'GE';
+    private static GENERAL_CODE = 'SYC';
 
     usernameFormControl = new FormControl('', [
         Validators.required
