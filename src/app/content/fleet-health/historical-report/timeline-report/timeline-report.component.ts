@@ -114,24 +114,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Set groups for every TimelineTaskS
-     * @param {TimelineTask[]} data
-     * @returns {DataSet<object>}
-     */
-    private getGroups(data: TimelineTask[]): DataSet<object> {
-        const arr = data.map(item => {
-            return {
-                id: item.barcode,
-                content: item.barcode,
-                subgroupStack: {
-                    subgroup: false
-                }
-            };
-        });
-        return new DataSet(arr);
-    }
-
-    /**
      * Return a new Timeline by a DataSet
      * @param {DataSet<object>} items
      * @returns {Timeline}
@@ -155,22 +137,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             this.showTooltip();
         });
         return timeline;
-    }
-
-    /**
-     * Method for insert extended Due Date
-     * @param {TimelineTask[]} data
-     * @returns {TimelineTask[]}
-     */
-    private getExtraTime(data: TimelineTask[]): TimelineTask[] {
-        let arrExtra = [];
-        data.forEach(item => {
-            arrExtra.push(item);
-            if (item.getExtraTime().length > 0) {
-                arrExtra = arrExtra.concat(item.getExtraTime());
-            }
-        });
-        return arrExtra;
     }
 
     /**

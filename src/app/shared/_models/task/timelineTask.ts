@@ -65,24 +65,6 @@ export class TimelineTask {
         return arrStyles.join(' ');
     }
 
-
-
-    public getExtraTime(): TimelineTask[] {
-        const arr = [];
-        if (this.isOpen && this.extendedDueDate.epochTime !== null) {
-            const extra = TimelineTask.getInstance();
-            extra.end = DateUtil.formatDate(this.extendedDueDate.epochTime, TimelineTask.DATE_FORMAT);
-            extra.start = DateUtil.formatDate(this.dueDate.epochTime, TimelineTask.DATE_FORMAT);
-            extra.id = this.id + this.createDate.epochTime;
-            extra.group = this.barcode;
-            extra.type = 'background';
-            extra.content = extra.getContent(false);
-            extra.className = this.active ? TimelineTask.ACTIVE_CLASS : '';
-            arr.push(extra);
-        }
-        return arr;
-    }
-
     public getContent(content: boolean = true): string {
         const title = this.active === true ? TimelineTask.TASK_DEFAULT_TITLE : this.task.taskType;
         const head = '<div class="head"><h1>' + title + '</h1> <span>' + (this.isOpen ? '<i class="material-icons icon-red">' : '<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
