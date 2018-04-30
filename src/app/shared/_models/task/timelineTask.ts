@@ -42,7 +42,6 @@ export class TimelineTask {
         this._apply = apply;
         this._className = this.generateClassName();
         this._group = task.barcode;
-        // this._subgroup = 'subgroup';
         this._type = '';
         this._content = this.getContent();
     }
@@ -76,7 +75,6 @@ export class TimelineTask {
             extra.start = DateUtil.formatDate(this.dueDate.epochTime, TimelineTask.DATE_FORMAT);
             extra.id = this.id + this.createDate.epochTime;
             extra.group = this.barcode;
-            // extra.subgroup = this.subgroup;
             extra.type = 'background';
             extra.content = extra.getContent(false);
             extra.className = this.active ? TimelineTask.ACTIVE_CLASS : '';
