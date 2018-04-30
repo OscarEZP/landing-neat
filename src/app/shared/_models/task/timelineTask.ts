@@ -42,7 +42,6 @@ export class TimelineTask {
         this._apply = apply;
         this._className = this.generateClassName();
         this._group = task.barcode;
-        // this._subgroup = 'subgroup';
         this._type = '';
         this._content = this.getContent();
     }
@@ -59,50 +58,28 @@ export class TimelineTask {
             arrStyles.push(TimelineTask.RELATED_CLASS);
             if (this.apply === true) {
                 arrStyles.push(TimelineTask.FULL_CLASS);
-            } else if (this.apply === false) {
+            }else if (this.apply === false) {
                 arrStyles.push(TimelineTask.DONT_APPLY_CLASS);
             }
         }
         return arrStyles.join(' ');
     }
 
-
-    public getExtraTime(): TimelineTask[] {
-        const arr = [];
-        if (this.isOpen && this.extendedDueDate.epochTime !== null) {
-            const extra = TimelineTask.getInstance();
-            extra.end = DateUtil.formatDate(this.extendedDueDate.epochTime, TimelineTask.DATE_FORMAT);
-            extra.start = DateUtil.formatDate(this.endDateEpochTime, TimelineTask.DATE_FORMAT);
-            extra.id = this.id + this.createDate.epochTime;
-            extra.group = this.barcode;
-            // extra.subgroup = this.subgroup;
-            extra.type = 'background';
-            extra.content = extra.getContent(false);
-            extra.className = this.active ? TimelineTask.ACTIVE_CLASS : '';
-            arr.push(extra);
-        }
-        return arr;
-    }
-
     public getContent(content: boolean = true): string {
         const title = this.active === true ? TimelineTask.TASK_DEFAULT_TITLE : this.task.taskType;
         const head = '<div class="head"><h1>' + title + '</h1> <span>' + (this.isOpen ? '<i class="material-icons icon-red">' : '<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
-        const body = '<p>' + this.task.ata + '/' + this.task.barcode + '</p>';
+        const body = '<p>' + this.task.ata + '/'  + this.task.barcode + '</p>' ;
         return content ? head + body : '';
     }
 
     private getContentIcon() {
-        return this.isClose ? TimelineTask.CLOSE_ICON : TimelineTask.OPEN_ICON;
+        return this.isClose ? TimelineTask.CLOSE_ICON : TimelineTask.OPEN_ICON ;
     }
 
     public getJson() {
         return JSON.parse(JSON.stringify(this).replace(/\b[_]/g, ''));
     }
 
-
-    private calculateDateEndTaskNotDeferred(task: Task): number {
-     return  DateUtil.changeTime(task.createDate.epochTime, 1, DateUtil.DAY, DateUtil.ADD);
-    }
 
     get id(): number {
         return this._id;
@@ -160,7 +137,7 @@ export class TimelineTask {
         this._apply = value;
     }
 
-    get createDate(): TimeInstant {
+    get createDate(): TimeInstant{
         return this.task.createDate;
     }
 
@@ -176,7 +153,7 @@ export class TimelineTask {
         return this.task.extendedDueDate;
     }
 
-    get dueDate(): TimeInstant {
+    get dueDate(): TimeInstant{
         return this.task.dueDate;
     }
 
@@ -196,30 +173,37 @@ export class TimelineTask {
         this._type = value;
     }
 
-    get isOpen(): boolean {
+    get isOpen(): boolean{
         return this.task.isOpen;
 
     }
-
-    get isClose(): boolean {
+    get isClose(): boolean{
         return this.task.isClose;
 
+    }
+
+    private calculateDateEndTaskNotDeferred(task: Task): number {
+        return DateUtil.addTime(task.createDate.epochTime, 1, 'day');
     }
 
     get endDateEpochTime(): number {
         let endDate: number = null;
         if (this.task.dueDate.epochTime) {
-            endDate = this.isOpen ? this.task.dueDate.epochTime : this.task.revisionDate.epochTime;
+            if (this.task.isClose) {
+                endDate = this.task.revisionDate.epochTime;
+            } else {
+                endDate = this.extendedDueDate.epochTime ? this.extendedDueDate.epochTime : this.dueDate.epochTime;
+            }
         } else {
             endDate = this.calculateDateEndTaskNotDeferred(this.task);
+            console.log(endDate);
         }
         return endDate;
     }
 
-    get startDateEpochTime(): number {
+    get startDateEpochTime(): number{
         return this.task.createDate.epochTime;
     }
-
 
     get className(): string {
         return this._className;
@@ -228,6 +212,5 @@ export class TimelineTask {
     set className(value: string) {
         this._className = value;
     }
-
 
 }

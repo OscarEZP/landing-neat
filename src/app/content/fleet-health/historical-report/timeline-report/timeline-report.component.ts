@@ -80,7 +80,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return new TimelineOptions(
             this.minDate.format('YYYY-MM-DD'),
             maxTime.format('YYYY-MM-DD'),
-            30,
+            15,
             30 * 12,
             true
         );
@@ -92,15 +92,15 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @returns {Timeline}
      */
     private createTimeline(data: TimelineTask[]): Timeline {
-        console.log('createTimeline : ' , data.length);
-        data = this.getExtraTime(data)
-            .map(task => task.getJson());
+        data = data.map(task => task.getJson());
 
         const items = new DataSet(data);
         const dataMinDate = this.taskList
-            .sort((a, b) => a.createDate.epochTime < b.createDate.epochTime ? 1 : -1)
+            .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1)
             .shift();
-        this.minDate = moment(dataMinDate ? dataMinDate.createDate.epochTime : this.activeTask.createDate.epochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days');
+        this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime)
+            .utc()
+            .subtract(TimelineReportComponent.DAYS_FROM, 'days');
 
         let timeline: Timeline;
         if (this.timeline) {
@@ -110,28 +110,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         } else {
             timeline = this.getNewTimeline(items);
         }
-        // if (this.timelineData.length > 0) {
-        //     timeline.setGroups(this.getGroups(this.timelineData));
-        // }
         return timeline;
-    }
-
-    /**
-     * Set groups for every TimelineTask
-     * @param {TimelineTask[]} data
-     * @returns {DataSet<object>}
-     */
-    private getGroups(data: TimelineTask[]): DataSet<object> {
-        const arr = data.map(item => {
-            return {
-                id: item.barcode,
-                content: item.barcode,
-                subgroupStack: {
-                    subgroup: false
-                }
-            };
-        });
-        return new DataSet(arr);
     }
 
     /**
@@ -140,7 +119,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @returns {Timeline}
      */
     private getNewTimeline(items: DataSet<object>): Timeline {
-        const maxTime = moment(this.maxTime).utc().add(TimelineReportComponent.DAYS_TO, 'days');
+
+        const maxTime = moment(this.activeTask.dueDateEpochTime).utc();
         const options = this.getTimelineOptions(maxTime).getJson();
         const timeline = new Timeline(this.element.nativeElement, items, options);
 
@@ -157,22 +137,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             this.showTooltip();
         });
         return timeline;
-    }
-
-    /**
-     * Method for insert extended Due Date
-     * @param {TimelineTask[]} data
-     * @returns {TimelineTask[]}
-     */
-    private getExtraTime(data: TimelineTask[]): TimelineTask[] {
-        let arrExtra = [];
-        data.forEach(item => {
-            arrExtra.push(item);
-            if (item.getExtraTime().length > 0) {
-                arrExtra = arrExtra.concat(item.getExtraTime());
-            }
-        });
-        return arrExtra;
     }
 
     /**
@@ -202,7 +166,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
             (list) => {
                 this.taskList = list;
-                console.log(TimelineReportComponent.TASK_SEARCH_ENDPOINT, ' : ' , list.length);
                 this.loading = false;
             },
             () => this.getError()
@@ -221,7 +184,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             signature.ataGroup = this.activeTask.ata;
             signature.barcode = this.activeTask.barcode;
 
-            const endDate = this.activeTask.createDate.epochTime;
+            const endDate = this.activeTask.createEpochTime;
             const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
 
             signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
@@ -401,7 +364,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     get maxTime(): number {
-        return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime :  this.activeTask.dueDate.epochTime;
+        return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime : this.activeTask.extendedDueDate.epochTime ? this.activeTask.extendedDueDate.epochTime : this.activeTask.dueDate.epochTime;
     }
 
     get clickEvent(): object {

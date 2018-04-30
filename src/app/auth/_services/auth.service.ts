@@ -67,7 +67,7 @@ export class AuthService {
                 user = value;
                 for (i = 0; i < user.groupList.length; i++) {
                     if (user.groupList[i].name.toLocaleLowerCase() === AuthService.HEMICYCLE_GROUP_NAME.toLocaleLowerCase()) {
-                        this._redirectUrl = AuthService.HEMICYCLE_URL;
+                        this.setRedirectUrl(AuthService.HEMICYCLE_URL);
                     }
                     user.principalGroup = user.groupList[i].name;
                 }

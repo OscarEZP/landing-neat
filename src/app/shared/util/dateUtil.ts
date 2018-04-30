@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
 import * as moment from 'moment';
+import {DurationInputArg2} from 'moment';
 
 @Injectable()
 export class DateUtil {
-    public static ADD = 'add';
-    public static MINUS = 'minus';
-    public static DAY = 'day';
+
     constructor() {
     }
-
 
     /**
      * Return hour:minutes from epochDate as string
@@ -60,7 +58,6 @@ export class DateUtil {
      */
     public static getStringDate(epochDate: number, modifier?: number): string {
         const date = new Date(epochDate);
-
         return new Date((date.getTime() + this.modifyHourToMillis(modifier)) + date.getTimezoneOffset() * 60000).toISOString();
     }
 
@@ -93,6 +90,10 @@ export class DateUtil {
         return moment(epochTime).utc().format(format);
     }
 
+    public static addTime(epochtime: number, time: number, unit: DurationInputArg2 = 'days'): number {
+        return parseInt(moment(epochtime).utc().add(time, unit).format('x'));
+    }
+
     /**
      * Return the modified time accordingly method arguments
      * @param {number} epochDate
@@ -102,6 +103,7 @@ export class DateUtil {
      * @returns {number}
      */
     public static changeTime(epochDate: number, diff: number, scale: string, action: string): number {
+
         const math_operation = {
             'add': (x, y) => x + y,
             'minus': (x, y) => x - y
