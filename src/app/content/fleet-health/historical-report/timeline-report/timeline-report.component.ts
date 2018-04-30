@@ -80,7 +80,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return new TimelineOptions(
             this.minDate.format('YYYY-MM-DD'),
             maxTime.format('YYYY-MM-DD'),
-            30,
+            15,
             30 * 12,
             true
         );
@@ -98,7 +98,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         const dataMinDate = this.taskList
             .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1)
             .shift();
-        this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days');
+        this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime)
+            .utc()
+            .subtract(TimelineReportComponent.DAYS_FROM, 'days');
 
         let timeline: Timeline;
         if (this.timeline) {
@@ -135,7 +137,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @returns {Timeline}
      */
     private getNewTimeline(items: DataSet<object>): Timeline {
-        const maxTime = moment(this.maxTime).utc().add(TimelineReportComponent.DAYS_TO, 'days');
+
+        const maxTime = moment(this.activeTask.dueDateEpochTime).utc();
         const options = this.getTimelineOptions(maxTime).getJson();
         const timeline = new Timeline(this.element.nativeElement, items, options);
 

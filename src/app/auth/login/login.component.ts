@@ -7,6 +7,8 @@ import { StorageService } from '../../shared/_services/storage.service';
 import { AuthService } from '../_services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import {RoutingService} from '../../shared/_services/routing.service';
+import {ManagementUser} from '../../shared/_models/management/managementUser';
+import {Module} from '../../shared/_models/management/module';
 
 
 @Component({
@@ -104,24 +106,30 @@ export class LoginComponent implements OnInit {
         this._authService.getRoles(username).then(
         res => {
             const role = this._routingService.arrMenu.find(menu => {
-                const moduleConfig = this._authService.modulesConfig.find(
-                    mod => {
-                        const modUser = res.modules
-                            .find(m => !!m.roles.find(r => r === LoginComponent.ADMIN_MODE ||
-                                    (r === LoginComponent.USER_MODE && m.code !== LoginComponent.GENERAL_CODE)
-                            ));
-                        return modUser ? modUser.code === mod.code : false;
-                    }
+                const moduleConfig = this._authService.modulesConfig.filter(
+                    mod => this.authModule(res).find(mu => mu.code === mod.code)
                 );
-                return moduleConfig ?
-                    moduleConfig.module === menu.slug || !!menu.submenu.find(sub => sub.slug === moduleConfig.module) :
-                    false;
+                return !!moduleConfig.find(config => config.module === menu.slug ||
+                    !!menu.submenu.find(sub => sub.slug === config.module));
             });
             if (role) {
                 this._authService.setRedirectUrl(role.link);
                 this.router.navigate([this._authService.getRedirectUrl()]);
             }
         }).catch(error => this._messageService.openSnackBar(error));
+    }
+
+    /**
+     * Check if a module has admin or user permission
+     * @param {ManagementUser} managementUser
+     * @returns {Module[]}
+     */
+    private authModule(managementUser: ManagementUser): Module[] {
+        return managementUser.modules
+            .filter(m => !!m.roles.find(
+                r => r === LoginComponent.ADMIN_MODE ||
+                    (r === LoginComponent.USER_MODE && m.code !== LoginComponent.GENERAL_CODE)
+            ));
     }
 
     activateLoadingBar(show: boolean) {

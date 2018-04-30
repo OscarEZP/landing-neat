@@ -13,8 +13,8 @@ export class TimelineOptions {
         this._end = end;
         this.zoomMin = zoomMin;
         this.zoomMax = zoomMax;
-        this._max = end;
-        this._min = start;
+        // this._max = end;
+        // this._min = start;
         this._stack = stack;
     }
 

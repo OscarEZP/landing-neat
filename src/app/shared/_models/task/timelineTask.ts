@@ -202,17 +202,12 @@ export class TimelineTask {
 
     }
 
-    get endDateEpochTime(): number{
-       return this.task.isClose ? this.task.revisionDate.epochTime : this.task.dueDate.epochTime;
-    }
-
-    /*private calculateDateEndTaskNotDeferred(task: Task): number {
-        return  DateUtil.changeTime(task.createDate.epochTime, 1, 'day', 'add');
+    private calculateDateEndTaskNotDeferred(task: Task): number {
+        return DateUtil.addTime(task.createDate.epochTime, 1, 'day');
     }
 
     get endDateEpochTime(): number {
         let endDate: number = null;
-
         if (this.task.dueDate.epochTime) {
             if (this.task.isClose) {
                 endDate = this.task.revisionDate.epochTime;
@@ -221,9 +216,10 @@ export class TimelineTask {
             }
         } else {
             endDate = this.calculateDateEndTaskNotDeferred(this.task);
+            console.log(endDate);
         }
         return endDate;
-    }*/
+    }
 
     get startDateEpochTime(): number{
         return this.task.createDate.epochTime;

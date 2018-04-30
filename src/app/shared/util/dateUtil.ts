@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as moment from 'moment';
+import {DurationInputArg2} from 'moment';
 
 @Injectable()
 export class DateUtil {
@@ -87,6 +88,10 @@ export class DateUtil {
 
     public static formatDate(epochTime: number, format: string): string {
         return moment(epochTime).utc().format(format);
+    }
+
+    public static addTime(epochtime: number, time: number, unit: DurationInputArg2 = 'days'): number {
+        return parseInt(moment(epochtime).utc().add(time, unit).format('x'));
     }
 
     /**
