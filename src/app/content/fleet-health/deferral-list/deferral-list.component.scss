@@ -13,4 +13,12 @@
     background-color: mat-color($mat-palette-custom, success);
     color: mat-color($primary, default-contrast);
   }
+
+  .open-cursor {
+    cursor: pointer;
+  }
+
+  .close-cursor {
+    cursor: default;
+  }
 }
