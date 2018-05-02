@@ -43,6 +43,16 @@ export class ApiRestService {
         return this.http.post<T>(this.baseUrl + environment.paths[path], toSearch);
     }
 
+    public postUploadFile<T>(path: string, formData: any): Observable<T> {
+        const requestOptions = {
+            headers: new HttpHeaders({'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept':'application/json',
+                'Access-Control-Allow-Origin': '*'
+
+            })
+        };
+        return this.http.post<T>(this.baseUrl + environment.paths[path], formData,requestOptions);
+    }
     public add<T>(path: string, itemToAdd: any, id?: string): Observable<T> {
         const toAdd = JSON.stringify(itemToAdd).replace(/\b[_]/g, '');
         const finalPath = id !== undefined ? environment.paths[path] + '/' + id : environment.paths[path];
