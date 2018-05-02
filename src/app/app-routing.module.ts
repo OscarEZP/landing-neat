@@ -15,6 +15,7 @@ import {FleetHealthComponent} from './content/fleet-health/fleet-health.componen
 import {DeferralListComponent} from './content/fleet-health/deferral-list/deferral-list.component';
 import {ManagementComponent} from './content/management/management.component';
 import {UserManagementComponent} from './content/management/mng-general/user-management/user-management.component';
+import {UploadFileComponent} from "./content/management/mng-general/upload-file/upload-file.component";
 
 const ROUTES: Routes = [
     {
@@ -104,6 +105,11 @@ const ROUTES: Routes = [
                     {
                         path: 'fleet-health/atec',
                         component: UserManagementComponent,
+                        canActivate: [AuthGuardService],
+                    },
+                    {
+                        path: 'general/uploadfile',
+                        component: UploadFileComponent,
                         canActivate: [AuthGuardService],
                     }
                 ]
