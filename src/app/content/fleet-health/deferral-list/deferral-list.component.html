@@ -18,65 +18,64 @@
                  *ngFor="let task of list"
                  [class.active]="task.barcode === selectedRegister.barcode"
                  class="contingency-item"
-                 (click)="setSelectedRegister(task)"
                  fxLayoutGap="10px"
             >
+                <span fxFlex="90" [ngClass]="{'open-cursor': task.timelineStatus==='OPEN', 'close-cursor': task.timelineStatus==='CLOSE'}" (click)="setSelectedRegister(task)">
+                    <!--TAIL/FLEET-->
+                    <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                        <span>{{ task.tail }}</span>
+                        <span>{{ task.fleet }}</span>
+                    </div>
 
-                <!--TAIL/FLEET-->
-                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                    <span>{{ task.tail }}</span>
-                    <span>{{ task.fleet }}</span>
-                </div>
+                    <!-- BARCODE -->
+                    <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">
+                        {{ task.barcode | uppercase }}
+                    </div>
 
-                <!-- BARCODE -->
-                <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">
-                    {{ task.barcode | uppercase }}
-                </div>
+                    <!-- OPENING DATE -->
+                    <div fxFlex="7" fxLayoutAlign="start center">
+                        {{ task.createDate.epochTime | utcDate | date: 'dd-MM-yyyy' }}
+                    </div>
 
-                <!-- OPENING DATE -->
-                <div fxFlex="7" fxLayoutAlign="start center">
-                    {{ task.createDate.epochTime | utcDate | date: 'dd-MM-yyyy' }}
-                </div>
+                    <!-- DUE DATE -->
+                    <div fxFlex="7" fxLayoutAlign="start center">
+                        {{ task.dueDate.epochTime | utcDate | date: 'dd-MM-yyyy' }}
+                    </div>
 
-                <!-- DUE DATE -->
-                <div fxFlex="7" fxLayoutAlign="start center">
-                    {{ task.dueDate.epochTime | utcDate | date: 'dd-MM-yyyy' }}
-                </div>
+                    <!-- ATA -->
+                    <div fxFlex="5" fxLayoutAlign="start center">
+                        {{ task.ata }}
+                    </div>
 
-                <!-- ATA -->
-                <div fxFlex="5" fxLayoutAlign="start center">
-                    {{ task.ata }}
-                </div>
+                    <!-- DESCRIPTION -->
+                    <div fxFlex="28" fxLayoutAlign="start center" class="description">
+                        {{(task.description && task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}
+                    </div>
 
-                <!-- DESCRIPTION -->
-                <div fxFlex="28" fxLayoutAlign="start center" class="description">
-                    {{(task.description && task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}
-                </div>
+                    <!-- DEFERRAL REFERENCE -->
+                    <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                        {{(task.deferralReference && task.deferralReference.length > 30) ? (task.deferralReference | slice:0:30) + '...' : task.deferralReference }}
+                    </div>
 
-                <!-- DEFERRAL REFERENCE -->
-                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                    {{(task.deferralReference && task.deferralReference.length > 30) ? (task.deferralReference | slice:0:30) + '...' : task.deferralReference }}
-                </div>
+                    <!-- DEFERRAL CLASS -->
+                    <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                        {{task.deferralClazz}}
+                    </div>
 
-                <!-- DEFERRAL CLASS -->
-                <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
-                    {{task.deferralClazz}}
-                </div>
+                    <!-- ALERT -->
+                    <div fxFlex="7" fxLayoutAlign="start center">
+                        <span class="badge">
+                            {{task.evaluationCategory.displayAlert}}
+                        </span>
+                    </div>
 
-                <!-- ALERT -->
-                <div fxFlex="7" fxLayoutAlign="start center">
-                    <span class="badge">
-                        {{task.evaluationCategory.displayAlert}}
-
-                    </span>
-                </div>
-
-                <!-- TIMELINE STATUS -->
-                <div fxFlex="7" fxLayoutAlign="start center">
-                    <span class="badge" *ngIf="task.timelineStatus" [ngClass]="{'open': task.timelineStatus==='OPEN', 'close': task.timelineStatus==='CLOSE'}">
-                        {{ task.timelineStatus }}
-                    </span>
-                </div>
+                    <!-- TIMELINE STATUS -->
+                    <div fxFlex="7" fxLayoutAlign="start center">
+                        <span class="badge" *ngIf="task.timelineStatus" [ngClass]="{'open': task.timelineStatus==='OPEN', 'close': task.timelineStatus==='CLOSE'}">
+                            {{ task.timelineStatus }}
+                        </span>
+                    </div>
+                </span>
 
                 <div fxFlex="11" fxLayoutAlign="end end" >
                     <button id="btn-fleet-health-list-{{ task.barcode }}" mat-icon-button [matMenuTriggerFor]="menu">
