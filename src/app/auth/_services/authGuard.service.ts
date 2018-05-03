@@ -22,6 +22,7 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
                 .find(group => group.name === this._authService.getHemicycleGroupName().toLocaleLowerCase())
         ) {
             this._router.navigate([ this._authService.getHemicycleUrl() ]);
+            return false;
         }
 
         if (this._authService.getIsLoggedIn() && this._authService.getIsAuth(state.url)) {
