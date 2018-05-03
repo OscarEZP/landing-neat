@@ -1,4 +1,4 @@
-import {Module} from './module';
+import {Access} from './access';
 import {Location} from './location';
 import {TimeInstant} from '../timeInstant';
 
@@ -8,19 +8,19 @@ export class ManagementUser {
     private _lastname: string;
     private _email: string;
     private _location: Location;
-    private _modules: Module[];
+    private _access: Access[];
     private _enable: boolean;
     private _createDate: TimeInstant;
     private _updateDate: TimeInstant;
 
 
-    constructor(username: string, firstname: string, lastname: string, email: string, location: Location, modules: Module[]) {
+    constructor(username: string, firstname: string, lastname: string, email: string, location: Location, access: Access[]) {
         this._username = username;
         this._firstname = firstname;
         this._lastname = lastname;
         this._email = email;
         this._location = location;
-        this._modules = modules;
+        this._access = access;
     }
 
     public static getInstance() {
@@ -68,12 +68,13 @@ export class ManagementUser {
         this._location = value;
     }
 
-    get modules(): Module[] {
-        return this._modules;
+
+    get access(): Access[] {
+        return this._access;
     }
 
-    set modules(value: Module[]) {
-        this._modules = value;
+    set access(value: Access[]) {
+        this._access = value;
     }
 
     get enable(): boolean {
