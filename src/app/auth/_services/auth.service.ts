@@ -5,7 +5,7 @@ import { User } from '../../shared/_models/user/user';
 import { StorageService } from '../../shared/_services/storage.service';
 import { ApiRestService } from '../../shared/_services/apiRest.service';
 import { ManagementUser } from '../../shared/_models/management/managementUser';
-import {Module} from '../../shared/_models/management/module';
+import { Access } from '../../shared/_models/management/access';
 
 @Injectable()
 export class AuthService {
@@ -91,7 +91,7 @@ export class AuthService {
      * @param {string} username
      * @returns {Promise<any>}
      */
-    getRoles(username: string): Promise<any> {
+    getAccess(username: string): Promise<any> {
         return this.apiService
             .getParams<ManagementUser>(AuthService.MANAGEMENT_USERS_ENDPOINT, username)
             .toPromise()
@@ -110,13 +110,13 @@ export class AuthService {
      * @returns {boolean}
      */
     getIsAuth(path: string): boolean {
-        const arrSegments = path.split('/').filter(x => x !== '');
-        const segment = arrSegments.shift();
-        if (this.userManagement && this.userManagement.modules.length !== 0) {
-            const find = this.findModule(segment);
-            return find ?
-                !!find.roles.find(r => r === AuthService.USER_MODE || r === AuthService.ADMIN_MODE) :
-                this.getIsAuthSubModule(segment, arrSegments);
+        const arrModules = path.split('/').filter(x => x !== '');
+        const module = arrModules.shift();
+        if (this.userManagement && this.userManagement.access.length !== 0) {
+            const access = this.findAccess(module);
+            return access ?
+                !!(access.role === AuthService.USER_MODE || access.role === AuthService.ADMIN_MODE) :
+                this.getIsAuthSubModule(module, arrModules);
         } else {
             return false;
         }
@@ -124,30 +124,30 @@ export class AuthService {
 
     /**
      * Validate if a submodule link is valid for current user
-     * @param {string} segment
-     * @param {string[]} arrSegments
+     * @param {string} module
+     * @param {string[]} arrModules
      * @returns {boolean}
      */
-    getIsAuthSubModule(segment: string, arrSegments: string[]): boolean {
-        if (segment === AuthService.MANAGEMENT_ENDPOINT) {
-            const find = this.findModule(arrSegments.shift());
-            return find ? !!find.roles.find(r => r === AuthService.ADMIN_MODE) : false;
+    getIsAuthSubModule(module: string, arrModules: string[]): boolean {
+        if (module === AuthService.MANAGEMENT_ENDPOINT) {
+            const access = this.findAccess(arrModules.shift());
+            return access ? !!(access.role === AuthService.ADMIN_MODE) : false;
         } else {
             return false;
         }
     }
 
     /**
-     * Find a module by a code
-     * @param {string} segment
-     * @returns {Module}
+     * FindAcess by ModuleCode
+     * @param {string} module
+     * @returns {Access}
      */
-    private findModule(segment: string): Module {
-        return this.userManagement.modules
+    private findAccess(module: string): Access {
+        return this.userManagement.access
             .find(
-                module => {
-                    const configFind = this.modulesConfig.find(config => segment === config.module);
-                    return configFind && configFind.code === module.code;
+                access => {
+                    const configFind = this.modulesConfig.find(config => module === config.module);
+                    return configFind && configFind.code === access.module;
                 }
             );
     }
