@@ -1,16 +1,18 @@
 <div id="deferral-list">
     <div class="reg-list" *ngIf="list.length && !loading && !error">
-        <header fxLayout="row" class="" fxLayoutGap="10px">
-            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
-            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
-            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
-            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
-            <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ATA' | translate }}</div>
-            <div fxFlex="28" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DESCRIPTION' | translate }}</div>
-            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_REFERENCE' | translate }}</div>
-            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_CLASS' | translate }}</div>
-            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ALERT' | translate }}</div>
-            <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TIMELINE_STATUS' | translate }}</div>
+        <header fxLayout="row">
+            <span fxLayoutGap="10px" fxFlex="95">
+                <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
+                <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ATA' | translate }}</div>
+                <div fxFlex="28" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DESCRIPTION' | translate }}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_REFERENCE' | translate }}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_CLASS' | translate }}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ALERT' | translate }}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TIMELINE_STATUS' | translate }}</div>
+            </span>
             <div fxFlex="11">&nbsp;</div>
         </header>
         <content>
@@ -18,9 +20,8 @@
                  *ngFor="let task of list"
                  [class.active]="task.barcode === selectedRegister.barcode"
                  class="contingency-item"
-                 fxLayoutGap="10px"
             >
-                <span fxFlex="90" [ngClass]="{'open-cursor': task.timelineStatus==='OPEN', 'close-cursor': task.timelineStatus==='CLOSE'}" (click)="setSelectedRegister(task)">
+                <span fxFlex="95" [ngClass]="{'open-cursor': task.timelineStatus==='OPEN', 'close-cursor': task.timelineStatus==='CLOSE'}" (click)="setSelectedRegister(task)" fxLayoutGap="10px">
                     <!--TAIL/FLEET-->
                     <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
                         <span>{{ task.tail }}</span>
