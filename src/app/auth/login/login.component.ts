@@ -8,7 +8,7 @@ import { AuthService } from '../_services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import {RoutingService} from '../../shared/_services/routing.service';
 import {ManagementUser} from '../../shared/_models/management/managementUser';
-import {Module} from '../../shared/_models/management/module';
+import { Access } from '../../shared/_models/management/access';
 
 
 @Component({
@@ -103,11 +103,11 @@ export class LoginComponent implements OnInit {
      * @param {string} username
      */
     private redirect(username: string) {
-        this._authService.getRoles(username).then(
+        this._authService.getAccess(username).then(
         res => {
             const role = this._routingService.arrMenu.find(menu => {
                 const moduleConfig = this._authService.modulesConfig.filter(
-                    mod => this.authModule(res).find(mu => mu.code === mod.code)
+                    mod => this.authModule(res).find(mu => mu.module === mod.code)
                 );
                 return !!moduleConfig.find(config => config.module === menu.slug ||
                     !!menu.submenu.find(sub => sub.slug === config.module));
@@ -124,12 +124,10 @@ export class LoginComponent implements OnInit {
      * @param {ManagementUser} managementUser
      * @returns {Module[]}
      */
-    private authModule(managementUser: ManagementUser): Module[] {
-        return managementUser.modules
-            .filter(m => !!m.roles.find(
-                r => r === LoginComponent.ADMIN_MODE ||
-                    (r === LoginComponent.USER_MODE && m.code !== LoginComponent.GENERAL_CODE)
-            ));
+    private authModule(managementUser: ManagementUser): Access[] {
+        return managementUser.access
+            .filter(m => !!(m.role === LoginComponent.ADMIN_MODE ||
+                    (m.role === LoginComponent.USER_MODE && m.module !== LoginComponent.GENERAL_CODE)));
     }
 
     activateLoadingBar(show: boolean) {
