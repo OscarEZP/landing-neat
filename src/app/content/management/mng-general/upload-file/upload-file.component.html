@@ -10,7 +10,7 @@
                         </span>
                 </div>
             <div fxLayout="cloumn" class="button-upload-bg">
-                <input class="button-upload" type="button" align="center" name="UPLOAD" value="UPLOAD"(click)="onArchivoSeleccionado()"/>
+                <input class="button-upload" type="button" align="center" name="UPLOAD" value="UPLOAD"(click)="onSelectFile()"/>
             </div>
                 <div fxLayout="cloumn" >
                     <span class="upload_text">
@@ -18,7 +18,7 @@
                     </span>
                 </div>
             </div>
-            <input name="uploadFile" type="file" (change)="handleInputChange($event)">
+            <input name="uploadFile" name="file" type="file" (change)="handleInputChange($event)">
 
         </div>
         </div>

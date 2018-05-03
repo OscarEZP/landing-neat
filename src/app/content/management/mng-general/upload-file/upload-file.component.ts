@@ -1,65 +1,78 @@
 import {Component, OnInit} from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import {ApiRestService} from "../../../../shared/_services/apiRest.service";
+import { HttpClient } from '@angular/common/http';
+import {ApiRestService} from '../../../../shared/_services/apiRest.service';
 
 
 @Component({
-    selector: 'file-uploader',
+    selector: 'lsl-file-uploader',
     templateUrl: './upload-file.component.html',
     styleUrls: ['./upload-file.component.scss'],
 
 })
-export class UploadFileComponent implements OnInit{
-    loaded: boolean = false;
-    fileCsv: string = '';
-    fileUpload: File;
-    formData: FormData;
+export class UploadFileComponent implements OnInit {
+
+    private _loaded: boolean;
+    private _fileCsv: string;
+    private _fileUpload: File;
+    private _formData: FormData;
+
     constructor(private http: HttpClient,
                 private _apiRestService: ApiRestService) {
 
     }
 
     ngOnInit() {
+        this.loaded = false;
+        this.fileCsv = '';
     }
 
     handleInputChange(e) {
         this.fileUpload = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
-
-        console.log('fileUpload',this.fileUpload);
-;
+        console.log('fileUpload', this.fileUpload);
     }
 
-    _handleReaderLoaded(e) {
-        var reader = e.target;
-        this.fileCsv = reader.result;
-        this.loaded = true;
-    }
-    public onArchivoSeleccionado() {
+    public onSelectFile() {
         console.log('seleccionando archivo');
-        console.log('fileUpload send',this.fileUpload)
-        let formData = new FormData();
+        console.log('fileUpload send', this.fileUpload);
+        const formData = new FormData();
         formData.append('file', this.fileUpload);
         formData.append('fileName', this.fileUpload.name);
-        console.log('formData',formData);
-        /*let res: Response;
-        const idToken = localStorage.getItem('currentUser');
-        const requestOptions = {
-            headers: new HttpHeaders({'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept':'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Authorization':idToken
-            })
-        };*/
-
-      /*  this.http.post('https://staging.mcp.maintenix.ifs.cloud/api/v1/management/users/_load',formData,requestOptions).subscribe(response => console.log('response',response),
-            () => {
-                console.log('OK');
-            });
-*/
-       this._apiRestService.postUploadFile<Response>('uploadFile',this.fileUpload).toPromise().then(response => console.log(response)
-
+        console.log('formData', formData);
+        this._apiRestService.postUploadFile<Response>('managementUsersLoad', this.fileUpload)
+            .toPromise()
+            .then(response => console.log(response)
         ).catch(x => console.log(x));
     }
 
+    get loaded(): boolean {
+        return this._loaded;
+    }
 
+    set loaded(value: boolean) {
+        this._loaded = value;
+    }
+
+    get fileCsv(): string {
+        return this._fileCsv;
+    }
+
+    set fileCsv(value: string) {
+        this._fileCsv = value;
+    }
+
+    get fileUpload(): File {
+        return this._fileUpload;
+    }
+
+    set fileUpload(value: File) {
+        this._fileUpload = value;
+    }
+
+    get formData(): FormData {
+        return this._formData;
+    }
+
+    set formData(value: FormData) {
+        this._formData = value;
+    }
 }
