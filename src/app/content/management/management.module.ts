@@ -4,8 +4,6 @@ import {ManagementComponent} from './management.component';
 import {SharedModule} from '../../shared/shared.module';
 import {RouterModule} from '@angular/router';
 import {UserManagementModule} from './mng-general/user-management/user-management.module';
-import { UserListComponent } from './mng-general/user-list/user-list.component';
-import {UploadFileModule} from "./mng-general/upload-file/upload-file.module";
 
 @NgModule({
     imports: [
@@ -13,11 +11,9 @@ import {UploadFileModule} from "./mng-general/upload-file/upload-file.module";
         SharedModule,
         RouterModule,
         UserManagementModule,
-        UploadFileModule
     ],
     declarations: [
-        ManagementComponent,
-        UserListComponent
+        ManagementComponent
     ]
 })
 export class ManagementModule {

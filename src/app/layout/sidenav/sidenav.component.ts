@@ -38,7 +38,6 @@ export class SidenavComponent implements OnInit {
 
     ngOnInit() {
         this.arrMenu = this.filterMenu(this._routingService.arrMenu);
-        this.arrMenu.map(menu => this.translateMenu(menu));
     }
 
     /**
@@ -56,20 +55,6 @@ export class SidenavComponent implements OnInit {
             menu.submenu = menu.submenu.filter(submenu => this._authService.getIsAuth(submenu.link));
             return menu;
         }).filter(menu => !(menu.slug === SidenavComponent.MANAGEMENT_ENDPOINT && menu.submenu.length === 0));
-    }
-
-    /**
-     * Translate all labels
-     * @param {Menu} menu
-     */
-    private translateMenu(menu: Menu) {
-        this._translate
-            .get(menu.label)
-            .toPromise()
-            .then(res => {
-                menu.label = res;
-                menu.submenu.map(m => this.translateMenu(m));
-            });
     }
 
     toggleSidenav() {

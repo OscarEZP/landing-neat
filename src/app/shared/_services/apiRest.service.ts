@@ -43,14 +43,13 @@ export class ApiRestService {
         return this.http.post<T>(this.baseUrl + environment.paths[path], toSearch);
     }
 
-    public postUploadFile<T>(path: string, formData: any): Observable<T> {
+    public postUploadFile<T>(path: string, formData: any, params: string = ''): Observable<T> {
         const requestOptions = {
             headers: new HttpHeaders({
                 'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/x-www-form-urlencoded'
             })
         };
-        return this.http.post<T>(this.baseUrl + environment.paths[path], formData, requestOptions);
+        return this.http.post<T>(this.baseUrl + environment.paths[path] + '/' + params, formData, requestOptions);
     }
     public add<T>(path: string, itemToAdd: any, id?: string): Observable<T> {
         const toAdd = JSON.stringify(itemToAdd).replace(/\b[_]/g, '');
@@ -97,8 +96,6 @@ export class CustomInterceptor implements HttpInterceptor {
         req = req.clone({headers: req.headers.set('Accept', CustomInterceptor.CONTENT_TYPE)});
         const idToken = this._storageService.getCurrentUser().idToken ? this._storageService.getCurrentUser().idToken : '';
         req = req.clone({headers: req.headers.set(CustomInterceptor.TOKEN_ATTR, idToken)});
-
-        console.log('entró', req.headers.keys());
 
         return next.handle(req).do(
             event => {

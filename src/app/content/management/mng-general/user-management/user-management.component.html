@@ -1,3 +1,10 @@
-<p>
-  user-management works!
-</p>
+<div id="user-management-container">
+    <nav>
+        <a *ngFor="let menu of arrMenu" routerLink="{{menu.link}}" routerLinkActive="active" class="mat-tab-item">
+            {{ menu.label | translate }}
+        </a>
+    </nav>
+    <content>
+        <router-outlet></router-outlet>
+    </content>
+</div>

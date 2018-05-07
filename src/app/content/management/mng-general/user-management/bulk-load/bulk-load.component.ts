@@ -1,0 +1,110 @@
+import {Component, OnInit} from '@angular/core';
+import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
+import {StorageService} from '../../../../../shared/_services/storage.service';
+import {Summary} from '../../../../../shared/_models/management/summary';
+
+@Component({
+    selector: 'lsl-file-uploader',
+    templateUrl: './bulk-load.component.html',
+    styleUrls: ['./bulk-load.component.scss']
+})
+export class BulkLoadComponent implements OnInit {
+
+    private _loaded: boolean;
+    private _fileCsv: string;
+    private _fileUpload: File;
+    private _formData: FormData;
+    private _fileInput: HTMLElement;
+
+    private _summary: Summary;
+
+    constructor(
+        private _apiRestService: ApiRestService,
+        private _storageService: StorageService
+    ) {
+        this.summary = new Summary();
+    }
+
+    ngOnInit() {
+        this.loaded = false;
+        this.fileCsv = '';
+        this.formData = new FormData();
+    }
+
+    handleInputChange(e) {
+        this.fileUpload = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+        this.uploadFile();
+    }
+
+    public selectFile() {
+        this.fileInput = document.getElementById('in-bulk-load-file') as HTMLElement;
+        this.fileInput.click();
+    }
+
+    private uploadFile() {
+        if (this.fileUpload) {
+            this.formData.append('file', this.fileUpload);
+            this.formData.append('fileName', this.fileUpload.name);
+            this._apiRestService.postUploadFile<Summary>('managementUsersLoad', this.formData, this._storageService.username)
+                .toPromise()
+                .then(response => {
+                    this.fileUpload = null;
+                    this.loaded = true;
+                    if (response) {
+                        this.summary = response;
+                    }
+                })
+                .catch(() => {
+
+                });
+        }
+    }
+
+    get loaded(): boolean {
+        return this._loaded;
+    }
+
+    set loaded(value: boolean) {
+        this._loaded = value;
+    }
+
+    get fileCsv(): string {
+        return this._fileCsv;
+    }
+
+    set fileCsv(value: string) {
+        this._fileCsv = value;
+    }
+
+    get fileUpload(): File {
+        return this._fileUpload;
+    }
+
+    set fileUpload(value: File) {
+        this._fileUpload = value;
+    }
+
+    get formData(): FormData {
+        return this._formData;
+    }
+
+    set formData(value: FormData) {
+        this._formData = value;
+    }
+
+    get fileInput(): HTMLElement {
+        return this._fileInput;
+    }
+
+    set fileInput(value: HTMLElement) {
+        this._fileInput = value;
+    }
+
+    get summary(): Summary {
+        return this._summary;
+    }
+
+    set summary(value: Summary) {
+        this._summary = value;
+    }
+}
