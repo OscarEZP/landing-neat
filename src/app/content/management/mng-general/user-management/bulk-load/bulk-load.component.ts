@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
 import {StorageService} from '../../../../../shared/_services/storage.service';
 import {Summary} from '../../../../../shared/_models/management/summary';
+import {MessageService} from '../../../../../shared/_services/message.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'lsl-file-uploader',
@@ -9,6 +11,9 @@ import {Summary} from '../../../../../shared/_models/management/summary';
     styleUrls: ['./bulk-load.component.scss']
 })
 export class BulkLoadComponent implements OnInit {
+
+    public static MANAGEMENT_USERS_LOAD = 'managementUsersLoad';
+    public static LOAD_FILE_ID = 'in-bulk-load-file';
 
     private _loaded: boolean;
     private _fileCsv: string;
@@ -20,7 +25,9 @@ export class BulkLoadComponent implements OnInit {
 
     constructor(
         private _apiRestService: ApiRestService,
-        private _storageService: StorageService
+        private _storageService: StorageService,
+        private _messageService: MessageService,
+        private _translateService: TranslateService
     ) {
         this.summary = new Summary();
     }
@@ -37,7 +44,7 @@ export class BulkLoadComponent implements OnInit {
     }
 
     public selectFile() {
-        this.fileInput = document.getElementById('in-bulk-load-file') as HTMLElement;
+        this.fileInput = document.getElementById(BulkLoadComponent.LOAD_FILE_ID) as HTMLElement;
         this.fileInput.click();
     }
 
@@ -45,7 +52,7 @@ export class BulkLoadComponent implements OnInit {
         if (this.fileUpload) {
             this.formData.append('file', this.fileUpload);
             this.formData.append('fileName', this.fileUpload.name);
-            this._apiRestService.postUploadFile<Summary>('managementUsersLoad', this.formData, this._storageService.username)
+            this._apiRestService.postUploadFile<Summary>(BulkLoadComponent.MANAGEMENT_USERS_LOAD, this.formData, this._storageService.username)
                 .toPromise()
                 .then(response => {
                     this.fileUpload = null;
@@ -55,7 +62,10 @@ export class BulkLoadComponent implements OnInit {
                     }
                 })
                 .catch(() => {
-
+                    this._translateService.get('ERRORS.DEFAULT')
+                        .toPromise()
+                        .then(res => this._messageService.openSnackBar(res)
+                    );
                 });
         }
     }
