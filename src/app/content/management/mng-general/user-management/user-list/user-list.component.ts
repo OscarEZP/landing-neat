@@ -67,7 +67,6 @@ export class UserListComponent implements OnInit {
         this.loading = true;
         return this._apiRestService.search<User[]>(UserListComponent.MANAGEMENT_USERS_SEARCH_ENDPOINT, signature)
             .pipe(
-                // map( reg => ),
                 tap(() => this.loading = false)
             );
     }

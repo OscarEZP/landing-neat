@@ -160,7 +160,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * Set a subscription for get total amount of records and data list.
      */
     private getList(): void {
-            const signature = this.getSearchSignature();
+        const signature = this.getSearchSignature();
         this.totalRecordsSubscription = this.getTotalRecordsSubscription(signature).add(() => {
             this.listSubscription = this.getListSubscription(signature);
         });

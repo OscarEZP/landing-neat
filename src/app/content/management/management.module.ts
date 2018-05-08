@@ -10,7 +10,7 @@ import {UserManagementModule} from './mng-general/user-management/user-managemen
         CommonModule,
         SharedModule,
         RouterModule,
-        UserManagementModule,
+        UserManagementModule
     ],
     declarations: [
         ManagementComponent
