@@ -4,7 +4,6 @@ import {ManagementComponent} from './management.component';
 import {SharedModule} from '../../shared/shared.module';
 import {RouterModule} from '@angular/router';
 import {UserManagementModule} from './mng-general/user-management/user-management.module';
-import { UserListComponent } from './mng-general/user-list/user-list.component';
 
 @NgModule({
     imports: [
@@ -14,8 +13,7 @@ import { UserListComponent } from './mng-general/user-list/user-list.component';
         UserManagementModule
     ],
     declarations: [
-        ManagementComponent,
-        UserListComponent
+        ManagementComponent
     ]
 })
 export class ManagementModule {

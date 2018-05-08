@@ -9,20 +9,20 @@
             <mat-expansion-panel *ngIf="menu.submenu.length > 0 && menu.collapse === true">
                 <mat-expansion-panel-header class="title">
                     <i class="material-icons" [innerHtml]="menu.icon"></i>
-                    <mat-panel-title [innerHtml]="menu.label"></mat-panel-title>
+                    <mat-panel-title [innerHtml]="menu.label | translate"></mat-panel-title>
                 </mat-expansion-panel-header>
                 <div *ngFor="let submenu of menu.submenu">
                     <a (click)="toggleSidenav()" *ngIf="submenu.submenu.length === 0" id="lnk-sidenav-{{menu.slug}}" routerLink="{{submenu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
                         <i class="material-icons" [innerHtml]="menu.icon"></i>
-                        <span [innerHtml]="submenu.label"></span>
+                        <span [innerHtml]="submenu.label | translate"></span>
                     </a>
                     <div *ngIf="submenu.submenu.length !== 0" >
                         <div class="title">
                             <i class="material-icons" [innerHtml]="submenu.icon"></i>
-                            <span>{{submenu.label}}</span>
+                            <span>{{submenu.label | translate}}</span>
                         </div>
                         <div>
-                            <a id="lnk-sidenav-{{submenu.slug}}-{{subSubmenu.slug}}" (click)="toggleSidenav()" *ngFor="let subSubmenu of submenu.submenu" routerLink="{{subSubmenu.link}}">{{subSubmenu.label}}</a>
+                            <a id="lnk-sidenav-{{submenu.slug}}-{{subSubmenu.slug}}" (click)="toggleSidenav()" *ngFor="let subSubmenu of submenu.submenu" routerLink="{{subSubmenu.link}}">{{subSubmenu.label | translate}}</a>
                         </div>
                     </div>
                 </div>
@@ -31,16 +31,16 @@
             <div *ngIf="menu.submenu.length > 0 && menu.collapse === false">
                 <div class="title">
                     <i class="material-icons" [innerHtml]="menu.icon"></i>
-                    <span>{{menu.label}}</span>
+                    <span>{{menu.label | translate}}</span>
                 </div>
                 <div *ngFor="let submenu of menu.submenu">
-                    <a id="lnk-sidenav-{{submenu.slug}}" (click)="toggleSidenav()" routerLink="{{submenu.link}}">{{submenu.label}}</a>
+                    <a id="lnk-sidenav-{{submenu.slug}}" (click)="toggleSidenav()" routerLink="{{submenu.link}}">{{submenu.label | translate}}</a>
                 </div>
             </div>
 
             <a class="just-link" *ngIf="menu.submenu.length === 0" id="lnk-sidenav-{{menu.slug}}"  routerLink="{{menu.link}}" routerLinkActive="active" (click)="toggleSidenav()">
                 <i class="material-icons" [innerHtml]="menu.icon"></i>
-                <span [innerHtml]="menu.label"></span>
+                <span [innerHtml]="menu.label | translate"></span>
             </a>
         </div>
     </nav>

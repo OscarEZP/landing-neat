@@ -1,0 +1,30 @@
+@import '../../../../../assets/style/base.scss';
+$tabs-height: 54px;
+
+#user-management-container {
+  color: mat-color($foreground, secondary-text);
+  width: 100%;
+  nav {
+    border-bottom: thin solid mat-color($foreground, divider);
+    box-sizing: border-box;
+    padding: 30px 20px 0;
+    height: $tabs-height;
+    width: 100%;
+    display: inline-block;
+
+    a {
+      @include generate-font-size();
+      font-family: Roboto, "Noto Sans", Tahoma;
+      padding: 0 20px 5px;
+      display: inline-block;
+      text-transform: capitalize;
+      font-weight: bold;
+      color: mat-color($foreground, text);
+    }
+    a.active {
+      color: mat-color($primary);
+      opacity: 1;
+      border-bottom: 3px solid mat-color($primary);
+    }
+  }
+}

@@ -1,0 +1,35 @@
+<div class="reg-list">
+  <header fxLayout="row" class="">
+    <div fxFlex="20" fxLayoutAlign="start left">{{ 'MANAGEMENT.USER.USERNAME' | translate }}</div>
+    <div fxFlex="10" fxLayoutAlign="start left">{{ 'MANAGEMENT.USER.FIRST_NAME' | translate }}</div>
+    <div fxFlex="10" fxLayoutAlign="start left">{{ 'MANAGEMENT.USER.LAST_NAME' | translate }}</div>
+    <div fxFlex="20" fxLayoutAlign="start left">{{ 'MANAGEMENT.USER.USER_EMAIL' | translate }}</div>
+    <div fxFlex="20" fxLayoutAlign="start left">{{ 'MANAGEMENT.USER.ROLE_GROUP' | translate }}</div>
+    <div fxFlex="20" fxLayoutAlign="start left">{{ 'MANAGEMENT.USER.LOCATION' | translate }}</div>
+  </header>
+  <main>
+    <div fxLayout="row" *ngFor="let user of userList | async">
+      <div fxLayout="column" fxLayoutAlign="left" fxFlex="20">{{user.username}}</div>
+      <div fxLayout="column" fxLayoutAlign="left" fxFlex="10">{{user.firstname}}</div>
+      <div fxLayout="column" fxLayoutAlign="left" fxFlex="10">{{user.lastname}}</div>
+      <div fxLayout="column" fxLayoutAlign="left" fxFlex="20">{{user.email}}</div>
+      <div class="role-group" fxLayout="column" fxLayoutAlign="left" fxFlex="20">
+        <p *ngFor="let access of user.access">
+          <span>{{access.role}}</span>
+          <mat-icon>trending_flat</mat-icon>
+          <span>{{access.module}}</span>
+        </p>
+      </div>
+      <div fxLayout="column" fxLayoutAlign="left" fxFlex="20">
+        {{user.location.defaults}}
+      </div>
+    </div>
+  </main>
+</div>
+<mat-paginator #contPaginator [hidden]="!checkDataStatus() || loading"
+               [length]="infiniteScrollService.length"
+               [pageIndex]="infiniteScrollService.pageIndex"
+               [pageSize]="infiniteScrollService.pageSize"
+               [pageSizeOptions]="infiniteScrollService.pageSizeOptions"
+>
+</mat-paginator>

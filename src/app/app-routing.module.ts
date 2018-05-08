@@ -15,6 +15,8 @@ import {FleetHealthComponent} from './content/fleet-health/fleet-health.componen
 import {DeferralListComponent} from './content/fleet-health/deferral-list/deferral-list.component';
 import {ManagementComponent} from './content/management/management.component';
 import {UserManagementComponent} from './content/management/mng-general/user-management/user-management.component';
+import {BulkLoadComponent} from './content/management/mng-general/user-management/bulk-load/bulk-load.component';
+import {UserListComponent} from './content/management/mng-general/user-management/user-list/user-list.component';
 
 const ROUTES: Routes = [
     {
@@ -83,18 +85,35 @@ const ROUTES: Routes = [
                 children: [
                     {
                         path: '',
-                        redirectTo: '/management/general/users',
-                        pathMatch: 'full',
-                    },
-                    {
-                        path: 'general',
-                        redirectTo: '/management/general/users',
+                        redirectTo: '/management/general/users/user-list',
                         pathMatch: 'full',
                     },
                     {
                         path: 'general/users',
                         component: UserManagementComponent,
                         canActivate: [AuthGuardService],
+                        children: [
+                            {
+                                path: '',
+                                redirectTo: '/management/general/users/user-list',
+                                pathMatch: 'full'
+                            },
+                            {
+                                path: 'bulk-load',
+                                component: BulkLoadComponent,
+                                canActivate: [AuthGuardService],
+                            },
+                            {
+                                path: 'add-user',
+                                component: UserListComponent,
+                                canActivate: [AuthGuardService],
+                            },
+                            {
+                                path: 'user-list',
+                                component: UserListComponent,
+                                canActivate: [AuthGuardService],
+                            },
+                        ]
                     },
                     {
                         path: 'operations/emails',

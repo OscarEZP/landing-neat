@@ -78,7 +78,25 @@
   },
   "MANAGEMENT": {
     "MANAGEMENT_MODULE": "Management Module",
-    "USER_MANAGEMENT": "User Management"
+    "USER": {
+      "ADD_USER": "Add User",
+      "BULK_LOAD": "Bulk load",
+      "DATA_ISSUE": "Data Issue",
+      "FIRST_NAME": "First name",
+      "LAST_NAME": "Last name",
+      "LOCATION": "Location",
+      "ROLE_GROUP": "Role group",
+      "ROWS_NOT_ADDED": "Rows doesn't match",
+      "TO_GET_STARTED": "To get started",
+      "UPLOAD": "Upload",
+      "USER_EMAIL": "User Email",
+      "USER_LIST": "User List",
+      "USER_MANAGEMENT": "User Management",
+      "USERNAME": "Username",
+      "USERS_ADDED_MESSAGE": "users correctly added / updated in the system",
+      "USERS_NOT_ADDED_MESSAGE": "registers couldn't added / updated in the system",
+      "YOUR_CSV_FILE": "your csv file"
+    }
   },
   "MENU" : {
     "ATEC": "ATEC",
