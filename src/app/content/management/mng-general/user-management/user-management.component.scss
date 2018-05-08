@@ -5,7 +5,7 @@ $tabs-height: 54px;
   color: mat-color($foreground, secondary-text);
   width: 100%;
   nav {
-    border-bottom: thin solid #ccc;
+    border-bottom: thin solid mat-color($foreground, divider);
     box-sizing: border-box;
     padding: 30px 20px 0;
     height: $tabs-height;

@@ -28,6 +28,8 @@ export const environment = {
         mails : '/api/v1/configurations/mails',
         managementUsers: '/api/v1/management/users',
         managementUsersLoad: '/api/v1/management/users/_load',
+        managementUsersSearch: '/api/v1/management/users/_search',
+        managementUsersSearchCount: '/api/v1/management/users/_search/count',
         meetings: '/api/v1/contingencies/meetings',
         operator: '/api/v1/configurations/operators/',
         pendingResolve: '/api/v1/contingencies/pendings/_resolve',

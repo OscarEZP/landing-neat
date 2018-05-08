@@ -38,16 +38,26 @@ export class BulkLoadComponent implements OnInit {
         this.formData = new FormData();
     }
 
+    /**
+     * Handler for a selected file
+     * @param e
+     */
     handleInputChange(e) {
         this.fileUpload = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
         this.uploadFile();
     }
 
+    /**
+     * Set an input file element and trigger a click for selection interface
+     */
     public selectFile() {
         this.fileInput = document.getElementById(BulkLoadComponent.LOAD_FILE_ID) as HTMLElement;
         this.fileInput.click();
     }
 
+    /**
+     * Upload file
+     */
     private uploadFile() {
         if (this.fileUpload) {
             this.formData.append('file', this.fileUpload);
