@@ -21,6 +21,7 @@
     "CREATE": "CREATE",
     "RESEND": "RESEND",
     "SAVE": "SAVE",
+    "APPLY": "APPLY",
     "SUB_MENUS": {
       "CLOSE_CONTINGENCY": "Close Contingency",
       "MEETING": "Meeting",
@@ -78,7 +79,9 @@
   },
   "MANAGEMENT": {
     "MANAGEMENT_MODULE": "Management Module",
-    "USER_MANAGEMENT": "User Management"
+    "USER_MANAGEMENT": "User Management",
+    "ATEC_FILTER_SELECT_STATION": "Select Station",
+    "ATEC_FILTER_SELECT_OPERATOR": "Select Operator"
   },
   "MENU" : {
     "ATEC": "ATEC",

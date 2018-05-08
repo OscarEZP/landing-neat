@@ -15,6 +15,7 @@ import {FleetHealthComponent} from './content/fleet-health/fleet-health.componen
 import {DeferralListComponent} from './content/fleet-health/deferral-list/deferral-list.component';
 import {ManagementComponent} from './content/management/management.component';
 import {UserManagementComponent} from './content/management/mng-general/user-management/user-management.component';
+import {AtecFilterComponent} from "./content/management/mng-fleet-health/atec-filter/atec-filter.component";
 
 const ROUTES: Routes = [
     {
@@ -103,7 +104,7 @@ const ROUTES: Routes = [
                     },
                     {
                         path: 'fleet-health/atec',
-                        component: UserManagementComponent,
+                        component: AtecFilterComponent,
                         canActivate: [AuthGuardService],
                     }
                 ]

@@ -1,3 +1,142 @@
-<p>
-  atec-filter works!
-</p>
+<form >
+  <div fxLayout="row" class="row-width-atec-filter">
+    <span class="label-atec-filter">Station</span>
+  </div>
+  <div fxLayout="row" class="row-width-atec-filter">
+    <mat-select class="select-atec-filter" [placeholder]="stationPlaceholder">
+      <mat-option value="SCL">SCL</mat-option>
+      <mat-option value="BRA">BRA</mat-option>
+      <mat-option value="MIA">MIA</mat-option>
+    </mat-select>
+  </div>
+  <div fxLayout="row" class="row-width-atec-filter">
+    <span class="label-atec-filter">Operator</span>
+  </div>
+  <div fxLayout="row" class="row-width-atec-filter">
+    <mat-select class="select-atec-filter" [placeholder] = "operatorPlaceholder" multiple>
+      <mat-option value="LA">LA</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="4C">4C</mat-option>
+    </mat-select>
+  </div>
+
+    <div fxLayout="row" class="row-atec-filter">
+      <div fxLayout="column" fxFlex="13" class="column-head-atec-filter">
+        <span class="label-atec-filter">Deferral Category</span>
+      </div>
+      <div fxLayout="column" class="column-head-atec-filter">
+        <span class="label-atec-filter">Due Date</span>
+      </div>
+    </div>
+   <div>
+    <div fxLayout="row" class="row-atec-filter background-color-row-atec-filter">
+      <div fxLayout="column" fxFlex="13" class="column-atec-filter">
+      <span class="label-row-atec-filter">A</span>
+      </div>
+      <div fxLayout="column" class="column-atec-filter column-input-atec-filter" fxFlex="15">
+        <mat-form-field >
+
+        <input id="in-due-date-form-filter-atect" class="label-placeholder-atec-filter mat-form-field-infix"
+               placeholder="Days" matInput maxlength="3"
+               />
+          </mat-form-field>
+      </div>
+      <div fxLayout="column" >
+      <mat-checkbox  labelPosition="after" fxFlex="20" class="column-atec-filter"
+      ><span class="label-row-atec-filter">All</span>
+      </mat-checkbox>
+      </div>
+    </div>
+
+
+       <div fxLayout="row" class="row-atec-filter">
+         <div fxLayout="column" fxFlex="13" class="column-atec-filter">
+           <span class="label-row-atec-filter">B</span>
+         </div>
+         <div fxLayout="column" class="column-atec-filter column-input-atec-filter" fxFlex="15">
+           <mat-form-field >
+
+             <input class="label-placeholder-atec-filter mat-form-field-infix"
+                    placeholder="Days" matInput maxlength="3"
+             />
+           </mat-form-field>
+         </div>
+         <div fxLayout="column" >
+           <mat-checkbox   labelPosition="after" fxFlex="20" class="column-atec-filter"
+           ><span class="label-row-atec-filter">All</span>
+           </mat-checkbox>
+         </div>
+       </div>
+
+     <div fxLayout="row" class="row-atec-filter background-color-row-atec-filter">
+       <div fxLayout="column" fxFlex="13" class="column-atec-filter">
+         <span class="label-row-atec-filter">C</span>
+       </div>
+       <div fxLayout="column" class="column-atec-filter column-input-atec-filter" fxFlex="15">
+         <mat-form-field >
+
+           <input  class="label-placeholder-atec-filter mat-form-field-infix"
+                  placeholder="Days" matInput maxlength="3"
+           />
+         </mat-form-field>
+       </div>
+       <div fxLayout="column" >
+         <mat-checkbox id="in-contingency-form-backup"  labelPosition="after" fxFlex="20" class="column-atec-filter"
+         ><span class="label-row-atec-filter">All</span>
+         </mat-checkbox>
+       </div>
+     </div>
+
+     <div fxLayout="row" class="row-atec-filter">
+       <div fxLayout="column" fxFlex="13" class="column-atec-filter">
+         <span class="label-row-atec-filter">D</span>
+       </div>
+       <div fxLayout="column" class="column-atec-filter column-input-atec-filter" fxFlex="15">
+         <mat-form-field >
+
+           <input class="label-placeholder-atec-filter mat-form-field-infix"
+                  placeholder="Days" matInput maxlength="3"
+           />
+         </mat-form-field>
+       </div>
+       <div fxLayout="column" >
+         <mat-checkbox   labelPosition="after" fxFlex="20" class="column-atec-filter"
+         ><span class="label-row-atec-filter">All</span>
+         </mat-checkbox>
+       </div>
+     </div>
+
+
+  <div fxLayout="row" class="row-atec-filter background-color-row-atec-filter">
+    <div fxLayout="column" fxFlex="13" class="column-atec-filter">
+      <span class="label-row-atec-filter">TLI</span>
+    </div>
+    <div fxLayout="column" class="column-atec-filter column-input-atec-filter" fxFlex="15">
+      <mat-form-field >
+
+        <input  class="label-placeholder-atec-filter mat-form-field-infix"
+                placeholder="Days" matInput maxlength="3"
+        />
+      </mat-form-field>
+    </div>
+    <div fxLayout="column" >
+      <mat-checkbox   labelPosition="after" fxFlex="20" class="column-atec-filter"
+      ><span class="label-row-atec-filter">All</span>
+      </mat-checkbox>
+    </div>
+  </div>
+   </div>
+  <div class="line-footer-atec-filter"></div>
+
+  <div mat-dialog-actions class="row-width-atec-filter" fxLayoutAlign="end" >
+    <div class="buttons-atec-filter">
+    <button id="btn-atec-filter-form-cancel" type="button" mat-button >
+      {{'BUTTONS.CANCEL'|translate}}
+    </button>
+    <button id="btn-atec-filter-form-submit" type="submit" mat-button mat-raised-button color="primary"
+            >
+      {{'BUTTONS.APPLY'|translate}}
+    </button>
+    </div>
+  </div>
+</form>
