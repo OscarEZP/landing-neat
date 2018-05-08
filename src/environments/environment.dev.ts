@@ -11,6 +11,7 @@ export const environment = {
         aircraftsSearch: ':9005/api/v1/configurations/aircrafts/_search',
         areas: ':9002/api/v1/contingencies/pendings/areas',
         ataByFleet: ':9005/api/v1/configurations/atas/groups',
+        authorities: ':9015/api/v1/management/authorities',
         close: ':9002/api/v1/contingencies/_close',
         configMaxStatus: ':9005/api/v1/configurations/status/max',
         configStatus: ':9005/api/v1/configurations/status/_search',
