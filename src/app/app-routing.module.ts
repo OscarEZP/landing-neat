@@ -85,12 +85,7 @@ const ROUTES: Routes = [
                 children: [
                     {
                         path: '',
-                        redirectTo: '/management/general/users',
-                        pathMatch: 'full',
-                    },
-                    {
-                        path: 'general',
-                        redirectTo: '/management/general/users',
+                        redirectTo: '/management/general/users/user-list',
                         pathMatch: 'full',
                     },
                     {
@@ -98,6 +93,11 @@ const ROUTES: Routes = [
                         component: UserManagementComponent,
                         canActivate: [AuthGuardService],
                         children: [
+                            {
+                                path: '',
+                                redirectTo: '/management/general/users/user-list',
+                                pathMatch: 'full'
+                            },
                             {
                                 path: 'bulk-load',
                                 component: BulkLoadComponent,

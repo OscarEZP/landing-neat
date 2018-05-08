@@ -23,7 +23,7 @@ export class UserManagementComponent implements OnInit {
         this.showRightNav = false;
         this.arrMenu = [
             new Menu('MANAGEMENT.USER.USER_LIST', '', '/management/general/users/user-list'),
-            new Menu('MANAGEMENT.USER.ADD_USER', '', '/management/general/users/add-user'),
+            // new Menu('MANAGEMENT.USER.ADD_USER', '', '/management/general/users/add-user'),
             new Menu('MANAGEMENT.USER.BULK_LOAD', '', '/management/general/users/bulk-load')
         ];
     }

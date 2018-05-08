@@ -22,7 +22,6 @@ export class UserListComponent implements OnInit {
 
     @ViewChild('contPaginator') public paginator: MatPaginator;
 
-    private _infiniteScrollService: InfiniteScrollService;
     private _userList: Observable<User[]>;
     private _paginationSubscription: Subscription;
     private _loading: boolean;
