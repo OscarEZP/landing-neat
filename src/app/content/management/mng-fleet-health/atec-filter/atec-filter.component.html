@@ -14,12 +14,12 @@
   </div>
   <div fxLayout="row" class="row-width-atec-filter">
     <mat-select class="select-atec-filter" [placeholder] = "operatorPlaceholder" multiple>
-      <mat-option value="LA">LA</mat-option>
-      <mat-option value="4M">4M</mat-option>
-      <mat-option value="4C">4C</mat-option>
+      <mat-option *ngFor="let operator of operators" value="{{operator.code}}">{{operator.code}}</mat-option>
+
     </mat-select>
   </div>
-
+  <mat-tab-group>
+    <mat-tab *ngFor="let menu of arrMenu" label={{menu.label}}>
     <div fxLayout="row" class="row-atec-filter">
       <div fxLayout="column" fxFlex="13" class="column-head-atec-filter">
         <span class="label-atec-filter">Deferral Category</span>
@@ -126,6 +126,8 @@
     </div>
   </div>
    </div>
+      </mat-tab>
+    </mat-tab-group>
   <div class="line-footer-atec-filter"></div>
 
   <div mat-dialog-actions class="row-width-atec-filter" fxLayoutAlign="end" >
