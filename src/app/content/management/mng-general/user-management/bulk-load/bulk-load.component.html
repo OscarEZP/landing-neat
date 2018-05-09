@@ -1,0 +1,29 @@
+<form>
+    <div fxFlexFill fxLayout="column" fxLayoutAlign="center center">
+        <i class="material-icons md-cloud-upload md-dark md-inactive">cloud_upload</i>
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <span class="upload_text">
+                {{ "MANAGEMENT.USER.TO_GET_STARTED" | translate }}
+            </span>
+            <button mat-raised-button color="primary" type="button" (click)="selectFile()">
+                {{ "MANAGEMENT.USER.UPLOAD" | translate }}
+            </button>
+            <span class="upload_text">
+                {{ "MANAGEMENT.USER.YOUR_CSV_FILE" | translate }}
+            </span>
+        </div>
+        <input id="in-bulk-load-file" name="uploadFile" name="file" type="file" (change)="handleInputChange($event)">
+        <div id="summary" *ngIf="loaded">
+            <h2>{{ "MANAGEMENT.USER.DATA_ISSUE" | translate }}</h2>
+            <p>
+                {{ summary.success }} {{ "MANAGEMENT.USER.USERS_ADDED_MESSAGE" | translate }}
+            </p>
+            <p>
+                {{ summary.fail }} {{ "MANAGEMENT.USER.USERS_NOT_ADDED_MESSAGE" | translate }}
+            </p>
+            <p *ngIf="summary.fails.length > 0">
+                {{ "MANAGEMENT.USER.ROWS_NOT_ADDED" | translate }}: {{ summary.fails.join(', ') }}
+            </p>
+        </div>
+    </div>
+</form>

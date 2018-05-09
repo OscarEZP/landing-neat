@@ -1,0 +1,29 @@
+@import '../../../../../../assets/style/base.scss';
+.role-group {
+  p {
+    text-transform: uppercase;
+    > * {
+      float: left;
+    }
+    .mat-icon {
+      margin: -5px 0 0 0;
+    }
+  }
+}
+
+.reg-list {
+  margin: 0;
+
+  header {
+    padding: 15px 20px;
+    height: auto;
+    background-color: mat-color($mat-palette-custom, background-grey);
+  }
+  main {
+    padding: 0 20px;
+    > div {
+      border-bottom: thin solid mat-color($foreground, divider);
+      padding: 5px 0;
+    }
+  }
+}

@@ -43,6 +43,14 @@ export class ApiRestService {
         return this.http.post<T>(this.baseUrl + environment.paths[path], toSearch);
     }
 
+    public postUploadFile<T>(path: string, formData: any, params: string = ''): Observable<T> {
+        const requestOptions = {
+            headers: new HttpHeaders({
+                'Access-Control-Allow-Origin': '*',
+            })
+        };
+        return this.http.post<T>(this.baseUrl + environment.paths[path] + '/' + params, formData, requestOptions);
+    }
     public add<T>(path: string, itemToAdd: any, id?: string): Observable<T> {
         const toAdd = JSON.stringify(itemToAdd).replace(/\b[_]/g, '');
         const finalPath = id !== undefined ? environment.paths[path] + '/' + id : environment.paths[path];
@@ -81,12 +89,14 @@ export class CustomInterceptor implements HttpInterceptor {
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (!req.headers.has('Content-Type')) {
+        if (!req.headers.has('Content-Type') && !req.headers.has('Access-Control-Allow-Origin')) {
             req = req.clone({headers: req.headers.set('Content-Type', CustomInterceptor.CONTENT_TYPE)});
         }
+
         req = req.clone({headers: req.headers.set('Accept', CustomInterceptor.CONTENT_TYPE)});
         const idToken = this._storageService.getCurrentUser().idToken ? this._storageService.getCurrentUser().idToken : '';
         req = req.clone({headers: req.headers.set(CustomInterceptor.TOKEN_ATTR, idToken)});
+
         return next.handle(req).do(
             event => {
                 return event;

@@ -16,7 +16,6 @@ import {AtecFilterComponent} from "./mng-fleet-health/atec-filter/atec-filter.co
     ],
     declarations: [
         ManagementComponent,
-        UserListComponent,
         AtecFilterComponent
     ]
 })

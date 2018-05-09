@@ -110,7 +110,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private getError(): boolean {
         this.infiniteScrollService.length = 0;
         this.loading = false;
-        return this._error = true;
+        return this.error = true;
     }
 
     /**
@@ -309,6 +309,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     get loading(): boolean {
         return this._loading;
+    }
+
+    set error(value: boolean) {
+        this._error = value;
     }
 
     get error(): boolean {
