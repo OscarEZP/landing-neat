@@ -17,7 +17,7 @@ import {ManagementComponent} from './content/management/management.component';
 import {UserManagementComponent} from './content/management/mng-general/user-management/user-management.component';
 import {BulkLoadComponent} from './content/management/mng-general/user-management/bulk-load/bulk-load.component';
 import {UserListComponent} from './content/management/mng-general/user-management/user-list/user-list.component';
-import {AtecFilterComponent} from "./content/management/mng-fleet-health/atec-filter/atec-filter.component";
+import {AtecFilterComponent} from './content/management/mng-fleet-health/atec-filter/atec-filter.component';
 
 const ROUTES: Routes = [
     {

@@ -15,12 +15,9 @@ export class UserManagementComponent implements OnInit {
 
     constructor(
         private _routingService: RoutingService,
-        private _translate: TranslateService,
-        private _layoutService: LayoutService
+        private _translate: TranslateService
     ) {
         this._translate.setDefaultLang('en');
-        this.showAddButton = false;
-        this.showRightNav = false;
         this.arrMenu = [
             new Menu('MANAGEMENT.USER.USER_LIST', '', '/management/general/users/user-list'),
             // new Menu('MANAGEMENT.USER.ADD_USER', '', '/management/general/users/add-user'),
@@ -29,25 +26,6 @@ export class UserManagementComponent implements OnInit {
     }
 
     ngOnInit() {
-        this._translate.get('MANAGEMENT.MANAGEMENT_MODULE')
-            .toPromise()
-            .then(res => {
-                    this.moduleTitle = res;
-                }
-            );
-    }
-
-
-    set moduleTitle(value: string) {
-        this._routingService.moduleTitle = value;
-    }
-
-    set showAddButton(value: boolean) {
-        this._layoutService.showAddButton = value;
-    }
-
-    set showRightNav(value: boolean) {
-        this._layoutService.showRightNav = value;
     }
 
 }

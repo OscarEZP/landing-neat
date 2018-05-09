@@ -1,56 +1,67 @@
-import { Component, OnInit } from '@angular/core';
-import {ApiRestService} from "../../../../shared/_services/apiRest.service";
-import {Authority} from "../../../../shared/_models/management/authority";
-import {Subscription} from "rxjs/Subscription";
+import {Component, OnInit} from '@angular/core';
+import {ApiRestService} from '../../../../shared/_services/apiRest.service';
+import {Authority} from '../../../../shared/_models/management/authority';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
-  selector: 'lsl-atec-filter',
-  templateUrl: './atec-filter.component.html',
-  styleUrls: ['./atec-filter.component.scss']
+    selector: 'lsl-atec-filter',
+    templateUrl: './atec-filter.component.html',
+    styleUrls: ['./atec-filter.component.scss']
 })
 export class AtecFilterComponent implements OnInit {
 
-  stationPlaceholder = 'Station';
-  operatorPlaceholder = 'Operator';
-  public arrMenu: { label: string}[];
-  private _operators :Authority[];
+    public static AUTHORITIES_ENDPOINT = 'authorities';
 
-  constructor(private _apiRestService: ApiRestService,) {
+    private _arrMenu: { label: string }[];
+    private _operators: Authority[];
+    // private _
 
-    this.arrMenu = [
-      {
-        'label': 'LA',
+    constructor(
+        private _apiRestService: ApiRestService
+    ) {
 
-      },
-      {
-        'label': '4M',
+        this.arrMenu = [
+            // {
+            //     'label': 'LA',
+            //
+            // },
+            // {
+            //     'label': '4M',
+            //
+            // }
+        ];
 
-      }
-    ];
+        this.operators = [];
+        this.getAuthorities();
+    }
 
-    this.operators=[];
-    this.getAuthorities();
-  }
+    ngOnInit() {
+    }
 
-  ngOnInit() {
-  }
+    public selectOperator() {
 
-  private getAuthorities():Subscription {
+    }
 
-    return this._apiRestService
-        .getAll<Authority[]>("authorities")
-        .subscribe(rs => {
-          rs.forEach(authority => this.operators.push(authority));
-        });
+    private getAuthorities(): Subscription {
+        return this._apiRestService
+            .getAll<Authority[]>('authorities')
+            .subscribe(rs => this.operators = rs);
+    }
 
-}
+    get operators(): Authority[] {
+        return this._operators;
+    }
 
-  get operators(): Authority[] {
-    return this._operators;
-  }
+    set operators(value: Authority[]) {
+        this._operators = value;
+    }
 
-  set operators(value: Authority[]) {
-    this._operators = value;
-  }
+    get arrMenu(): { label: string }[] {
+        return this._arrMenu;
+    }
+
+    set arrMenu(value: { label: string }[]) {
+        this._arrMenu = value;
+    }
 }
 
