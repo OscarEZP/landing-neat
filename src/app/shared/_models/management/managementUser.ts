@@ -1,5 +1,5 @@
 import {Access} from './access';
-import {Location} from './location';
+import {DetailStation} from './detailStation';
 import {TimeInstant} from '../timeInstant';
 
 export class ManagementUser {
@@ -7,24 +7,24 @@ export class ManagementUser {
     private _firstname: string;
     private _lastname: string;
     private _email: string;
-    private _location: Location;
+    private _detailStation: DetailStation;
     private _access: Access[];
     private _enable: boolean;
     private _createDate: TimeInstant;
     private _updateDate: TimeInstant;
 
 
-    constructor(username: string, firstname: string, lastname: string, email: string, location: Location, access: Access[]) {
+    constructor(username: string, firstname: string, lastname: string, email: string, detailStation: DetailStation, access: Access[]) {
         this._username = username;
         this._firstname = firstname;
         this._lastname = lastname;
         this._email = email;
-        this._location = location;
+        this._detailStation = detailStation;
         this._access = access;
     }
 
     public static getInstance() {
-        return new ManagementUser('', '', '', '', Location.getInstance(), []);
+        return new ManagementUser('', '', '', '', DetailStation.getInstance(), []);
     }
 
     get username(): string {
@@ -59,15 +59,13 @@ export class ManagementUser {
         this._email = value;
     }
 
-
-    get location(): Location {
-        return this._location;
+    get detailStation(): DetailStation {
+        return this._detailStation;
     }
 
-    set location(value: Location) {
-        this._location = value;
+    set detailStation(value: DetailStation) {
+        this._detailStation = value;
     }
-
 
     get access(): Access[] {
         return this._access;
