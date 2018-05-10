@@ -64,7 +64,7 @@ export class ManagementUser {
     }
 
     set detailStation(value: DetailStation) {
-        this._detailStation = value;
+        this._detailStation = Object.assign(DetailStation.getInstance(), value);
     }
 
     get access(): Access[] {

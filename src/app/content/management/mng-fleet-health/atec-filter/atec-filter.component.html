@@ -1,14 +1,31 @@
-<form id="form-atec-filter">
+<form [formGroup]="atecForm" #formDir="ngForm" id="form-atec-filter" (ngSubmit)="submitForm()">
     <div id="form-header">
-        <div fxLayout="row">
+        <header>
+            <span fxFlex="20">Station</span>
+            <span fxFlex="20">Operator</span>
+        </header>
+        <div class="line-footer-atec-filter"></div>
+        <main>
+            <div fxLayout="row" *ngFor="let station of stations">
+                <span fxFlex="20">{{station.code}}</span>
+                <mat-form-field fxFlex="20" *ngIf="station.code === selectedStation">
+                    <mat-select class="select-atec-filter"  placeholder="" [formControl]="atecForm.controls['authorities']" [(ngModel)]="selectedAuthorities" multiple>
+                        <mat-option *ngFor="let authority of authorities[station.code]" value="{{authority}}">{{authority}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <span fxFlex="20" *ngIf="station.code !== selectedStation">
+                    {{authorities[station.code].join(', ')}}
+                </span>
+                <button mat-icon-button type="button" (click)="setSelectedStation(station.code)"><mat-icon>create</mat-icon></button>
+            </div>
+        </main>
+        <!--<div fxLayout="row">
             <span class="label-atec-filter">Station</span>
         </div>
         <div fxLayout="row" class="row-width-atec-filter">
             <mat-form-field>
-                <mat-select class="select-atec-filter" placeholder="Select Station">
-                    <mat-option value="SCL">SCL</mat-option>
-                    <mat-option value="BRA">BRA</mat-option>
-                    <mat-option value="MIA">MIA</mat-option>
+                <mat-select class="select-atec-filter" [formControl]="atecForm.controls['stations']" [(ngModel)]="selectedStation" placeholder="Select Station">
+                    <mat-option *ngFor="let station of stations" value="{{station}}">{{station.code}}</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
@@ -17,11 +34,11 @@
         </div>
         <div fxLayout="row" class="row-width-atec-filter">
             <mat-form-field>
-                <mat-select class="select-atec-filter" placeholder="Select Operator" [ngModel]="" multiple>
-                    <mat-option *ngFor="let operator of operators" value="{{operator.code}}">{{operator.code}}</mat-option>
+                <mat-select class="select-atec-filter" placeholder="Select Operator" [formControl]="atecForm.controls['authorities']" [(ngModel)]="selectedAuthorities" multiple>
+                    <mat-option *ngFor="let authority of authorities" value="{{authority.code}}">{{authority.code}}</mat-option>
                 </mat-select>
             </mat-form-field>
-        </div>
+        </div>-->
     </div>
     <mat-tab-group id="form-tabs" *ngIf="arrMenu.length > 0">
         <mat-tab *ngFor="let menu of arrMenu" label={{menu.label}}>
@@ -139,11 +156,10 @@
 
     <div mat-dialog-actions class="row-width-atec-filter" fxLayoutAlign="end">
         <div class="buttons-atec-filter">
-            <button id="btn-atec-filter-form-cancel" type="button" mat-button>
+            <button id="btn-atec-filter-form-cancel" (click)="cancel()" type="button" mat-button>
                 {{'BUTTONS.CANCEL'|translate}}
             </button>
-            <button id="btn-atec-filter-form-submit" type="submit" mat-button mat-raised-button color="primary"
-            >
+            <button id="btn-atec-filter-form-submit" type="submit" mat-button mat-raised-button color="primary">
                 {{'BUTTONS.APPLY'|translate}}
             </button>
         </div>

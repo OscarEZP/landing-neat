@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {LayoutService} from '../../layout/_services/layout.service';
 import {TranslateService} from '@ngx-translate/core';
 import {RoutingService} from '../../shared/_services/routing.service';
@@ -8,25 +8,29 @@ import {RoutingService} from '../../shared/_services/routing.service';
     templateUrl: './management.component.html',
     styleUrls: ['./management.component.scss']
 })
-export class ManagementComponent implements OnInit {
+export class ManagementComponent implements OnInit, AfterViewInit {
 
     constructor(
         private _routingService: RoutingService,
         private _translate: TranslateService,
         private _layoutService: LayoutService
     ) {
+        this.showAddButton = false;
+        this.showRightNav = false;
     }
 
     ngOnInit() {
         this._translate.setDefaultLang('en');
-        this.showAddButton = false;
-        this.showRightNav = false;
         this._translate.get('MANAGEMENT.MANAGEMENT_MODULE')
             .toPromise()
             .then(res => {
                     this.moduleTitle = res;
                 }
             );
+    }
+
+    ngAfterViewInit() {
+
     }
 
     set moduleTitle(value: string) {

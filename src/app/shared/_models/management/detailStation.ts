@@ -1,4 +1,4 @@
-import {Station} from "./station";
+import {Station} from './station';
 
 export class DetailStation {
     private _defaults: Station;
@@ -20,7 +20,7 @@ export class DetailStation {
     }
 
     set defaults(value: Station) {
-        this._defaults = value;
+        this._defaults = Object.assign(Station.getInstance(), value);
     }
 
     get others(): Station[] {
@@ -28,6 +28,6 @@ export class DetailStation {
     }
 
     set others(value: Station[]) {
-        this._others = value;
+        this._others = value.map(v => Object.assign(Station.getInstance(), v));
     }
 }
