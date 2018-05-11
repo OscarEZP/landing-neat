@@ -72,7 +72,7 @@
   #form-header {
     .mat-form-field-infix{
       border-top: 0px;
-      padding: 5px 0;
+      padding: 0;
       width: 100%;
     }
     header {
@@ -81,8 +81,21 @@
 
     }
     main {
+      .mat-input-wrapper.mat-form-field-wrapper {
+        padding: 0;
+        .mat-input-underline.mat-form-field-underline {
+          top: 20px;
+        }
+      }
       > div {
         padding: 5px 0;
+
+        .mat-form-field {
+        }
+
+        div.mat-select-value {
+          font-size: 16px;
+        }
 
         button {
           width: 22px;

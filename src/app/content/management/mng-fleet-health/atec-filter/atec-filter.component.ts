@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ApiRestService} from '../../../../shared/_services/apiRest.service';
-import {Authority} from '../../../../shared/_models/management/authority';
 import {Subscription} from 'rxjs/Subscription';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Station} from '../../../../shared/_models/management/station';
@@ -16,34 +15,28 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
 
     public static AUTHORITIES_ENDPOINT = 'authorities';
 
-    private _arrMenu: { label: string }[];
+    private _arrTabs: { label: string }[];
     private _stations: Station[];
     private _selectedStation: string;
     private _authorities: object;
-    private _selectedAuthorities: Authority[];
+    private _authoritiesNoRelated: string[];
+    private _authoritiesMerged: string[];
+    private _selectedAuthorities: string[];
     private _atecForm: FormGroup;
+    private _deferralClasses$: Observable;
 
     private _authoritiesSub: Subscription;
+    private _authoritiesNoRelatedSub: Subscription;
 
     constructor(
         private _apiRestService: ApiRestService,
         private _fb: FormBuilder,
         private _storageService: StorageService
     ) {
-
-        this.arrMenu = [
-            // {
-            //     'label': 'LA',
-            //
-            // },
-            // {
-            //     'label': '4M',
-            //
-            // }
-        ];
-        this.stations = [];
-        this.selectedStation = '';
+        this.resetValues();
         this.authorities = {};
+        this.authoritiesNoRelated = [];
+        this.authoritiesMerged = [];
         this.selectedAuthorities = [];
         this.atecForm = _fb.group({
             'authorities': [[], Validators.required],
@@ -54,10 +47,13 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.stations = this.getInitStations();
         this._authoritiesSub = this.getAuthorities();
+        this._authoritiesNoRelatedSub = this.getAuthoritiesNotRelated();
+        this.deferralClasses$ = this.getDeferralClasses();
     }
 
     ngOnDestroy() {
         this._authoritiesSub.unsubscribe();
+        this._authoritiesNoRelatedSub.unsubscribe();
     }
 
     private getInitStations(): Station[] {
@@ -67,6 +63,10 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         return result;
     }
 
+    /**
+     * Mock
+     * @returns {Subscription}
+     */
     private getAuthorities(): Subscription {
         const authorities = {
             SCL: ['j1'],
@@ -75,7 +75,6 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         };
         return new Observable(x => x.next(authorities)).subscribe(res => {
             this.authorities = res;
-            console.log('auth', this.authorities);
         });
         /*
         return this._apiRestService
@@ -84,25 +83,46 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         */
     }
 
-    private getAuthoritiesNotRelated() {
-        const authorities = {
-            SCL: ['j1'],
-            MIA: ['j2', 'jb'],
-            BRA: ['j3', 'ja', 'jb'],
-        };
-        return new Observable(x => x.next(authorities)).subscribe(res => {
-            this.authorities = res;
-            console.log('auth', this.authorities);
-        });
+    /**
+     * Mock
+     * @returns {Subscription}
+     */
+    private getAuthoritiesNotRelated(): Subscription {
+        const authorities = ['a3', 'aa', 'ad'];
+        return new Observable(x => x.next(authorities))
+            .subscribe(res => {
+                this.authoritiesNoRelated = res;
+            });
+    }
+
+    /**
+     * Mock
+     * @returns {Subscription}
+     */
+    private getDeferralClasses(): Observable {
+        const deferralClasses = ['a', 'b', 'c', 'd', 'tli'];
+        return new Observable(x => x.next(deferralClasses));
     }
 
     public setSelectedStation(value: string) {
         this.selectedStation = value;
-        console.log(value);
+        this.authoritiesMerged = this.authorities[value].concat(this.authoritiesNoRelated);
+        this.selectedAuthorities = this.selectedAuthorities.length === 0 ? this.authorities[value] : this.selectedAuthorities;
+        this.addMenu(this.selectedAuthorities);
     }
 
-    public cancel() {
+    public addMenu(authorities: string[]): {label: string}[] {
+        return this.arrTabs = authorities.map(a => ({label: a}));
+    }
+
+    public cancel(): void {
+        this.resetValues();
+    }
+
+    private resetValues(): void {
         this.selectedStation = '';
+        this.selectedAuthorities = [];
+        this.arrTabs = [];
     }
 
     public submitForm(): void {
@@ -117,19 +137,19 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         this._authorities = value;
     }
 
-    get arrMenu(): { label: string }[] {
-        return this._arrMenu;
+    get arrTabs(): { label: string }[] {
+        return this._arrTabs;
     }
 
-    set arrMenu(value: { label: string }[]) {
-        this._arrMenu = value;
+    set arrTabs(value: { label: string }[]) {
+        this._arrTabs = value;
     }
 
-    get selectedAuthorities(): Authority[] {
+    get selectedAuthorities(): string[] {
         return this._selectedAuthorities;
     }
 
-    set selectedAuthorities(value: Authority[]) {
+    set selectedAuthorities(value: string[]) {
         this._selectedAuthorities = value;
     }
 
@@ -155,6 +175,30 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
 
     set selectedStation(value: string) {
         this._selectedStation = value;
+    }
+
+    get authoritiesNoRelated(): string[] {
+        return this._authoritiesNoRelated;
+    }
+
+    set authoritiesNoRelated(value: string[]) {
+        this._authoritiesNoRelated = value;
+    }
+
+    get authoritiesMerged(): string[] {
+        return this._authoritiesMerged;
+    }
+
+    set authoritiesMerged(value: string[]) {
+        this._authoritiesMerged = value;
+    }
+
+    get deferralClasses$(): Observable {
+        return this._deferralClasses$;
+    }
+
+    set deferralClasses$(value: Observable) {
+        this._deferralClasses$ = value;
     }
 }
 
