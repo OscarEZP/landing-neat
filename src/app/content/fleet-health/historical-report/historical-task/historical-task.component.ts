@@ -21,7 +21,7 @@ export class HistoricalTaskComponent implements OnInit {
 
     @Input()
     set analyzedTask(value: TimelineTask) {
-        if (value && !value.active && value.task.barcode) {
+        if (value && value.task.barcode) {
             this.getHistoricalTask(value.task.barcode);
             this._analyzedTask = value;
         }
@@ -163,7 +163,7 @@ export class HistoricalTaskComponent implements OnInit {
     }
 
     get taskType(): string {
-        return this.analyzedTask.task.taskType;
+        return this.analyzedTask.active ? TimelineTask.TASK_DEFAULT_TITLE : this.analyzedTask.task.taskType;
     }
 
     get quillEditor() {
