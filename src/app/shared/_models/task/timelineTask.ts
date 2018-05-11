@@ -7,7 +7,7 @@ export class TimelineTask {
     private static OPEN_ICON = 'lock_open';
     private static CLOSE_ICON = 'lock';
     private static DATE_FORMAT = 'YYYY-MM-DD';
-    private static TASK_DEFAULT_TITLE = 'TASK';
+    public static TASK_DEFAULT_TITLE = 'TASK';
 
     private static ACTIVE_CLASS = 'active';
     private static FULL_CLASS = 'full';
@@ -196,7 +196,6 @@ export class TimelineTask {
             }
         } else {
             endDate = this.calculateDateEndTaskNotDeferred(this.task);
-            console.log(endDate);
         }
         return endDate;
     }
