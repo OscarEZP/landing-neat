@@ -161,6 +161,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                         this.newMessage();
                         this.initDateModels(this.utcModel.epochTime);
                         this._clockService.setClock(this.utcModel.epochTime);
+                        this.contingency.openDate = new TimeInstant(data.currentTimeLong, data.currentTime);
                     });
             });
 
@@ -809,5 +810,4 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     set observableOperatorList(value: Observable<Types[]>) {
         this._observableOperatorList = value;
     }
-
 }
