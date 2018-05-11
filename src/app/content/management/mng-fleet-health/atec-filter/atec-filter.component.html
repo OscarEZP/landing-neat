@@ -39,19 +39,21 @@
                 </div>
                 <div fxLayout="column" class="column-atec-filter column-input-atec-filter column-due-date" fxFlex="20">
                     <mat-form-field>
-                        <input id="in-due-date-form-filter-atect"
+                        <input #days id="in-atec-filter-{{deferralClass.toLowerCase()}}"
                                class="label-placeholder-atec-filter mat-form-field-infix"
                                placeholder="Days"
                                matInput
                                maxlength="3"
-                               value="0"
+                               value="1"
                                type="number"
+                               min="1"
+                               max="999"
                         />
                     </mat-form-field>
                 </div>
                 <div fxLayout="column">
-                    <mat-checkbox labelPosition="after" fxFlex="20" class="column-atec-filter"
-                    ><span class="label-row-atec-filter">All</span>
+                    <mat-checkbox #check labelPosition="after" (change)="checkAll(days, check)" fxFlex="20" class="column-atec-filter">
+                        <span class="label-row-atec-filter">All</span>
                     </mat-checkbox>
                 </div>
             </div>

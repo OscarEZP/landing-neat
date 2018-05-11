@@ -5,6 +5,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Station} from '../../../../shared/_models/management/station';
 import {StorageService} from '../../../../shared/_services/storage.service';
 import {Observable} from 'rxjs/Observable';
+import {MatCheckbox, MatInput} from '@angular/material';
 
 @Component({
     selector: 'lsl-atec-filter',
@@ -23,7 +24,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     private _authoritiesMerged: string[];
     private _selectedAuthorities: string[];
     private _atecForm: FormGroup;
-    private _deferralClasses$: Observable;
+    private _deferralClasses$: Observable<string[]>;
 
     private _authoritiesSub: Subscription;
     private _authoritiesNoRelatedSub: Subscription;
@@ -63,6 +64,16 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         return result;
     }
 
+    public checkAll(input: MatInput, check: MatCheckbox) {
+        if (check.checked) {
+            input.value = 0;
+            input.disabled = true;
+        } else {
+            input.value = 1;
+            input.disabled = false;
+        }
+    }
+
     /**
      * Mock
      * @returns {Subscription}
@@ -73,7 +84,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
             MIA: ['j2', 'jb'],
             BRA: ['j3', 'ja', 'jb'],
         };
-        return new Observable(x => x.next(authorities)).subscribe(res => {
+        return new Observable<any>(x => x.next(authorities)).subscribe(res => {
             this.authorities = res;
         });
         /*
@@ -89,8 +100,9 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
      */
     private getAuthoritiesNotRelated(): Subscription {
         const authorities = ['a3', 'aa', 'ad'];
-        return new Observable(x => x.next(authorities))
+        return new Observable<string[]>(x => x.next(authorities))
             .subscribe(res => {
+                console.log(res);
                 this.authoritiesNoRelated = res;
             });
     }
@@ -99,7 +111,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
      * Mock
      * @returns {Subscription}
      */
-    private getDeferralClasses(): Observable {
+    private getDeferralClasses(): Observable<string[]> {
         const deferralClasses = ['a', 'b', 'c', 'd', 'tli'];
         return new Observable(x => x.next(deferralClasses));
     }
@@ -193,11 +205,11 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         this._authoritiesMerged = value;
     }
 
-    get deferralClasses$(): Observable {
+    get deferralClasses$(): Observable<string[]> {
         return this._deferralClasses$;
     }
 
-    set deferralClasses$(value: Observable) {
+    set deferralClasses$(value: Observable<string[]>) {
         this._deferralClasses$ = value;
     }
 }
