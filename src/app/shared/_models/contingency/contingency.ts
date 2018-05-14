@@ -27,8 +27,9 @@ export class Contingency {
     private _username: string;
     private _ttlPending: number;
     private _hasPendingMeeting: boolean;
+    private _openDate: TimeInstant;
 
-    constructor(
+    private constructor(
 
     ) {
         this._id = null;
@@ -48,6 +49,7 @@ export class Contingency {
         this._username = null;
         this._ttlPending = 0;
         this._hasPendingMeeting = false;
+        this._openDate = TimeInstant.getInstance();
     }
 
     static getInstance(): Contingency {
@@ -206,6 +208,13 @@ export class Contingency {
     }
 
 
+    get openDate(): TimeInstant {
+        return this._openDate;
+    }
+
+    set openDate(value: TimeInstant) {
+        this._openDate = value;
+    }
 
     static fromJsonArray(array: Array<Object>): Contingency[] {
 
@@ -232,6 +241,7 @@ export class Contingency {
         item.username = obj['username'];
         item.ttlPending = obj['ttlPending'];
         item.hasPendingMeeting = obj['hasPendingMeeting'];
+        item.openDate = obj['openDate'];
         return item;
 
     }
