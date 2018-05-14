@@ -1,6 +1,6 @@
 import {Access} from './access';
 import {DetailStation} from './detailStation';
-import {TimeInstant} from '../timeInstant';
+import {Audit} from '../common/audit';
 
 export class ManagementUser {
     private _username: string;
@@ -10,21 +10,21 @@ export class ManagementUser {
     private _detailStation: DetailStation;
     private _access: Access[];
     private _enable: boolean;
-    private _createDate: TimeInstant;
-    private _updateDate: TimeInstant;
+    private _audit: Audit;
 
 
-    constructor(username: string, firstname: string, lastname: string, email: string, detailStation: DetailStation, access: Access[]) {
+    constructor(username: string, firstname: string, lastname: string, email: string, detailStation: DetailStation, access: Access[], audit: Audit) {
         this._username = username;
         this._firstname = firstname;
         this._lastname = lastname;
         this._email = email;
         this._detailStation = detailStation;
         this._access = access;
+        this._audit = audit;
     }
 
     public static getInstance() {
-        return new ManagementUser('', '', '', '', DetailStation.getInstance(), []);
+        return new ManagementUser('', '', '', '', DetailStation.getInstance(), [], Audit.getInstance());
     }
 
     get username(): string {
@@ -83,20 +83,12 @@ export class ManagementUser {
         this._enable = value;
     }
 
-    get createDate(): TimeInstant {
-        return this._createDate;
+
+    get audit(): Audit {
+        return this._audit;
     }
 
-    set createDate(value: TimeInstant) {
-        this._createDate = value;
+    set audit(value: Audit) {
+        this._audit = value;
     }
-
-    get updateDate(): TimeInstant {
-        return this._updateDate;
-    }
-
-    set updateDate(value: TimeInstant) {
-        this._updateDate = value;
-    }
-
 }
