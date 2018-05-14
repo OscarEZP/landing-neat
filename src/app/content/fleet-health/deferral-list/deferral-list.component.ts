@@ -9,7 +9,7 @@ import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
 import {Task} from '../../../shared/_models/task/task';
-import {SearchTask} from '../../../shared/_models/task/searchTask';
+import {TaskSearch} from '../../../shared/_models/task/search/taskSearch';
 import {Pagination} from '../../../shared/_models/common/pagination';
 import {HistoricalReportComponent} from '../historical-report/historical-report.component';
 import {HistoricalReportService} from '../historical-report/_services/historical-report.service';

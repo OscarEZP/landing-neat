@@ -44,6 +44,12 @@ export const environment = {
         taskSaveAnalysis: ':9006/api/v1/tasks/analysis',
         tasksFleethealthDone: ':9006/api/v1/tasks/fleethealth/manualstate/_apply',
         tasksFleethealthSearchCount: '9006/api/v1/tasks/fleethealth/_search/count',
-        tasksFleethealthSearch: '9006/api/v1/tasks/fleethealth/_search'
+        tasksFleethealthSearch: '9006/api/v1/tasks/fleethealth/_search',
+        technicalAnalysisSearch: '9015/api/v1/management/tech-analysis/_search',
+        technicalAnalysisSave:  '9015/api/v1/management/tech-analysis',
+        technicalAnalysisSaveAll:  '9015/api/v1/management/tech-analysis/_save-all',
+        technicalConfiguredAuthoritySearch: '9015/api/v1/management/tech-station/configured-authority/_search',
+        technicalNotConfiguredAuthoritySearch: '9015/api/v1/management/tech-station/not-configured-authority/_search',
+        technicalStationSearch: '9015/api/v1/management/tech-station/_search',
     }
 };
