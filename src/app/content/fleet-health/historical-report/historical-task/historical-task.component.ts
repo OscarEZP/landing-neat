@@ -57,51 +57,10 @@ export class HistoricalTaskComponent implements OnInit {
      */
     public copyText() {
         const selection = this.getSelection();
-        if (selection.length > 0 && selection.indexOf(this.header) === -1 && this.validateCopiedText(selection)) {
+        if (selection.length > 0 && selection.indexOf(this.header) === -1) {
             this.addHeader();
             this.editorContent = this.editorContent ? this.editorContent + selection : selection;
         }
-    }
-
-    /**
-     * Validation for copied text; checks Historical Task description, steps and corrective actions
-     * @param {string} text
-     * @returns {boolean}
-     */
-    public validateCopiedText(text: string): boolean {
-        const cleanText = text
-            .trim()
-            .split(' ')
-            .join('');
-        if (
-            this.historicalTask.description
-                .split(' ')
-                .join('')
-                .indexOf(cleanText) !== -1
-        ) {
-            return true;
-        }
-        const inActions = this.historicalTask.correctiveActions
-            .find(
-                action => action.description
-                    .split(' ')
-                    .join('')
-                    .indexOf(cleanText) !== -1
-            );
-        if (inActions) {
-            return true;
-        }
-        const inSteps = this.historicalTask.steps
-            .find(
-                action => action.description
-                    .split(' ')
-                    .join('')
-                    .indexOf(cleanText) !== -1
-            );
-        if (inSteps) {
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -123,7 +82,7 @@ export class HistoricalTaskComponent implements OnInit {
     private getSelection(): string {
         let text = '';
         if (window.getSelection) {
-            text = window.getSelection().toString();
+            text = window.getSelection().toString().replace(/\n/g, '<br>\n');
         } else if (document['selection'] && document['selection'].type !== 'Control') {
             text = document['selection'].createRange().text;
         }
