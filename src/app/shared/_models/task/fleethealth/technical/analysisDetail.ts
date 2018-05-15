@@ -1,10 +1,10 @@
 export class AnalysisDetail {
 
     private _deferral: string;
-    private _days: number;
+    private _day: number;
 
-   private constructor(deferral: string, days: number) {
-        this._days = days;
+   private constructor(deferral: string, day: number) {
+        this._day = day;
         this._deferral = deferral;
     }
 
@@ -20,11 +20,11 @@ export class AnalysisDetail {
         this._deferral = value;
     }
 
-    get days(): number {
-        return this._days;
+    get day(): number {
+        return this._day;
     }
 
-    set days(value: number) {
-        this._days = value;
+    set day(value: number) {
+        this._day = value;
     }
 }

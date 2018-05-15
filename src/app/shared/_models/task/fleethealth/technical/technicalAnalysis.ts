@@ -7,9 +7,9 @@ export class TechnicalAnalysis {
     private _authority: string;
     private _detail: AnalysisDetail[];
     private _audit: Audit;
-    private _isDefault: boolean
+    private _isDefault: boolean;
 
-    private constructor(station: string, authority: string, detail: AnalysisDetail[], audit: Audit, isDefault: boolean) {
+    public constructor(station: string = '', authority: string = '', detail: AnalysisDetail[] = [], audit: Audit = Audit.getInstance(), isDefault: boolean = false) {
         this._station = station;
         this._authority = authority;
         this._detail = detail;

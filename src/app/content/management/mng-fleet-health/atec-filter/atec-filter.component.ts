@@ -6,6 +6,9 @@ import {Station} from '../../../../shared/_models/management/station';
 import {StorageService} from '../../../../shared/_services/storage.service';
 import {Observable} from 'rxjs/Observable';
 import {MatCheckbox, MatInput} from '@angular/material';
+import {TechnicalStation} from '../../../../shared/_models/task/fleethealth/technical/technicalStation';
+import {TechnicalAnalysis} from '../../../../shared/_models/task/fleethealth/technical/technicalAnalysis';
+import {Audit} from '../../../../shared/_models/common/audit';
 
 @Component({
     selector: 'lsl-atec-filter',
@@ -14,17 +17,19 @@ import {MatCheckbox, MatInput} from '@angular/material';
 })
 export class AtecFilterComponent implements OnInit, OnDestroy {
 
-    public static AUTHORITIES_ENDPOINT = 'authorities';
+    public static TECHNICAL_STATION_SEARCH_ENDPOINT = 'technicalStationSearch';
+    public static TECHNICAL_NOT_CONFIGURED_AUTHORITY_ENDPOINT = 'technicalNotConfiguredAuthoritySearch';
 
     private _arrTabs: { label: string }[];
     private _stations: Station[];
-    private _selectedStation: string;
-    private _authorities: object;
+    private _technicalStations: TechnicalStation[];
     private _authoritiesNoRelated: string[];
     private _authoritiesMerged: string[];
     private _selectedAuthorities: string[];
     private _atecForm: FormGroup;
     private _deferralClasses$: Observable<string[]>;
+    private _technicalAnalyzes: TechnicalAnalysis[];
+    private _selectedStation: TechnicalStation;
 
     private _authoritiesSub: Subscription;
     private _authoritiesNoRelatedSub: Subscription;
@@ -34,11 +39,12 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         private _fb: FormBuilder,
         private _storageService: StorageService
     ) {
-        this.resetValues();
-        this.authorities = {};
+        this.selectedStation = TechnicalStation.getInstance();
+        this.technicalAnalyzes = [];
+        this.technicalStations = [];
         this.authoritiesNoRelated = [];
-        this.authoritiesMerged = [];
-        this.selectedAuthorities = [];
+        this.technicalAnalyzes = [];
+        // this.selectedAuthorities = [];
         this.atecForm = _fb.group({
             'authorities': [[], Validators.required],
             'station': [[], Validators.required],
@@ -46,7 +52,8 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.stations = this.getInitStations();
+        this.resetValues();
+        this.stations = this._storageService.userStations;
         this._authoritiesSub = this.getAuthorities();
         this._authoritiesNoRelatedSub = this.getAuthoritiesNotRelated();
         this.deferralClasses$ = this.getDeferralClasses();
@@ -55,13 +62,6 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this._authoritiesSub.unsubscribe();
         this._authoritiesNoRelatedSub.unsubscribe();
-    }
-
-    private getInitStations(): Station[] {
-        let result = [];
-        result.push(this._storageService.userManagement.detailStation.defaults);
-        result = result.concat(this._storageService.userManagement.detailStation.others);
-        return result;
     }
 
     public checkAll(input: MatInput, check: MatCheckbox) {
@@ -75,40 +75,34 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Mock
+     *
      * @returns {Subscription}
      */
     private getAuthorities(): Subscription {
-        const authorities = {
-            SCL: ['j1'],
-            MIA: ['j2', 'jb'],
-            BRA: ['j3', 'ja', 'jb'],
+        const signature = {
+            'stations': this.stations
         };
-        return new Observable<any>(x => x.next(authorities)).subscribe(res => {
-            this.authorities = res;
-        });
-        /*
         return this._apiRestService
-            .getAll<Authority[]>(AtecFilterComponent.AUTHORITIES_ENDPOINT)
-            .subscribe(rs => this.authorities = rs);
-        */
+            .search<TechnicalStation[]>(AtecFilterComponent.TECHNICAL_STATION_SEARCH_ENDPOINT, signature)
+            .subscribe(res => {
+                this.technicalStations = res;
+            });
     }
 
     /**
-     * Mock
+     *
      * @returns {Subscription}
      */
     private getAuthoritiesNotRelated(): Subscription {
-        const authorities = ['a3', 'aa', 'ad'];
-        return new Observable<string[]>(x => x.next(authorities))
+        return this._apiRestService
+            .getAll<string[]>(AtecFilterComponent.TECHNICAL_NOT_CONFIGURED_AUTHORITY_ENDPOINT)
             .subscribe(res => {
-                console.log(res);
                 this.authoritiesNoRelated = res;
             });
     }
 
     /**
-     * Mock
+     *
      * @returns {Subscription}
      */
     private getDeferralClasses(): Observable<string[]> {
@@ -116,15 +110,27 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         return new Observable(x => x.next(deferralClasses));
     }
 
-    public setSelectedStation(value: string) {
-        this.selectedStation = value;
-        this.authoritiesMerged = this.authorities[value].concat(this.authoritiesNoRelated);
-        this.selectedAuthorities = this.selectedAuthorities.length === 0 ? this.authorities[value] : this.selectedAuthorities;
-        this.addMenu(this.selectedAuthorities);
+    private concatAuthorities(): string[] {
+        return this.selectedStation && this.selectedStation.authorities.length > 0 ?
+            this.selectedStation.authorities.concat(this.authoritiesNoRelated) :
+            this.authoritiesNoRelated;
     }
 
-    public addMenu(authorities: string[]): {label: string}[] {
-        return this.arrTabs = authorities.map(a => ({label: a}));
+    public setSelectedStation(value: string) {
+        this._authoritiesNoRelatedSub.unsubscribe();
+        this._authoritiesNoRelatedSub = this.getAuthoritiesNotRelated().add(() => {
+            const selectedStation = this.technicalStations.find(a => a.station === value);
+            this.selectedStation = selectedStation ? selectedStation : new TechnicalStation(value, []);
+
+            this.selectedAuthorities = this.selectedStation.authorities.length > 0 ? this.selectedStation.authorities : [];
+            this.authoritiesMerged = this.concatAuthorities();
+        });
+    }
+
+    public addMenu(authorities: string[]): TechnicalAnalysis[] {
+        return this.technicalAnalyzes = authorities.map(
+            a => new TechnicalAnalysis(this.selectedStation.station, a)
+        );
     }
 
     public cancel(): void {
@@ -132,21 +138,29 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     private resetValues(): void {
-        this.selectedStation = '';
+        this.selectedStation = TechnicalStation.getInstance();
         this.selectedAuthorities = [];
+        this.technicalAnalyzes = [];
         this.arrTabs = [];
     }
 
+    public getAuthoritiesLbl(station: string): string {
+        const ts = this.technicalStations.find(s => s.station === station);
+        return ts ? ts.authorities.join(', ') : '';
+    }
+
     public submitForm(): void {
-        console.log('sent!', this.selectedAuthorities, this.selectedStation);
+        console.log('sent!',
+            // this.selectedAuthorities,
+            this.selectedStation);
     }
 
-    get authorities(): object {
-        return this._authorities;
+    get technicalStations(): TechnicalStation[] {
+        return this._technicalStations;
     }
 
-    set authorities(value: object) {
-        this._authorities = value;
+    set technicalStations(value: TechnicalStation[]) {
+        this._technicalStations = value;
     }
 
     get arrTabs(): { label: string }[] {
@@ -163,6 +177,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
 
     set selectedAuthorities(value: string[]) {
         this._selectedAuthorities = value;
+        this.addMenu(value);
     }
 
     get atecForm(): FormGroup {
@@ -181,11 +196,11 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         this._stations = value;
     }
 
-    get selectedStation(): string {
+    get selectedStation(): TechnicalStation {
         return this._selectedStation;
     }
 
-    set selectedStation(value: string) {
+    set selectedStation(value: TechnicalStation) {
         this._selectedStation = value;
     }
 
@@ -197,20 +212,28 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         this._authoritiesNoRelated = value;
     }
 
-    get authoritiesMerged(): string[] {
-        return this._authoritiesMerged;
-    }
-
-    set authoritiesMerged(value: string[]) {
-        this._authoritiesMerged = value;
-    }
-
     get deferralClasses$(): Observable<string[]> {
         return this._deferralClasses$;
     }
 
     set deferralClasses$(value: Observable<string[]>) {
         this._deferralClasses$ = value;
+    }
+
+    get technicalAnalyzes(): TechnicalAnalysis[] {
+        return this._technicalAnalyzes;
+    }
+
+    set technicalAnalyzes(value: TechnicalAnalysis[]) {
+        this._technicalAnalyzes = value;
+    }
+
+    get authoritiesMerged(): string[] {
+        return this._authoritiesMerged;
+    }
+
+    set authoritiesMerged(value: string[]) {
+        this._authoritiesMerged = value;
     }
 }
 

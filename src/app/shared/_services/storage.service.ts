@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import { User } from '../_models/user/user';
 import {ManagementUser} from '../_models/management/managementUser';
+import {Station} from '../_models/management/station';
 
 @Injectable()
 export class StorageService {
@@ -94,5 +95,12 @@ export class StorageService {
 
     public removeUserManagement() {
         StorageService.removeLocalStorage(StorageService.USER_MANAGEMENT);
+    }
+
+    get userStations(): Station[] {
+        let result = [];
+        result.push(this.userManagement.detailStation.defaults);
+        result = result.concat(this.userManagement.detailStation.others);
+        return result;
     }
 }

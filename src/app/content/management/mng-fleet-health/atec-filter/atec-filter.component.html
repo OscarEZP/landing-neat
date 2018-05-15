@@ -9,21 +9,21 @@
             <div fxLayout="row" *ngFor="let station of stations" >
                 <span fxFlex="20">{{station.code}}</span>
                 <div fxFlex="60" >
-                    <mat-form-field fxFlex="50" *ngIf="station.code === selectedStation">
-                        <mat-select (change)="addMenu(selectedAuthorities)" class="select-atec-filter"  placeholder="" [formControl]="atecForm.controls['authorities']" [(ngModel)]="selectedAuthorities" multiple>
+                    <mat-form-field fxFlex="50" *ngIf="station.code === selectedStation.station">
+                        <mat-select class="select-atec-filter"  placeholder="" [formControl]="atecForm.controls['authorities']" [(ngModel)]="selectedAuthorities" multiple>
                             <mat-option *ngFor="let authority of authoritiesMerged" value="{{authority}}">{{authority}}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <span fxFlex="50" *ngIf="station.code !== selectedStation">
-                        {{authorities[station.code].join(', ')}}
+                    <span fxFlex="50" *ngIf="station.code !== selectedStation.station">
+                        {{getAuthoritiesLbl(station.code)}}
                     </span>
-                    <button [disabled]="selectedStation !== ''" (click)="setSelectedStation(station.code)" mat-icon-button color="primary" type="button" ><mat-icon>create</mat-icon></button>
+                    <button [disabled]="selectedStation.station !== null" (click)="setSelectedStation(station.code)" mat-icon-button color="primary" type="button" ><mat-icon>create</mat-icon></button>
                 </div>
             </div>
         </main>
     </div>
-    <mat-tab-group id="form-tabs" *ngIf="arrTabs.length > 0">
-        <mat-tab *ngFor="let menu of arrTabs" label={{menu.label}}>
+    <mat-tab-group id="form-tabs" *ngIf="technicalAnalyzes.length > 0">
+        <mat-tab *ngFor="let technicalAnalysis of technicalAnalyzes" label={{technicalAnalysis.authority}}>
             <div fxLayout="row" class="row-atec-filter">
                 <div fxLayout="column" fxFlex="20" class="column-head-atec-filter">
                     <span class="label-atec-filter">Deferral Category</span>
@@ -57,84 +57,6 @@
                     </mat-checkbox>
                 </div>
             </div>
-
-
-           <!-- <div fxLayout="row" class="row-atec-filter">
-                <div fxLayout="column" fxFlex="13" class="column-atec-filter">
-                    <span class="label-row-atec-filter">B</span>
-                </div>
-                <div fxLayout="column" class="column-atec-filter column-input-atec-filter" fxFlex="15">
-                    <mat-form-field>
-
-                        <input class="label-placeholder-atec-filter mat-form-field-infix"
-                               placeholder="Days" matInput maxlength="3"
-                        />
-                    </mat-form-field>
-                </div>
-                <div fxLayout="column">
-                    <mat-checkbox labelPosition="after" fxFlex="20" class="column-atec-filter"
-                    ><span class="label-row-atec-filter">All</span>
-                    </mat-checkbox>
-                </div>
-            </div>-->
-
-           <!-- <div fxLayout="row" class="row-atec-filter background-color-row-atec-filter">
-                <div fxLayout="column" fxFlex="13" class="column-atec-filter">
-                    <span class="label-row-atec-filter">C</span>
-                </div>
-                <div fxLayout="column" class="column-atec-filter column-input-atec-filter" fxFlex="15">
-                    <mat-form-field>
-
-                        <input class="label-placeholder-atec-filter mat-form-field-infix"
-                               placeholder="Days" matInput maxlength="3"
-                        />
-                    </mat-form-field>
-                </div>
-                <div fxLayout="column">
-                    <mat-checkbox id="in-contingency-form-backup" labelPosition="after" fxFlex="20"
-                                  class="column-atec-filter"
-                    ><span class="label-row-atec-filter">All</span>
-                    </mat-checkbox>
-                </div>
-            </div>
-
-            <div fxLayout="row" class="row-atec-filter">
-                <div fxLayout="column" fxFlex="13" class="column-atec-filter">
-                    <span class="label-row-atec-filter">D</span>
-                </div>
-                <div fxLayout="column" class="column-atec-filter column-input-atec-filter" fxFlex="15">
-                    <mat-form-field>
-
-                        <input class="label-placeholder-atec-filter mat-form-field-infix"
-                               placeholder="Days" matInput maxlength="3"
-                        />
-                    </mat-form-field>
-                </div>
-                <div fxLayout="column">
-                    <mat-checkbox labelPosition="after" fxFlex="20" class="column-atec-filter"
-                    ><span class="label-row-atec-filter">All</span>
-                    </mat-checkbox>
-                </div>
-            </div>
-
-
-            <div fxLayout="row" class="row-atec-filter background-color-row-atec-filter">
-                <div fxLayout="column" fxFlex="13" class="column-atec-filter">
-                    <span class="label-row-atec-filter">TLI</span>
-                </div>
-                <div fxLayout="column" class="column-atec-filter column-input-atec-filter" fxFlex="15">
-                    <mat-form-field>
-                        <input class="label-placeholder-atec-filter mat-form-field-infix"
-                               placeholder="Days" matInput maxlength="3"
-                        />
-                    </mat-form-field>
-                </div>
-                <div fxLayout="column">
-                    <mat-checkbox labelPosition="after" fxFlex="20" class="column-atec-filter">
-                        <span class="label-row-atec-filter">All</span>
-                    </mat-checkbox>
-                </div>
-            </div>-->
         </mat-tab>
     </mat-tab-group>
     <div class="line-footer-atec-filter"></div>

@@ -3,9 +3,9 @@
 export class TechnicalStation {
 
     private _station: string;
-    private _authorities: String[];
+    private _authorities: string[];
 
-    private constructor(station: string,  authorities: String[]) {
+    public constructor(station: string,  authorities: string[]) {
         this._station = station;
         this._authorities = authorities;
     }
@@ -22,11 +22,11 @@ export class TechnicalStation {
         this._station = value;
     }
 
-    get authorities(): String[] {
+    get authorities(): string[] {
         return this._authorities;
     }
 
-    set authorities(value: String[]) {
+    set authorities(value: string[]) {
         this._authorities = value;
     }
 }
