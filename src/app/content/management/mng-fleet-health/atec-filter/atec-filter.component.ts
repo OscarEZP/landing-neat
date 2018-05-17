@@ -172,7 +172,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
             .forEach(a => {
                 const originalAnalysis = this.originalAnalyzes.find(oa => oa.authority === a);
                 if (!originalAnalysis) {
-                    this.technicalAnalyzes.push(new TechnicalAnalysis(this.selectedStation.station, a, this.defaultConfiguration, this.audit));
+                    this.technicalAnalyzes.push(new TechnicalAnalysis(this.selectedStation.station, a, this.defaultConfiguration, this.audit, true));
                 } else {
                     this.technicalAnalyzes.push(originalAnalysis);
                 }
@@ -207,9 +207,6 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
                 .then(() => {
                     this.authoritiesSub = this.getAuthorities();
                     this.showMessage(AtecFilterComponent.CONFIGURATION_SAVED_MESSAGE, 1500);
-                })
-                .catch(error => {
-                    console.log('e', error);
                 })
             ;
         }
