@@ -9,6 +9,8 @@ import {TechnicalStation} from '../../../../shared/_models/task/fleethealth/tech
 import {TechnicalAnalysis} from '../../../../shared/_models/task/fleethealth/technical/technicalAnalysis';
 import {AnalysisDetail} from '../../../../shared/_models/task/fleethealth/technical/analysisDetail';
 import {Audit} from '../../../../shared/_models/common/audit';
+import {TranslateService} from '@ngx-translate/core';
+import {MessageService} from '../../../../shared/_services/message.service';
 
 @Component({
     selector: 'lsl-atec-filter',
@@ -17,11 +19,14 @@ import {Audit} from '../../../../shared/_models/common/audit';
 })
 export class AtecFilterComponent implements OnInit, OnDestroy {
 
-    public static TECHNICAL_STATION_SEARCH_ENDPOINT = 'technicalStationSearch';
-    public static TECHNICAL_NOT_CONFIGURED_AUTHORITY_ENDPOINT = 'technicalNotConfiguredAuthoritySearch';
-    public static TECHNICAL_ANALYSIS_SEARCH_ENDPOINT = 'technicalAnalysisSearch';
-    public static TECHNICAL_DEFAULT_CONFIG_ENDPOINT = 'technicalDefaultConfig';
-    public static TECHNICAL_ANALYSIS_SAVE_ALL_ENDPOINT = 'technicalAnalysisSaveAll';
+    private static TECHNICAL_STATION_SEARCH_ENDPOINT = 'technicalStationSearch';
+    private static TECHNICAL_NOT_CONFIGURED_AUTHORITY_ENDPOINT = 'technicalNotConfiguredAuthoritySearch';
+    private static TECHNICAL_ANALYSIS_SEARCH_ENDPOINT = 'technicalAnalysisSearch';
+    private static TECHNICAL_DEFAULT_CONFIG_ENDPOINT = 'technicalDefaultConfig';
+    private static TECHNICAL_ANALYSIS_SAVE_ALL_ENDPOINT = 'technicalAnalysisSaveAll';
+
+    private static CONFIGURATION_SAVED_MESSAGE = 'MANAGEMENT.ATEC_FILTER.CONFIGURATION_SAVED';
+
 
     private _stations: Station[];
     private _technicalStations: TechnicalStation[];
@@ -43,7 +48,9 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     constructor(
         private _apiRestService: ApiRestService,
         private _fb: FormBuilder,
-        private _storageService: StorageService
+        private _storageService: StorageService,
+        private _translate: TranslateService,
+        private _messageService: MessageService
     ) {
         this.selectedStation = TechnicalStation.getInstance();
         this.technicalAnalyzes = [];
@@ -193,20 +200,31 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     public submitForm(): void {
-        console.log('sent!', this.atecForm.valid, this.technicalAnalyzes);
         if (this.atecForm.valid) {
             this._apiRestService
                 .add<any>(AtecFilterComponent.TECHNICAL_ANALYSIS_SAVE_ALL_ENDPOINT, this.technicalAnalyzes, this.selectedStation.station)
                 .toPromise()
-                .then(res => {
+                .then(() => {
                     this.authoritiesSub = this.getAuthorities();
-                    console.log('s', res);
+                    this.showMessage(AtecFilterComponent.CONFIGURATION_SAVED_MESSAGE, 1500);
                 })
                 .catch(error => {
                     console.log('e', error);
                 })
             ;
         }
+    }
+
+    public applyDefaultConfig(): AnalysisDetail[] {
+        return this.defaultConfiguration;
+    }
+
+    private showMessage(message: string, time: number): Promise<void> {
+        return this._translate.get(message)
+            .toPromise()
+            .then((res: string) => {
+                this._messageService.openSnackBar(res, time);
+            });
     }
 
     get technicalStations(): TechnicalStation[] {
@@ -267,9 +285,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     get authoritiesMerged(): string[] {
-        return this._authoritiesMerged.length ?
-            this._authoritiesMerged.sort((r1, r2) => r1 > r2 ? 1 : -1) :
-            this._authoritiesMerged;
+        return this._authoritiesMerged.sort((r1, r2) => r1 > r2 ? 1 : -1);
     }
 
     set authoritiesMerged(value: string[]) {
