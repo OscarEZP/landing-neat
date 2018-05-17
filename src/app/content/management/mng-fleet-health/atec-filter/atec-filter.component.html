@@ -10,7 +10,7 @@
                 <span fxFlex="20">{{station.code}}</span>
                 <div fxFlex="60" >
                     <mat-form-field fxFlex="50" *ngIf="station.code === selectedStation.station">
-                        <mat-select class="select-atec-filter"  placeholder="" [formControl]="atecForm.controls['authorities']" [(ngModel)]="selectedAuthorities" multiple>
+                        <mat-select (change)="updateTabs(selectedAuthorities)" class="select-atec-filter"  placeholder="" [formControl]="atecForm.controls['authorities']" [(ngModel)]="selectedAuthorities" multiple>
                             <mat-option *ngFor="let authority of authoritiesMerged" value="{{authority}}">{{authority}}</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -33,18 +33,18 @@
                 </div>
             </div>
 
-            <div *ngFor="let deferralClass of deferralClasses$ | async" fxLayout="row" class="row-atec-filter background-color-row-atec-filter">
+            <div *ngFor="let detail of technicalAnalysis.detail" fxLayout="row" class="row-atec-filter background-color-row-atec-filter">
                 <div fxLayout="column" fxFlex="20" class="column-atec-filter">
-                    <span class="label-row-atec-filter">{{deferralClass}}</span>
+                    <span class="label-row-atec-filter">{{detail.deferral}}</span>
                 </div>
                 <div fxLayout="column" class="column-atec-filter column-input-atec-filter column-due-date" fxFlex="20">
                     <mat-form-field>
-                        <input #days id="in-atec-filter-{{deferralClass.toLowerCase()}}"
+                        <input [disabled]="!detail.day" #days id="in-atec-filter-{{detail.deferral.toLowerCase()}}"
                                class="label-placeholder-atec-filter mat-form-field-infix"
                                placeholder="Days"
                                matInput
                                maxlength="3"
-                               value="1"
+                               value="{{!detail.day ? 0 : detail.day}}"
                                type="number"
                                min="1"
                                max="999"
@@ -52,7 +52,7 @@
                     </mat-form-field>
                 </div>
                 <div fxLayout="column">
-                    <mat-checkbox #check labelPosition="after" (change)="checkAll(days, check)" fxFlex="20" class="column-atec-filter">
+                    <mat-checkbox [checked]="!detail.day" #check labelPosition="after" (change)="checkAll(days, check)" fxFlex="20" class="column-atec-filter">
                         <span class="label-row-atec-filter">All</span>
                     </mat-checkbox>
                 </div>
