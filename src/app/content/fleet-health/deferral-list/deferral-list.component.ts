@@ -28,7 +28,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     @ViewChild('contPaginator') public paginator: MatPaginator;
 
     private static TASK_FLEETHEALTH_ENDPOINT = 'tasksFleethealthSearch';
-   // private static TASK_FLEETHEALTH_COUNT_ENDPOINT = 'tasksFleethealthSearchCount';
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
     private static DEFAULT_INTERVAL = 30;
