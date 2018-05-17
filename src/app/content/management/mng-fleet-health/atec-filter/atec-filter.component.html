@@ -25,10 +25,10 @@
     <mat-tab-group id="form-tabs" *ngIf="technicalAnalyzes.length > 0">
         <mat-tab *ngFor="let technicalAnalysis of technicalAnalyzes; let i = index" label="" >
             <ng-template mat-tab-label>
-                <div fxLayout="column" fxLayoutAlign="start start">
+                <div fxLayout="column" fxFlex="50" fxLayoutAlign="start start">
                     {{i+1}}) {{technicalAnalysis.authority}}
                 </div>
-                <div fxLayout="column" fxLayoutAlign="end center">
+                <div fxLayout="column" fxFlex="50" fxLayoutAlign="end end">
                     <mat-icon *ngIf="!technicalAnalysis.isDefault">person</mat-icon>
                     <mat-icon *ngIf="!!technicalAnalysis.isDefault">settings</mat-icon>
                 </div>
