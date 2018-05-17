@@ -7,6 +7,8 @@ import {StorageService} from '../../../../shared/_services/storage.service';
 import {MatCheckbox, MatInput} from '@angular/material';
 import {TechnicalStation} from '../../../../shared/_models/task/fleethealth/technical/technicalStation';
 import {TechnicalAnalysis} from '../../../../shared/_models/task/fleethealth/technical/technicalAnalysis';
+import {AnalysisDetail} from '../../../../shared/_models/task/fleethealth/technical/analysisDetail';
+import {Audit} from '../../../../shared/_models/common/audit';
 
 @Component({
     selector: 'lsl-atec-filter',
@@ -17,7 +19,9 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
 
     public static TECHNICAL_STATION_SEARCH_ENDPOINT = 'technicalStationSearch';
     public static TECHNICAL_NOT_CONFIGURED_AUTHORITY_ENDPOINT = 'technicalNotConfiguredAuthoritySearch';
-    public static TECHNICAL_ANALYSIS_SEARCH = 'technicalAnalysisSearch';
+    public static TECHNICAL_ANALYSIS_SEARCH_ENDPOINT = 'technicalAnalysisSearch';
+    public static TECHNICAL_DEFAULT_CONFIG_ENDPOINT = 'technicalDefaultConfig';
+    public static TECHNICAL_ANALYSIS_SAVE_ALL_ENDPOINT = 'technicalAnalysisSaveAll';
 
     private _stations: Station[];
     private _technicalStations: TechnicalStation[];
@@ -28,10 +32,13 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     private _technicalAnalyzes: TechnicalAnalysis[];
     private _originalAnalyzes: TechnicalAnalysis[];
     private _selectedStation: TechnicalStation;
+    private _defaultConfiguration: AnalysisDetail[];
 
     private _authoritiesSub: Subscription;
     private _authoritiesNoRelatedSub: Subscription;
     private _deferralClassesSub: Subscription;
+    private _defaultConfigurationSub: Subscription;
+    private _audit: Audit;
 
     constructor(
         private _apiRestService: ApiRestService,
@@ -43,35 +50,40 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         this.technicalStations = [];
         this.authoritiesNoRelated = [];
         this.originalAnalyzes = [];
+        this.authoritiesMerged = [];
         this.atecForm = _fb.group({
             'authorities': [[], Validators.required],
-            'station': [[], Validators.required],
+            'station': [this.selectedStation, Validators.required],
         });
+        this.audit = Audit.getInstance();
+        this.audit.username = this._storageService.username;
     }
 
     ngOnInit() {
         this.resetValues();
         this.stations = this._storageService.userStations;
-        this._authoritiesSub = this.getAuthorities();
-        this._authoritiesNoRelatedSub = this.getAuthoritiesNotRelated();
-        this._deferralClassesSub = new Subscription();
-        this._authoritiesNoRelatedSub = new Subscription();
-
+        this.authoritiesSub = this.getAuthorities();
+        this.authoritiesNoRelatedSub = this.getAuthoritiesNotRelated();
+        this.deferralClassesSub = new Subscription();
+        this.defaultConfigurationSub = this.getDefaultConfiguration();
     }
 
     ngOnDestroy() {
-        this._authoritiesSub.unsubscribe();
-        this._authoritiesNoRelatedSub.unsubscribe();
+        this.authoritiesSub.unsubscribe();
+        this.authoritiesNoRelatedSub.unsubscribe();
+        this.deferralClassesSub.unsubscribe();
+        this.defaultConfigurationSub.unsubscribe();
     }
 
-    public checkAll(input: MatInput, check: MatCheckbox) {
+    public checkAll(input: MatInput, check: MatCheckbox): number {
+        let day = 0;
         if (check.checked) {
-            input.value = 0;
             input.disabled = true;
         } else {
-            input.value = 1;
+            day = 1;
             input.disabled = false;
         }
+        return day;
     }
 
     /**
@@ -110,7 +122,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
             station: this.selectedStation.station
         };
         return this._apiRestService
-            .search<TechnicalAnalysis[]>(AtecFilterComponent.TECHNICAL_ANALYSIS_SEARCH, signature)
+            .search<TechnicalAnalysis[]>(AtecFilterComponent.TECHNICAL_ANALYSIS_SEARCH_ENDPOINT, signature)
             .subscribe(res => {
                 this.technicalAnalyzes = res;
                 this.originalAnalyzes = res;
@@ -121,11 +133,11 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
      *
      * @returns {Subscription}
      */
-    private getDeafultConfiguration(): Subscription {
+    private getDefaultConfiguration(): Subscription {
         return this._apiRestService
-            .getAll<TechnicalAnalysis[]>(AtecFilterComponent.TECHNICAL_ANALYSIS_SEARCH)
+            .getAll<AnalysisDetail[]>(AtecFilterComponent.TECHNICAL_DEFAULT_CONFIG_ENDPOINT)
             .subscribe(res => {
-                this.technicalAnalyzes = res;
+                this.defaultConfiguration = res;
             });
     }
 
@@ -139,10 +151,10 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         const selectedStation = this.technicalStations.find(a => a.station === value);
         this.selectedStation = selectedStation ? selectedStation : new TechnicalStation(value, []);
         this.selectedAuthorities = this.selectedStation.authorities.length > 0 ? this.selectedStation.authorities : [];
-        this._deferralClassesSub.unsubscribe();
-        this._deferralClassesSub = this.getDeferralClassesSub();
-        this._authoritiesNoRelatedSub.unsubscribe();
-        this._authoritiesNoRelatedSub = this.getAuthoritiesNotRelated().add(() => {
+        this.deferralClassesSub.unsubscribe();
+        this.deferralClassesSub = this.getDeferralClassesSub();
+        this.authoritiesNoRelatedSub.unsubscribe();
+        this.authoritiesNoRelatedSub = this.getAuthoritiesNotRelated().add(() => {
             this.authoritiesMerged = this.concatAuthorities();
         });
     }
@@ -153,7 +165,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
             .forEach(a => {
                 const originalAnalysis = this.originalAnalyzes.find(oa => oa.authority === a);
                 if (!originalAnalysis) {
-                    this.technicalAnalyzes.push(new TechnicalAnalysis(this.selectedStation.station, a));
+                    this.technicalAnalyzes.push(new TechnicalAnalysis(this.selectedStation.station, a, this.defaultConfiguration, this.audit));
                 } else {
                     this.technicalAnalyzes.push(originalAnalysis);
                 }
@@ -181,9 +193,20 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     public submitForm(): void {
-        console.log('sent!',
-            // this.selectedAuthorities,
-            this.selectedStation);
+        console.log('sent!', this.atecForm.valid, this.technicalAnalyzes);
+        if (this.atecForm.valid) {
+            this._apiRestService
+                .add<any>(AtecFilterComponent.TECHNICAL_ANALYSIS_SAVE_ALL_ENDPOINT, this.technicalAnalyzes, this.selectedStation.station)
+                .toPromise()
+                .then(res => {
+                    this.authoritiesSub = this.getAuthorities();
+                    console.log('s', res);
+                })
+                .catch(error => {
+                    console.log('e', error);
+                })
+            ;
+        }
     }
 
     get technicalStations(): TechnicalStation[] {
@@ -195,10 +218,11 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     get selectedAuthorities(): string[] {
-        return this._selectedAuthorities;
+        return this._selectedAuthorities.sort((r1, r2) => r1 > r2 ? 1 : -1);
     }
 
     set selectedAuthorities(value: string[]) {
+        value = value.sort((r1, r2) => r1 > r2 ? 1 : -1);
         this._selectedAuthorities = value;
     }
 
@@ -235,16 +259,17 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     get technicalAnalyzes(): TechnicalAnalysis[] {
-        return this._technicalAnalyzes;
+        return this._technicalAnalyzes.sort((r1, r2) => r1.authority > r2.authority ? 1 : -1);
     }
 
     set technicalAnalyzes(value: TechnicalAnalysis[]) {
-        value = value.sort((r1, r2) => r1.authority > r2.authority ? 1 : -1);
         this._technicalAnalyzes = value.map(v => Object.assign(TechnicalAnalysis.getInstance(), v));
     }
 
     get authoritiesMerged(): string[] {
-        return this._authoritiesMerged;
+        return this._authoritiesMerged.length ?
+            this._authoritiesMerged.sort((r1, r2) => r1 > r2 ? 1 : -1) :
+            this._authoritiesMerged;
     }
 
     set authoritiesMerged(value: string[]) {
@@ -258,6 +283,54 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     set originalAnalyzes(value: TechnicalAnalysis[]) {
         value = value.sort((r1, r2) => r1.authority > r2.authority ? 1 : -1);
         this._originalAnalyzes = value;
+    }
+
+    get authoritiesSub(): Subscription {
+        return this._authoritiesSub;
+    }
+
+    set authoritiesSub(value: Subscription) {
+        this._authoritiesSub = value;
+    }
+
+    get authoritiesNoRelatedSub(): Subscription {
+        return this._authoritiesNoRelatedSub;
+    }
+
+    set authoritiesNoRelatedSub(value: Subscription) {
+        this._authoritiesNoRelatedSub = value;
+    }
+
+    get deferralClassesSub(): Subscription {
+        return this._deferralClassesSub;
+    }
+
+    set deferralClassesSub(value: Subscription) {
+        this._deferralClassesSub = value;
+    }
+
+    get defaultConfigurationSub(): Subscription {
+        return this._defaultConfigurationSub;
+    }
+
+    set defaultConfigurationSub(value: Subscription) {
+        this._defaultConfigurationSub = value;
+    }
+
+    get defaultConfiguration(): AnalysisDetail[] {
+        return this._defaultConfiguration;
+    }
+
+    set defaultConfiguration(value: AnalysisDetail[]) {
+        this._defaultConfiguration = value;
+    }
+
+    get audit(): Audit {
+        return this._audit;
+    }
+
+    set audit(value: Audit) {
+        this._audit = value;
     }
 }
 

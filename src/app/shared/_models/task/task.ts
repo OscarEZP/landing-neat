@@ -27,6 +27,7 @@ export class Task {
     private _evaluationCategory: EvaluationCategory;
     private _review: Review;
     private _taskType: string;
+    private _authority: string;
 
 
     private constructor() {
@@ -54,6 +55,7 @@ export class Task {
         this.evaluationCategory = EvaluationCategory.getInstance();
         this.review = Review.getInstance();
         this.taskType = '';
+        this.authority = '';
     }
 
     public static getInstance() {
@@ -266,5 +268,13 @@ export class Task {
 
     set taskType(value: string) {
         this._taskType = value;
+    }
+
+    get authority(): string {
+        return this._authority;
+    }
+
+    set authority(value: string) {
+        this._authority = value;
     }
 }

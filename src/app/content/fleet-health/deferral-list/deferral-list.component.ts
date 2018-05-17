@@ -9,12 +9,13 @@ import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
 import {Task} from '../../../shared/_models/task/task';
-import {TaskSearch} from '../../../shared/_models/task/search/taskSearch';
+import {FleetHealthSearch} from '../../../shared/_models/task/search/fleetHealthSearch';
 import {Pagination} from '../../../shared/_models/common/pagination';
 import {HistoricalReportComponent} from '../historical-report/historical-report.component';
 import {HistoricalReportService} from '../historical-report/_services/historical-report.service';
 import {StorageService} from '../../../shared/_services/storage.service';
 import {MessageService} from '../../../shared/_services/message.service';
+import {FleetHealthResponse} from '../../../shared/_models/task/fleethealth/technical/fleetHealthResponse';
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -27,7 +28,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     @ViewChild('contPaginator') public paginator: MatPaginator;
 
     private static TASK_FLEETHEALTH_ENDPOINT = 'tasksFleethealthSearch';
-    private static TASK_FLEETHEALTH_COUNT_ENDPOINT = 'tasksFleethealthSearchCount';
+   // private static TASK_FLEETHEALTH_COUNT_ENDPOINT = 'tasksFleethealthSearchCount';
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
     private static DEFAULT_INTERVAL = 30;
@@ -37,7 +38,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private _timerSubscription: Subscription;
     private _intervalRefreshSubscription: Subscription;
     private _paginatorSubscription: Subscription;
-    private _totalRecordsSubscription: Subscription;
 
     private _list: Task[];
 
@@ -82,7 +82,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this.reloadSubscription.unsubscribe();
         this.intervalRefreshSubscription.unsubscribe();
         this.paginatorSubscription.unsubscribe();
-        this.totalRecordsSubscription.unsubscribe();
         if (this.listSubscription) {
             this.listSubscription.unsubscribe();
         }
@@ -90,23 +89,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
             this.timerSubscription.unsubscribe();
         }
     }
-
-    /**
-     * Returns a subscription for get total records count and set it in infinite scroll service
-     * @return {Subscription}
-     */
-    public getTotalRecordsSubscription(signature: Pagination): Subscription {
-        this.loading = true;
-        return this._apiRestService.search<{items: number}>(DeferralListComponent.TASK_FLEETHEALTH_COUNT_ENDPOINT, signature)
-        .subscribe(
-            response => {
-                this.infiniteScrollService.length = !isNaN(response.items) ? response.items : 0;
-                this.loading = false;
-            },
-            () => this.getError()
-        );
-    }
-
     /**
      * Handler for error process on api request
      * @return {boolean}
@@ -139,19 +121,21 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @param signature
      * @return {Subscription}
      */
-    private getListSubscription(signature: Pagination): Subscription {
+    private getListSubscription(signature: FleetHealthSearch): Subscription {
         this.loading = true;
-        return this._apiRestService.search<Task[]>(DeferralListComponent.TASK_FLEETHEALTH_ENDPOINT, signature).subscribe(
-            (list) => {
-                const ctgInArray = list.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
+        return this._apiRestService.search<FleetHealthResponse>(DeferralListComponent.TASK_FLEETHEALTH_ENDPOINT, signature).subscribe(
+            (response) => {
+                const ctgInArray = response.fleetHealths.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
                 if (this.selectedRegisterPivot.id !== null && ctgInArray === 1) {
                     this.selectedRegister = this.selectedRegisterPivot;
                 } else {
-                    this.selectedRegister = list[0];
+                    this.selectedRegister = response.fleetHealths[0];
                 }
                 this.subscribeTimer();
-                this.list = list;
+                this.list = response.fleetHealths;
                 this.loading = false;
+                this.infiniteScrollService.length = !isNaN(response.count.items) ? response.count.items : 0;
+
             },
             () => this.getError()
         );
@@ -173,8 +157,11 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * Method for get a search signature for get data
      * @return {SearchTask}
      */
-    private getSearchSignature(): Pagination {
-       return new Pagination(this.infiniteScrollService.offset, this.infiniteScrollService.pageSize);
+    private getSearchSignature(): FleetHealthSearch {
+        const signature: FleetHealthSearch = FleetHealthSearch.getInstance();
+        signature.technicalAnalyzes = this._localStorage.userAtecFilter;
+        signature.pagination = new Pagination(this.infiniteScrollService.offset, this.infiniteScrollService.pageSize);
+       return signature;
     }
 
     /**
@@ -182,9 +169,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private getList(): void {
         const signature = this.getSearchSignature();
-        this.totalRecordsSubscription = this.getTotalRecordsSubscription(signature).add(() => {
-            this.listSubscription = this.getListSubscription(signature);
-        });
+        this.listSubscription = this.getListSubscription(signature);
     }
 
     /**
@@ -383,15 +368,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     set paginatorSubscription(value: Subscription) {
         this._paginatorSubscription = value;
     }
-
-    get totalRecordsSubscription(): Subscription {
-        return this._totalRecordsSubscription;
-    }
-
-    set totalRecordsSubscription(value: Subscription) {
-        this._totalRecordsSubscription = value;
-    }
-
 
     get haveStationsConf(): boolean {
         return this._haveStationsConf;
