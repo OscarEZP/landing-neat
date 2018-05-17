@@ -43,7 +43,6 @@ export const environment = {
         taskHistoricalReport: ':9006/api/v1/tasks/analysis/historical',
         taskSaveAnalysis: ':9006/api/v1/tasks/analysis',
         tasksFleethealthDone: ':9006/api/v1/tasks/fleethealth/manualstate/_apply',
-        tasksFleethealthSearchCount: '9006/api/v1/tasks/fleethealth/_search/count',
         tasksFleethealthSearch: '9006/api/v1/tasks/fleethealth/_search',
         technicalAnalysisSearch: '9015/api/v1/management/tech-analysis/_search',
         technicalAnalysisSave:  '9015/api/v1/management/tech-analysis',

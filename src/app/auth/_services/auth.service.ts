@@ -6,6 +6,8 @@ import { StorageService } from '../../shared/_services/storage.service';
 import { ApiRestService } from '../../shared/_services/apiRest.service';
 import { ManagementUser } from '../../shared/_models/management/managementUser';
 import { Access } from '../../shared/_models/management/access';
+import { TechnicalAnalysisSearch} from '../../shared/_models/task/search/technicalAnalysisSearch';
+import { TechnicalAnalysis } from '../../shared/_models/task/fleethealth/technical/technicalAnalysis';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +17,7 @@ export class AuthService {
     static LOGIN_ENDPOINT = 'login';
     static MANAGEMENT_USERS_ENDPOINT = 'managementUsers';
     static MANAGEMENT_ENDPOINT = 'management';
+    static MANAGEMENT_ATEC_FILTER = 'technicalAnalysisSearch';
     static USER_MODE = 'user';
     static ADMIN_MODE = 'admin';
 
@@ -84,6 +87,7 @@ export class AuthService {
         this.isLoggedIn = false;
         this._storageService.removeCurrentUser();
         this._storageService.removeUserManagement();
+        this._storageService.removeUserAtecFilter();
     }
 
     /**
@@ -104,6 +108,23 @@ export class AuthService {
         );
     }
 
+    /**
+     * Logic method that return Atec-Filter by User.
+     * @param {TechnicalAnalysisSearch} signature
+     * @returns {Promise<TechnicalAnalysis[]>}
+     */
+    getUserAtecFilter(signature: TechnicalAnalysisSearch): Promise<TechnicalAnalysis[]> {
+
+        return this.apiService.search<TechnicalAnalysis[]>(AuthService.MANAGEMENT_ATEC_FILTER, signature)
+            .toPromise()
+            .then((res: TechnicalAnalysis[]) => {
+                this.userAtecFilter = res;
+                return Promise.resolve(res);
+            }).catch((reason: HttpErrorResponse) => {
+                return Promise.reject(reason.error.message);
+            }
+        );
+    }
     /**
      * Validate if a module link is valid for current user
      * @param {string} path
@@ -152,6 +173,16 @@ export class AuthService {
             );
     }
 
+    /**
+     * Signature Atec-Filter Search
+     * @returns {TechnicalAnalysisSearch}
+     */
+    public getTechnicalAnalysisSearchSignature(): TechnicalAnalysisSearch {
+        const signature: TechnicalAnalysisSearch  = TechnicalAnalysisSearch.getInstance();
+        signature.station = this._storageService.userDefaultStation.code;
+        return signature;
+    }
+
     getIsLoggedIn(): boolean {
         return this._storageService.hasCurrentUser();
     }
@@ -194,6 +225,10 @@ export class AuthService {
 
     set userManagement(value: ManagementUser) {
         this._storageService.userManagement = value;
+    }
+
+    set userAtecFilter(value: TechnicalAnalysis[]) {
+        this._storageService.userAtecFilter = value;
     }
 
     get modulesConfig(): { code: string; module: string }[] {

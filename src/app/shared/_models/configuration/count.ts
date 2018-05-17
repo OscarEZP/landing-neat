@@ -5,7 +5,9 @@ export class Count {
     constructor(items: number) {
         this._items = items;
     }
-
+    public static getInstance() {
+        return new Count(0);
+    }
     get items(): number {
         return this._items;
     }
