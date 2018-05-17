@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import { User } from '../_models/user/user';
 import {ManagementUser} from '../_models/management/managementUser';
 import {Station} from '../_models/management/station';
+import {TechnicalAnalysis} from '../_models/task/fleethealth/technical/technicalAnalysis';
 
 @Injectable()
 export class StorageService {
@@ -97,7 +98,9 @@ export class StorageService {
     }
 
     get userAtecFilter(): any {
-        return Object.assign(ManagementUser.getInstance(), JSON.parse(StorageService.getLocalStorage(StorageService.USER_ATEC_FILTER)));
+        return JSON.parse(StorageService.getLocalStorage(StorageService.USER_ATEC_FILTER)).map(v =>
+            Object.assign(TechnicalAnalysis.getInstance(), v )
+        );
     }
     public removeUserManagement() {
         StorageService.removeLocalStorage(StorageService.USER_MANAGEMENT);
