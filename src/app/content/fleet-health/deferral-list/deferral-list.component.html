@@ -96,9 +96,9 @@
            [pageSize]="infiniteScrollService.pageSize"
            [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
     </mat-paginator>
-    <lsl-ess icon="location_off" message="ESS.STATIONS_WITHOUT_CONF" *ngIf="!haveStationsConf && !loading && !error"></lsl-ess>
-    <lsl-ess icon="filter_list" message="ESS.AUTHORITIES_WITHOUT_CONF" *ngIf="!haveAuthoritiesConf && haveStationsConf && !loading && !error"></lsl-ess>
-    <lsl-ess icon="flight_takeoff" message="ESS.NO_DEFERRALS_FOUND" *ngIf="haveStationsConf && list.length === 0 && !loading && !error"></lsl-ess>
-    <lsl-ess icon="error" message="ERRORS.DEFAULT" *ngIf="error"></lsl-ess>
+    <lsl-ess icon="location_off" message="ESS.STATIONS_WITHOUT_CONF" *ngIf="!haveStationsConf && !loading"></lsl-ess>
+    <lsl-ess icon="filter_list" message="ESS.AUTHORITIES_WITHOUT_CONF" *ngIf="!haveAuthoritiesConf && haveStationsConf && !loading"></lsl-ess>
+    <lsl-ess icon="flight_takeoff" message="ESS.NO_DEFERRALS_FOUND" *ngIf="haveStationsConf && haveAuthoritiesConf && list.length === 0 && !loading && !error"></lsl-ess>
+    <lsl-ess icon="error" message="ERRORS.DEFAULT" *ngIf="haveStationsConf && haveAuthoritiesConf && error"></lsl-ess>
     <div class="loader-container" fxLayoutAlign="center center" *ngIf="loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>
 </div>

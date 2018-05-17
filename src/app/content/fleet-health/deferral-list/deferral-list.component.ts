@@ -16,6 +16,9 @@ import {HistoricalReportService} from '../historical-report/_services/historical
 import {StorageService} from '../../../shared/_services/storage.service';
 import {MessageService} from '../../../shared/_services/message.service';
 import {FleetHealthResponse} from '../../../shared/_models/task/fleethealth/technical/fleetHealthResponse';
+import {ManagementUser} from "../../../shared/_models/management/managementUser";
+import {TechnicalAnalysis} from "../../../shared/_models/task/fleethealth/technical/technicalAnalysis";
+import {isArray} from "util";
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -104,6 +107,12 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {boolean}
      */
     private validateStations(): boolean {
+
+        const currentUser: ManagementUser = this._localStorage.userManagement;
+
+        if (currentUser === null || currentUser.detailStation === null || currentUser.detailStation.defaults === null || currentUser.detailStation.defaults.code === null || currentUser.detailStation.defaults.code === '') {
+            return false;
+        }
         return true;
     }
 
@@ -112,7 +121,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {boolean}
      */
     private validateAuthorities(): boolean {
-        return true;
+
+        const technicalAnalisys: TechnicalAnalysis[] = this._localStorage.userAtecFilter;
+        console.log('technicalAnalisys', technicalAnalisys);
+        return isArray(technicalAnalisys) && technicalAnalisys.length > 0;
     }
 
     /**
@@ -122,6 +134,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private getListSubscription(signature: FleetHealthSearch): Subscription {
         this.loading = true;
+        this.haveAuthoritiesConf = this.validateAuthorities();
+
+        console.log('haveAuthoritiesConf', this.haveAuthoritiesConf);
+        if (this.haveAuthoritiesConf){
         return this._apiRestService.search<FleetHealthResponse>(DeferralListComponent.TASK_FLEETHEALTH_ENDPOINT, signature).subscribe(
             (response) => {
                 const ctgInArray = response.fleetHealths.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
@@ -136,8 +152,13 @@ export class DeferralListComponent implements OnInit, OnDestroy {
                 this.infiniteScrollService.length = !isNaN(response.count.items) ? response.count.items : 0;
 
             },
-            () => this.getError()
-        );
+            () => this.getError());
+        }else {
+
+            this.loading = false;
+            return new Subscription();
+        }
+
     }
 
     /**
