@@ -46,6 +46,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private _intervalToRefresh: number;
     private _loading: boolean;
     private _error: boolean;
+    private _haveStationsConf: boolean;
+    private _haveAuthoritiesConf: boolean;
 
     constructor(
         private _messageData: DataService,
@@ -69,6 +71,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
         this.paginatorSubscription = this.getPaginationSubscription();
         this.infiniteScrollService.init();
+        this.haveStationsConf = this.validateStations();
+        this.haveAuthoritiesConf = this.validateAuthorities();
     }
 
     /**
@@ -111,6 +115,23 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this.infiniteScrollService.length = 0;
         this.loading = false;
         return this.error = true;
+    }
+
+
+    /**
+     * Validate stations configuration
+     * @return {boolean}
+     */
+    private validateStations(): boolean {
+        return true;
+    }
+
+    /**
+     * Validate authorities configuration
+     * @return {boolean}
+     */
+    private validateAuthorities(): boolean {
+        return true;
     }
 
     /**
@@ -369,5 +390,22 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     set totalRecordsSubscription(value: Subscription) {
         this._totalRecordsSubscription = value;
+    }
+
+
+    get haveStationsConf(): boolean {
+        return this._haveStationsConf;
+    }
+
+    set haveStationsConf(value: boolean) {
+        this._haveStationsConf = value;
+    }
+
+    get haveAuthoritiesConf(): boolean {
+        return this._haveAuthoritiesConf;
+    }
+
+    set haveAuthoritiesConf(value: boolean) {
+        this._haveAuthoritiesConf = value;
     }
 }
