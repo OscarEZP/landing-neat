@@ -131,6 +131,10 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         return this._apiRestService
             .search<TechnicalAnalysis[]>(AtecFilterComponent.TECHNICAL_ANALYSIS_SEARCH_ENDPOINT, signature)
             .subscribe(res => {
+                res = res.map(r => {
+                    r.isDefault = false;
+                    return r;
+                });
                 this.technicalAnalyzes = res;
                 this.originalAnalyzes = res;
             });
@@ -158,10 +162,11 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         const selectedStation = this.technicalStations.find(a => a.station === value);
         this.selectedStation = selectedStation ? selectedStation : new TechnicalStation(value, []);
         this.selectedAuthorities = this.selectedStation.authorities.length > 0 ? this.selectedStation.authorities : [];
-        this.deferralClassesSub.unsubscribe();
-        this.deferralClassesSub = this.getDeferralClassesSub();
+
         this.authoritiesNoRelatedSub.unsubscribe();
         this.authoritiesNoRelatedSub = this.getAuthoritiesNotRelated().add(() => {
+            this.deferralClassesSub.unsubscribe();
+            this.deferralClassesSub = this.getDeferralClassesSub();
             this.authoritiesMerged = this.concatAuthorities();
         });
     }
@@ -172,7 +177,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
             .forEach(a => {
                 const originalAnalysis = this.originalAnalyzes.find(oa => oa.authority === a);
                 if (!originalAnalysis) {
-                    this.technicalAnalyzes.push(new TechnicalAnalysis(this.selectedStation.station, a, this.defaultConfiguration, this.audit));
+                    this.technicalAnalyzes.push(new TechnicalAnalysis(this.selectedStation.station, a, this.defaultConfiguration, this.audit, true));
                 } else {
                     this.technicalAnalyzes.push(originalAnalysis);
                 }
@@ -192,6 +197,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         this.selectedStation = TechnicalStation.getInstance();
         this.selectedAuthorities = [];
         this.technicalAnalyzes = [];
+        this.originalAnalyzes = [];
     }
 
     public getAuthoritiesLbl(station: string): string {
@@ -207,16 +213,10 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
                 .then(() => {
                     this.authoritiesSub = this.getAuthorities();
                     this.showMessage(AtecFilterComponent.CONFIGURATION_SAVED_MESSAGE, 1500);
-                })
-                .catch(error => {
-                    console.log('e', error);
+                    this.resetValues();
                 })
             ;
         }
-    }
-
-    public applyDefaultConfig(): AnalysisDetail[] {
-        return this.defaultConfiguration;
     }
 
     private showMessage(message: string, time: number): Promise<void> {
