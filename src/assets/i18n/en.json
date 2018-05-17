@@ -78,6 +78,9 @@
     }
   },
   "MANAGEMENT": {
+    "ATEC_FILTER": {
+      "CONFIGURATION_SAVED": "Configuration saved"
+    },
     "ATEC_FILTER_SELECT_STATION": "Select Station",
     "ATEC_FILTER_SELECT_OPERATOR": "Select Operator",
     "MANAGEMENT_MODULE": "Management Module",
