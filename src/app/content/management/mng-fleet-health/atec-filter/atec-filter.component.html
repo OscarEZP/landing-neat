@@ -23,7 +23,16 @@
         </main>
     </div>
     <mat-tab-group id="form-tabs" *ngIf="technicalAnalyzes.length > 0">
-        <mat-tab *ngFor="let technicalAnalysis of technicalAnalyzes; let i = index" label="{{i+1}}) {{technicalAnalysis.authority}}">
+        <mat-tab *ngFor="let technicalAnalysis of technicalAnalyzes; let i = index" label="" >
+            <ng-template mat-tab-label>
+                <div fxLayout="column" fxFlex="50" fxLayoutAlign="start start">
+                    {{i+1}}) {{technicalAnalysis.authority}}
+                </div>
+                <div fxLayout="column" fxFlex="50" fxLayoutAlign="end end">
+                    <mat-icon *ngIf="!technicalAnalysis.isDefault">person</mat-icon>
+                    <mat-icon *ngIf="!!technicalAnalysis.isDefault">settings</mat-icon>
+                </div>
+            </ng-template>
             <div fxLayout="row" class="row-atec-filter">
                 <div fxLayout="column" fxFlex="20" class="column-head-atec-filter">
                     <span class="label-atec-filter">Deferral Category</span>
