@@ -1,7 +1,7 @@
-import {DateRange} from "../common/dateRange";
-import {Pagination} from "../common/pagination";
+import {DateRange} from '../../common/dateRange';
+import {Pagination} from '../../common/pagination';
 
-export class SearchRelationedTask {
+export class RelationedTaskSearch {
 
     private _tail: string;
     private _ataGroup: string;
@@ -20,8 +20,8 @@ export class SearchRelationedTask {
 
     }
 
-    static getInstance(): SearchRelationedTask {
-        return new SearchRelationedTask();
+    static getInstance(): RelationedTaskSearch {
+        return new RelationedTaskSearch();
     }
 
     get tail(): string {

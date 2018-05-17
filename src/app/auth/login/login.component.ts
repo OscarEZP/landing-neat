@@ -116,7 +116,10 @@ export class LoginComponent implements OnInit {
                 this._authService.setRedirectUrl(role.link);
                 this.router.navigate([this._authService.getRedirectUrl()]);
             }
-        }).catch(error => this._messageService.openSnackBar(error));
+        }).catch(error => this._messageService.openSnackBar(error)).then(value2 => {
+            this._authService.getUserAtecFilter(this._authService.getTechnicalAnalysisSearchSignature());
+            console.log('useratecfilter');
+        });
     }
 
     /**

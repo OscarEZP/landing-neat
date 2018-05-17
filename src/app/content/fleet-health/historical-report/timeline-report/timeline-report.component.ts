@@ -6,7 +6,7 @@ import {HistoricalReportService} from '../_services/historical-report.service';
 import * as moment from 'moment';
 import {Style} from '../../../../shared/_models/style';
 import {ApiRestService} from '../../../../shared/_services/apiRest.service';
-import {SearchRelationedTask} from '../../../../shared/_models/task/searchRelationedTask';
+import {RelationedTaskSearch} from '../../../../shared/_models/task/search/relationedTaskSearch';
 import {Task} from '../../../../shared/_models/task/task';
 import {DateRange} from '../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../shared/_models/timeInstant';
@@ -161,7 +161,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @param signature
      * @return {Subscription}
      */
-    private getListSubscription(signature: SearchRelationedTask): Subscription {
+    private getListSubscription(signature: RelationedTaskSearch): Subscription {
         this.loading = true;
         return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
             (list) => {
@@ -178,7 +178,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     public checkCorrectedATA(result: boolean) {
         if (result) {
-            const signature: SearchRelationedTask = SearchRelationedTask.getInstance();
+            const signature: RelationedTaskSearch = RelationedTaskSearch.getInstance();
 
             signature.tail = this.activeTask.tail;
             signature.ataGroup = this.activeTask.ata;

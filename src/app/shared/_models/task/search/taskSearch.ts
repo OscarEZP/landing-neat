@@ -1,6 +1,6 @@
-import {Pagination} from '../common/pagination';
+import {Pagination} from '../../common/pagination';
 
-export class SearchTask {
+export class TaskSearch {
 
 
     private _outOfStandard: boolean;
@@ -11,8 +11,8 @@ export class SearchTask {
         this.outOfStandard = false;
     }
 
-    static getInstance(): SearchTask {
-        return new SearchTask();
+    static getInstance(): TaskSearch {
+        return new TaskSearch();
     }
 
 

@@ -21,6 +21,7 @@
     "CREATE": "CREATE",
     "RESEND": "RESEND",
     "SAVE": "SAVE",
+    "APPLY": "APPLY",
     "SUB_MENUS": {
       "CLOSE_CONTINGENCY": "Close Contingency",
       "MEETING": "Meeting",
@@ -77,6 +78,8 @@
     }
   },
   "MANAGEMENT": {
+    "ATEC_FILTER_SELECT_STATION": "Select Station",
+    "ATEC_FILTER_SELECT_OPERATOR": "Select Operator",
     "MANAGEMENT_MODULE": "Management Module",
     "USER": {
       "ADD_USER": "Add User",
@@ -96,7 +99,8 @@
       "USERS_ADDED_MESSAGE": "users correctly added / updated in the system",
       "USERS_NOT_ADDED_MESSAGE": "registers couldn't added / updated in the system",
       "YOUR_CSV_FILE": "your csv file"
-    }
+    },
+    "USER_MANAGEMENT": "User Management"
   },
   "MENU" : {
     "ATEC": "ATEC",

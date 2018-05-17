@@ -11,6 +11,7 @@ export const environment = {
         aircraftsSearch: ':9005/api/v1/configurations/aircrafts/_search',
         areas: ':9002/api/v1/contingencies/pendings/areas',
         ataByFleet: ':9005/api/v1/configurations/atas/groups',
+        authorities: ':9015/api/v1/management/authorities',
         close: ':9002/api/v1/contingencies/_close',
         configMaxStatus: ':9005/api/v1/configurations/status/max',
         configStatus: ':9005/api/v1/configurations/status/_search',
@@ -42,7 +43,14 @@ export const environment = {
         taskHistoricalReport: ':9006/api/v1/tasks/analysis/historical',
         taskSaveAnalysis: ':9006/api/v1/tasks/analysis',
         tasksFleethealthDone: ':9006/api/v1/tasks/fleethealth/manualstate/_apply',
-        tasksFleethealthSearchCount: '9006/api/v1/tasks/fleethealth/_search/count',
-        tasksFleethealthSearch: '9006/api/v1/tasks/fleethealth/_search'
+        tasksFleethealthSearchCount: ':9006/api/v1/tasks/fleethealth/_search/count',
+        tasksFleethealthSearch: ':9006/api/v1/tasks/fleethealth/_search',
+        technicalAnalysisSearch: ':9015/api/v1/management/tech-analysis/_search',
+        technicalAnalysisSave:  ':9015/api/v1/management/tech-analysis',
+        technicalAnalysisSaveAll:  ':9015/api/v1/management/tech-analysis/_save-all',
+        technicalConfiguredAuthoritySearch: ':9015/api/v1/management/tech-station/configured-authority/_search',
+        technicalDefaultConfig: ':9015/api/v1/management/default-tech-analysis',
+        technicalNotConfiguredAuthoritySearch: ':9015/api/v1/management/tech-station/not-configured-authority/_search',
+        technicalStationSearch: ':9015/api/v1/management/tech-station/_search',
     }
 };
