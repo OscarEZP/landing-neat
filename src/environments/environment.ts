@@ -50,6 +50,7 @@ export const environment = {
         technicalAnalysisSave:  '/api/v1/management/tech-analysis',
         technicalAnalysisSaveAll:  '/api/v1/management/tech-analysis/_save-all',
         technicalConfiguredAuthoritySearch: '/api/v1/management/tech-station/configured-authority/_search',
+        technicalDefaultConfig: '/api/v1/management/default-tech-analysis',
         technicalNotConfiguredAuthoritySearch: '/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: '/api/v1/management/tech-station/_search',
     }

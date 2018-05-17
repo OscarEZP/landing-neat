@@ -23,7 +23,7 @@
         </main>
     </div>
     <mat-tab-group id="form-tabs" *ngIf="technicalAnalyzes.length > 0">
-        <mat-tab *ngFor="let technicalAnalysis of technicalAnalyzes" label={{technicalAnalysis.authority}}>
+        <mat-tab *ngFor="let technicalAnalysis of technicalAnalyzes; let i = index" label="{{i+1}}) {{technicalAnalysis.authority}}">
             <div fxLayout="row" class="row-atec-filter">
                 <div fxLayout="column" fxFlex="20" class="column-head-atec-filter">
                     <span class="label-atec-filter">Deferral Category</span>
@@ -32,7 +32,6 @@
                     <span class="label-atec-filter">Due Date</span>
                 </div>
             </div>
-
             <div *ngFor="let detail of technicalAnalysis.detail" fxLayout="row" class="row-atec-filter background-color-row-atec-filter">
                 <div fxLayout="column" fxFlex="20" class="column-atec-filter">
                     <span class="label-row-atec-filter">{{detail.deferral}}</span>
@@ -44,15 +43,16 @@
                                placeholder="Days"
                                matInput
                                maxlength="3"
-                               value="{{!detail.day ? 0 : detail.day}}"
                                type="number"
                                min="1"
                                max="999"
+                               [(ngModel)]="detail.day"
+                               [ngModelOptions]="{standalone: true}"
                         />
                     </mat-form-field>
                 </div>
                 <div fxLayout="column">
-                    <mat-checkbox [checked]="!detail.day" #check labelPosition="after" (change)="checkAll(days, check)" fxFlex="20" class="column-atec-filter">
+                    <mat-checkbox [checked]="!detail.day" #check labelPosition="after" (change)="detail.day = checkAll(days, check)" fxFlex="20" class="column-atec-filter">
                         <span class="label-row-atec-filter">All</span>
                     </mat-checkbox>
                 </div>
