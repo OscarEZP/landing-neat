@@ -9,7 +9,7 @@ export class StorageService {
     private static RECOVER_DESTINATION = 'recoverDestination';
     private static CURRENT_USER = 'currentUser';
     private static USER_MANAGEMENT = 'userManagement';
-
+    private static USER_ATEC_FILTER = 'userAtecFilter';
     constructor() {
     }
 
@@ -92,15 +92,26 @@ export class StorageService {
     get userManagement(): any {
         return Object.assign(ManagementUser.getInstance(), JSON.parse(StorageService.getLocalStorage(StorageService.USER_MANAGEMENT)));
     }
+    set userAtecFilter(value: any) {
+        StorageService.addLocalStorage(StorageService.USER_ATEC_FILTER, JSON.stringify(value));
+    }
 
+    get userAtecFilter(): any {
+        return Object.assign(ManagementUser.getInstance(), JSON.parse(StorageService.getLocalStorage(StorageService.USER_ATEC_FILTER)));
+    }
     public removeUserManagement() {
         StorageService.removeLocalStorage(StorageService.USER_MANAGEMENT);
     }
-
+    public removeUserAtecFilter() {
+        StorageService.removeLocalStorage(StorageService.USER_ATEC_FILTER);
+    }
     get userStations(): Station[] {
         let result = [];
         result.push(this.userManagement.detailStation.defaults);
         result = result.concat(this.userManagement.detailStation.others);
         return result;
+    }
+    get userDefaultStation(): Station {
+      return  this.userManagement.detailStation.defaults;
     }
 }
