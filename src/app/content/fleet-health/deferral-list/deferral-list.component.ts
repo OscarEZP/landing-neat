@@ -137,7 +137,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private getSearchSignature(): FleetHealthSearch {
         const signature: FleetHealthSearch = FleetHealthSearch.getInstance();
-        signature.technicalAnalyzes = this._localStorage.userAtecFilter;
+        signature.technicalAnalysis = this._localStorage.userAtecFilter;
         signature.pagination = new Pagination(this.infiniteScrollService.offset, this.infiniteScrollService.pageSize);
        return signature;
     }

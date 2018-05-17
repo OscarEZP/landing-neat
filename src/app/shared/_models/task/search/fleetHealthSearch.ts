@@ -2,24 +2,24 @@ import {Pagination} from '../../common/pagination';
 import {TechnicalAnalysis} from '../fleethealth/technical/technicalAnalysis';
 
 export class FleetHealthSearch {
-    private _technicalAnalyzes: TechnicalAnalysis[];
+    private _technicalAnalysis: TechnicalAnalysis[];
     private _pagination: Pagination;
 
-    private constructor(pagination: Pagination, technicalAnalyzes: TechnicalAnalysis[]) {
+    private constructor(pagination: Pagination, technicalAnalysis: TechnicalAnalysis[]) {
         this._pagination = pagination;
-        this._technicalAnalyzes = technicalAnalyzes;
+        this._technicalAnalysis = technicalAnalysis;
     }
 
     static getInstance(): FleetHealthSearch {
         return new FleetHealthSearch(Pagination.getInstance(), []);
     }
 
-    get technicalAnalyzes(): TechnicalAnalysis[] {
-        return this._technicalAnalyzes;
+    get technicalAnalysis(): TechnicalAnalysis[] {
+        return this._technicalAnalysis;
     }
 
-    set technicalAnalyzes(value: TechnicalAnalysis[]) {
-        this._technicalAnalyzes = value;
+    set technicalAnalysis(value: TechnicalAnalysis[]) {
+        this._technicalAnalysis = value;
     }
 
     get pagination(): Pagination {
