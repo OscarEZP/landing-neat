@@ -163,12 +163,10 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         const selectedStation = this.technicalStations.find(a => a.station === value);
         this.selectedStation = selectedStation ? selectedStation : new TechnicalStation(value, []);
         this.selectedAuthorities = this.selectedStation.authorities.length > 0 ? this.selectedStation.authorities : [];
-        this.authoritiesSub = this.getAuthorities().add(() => {
-            this.authoritiesNoRelatedSub = this.getAuthoritiesNotRelated().add(() => {
-                this.deferralClassesSub.unsubscribe();
-                this.deferralClassesSub = this.getDeferralClassesSub();
-                this.authoritiesMerged = this.concatAuthorities();
-            });
+        this.authoritiesSub = this.getAuthorities();
+        this.deferralClassesSub = this.getDeferralClassesSub();
+        this.authoritiesNoRelatedSub = this.getAuthoritiesNotRelated().add(() => {
+            this.authoritiesMerged = this.concatAuthorities();
         });
     }
 

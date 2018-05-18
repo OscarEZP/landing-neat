@@ -7,16 +7,18 @@
         <main>
             <div fxLayout="row" *ngFor="let station of stations" >
                 <span fxFlex="20">{{station.code}}</span>
-                <div fxFlex="60" >
-                    <mat-form-field fxFlex="50" *ngIf="station.code === selectedStation.station">
+                <div fxFlex="80" >
+                    <mat-form-field fxFlex="100" *ngIf="station.code === selectedStation.station">
                         <mat-select (change)="updateTabs(selectedAuthorities)" class="select-atec-filter"  placeholder="" [formControl]="atecForm.controls['authorities']" [(ngModel)]="selectedAuthorities" multiple>
                             <mat-option *ngFor="let authority of authoritiesMerged" value="{{authority}}">{{authority}}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <span fxFlex="50" *ngIf="station.code !== selectedStation.station">
+                    <span fxFlex="100" *ngIf="station.code !== selectedStation.station">
                         {{getAuthoritiesLbl(station.code)}}
                     </span>
-                    <button [disabled]="selectedStation.station !== null" (click)="setSelectedStation(station.code)" mat-icon-button color="primary" type="button" ><mat-icon>create</mat-icon></button>
+                    <span fxLayoutAlign="end end">
+                        <button [disabled]="selectedStation.station !== null" (click)="setSelectedStation(station.code)" mat-icon-button color="primary" type="button" ><mat-icon>create</mat-icon></button>
+                    </span>
                 </div>
             </div>
         </main>
@@ -61,12 +63,11 @@
                             />
                         </mat-form-field>
                     </div>
-                    <div fxLayout="column">
+                    <div fxLayout="column" >
                         <mat-checkbox [checked]="!detail.day" #check labelPosition="after" (change)="detail.day = checkAll(days, check)" fxFlex="20" class="column-atec-filter">
                             <span class="label-row-atec-filter">All</span>
                         </mat-checkbox>
                     </div>
-
                 </div>
                 <div fxLayout="row" fxLayoutAlign="end">
                     <button (click)="technicalAnalysis.detail = defaultConfiguration" type="button" id="btn-atec-filter-default" mat-button mat-raised-button color="primary">Default</button>
