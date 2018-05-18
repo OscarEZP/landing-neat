@@ -47,7 +47,7 @@ section {
       color: mat-color($primary, default-contrast);
     }
     span.badge.task {
-      background-color: mat-color($mat-palette-custom, tl-task);
+      background-color: mat-color($warn);
       color: mat-color($primary, default-contrast);
     }
   }
