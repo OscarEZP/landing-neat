@@ -1,10 +1,9 @@
 <form [formGroup]="atecForm" #formDir="ngForm" id="form-atec-filter" (ngSubmit)="submitForm()">
     <div id="form-header">
-        <header>
+        <header class="background-color-row-atec-filter">
             <span fxFlex="20">Station</span>
             <span fxFlex="20">Operator</span>
         </header>
-        <div class="line-footer-atec-filter"></div>
         <main>
             <div fxLayout="row" *ngFor="let station of stations" >
                 <span fxFlex="20">{{station.code}}</span>
@@ -22,65 +21,68 @@
             </div>
         </main>
     </div>
-    <mat-tab-group id="form-tabs" *ngIf="technicalAnalyzes.length > 0">
-        <mat-tab *ngFor="let technicalAnalysis of technicalAnalyzes; let i = index" label="" >
-            <ng-template mat-tab-label>
-                <div fxLayout="column" fxFlex="50" fxLayoutAlign="start start">
-                    {{i+1}}) {{technicalAnalysis.authority}}
-                </div>
-                <div fxLayout="column" fxFlex="50" fxLayoutAlign="end end">
-                    <mat-icon *ngIf="!technicalAnalysis.isDefault">person</mat-icon>
-                    <mat-icon *ngIf="!!technicalAnalysis.isDefault">settings</mat-icon>
-                </div>
-            </ng-template>
-            <div fxLayout="row" class="row-atec-filter">
-                <div fxLayout="column" fxFlex="20" class="column-head-atec-filter">
-                    <span class="label-atec-filter">Deferral Category</span>
-                </div>
-                <div fxLayout="column" fxFlex="20" class="column-head-atec-filter">
-                    <span class="label-atec-filter">Due Date</span>
-                </div>
-            </div>
-            <div *ngFor="let detail of technicalAnalysis.detail" fxLayout="row" class="row-atec-filter background-color-row-atec-filter">
-                <div fxLayout="column" fxFlex="20" class="column-atec-filter">
-                    <span class="label-row-atec-filter">{{detail.deferral}}</span>
-                </div>
-                <div fxLayout="column" class="column-atec-filter column-input-atec-filter column-due-date" fxFlex="20">
-                    <mat-form-field>
-                        <input [disabled]="!detail.day" #days id="in-atec-filter-{{detail.deferral.toLowerCase()}}"
-                               class="label-placeholder-atec-filter mat-form-field-infix"
-                               placeholder="Days"
-                               matInput
-                               maxlength="3"
-                               type="number"
-                               min="1"
-                               max="999"
-                               [(ngModel)]="detail.day"
-                               [ngModelOptions]="{standalone: true}"
-                        />
-                    </mat-form-field>
-                </div>
-                <div fxLayout="column">
-                    <mat-checkbox [checked]="!detail.day" #check labelPosition="after" (change)="detail.day = checkAll(days, check)" fxFlex="20" class="column-atec-filter">
-                        <span class="label-row-atec-filter">All</span>
-                    </mat-checkbox>
-                </div>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="end">
-                <button (click)="technicalAnalysis.detail = defaultConfiguration" type="button" id="btn-atec-filter-default" mat-button mat-raised-button color="primary">Default</button>
-            </div>
-        </mat-tab>
-    </mat-tab-group>
-    <div class="line-footer-atec-filter"></div>
 
-    <div mat-dialog-actions class="row-width-atec-filter" fxLayoutAlign="end">
-        <div class="buttons-atec-filter">
-            <button id="btn-atec-filter-form-cancel" (click)="cancel()" type="button" mat-button>
-                {{'BUTTONS.CANCEL'|translate}}
-            </button>
-            <button id="btn-atec-filter-form-submit" type="submit" mat-button mat-raised-button color="primary">
-                {{'BUTTONS.APPLY'|translate}}
-            </button>
+    <div [hidden]="technicalAnalyzes.length === 0">
+        <mat-tab-group id="form-tabs" >
+            <mat-tab *ngFor="let technicalAnalysis of technicalAnalyzes; let i = index" label="" >
+                <ng-template mat-tab-label>
+                    <div fxLayout="column" fxFlex="50" fxLayoutAlign="start start">
+                        {{i+1}}) {{technicalAnalysis.authority}}
+                    </div>
+                    <div fxLayout="column" fxFlex="50" fxLayoutAlign="end end">
+                        <mat-icon *ngIf="!technicalAnalysis.isDefault">person</mat-icon>
+                        <mat-icon *ngIf="!!technicalAnalysis.isDefault">settings</mat-icon>
+                    </div>
+                </ng-template>
+                <div fxLayout="row" class="row-atec-filter">
+                    <div fxLayout="column" fxFlex="20" class="column-head-atec-filter">
+                        <span class="label-atec-filter">Deferral Category</span>
+                    </div>
+                    <div fxLayout="column" fxFlex="20" class="column-head-atec-filter">
+                        <span class="label-atec-filter">Due Date</span>
+                    </div>
+                </div>
+                <div *ngFor="let detail of technicalAnalysis.detail" fxLayout="row" class="row-atec-filter ">
+                    <div fxLayout="column" fxFlex="20" class="column-atec-filter">
+                        <span class="label-row-atec-filter">{{detail.deferral}}</span>
+                    </div>
+                    <div fxLayout="column" class="column-atec-filter column-input-atec-filter column-due-date" fxFlex="20">
+                        <mat-form-field>
+                            <input [disabled]="!detail.day" #days id="in-atec-filter-{{detail.deferral.toLowerCase()}}"
+                                   class="label-placeholder-atec-filter mat-form-field-infix"
+                                   placeholder="Days"
+                                   matInput
+                                   maxlength="3"
+                                   type="number"
+                                   min="1"
+                                   max="999"
+                                   [(ngModel)]="detail.day"
+                                   [ngModelOptions]="{standalone: true}"
+                            />
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="column">
+                        <mat-checkbox [checked]="!detail.day" #check labelPosition="after" (change)="detail.day = checkAll(days, check)" fxFlex="20" class="column-atec-filter">
+                            <span class="label-row-atec-filter">All</span>
+                        </mat-checkbox>
+                    </div>
+
+                </div>
+                <div fxLayout="row" fxLayoutAlign="end">
+                    <button (click)="technicalAnalysis.detail = defaultConfiguration" type="button" id="btn-atec-filter-default" mat-button mat-raised-button color="primary">Default</button>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+
+        <div mat-dialog-actions class="row-width-atec-filter" fxLayoutAlign="end">
+            <div class="buttons-atec-filter">
+                <button id="btn-atec-filter-form-cancel" (click)="cancel()" type="button" mat-button>
+                    {{'BUTTONS.CANCEL'|translate}}
+                </button>
+                <button id="btn-atec-filter-form-submit" type="submit" mat-button mat-raised-button color="primary">
+                    {{'BUTTONS.APPLY'|translate}}
+                </button>
+            </div>
         </div>
     </div>
 </form>

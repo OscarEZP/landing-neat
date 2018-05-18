@@ -11,6 +11,7 @@ import {AnalysisDetail} from '../../../../shared/_models/task/fleethealth/techni
 import {Audit} from '../../../../shared/_models/common/audit';
 import {TranslateService} from '@ngx-translate/core';
 import {MessageService} from '../../../../shared/_services/message.service';
+import {isArray} from 'util';
 
 @Component({
     selector: 'lsl-atec-filter',
@@ -162,12 +163,12 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         const selectedStation = this.technicalStations.find(a => a.station === value);
         this.selectedStation = selectedStation ? selectedStation : new TechnicalStation(value, []);
         this.selectedAuthorities = this.selectedStation.authorities.length > 0 ? this.selectedStation.authorities : [];
-
-        this.authoritiesNoRelatedSub.unsubscribe();
-        this.authoritiesNoRelatedSub = this.getAuthoritiesNotRelated().add(() => {
-            this.deferralClassesSub.unsubscribe();
-            this.deferralClassesSub = this.getDeferralClassesSub();
-            this.authoritiesMerged = this.concatAuthorities();
+        this.authoritiesSub = this.getAuthorities().add(() => {
+            this.authoritiesNoRelatedSub = this.getAuthoritiesNotRelated().add(() => {
+                this.deferralClassesSub.unsubscribe();
+                this.deferralClassesSub = this.getDeferralClassesSub();
+                this.authoritiesMerged = this.concatAuthorities();
+            });
         });
     }
 
@@ -240,8 +241,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     set selectedAuthorities(value: string[]) {
-        value = value.sort((r1, r2) => r1 > r2 ? 1 : -1);
-        this._selectedAuthorities = value;
+        this._selectedAuthorities = isArray(value) ? value : [];
     }
 
     get atecForm(): FormGroup {
@@ -257,7 +257,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     set stations(value: Station[]) {
-        this._stations = value;
+        this._stations = value ? value : [];
     }
 
     get selectedStation(): TechnicalStation {
@@ -273,7 +273,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     set authoritiesNoRelated(value: string[]) {
-        this._authoritiesNoRelated = value;
+        this._authoritiesNoRelated = isArray(value) ? value : [];
     }
 
     get technicalAnalyzes(): TechnicalAnalysis[] {
@@ -281,7 +281,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     set technicalAnalyzes(value: TechnicalAnalysis[]) {
-        this._technicalAnalyzes = value.map(v => Object.assign(TechnicalAnalysis.getInstance(), v));
+        this._technicalAnalyzes = isArray(value) ? value.map(v => Object.assign(TechnicalAnalysis.getInstance(), v)) : [];
     }
 
     get authoritiesMerged(): string[] {
@@ -289,7 +289,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     set authoritiesMerged(value: string[]) {
-        this._authoritiesMerged = value;
+        this._authoritiesMerged = isArray(value) ? value : [];
     }
 
     get originalAnalyzes(): TechnicalAnalysis[] {
@@ -297,8 +297,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     set originalAnalyzes(value: TechnicalAnalysis[]) {
-        value = value.sort((r1, r2) => r1.authority > r2.authority ? 1 : -1);
-        this._originalAnalyzes = value;
+        this._originalAnalyzes = isArray(value) ? value.sort((r1, r2) => r1.authority > r2.authority ? 1 : -1) : [];
     }
 
     get authoritiesSub(): Subscription {
@@ -338,7 +337,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     set defaultConfiguration(value: AnalysisDetail[]) {
-        this._defaultConfiguration = value;
+        this._defaultConfiguration = isArray(value) ? value : [];
     }
 
     get audit(): Audit {
