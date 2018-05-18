@@ -11,22 +11,38 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class CancelComponent implements OnInit {
 
+    public static ACCEPT = 'accept';
+    public static CANCEL = 'cancel';
+
+    private _response: string;
+
     constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
-                private messageService: MessageService,
-                private dialogService: DialogService,
-                public translate: TranslateService) {
-        this.translate.setDefaultLang('en');
+                private _messageService: MessageService,
+                private _dialogService: DialogService,
+                private _translate: TranslateService) {
+        this._translate.setDefaultLang('en');
+        this.response = null;
     }
 
     ngOnInit() {
     }
 
     closeCancelDialog() {
-        this.messageService.dismissSnackBar();
+        this._messageService.dismissSnackBar();
+        this.response = this.response === null ? CancelComponent.CANCEL : this.response;
     }
 
     closeContingencyForm() {
-        this.dialogService.closeAllDialogs();
+        this.response = CancelComponent.ACCEPT;
+        this._dialogService.closeAllDialogs();
         this.closeCancelDialog();
+    }
+
+    get response(): string {
+        return this._response;
+    }
+
+    set response(value: string) {
+        this._response = value;
     }
 }

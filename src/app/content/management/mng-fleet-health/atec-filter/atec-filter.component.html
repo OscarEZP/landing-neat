@@ -5,7 +5,7 @@
             <span fxFlex="20">Operator</span>
         </header>
         <main>
-            <div fxLayout="row" *ngFor="let station of stations" >
+            <div fxLayout="row" [ngClass]="{'default': userDefaultStation.code === station.code }" *ngFor="let station of stations" >
                 <span fxFlex="20">{{station.code}}</span>
                 <div fxFlex="80" >
                     <mat-form-field fxFlex="100" *ngIf="station.code === selectedStation.station">
@@ -60,6 +60,7 @@
                                    max="999"
                                    [(ngModel)]="detail.day"
                                    [ngModelOptions]="{standalone: true}"
+                                   (change)="detail.day = validateDays(detail.day)"
                             />
                         </mat-form-field>
                     </div>
@@ -74,16 +75,15 @@
                 </div>
             </mat-tab>
         </mat-tab-group>
-
-        <div mat-dialog-actions class="row-width-atec-filter" fxLayoutAlign="end">
-            <div class="buttons-atec-filter">
-                <button id="btn-atec-filter-form-cancel" (click)="cancel()" type="button" mat-button>
-                    {{'BUTTONS.CANCEL'|translate}}
-                </button>
-                <button id="btn-atec-filter-form-submit" type="submit" mat-button mat-raised-button color="primary">
-                    {{'BUTTONS.APPLY'|translate}}
-                </button>
-            </div>
+    </div>
+    <div mat-dialog-actions class="row-width-atec-filter" fxLayoutAlign="end">
+        <div class="buttons-atec-filter">
+            <button id="btn-atec-filter-form-cancel" (click)="cancel()" type="button" mat-button>
+                {{'BUTTONS.CANCEL'|translate}}
+            </button>
+            <button id="btn-atec-filter-form-submit" type="submit" mat-button mat-raised-button color="primary">
+                {{'BUTTONS.APPLY'|translate}}
+            </button>
         </div>
     </div>
 </form>

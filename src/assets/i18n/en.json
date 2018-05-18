@@ -81,6 +81,13 @@
     }
   },
   "MANAGEMENT": {
+    "ATEC_FILTER": {
+      "CONFIGURATION_SAVED": "Configuration Saved",
+      "MSG": {
+        "REQUIRED_FIELDS": "Station and Authorities are required",
+        "NO_OPERATORS": "No operators associated to this station"
+      }
+    },
     "ATEC_FILTER_SELECT_STATION": "Select Station",
     "ATEC_FILTER_SELECT_OPERATOR": "Select Operator",
     "MANAGEMENT_MODULE": "Management Module",

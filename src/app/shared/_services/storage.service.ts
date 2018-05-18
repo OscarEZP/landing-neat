@@ -115,6 +115,6 @@ export class StorageService {
         return result;
     }
     get userDefaultStation(): Station {
-      return  this.userManagement.detailStation.defaults;
+      return this.userManagement.detailStation.defaults;
     }
 }

@@ -25,7 +25,6 @@ $mat-icon-size: 16px;
 }
 
 .label-row-atec-filter {
-  width: 10px;
   font-family: "Noto Sans";
   font-size: 15px;
   text-align: left;
@@ -36,11 +35,11 @@ $mat-icon-size: 16px;
   font-size: 15px;
 }
 .column-atec-filter {
-  padding: 0px 20px;
+  padding: 0 20px;
 }
 
 .column-head-atec-filter {
-  padding: 0px;
+  padding: 0;
   height: 40px;
 }
 
@@ -71,7 +70,7 @@ $mat-icon-size: 16px;
 
   #form-header {
     .mat-form-field-infix{
-      border-top: 0px;
+      border-top: 0;
       padding: 0;
       width: 100%;
     }
@@ -88,6 +87,9 @@ $mat-icon-size: 16px;
         .mat-input-underline.mat-form-field-underline {
           top: 20px;
         }
+      }
+      > div.default {
+        font-weight: bold;
       }
       > div {
         padding: 10px 20px;
@@ -164,7 +166,7 @@ $mat-icon-size: 16px;
     }
     .mat-form-field-can-float.mat-form-field-should-float {
       .mat-form-field-placeholder {
-        transform: translateY(-0.6em) scale(0.75) perspective(100px) translateZ(0.001px);
+        transform: translateY(-.6em) scale(.75) perspective(100px) translateZ(.001px);
       }
     }
     .mat-icon {
