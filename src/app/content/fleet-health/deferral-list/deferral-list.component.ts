@@ -16,6 +16,9 @@ import {HistoricalReportService} from '../historical-report/_services/historical
 import {StorageService} from '../../../shared/_services/storage.service';
 import {MessageService} from '../../../shared/_services/message.service';
 import {FleetHealthResponse} from '../../../shared/_models/task/fleethealth/technical/fleetHealthResponse';
+import {ManagementUser} from '../../../shared/_models/management/managementUser';
+import {TechnicalAnalysis} from '../../../shared/_models/task/fleethealth/technical/technicalAnalysis';
+import {isArray} from 'util';
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -45,6 +48,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private _intervalToRefresh: number;
     private _loading: boolean;
     private _error: boolean;
+    private _haveStationsConf: boolean;
+    private _haveAuthoritiesConf: boolean;
 
     constructor(
         private _messageData: DataService,
@@ -68,6 +73,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
         this.paginatorSubscription = this.getPaginationSubscription();
         this.infiniteScrollService.init();
+        this.haveStationsConf = this.validateStations();
+        this.haveAuthoritiesConf = this.validateAuthorities();
     }
 
     /**
@@ -94,6 +101,32 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         return this.error = true;
     }
 
+
+    /**
+     * Validate stations configuration
+     * @return {boolean}
+     */
+    private validateStations(): boolean {
+
+        const currentUser: ManagementUser = this._localStorage.userManagement;
+
+        if (currentUser === null || currentUser.detailStation === null || currentUser.detailStation.defaults === null || currentUser.detailStation.defaults.code === null || currentUser.detailStation.defaults.code === '') {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Validate authorities configuration
+     * @return {boolean}
+     */
+    private validateAuthorities(): boolean {
+
+        const technicalAnalisys: TechnicalAnalysis[] = this._localStorage.userAtecFilter;
+        console.log('technicalAnalisys', technicalAnalisys);
+        return isArray(technicalAnalisys) && technicalAnalisys.length > 0;
+    }
+
     /**
      * Subscription for get the data list
      * @param signature
@@ -101,6 +134,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private getListSubscription(signature: FleetHealthSearch): Subscription {
         this.loading = true;
+        this.haveAuthoritiesConf = this.validateAuthorities();
+        if (this.haveAuthoritiesConf) {
         return this._apiRestService.search<FleetHealthResponse>(DeferralListComponent.TASK_FLEETHEALTH_ENDPOINT, signature).subscribe(
             (response) => {
                 const ctgInArray = response.fleetHealths.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
@@ -115,8 +150,13 @@ export class DeferralListComponent implements OnInit, OnDestroy {
                 this.infiniteScrollService.length = !isNaN(response.count.items) ? response.count.items : 0;
 
             },
-            () => this.getError()
-        );
+            () => this.getError());
+        } else {
+
+            this.loading = false;
+            return new Subscription();
+        }
+
     }
 
     /**
@@ -347,4 +387,19 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this._paginatorSubscription = value;
     }
 
+    get haveStationsConf(): boolean {
+        return this._haveStationsConf;
+    }
+
+    set haveStationsConf(value: boolean) {
+        this._haveStationsConf = value;
+    }
+
+    get haveAuthoritiesConf(): boolean {
+        return this._haveAuthoritiesConf;
+    }
+
+    set haveAuthoritiesConf(value: boolean) {
+        this._haveAuthoritiesConf = value;
+    }
 }
