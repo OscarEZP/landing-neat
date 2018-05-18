@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 import {MatSnackBar, MatSnackBarConfig} from '@angular/material';
+import {Observable} from 'rxjs/Observable';
+import {MatSnackBarRef} from '@angular/material/snack-bar/typings/snack-bar-ref';
 
 @Injectable()
 export class MessageService {
@@ -29,8 +31,8 @@ export class MessageService {
         }
     }
 
-    openFromComponent(component, config) {
-        this._matSnackBar.openFromComponent(component, config);
+    openFromComponent(component, config): MatSnackBarRef<any> {
+        return this._matSnackBar.openFromComponent(component, config);
     }
 
     dismissSnackBar() {

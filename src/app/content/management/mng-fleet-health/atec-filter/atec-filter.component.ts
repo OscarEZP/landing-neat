@@ -12,6 +12,7 @@ import {Audit} from '../../../../shared/_models/common/audit';
 import {TranslateService} from '@ngx-translate/core';
 import {MessageService} from '../../../../shared/_services/message.service';
 import {isArray} from 'util';
+import {CancelComponent} from '../../../operations/cancel/cancel.component';
 
 @Component({
     selector: 'lsl-atec-filter',
@@ -28,6 +29,8 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
 
     private static CONFIGURATION_SAVED_MESSAGE = 'MANAGEMENT.ATEC_FILTER.CONFIGURATION_SAVED';
 
+    private static MAX_DAYS = 999;
+    private static MIN_DAYS = 1;
 
     private _stations: Station[];
     private _technicalStations: TechnicalStation[];
@@ -45,6 +48,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     private _deferralClassesSub: Subscription;
     private _defaultConfigurationSub: Subscription;
     private _audit: Audit;
+    private _defaultLabel: string;
 
     constructor(
         private _apiRestService: ApiRestService,
@@ -65,6 +69,10 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         });
         this.audit = Audit.getInstance();
         this.audit.username = this._storageService.username;
+        this._translate.get('MANAGEMENT.ATEC_FILTER.MSG.NO_OPERATORS')
+            .toPromise()
+            .then((res: string) => this.defaultLabel = res)
+            .catch(() => this.defaultLabel = '');
     }
 
     ngOnInit() {
@@ -170,6 +178,41 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         });
     }
 
+    public validateDays(days: number): number {
+        if (days > AtecFilterComponent.MAX_DAYS) {
+            return AtecFilterComponent.MAX_DAYS;
+        }
+        if (days < AtecFilterComponent.MIN_DAYS) {
+            return AtecFilterComponent.MIN_DAYS;
+        }
+        return days;
+    }
+
+    public openCancelDialog(): void {
+        if (this.selectedStation) {
+            this._translate.get('OPERATIONS.CANCEL_COMPONENT.MESSAGE')
+                .toPromise()
+                .then(res => {
+                    const ref = this._messageService.openFromComponent(CancelComponent, {
+                        data: {message: res},
+                        horizontalPosition: 'center',
+                        verticalPosition: 'top'
+                    });
+                    ref.afterDismissed()
+                        .toPromise()
+                        .then(r => {
+                            if (ref.instance.response === CancelComponent.ACCEPT) {
+                                this.resetValues();
+                            }
+                        });
+                });
+        } else {
+            this.resetValues();
+        }
+    }
+
+
+
     public updateTabs(authorities: string[]): TechnicalAnalysis[] {
         authorities
             .filter(a => !this.technicalAnalyzes.find(ta => ta.authority === a))
@@ -189,7 +232,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     public cancel(): void {
-        this.resetValues();
+        this.openCancelDialog();
     }
 
     private resetValues(): void {
@@ -201,7 +244,9 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
 
     public getAuthoritiesLbl(station: string): string {
         const ts = this.technicalStations.find(s => s.station === station);
-        return ts ? ts.authorities.sort((r1, r2) => r1 > r2 ? 1 : -1).join(', ') : '';
+        return ts && ts.authorities.length > 0 ?
+            ts.authorities.sort((r1, r2) => r1 > r2 ? 1 : -1).join(', ') :
+            this.defaultLabel;
     }
 
     public submitForm(): void {
@@ -215,10 +260,12 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
                     this.resetValues();
                 })
             ;
+        } else {
+            this.showMessage('MANAGEMENT.ATEC_FILTER.MSG.REQUIRED_FIELDS');
         }
     }
 
-    private showMessage(message: string, time: number): Promise<void> {
+    private showMessage(message: string, time: number = 2500): Promise<void> {
         return this._translate.get(message)
             .toPromise()
             .then((res: string) => {
@@ -344,6 +391,18 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
 
     set audit(value: Audit) {
         this._audit = value;
+    }
+
+    get userDefaultStation(): Station {
+        return this._storageService.userDefaultStation;
+    }
+
+    get defaultLabel(): string {
+        return this._defaultLabel;
+    }
+
+    set defaultLabel(value: string) {
+        this._defaultLabel = value;
     }
 }
 
