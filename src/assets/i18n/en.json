@@ -40,7 +40,10 @@
   "ESS":{
     "NO_CONTINGENCIES_FOUND": "There are no contingencies. Have a nice day!",
     "NO_DEFERRALS_FOUND": "There are no deferrals. Have a nice day!",
-    "NO_HISTORICAL_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters."
+    "NO_HISTORICAL_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters.",
+    "STATIONS_WITHOUT_CONF":"Stations without configuration. Ask your system administrator.",
+    "AUTHORITIES_WITHOUT_CONF":"Authorities without configuration. Ask your system administrator."
+
   },
   "FLEET_HEALTH": {
     "LIST" : {
@@ -78,9 +81,6 @@
     }
   },
   "MANAGEMENT": {
-    "ATEC_FILTER": {
-      "CONFIGURATION_SAVED": "Configuration saved"
-    },
     "ATEC_FILTER_SELECT_STATION": "Select Station",
     "ATEC_FILTER_SELECT_OPERATOR": "Select Operator",
     "MANAGEMENT_MODULE": "Management Module",
