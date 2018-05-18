@@ -91,7 +91,7 @@ $timeline-label-height: 22px;
   .vis-item.related.full {
     background-color: mat-color($primary);
     color: mat-color($primary, default-contrast);
-    border-color: mat-color($mat-palette-custom, tl-deferral-task);
+    border-color: mat-color($primary);
   }
 
   .vis-item.preventive {
