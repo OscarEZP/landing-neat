@@ -16,9 +16,9 @@ import {HistoricalReportService} from '../historical-report/_services/historical
 import {StorageService} from '../../../shared/_services/storage.service';
 import {MessageService} from '../../../shared/_services/message.service';
 import {FleetHealthResponse} from '../../../shared/_models/task/fleethealth/technical/fleetHealthResponse';
-import {ManagementUser} from "../../../shared/_models/management/managementUser";
-import {TechnicalAnalysis} from "../../../shared/_models/task/fleethealth/technical/technicalAnalysis";
-import {isArray} from "util";
+import {ManagementUser} from '../../../shared/_models/management/managementUser';
+import {TechnicalAnalysis} from '../../../shared/_models/task/fleethealth/technical/technicalAnalysis';
+import {isArray} from 'util';
 
 @Component({
     selector: 'lsl-deferral-list',
@@ -135,9 +135,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private getListSubscription(signature: FleetHealthSearch): Subscription {
         this.loading = true;
         this.haveAuthoritiesConf = this.validateAuthorities();
-
-        console.log('haveAuthoritiesConf', this.haveAuthoritiesConf);
-        if (this.haveAuthoritiesConf){
+        if (this.haveAuthoritiesConf) {
         return this._apiRestService.search<FleetHealthResponse>(DeferralListComponent.TASK_FLEETHEALTH_ENDPOINT, signature).subscribe(
             (response) => {
                 const ctgInArray = response.fleetHealths.filter(ctg => ctg.id === this.selectedRegisterPivot.id).length;
@@ -153,7 +151,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
             },
             () => this.getError());
-        }else {
+        } else {
 
             this.loading = false;
             return new Subscription();
