@@ -100,6 +100,7 @@
       "FIRST_NAME": "First name",
       "LAST_NAME": "Last name",
       "DEFAULT_STATION": "Default Station",
+      "OTHER_STATION": "Other Station",
       "ROLE_GROUP": "Role group",
       "ROWS_NOT_ADDED": "Rows doesn't match",
       "TO_GET_STARTED": "To get started",
