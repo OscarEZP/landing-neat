@@ -7,7 +7,7 @@
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
                 <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ATA' | translate }}</div>
-                <div fxFlex="28" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DESCRIPTION' | translate }}</div>
+                <div fxFlex="28" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.FAULT_NAME' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_REFERENCE' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_CLASS' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ALERT' | translate }}</div>
@@ -48,9 +48,9 @@
                         {{ task.ata }}
                     </div>
 
-                    <!-- DESCRIPTION -->
+                    <!-- FAULT_NAME -->
                     <div fxFlex="28" fxLayoutAlign="start center" class="description">
-                        {{(task.description && task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}
+                        {{(task.faultName && task.faultName.length > 65) ? (task.faultName | slice:0:65) + '...' : task.faultName}}
                     </div>
 
                     <!-- DEFERRAL REFERENCE -->

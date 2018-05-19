@@ -51,6 +51,7 @@
       "ALERT": "Alert",
       "BARCODE": "Barcode",
       "DESCRIPTION": "Description",
+      "FAULT_NAME": "Fault Name",
       "DEFERRAL_CLASS": "Deferral Class",
       "DEFERRAL_REFERENCE": "Deferral Reference",
       "DUE_DATE": "Due Date",
@@ -60,6 +61,7 @@
     },
     "REPORT": {
       "DESCRIPTION": "Description",
+      "FAULT_NAME": "Fault Name",
       "ERROR": {
         "INVALID_ATA": "ATA is invalid",
         "REQUIRED_ATA": "ATA is required",
