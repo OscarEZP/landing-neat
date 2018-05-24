@@ -273,6 +273,10 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
             });
     }
 
+    public getDefaultDetail(index: any): AnalysisDetail[] {
+        return this.defaultConfiguration.map(c => new AnalysisDetail(c.deferral, c.day));
+    }
+
     get technicalStations(): TechnicalStation[] {
         return this._technicalStations;
     }
