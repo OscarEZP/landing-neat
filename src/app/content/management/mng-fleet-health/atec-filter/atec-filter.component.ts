@@ -28,6 +28,9 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     private static TECHNICAL_ANALYSIS_SAVE_ALL_ENDPOINT = 'technicalAnalysisSaveAll';
 
     private static CONFIGURATION_SAVED_MESSAGE = 'MANAGEMENT.ATEC_FILTER.CONFIGURATION_SAVED';
+    private static NO_OPERATORS_MESSAGE = 'MANAGEMENT.ATEC_FILTER.MSG.NO_OPERATORS';
+    private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
+    private static REQUIRED_FIELDS_MESSAGE = 'MANAGEMENT.ATEC_FILTER.MSG.REQUIRED_FIELDS';
 
     private static MAX_DAYS = 999;
     private static MIN_DAYS = 1;
@@ -69,7 +72,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         });
         this.audit = Audit.getInstance();
         this.audit.username = this._storageService.username;
-        this._translate.get('MANAGEMENT.ATEC_FILTER.MSG.NO_OPERATORS')
+        this._translate.get(AtecFilterComponent.NO_OPERATORS_MESSAGE)
             .toPromise()
             .then((res: string) => this.defaultLabel = res)
             .catch(() => this.defaultLabel = '');
@@ -190,7 +193,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
 
     public openCancelDialog(): void {
         if (this.selectedStation) {
-            this._translate.get('OPERATIONS.CANCEL_COMPONENT.MESSAGE')
+            this._translate.get(AtecFilterComponent.CANCEL_COMPONENT_MESSAGE)
                 .toPromise()
                 .then(res => {
                     const ref = this._messageService.openFromComponent(CancelComponent, {
@@ -259,7 +262,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
                 })
             ;
         } else {
-            this.showMessage('MANAGEMENT.ATEC_FILTER.MSG.REQUIRED_FIELDS');
+            this.showMessage(AtecFilterComponent.REQUIRED_FIELDS_MESSAGE);
         }
     }
 
@@ -271,7 +274,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
             });
     }
 
-    public getDefaultDetail(index: any): AnalysisDetail[] {
+    public getDefaultDetail(): AnalysisDetail[] {
         return this.defaultConfiguration.map(c => new AnalysisDetail(c.deferral, c.day)).slice();
     }
 
