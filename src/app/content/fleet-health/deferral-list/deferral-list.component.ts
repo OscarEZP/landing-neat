@@ -123,7 +123,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private validateAuthorities(): boolean {
 
         const technicalAnalisys: TechnicalAnalysis[] = this._localStorage.userAtecFilter;
-        console.log('technicalAnalisys', technicalAnalisys);
         return isArray(technicalAnalisys) && technicalAnalisys.length > 0;
     }
 

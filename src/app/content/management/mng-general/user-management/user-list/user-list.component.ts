@@ -9,6 +9,7 @@ import {UserSearch} from '../../../../../shared/_models/management/userSearch';
 import {Subscription} from 'rxjs/Subscription';
 import {MatPaginator} from '@angular/material';
 import {tap} from 'rxjs/operators';
+import {Station} from "../../../../../shared/_models/management/station";
 
 @Component({
     selector: 'lsl-user-list',
@@ -94,6 +95,15 @@ export class UserListComponent implements OnInit {
         );
     }
 
+    /**
+     * Display Label Other Stations
+     * @param {Station[]} others
+     * @returns {string}
+     */
+    public getOthersStationLbl(others: Station[]): string {
+        return others && others.length > 0 ?
+            others.sort((r1, r2) => r1.code > r2.code ? 1 : -1).map(value => value.code).join(', ') : '' ;
+    }
     /**
      * Method for check list status with two variables, data loaded and loading process,
      * if there is not data and the list is not loading, return false

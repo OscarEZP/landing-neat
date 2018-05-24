@@ -6,6 +6,7 @@
     <div fxFlex="20" fxLayoutAlign="start left">{{ 'MANAGEMENT.USER.USER_EMAIL' | translate }}</div>
     <div fxFlex="20" fxLayoutAlign="start left">{{ 'MANAGEMENT.USER.ROLE_GROUP' | translate }}</div>
     <div fxFlex="20" fxLayoutAlign="start left">{{ 'MANAGEMENT.USER.DEFAULT_STATION' | translate }}</div>
+    <div fxFlex="30" fxLayoutAlign="start left">{{ 'MANAGEMENT.USER.OTHER_STATION' | translate }}</div>
   </header>
   <main>
     <div fxLayout="row" *ngFor="let user of userList | async">
@@ -23,6 +24,7 @@
       <div fxLayout="column" fxLayoutAlign="left" fxFlex="20">
         {{user.detailStation.defaults.code}}
       </div>
+      <div fxLayout="column" fxLayoutAlign="left" fxFlex="30">{{getOthersStationLbl(user.detailStation.others)}}</div>
     </div>
   </main>
 </div>

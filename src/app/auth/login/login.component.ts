@@ -118,7 +118,6 @@ export class LoginComponent implements OnInit {
             }
         }).catch(error => this._messageService.openSnackBar(error)).then(value2 => {
             this._authService.getUserAtecFilter(this._authService.getTechnicalAnalysisSearchSignature());
-            console.log('useratecfilter');
         });
     }
 

@@ -78,10 +78,10 @@
     </div>
     <div mat-dialog-actions class="row-width-atec-filter" fxLayoutAlign="end">
         <div class="buttons-atec-filter">
-            <button id="btn-atec-filter-form-cancel" (click)="cancel()" type="button" mat-button>
+            <button  [disabled]="selectedStation.station === null" id="btn-atec-filter-form-cancel" (click)="cancel()" type="button" mat-button>
                 {{'BUTTONS.CANCEL'|translate}}
             </button>
-            <button id="btn-atec-filter-form-submit" type="submit" mat-button mat-raised-button color="primary">
+            <button  [disabled]="selectedStation.station === null" id="btn-atec-filter-form-submit" type="submit" mat-button mat-raised-button color="primary">
                 {{'BUTTONS.APPLY'|translate}}
             </button>
         </div>

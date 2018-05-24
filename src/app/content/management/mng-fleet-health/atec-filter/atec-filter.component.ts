@@ -253,7 +253,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     public submitForm(): void {
         if (this.atecForm.valid) {
             this._apiRestService
-                .add<any>(AtecFilterComponent.TECHNICAL_ANALYSIS_SAVE_ALL_ENDPOINT, this.technicalAnalyzes, this.selectedStation.station)
+                .add<any>(AtecFilterComponent.TECHNICAL_ANALYSIS_SAVE_ALL_ENDPOINT, this.technicalAnalyzes)
                 .toPromise()
                 .then(() => {
                     this.authoritiesSub = this.getAuthorities();

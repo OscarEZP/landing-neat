@@ -18,30 +18,19 @@
     </header>
     <hr>
     <div class="content">
-        <div id="description">
-            <h2>{{'FLEET_HEALTH.REPORT.DESCRIPTION' | translate}}</h2>
-            <p>{{historicalTask.description}}</p>
+        <div id="fault-name">
+            <h2>{{'FLEET_HEALTH.REPORT.FAULT_NAME' | translate}}</h2>
+            <p>{{historicalTask.faultName}}</p>
         </div>
-        <div id="job-steps" *ngIf="historicalTask.steps.length > 0">
-            <hr class="segment">
-            <h2>{{'FLEET_HEALTH.REPORT.JOB_STEPS' | translate}}</h2>
+        <div id="description">
             <mat-accordion>
-                <mat-expansion-panel *ngFor="let step of historicalTask.steps; let i = index" [expanded]="i === 0">
+                <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
-                            {{'FLEET_HEALTH.REPORT.JOB_STEP' | translate}} {{step.ord}} | {{step.status}}
+                            {{'FLEET_HEALTH.REPORT.DESCRIPTION' | translate}}
                         </mat-panel-title>
-                        <mat-panel-description>
-                             {{ step.createDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }}
-                        </mat-panel-description>
                     </mat-expansion-panel-header>
-                    <div [innerHtml]="step.description"></div>
-                    <ol *ngIf="step.stepLabours.length > 0">
-                        <li *ngFor="let labour of step.stepLabours">
-                            <span>Id: {{labour.labourId}} | Creation: {{labour.createDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}} | Update: {{labour.reviseDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</span>
-                            <div [innerHtml]="labour.notes"></div>
-                        </li>
-                    </ol>
+                    <div [innerHtml]="historicalTask.description?historicalTask.description:'-'"></div>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
@@ -61,6 +50,29 @@
                     </mat-expansion-panel-header>
                     <p>{{action.name.firstName}} {{action.name.lastName}}</p>
                     <div [innerHtml]="action.description"></div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+        <div id="job-steps" *ngIf="historicalTask.steps.length > 0">
+            <hr class="segment">
+            <h2>{{'FLEET_HEALTH.REPORT.JOB_STEPS' | translate}}</h2>
+            <mat-accordion>
+                <mat-expansion-panel *ngFor="let step of historicalTask.steps; let i = index" [expanded]="i === 0">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{'FLEET_HEALTH.REPORT.JOB_STEP' | translate}} {{step.ord}} | {{step.status}}
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            {{ step.createDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm' }}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div [innerHtml]="step.description"></div>
+                    <ol *ngIf="step.stepLabours.length > 0">
+                        <li *ngFor="let labour of step.stepLabours">
+                            <span>Id: {{labour.labourId}} | Creation: {{labour.createDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}} | Update: {{labour.reviseDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</span>
+                            <div [innerHtml]="labour.notes"></div>
+                        </li>
+                    </ol>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>

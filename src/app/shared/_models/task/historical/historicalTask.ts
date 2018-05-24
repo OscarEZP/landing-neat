@@ -9,6 +9,7 @@ export class HistoricalTask {
     private _ata: string;
     private _creationDate: TimeInstant;
     private _description: string;
+    private _faultName: string;
     private _correctiveActions: CorrectiveAction[];
     private _steps: Step[];
 
@@ -20,6 +21,7 @@ export class HistoricalTask {
         this._correctiveActions = [];
         this._steps = [];
         this._creationDate = TimeInstant.getInstance();
+        this._faultName = '';
 
     }
 
@@ -74,6 +76,14 @@ export class HistoricalTask {
 
     set steps(value: Step[]) {
         this._steps = value;
+    }
+
+    get faultName(): string {
+        return this._faultName;
+    }
+
+    set faultName(value: string) {
+        this._faultName = value;
     }
 }
 

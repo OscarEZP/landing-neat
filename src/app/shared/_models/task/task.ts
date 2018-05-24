@@ -9,6 +9,7 @@ export class Task {
     private _createDate: TimeInstant;
     private _deferralClazz: string;
     private _deferralReference: string;
+    private _faultName: string;
     private _description: string;
     private _dueDate: TimeInstant;
     private _estimatedDuration: number;
@@ -276,5 +277,13 @@ export class Task {
 
     set authority(value: string) {
         this._authority = value;
+    }
+
+    get faultName(): string {
+        return this._faultName;
+    }
+
+    set faultName(value: string) {
+        this._faultName = value;
     }
 }

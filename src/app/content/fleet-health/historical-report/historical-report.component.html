@@ -9,7 +9,7 @@
             </button>
         </div>
         <h2>
-            {{task.description}}
+            {{task.faultName}}
         </h2>
     </div>
     <hr>
@@ -21,7 +21,7 @@
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
             <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ATA' | translate }}</div>
-            <div fxFlex="28" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DESCRIPTION' | translate }}</div>
+            <div fxFlex="28" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.FAULT_NAME' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_REFERENCE' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_CLASS' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ALERT' | translate }}</div>
@@ -39,8 +39,8 @@
                 <div fxFlex="7" fxLayoutAlign="start center">{{ task.dueDate.epochTime | utcDate | date: 'dd-MM-yyyy' }}</div>
                 <!-- ATA -->
                 <div fxFlex="5" fxLayoutAlign="start center">{{ task.ata }}</div>
-                <!-- DESCRIPTION -->
-                <div fxFlex="28" fxLayoutAlign="start center" class="description">{{(task.description && task.description.length > 65) ? (task.description | slice:0:65) + '...' : task.description }}</div>
+                <!-- FAULT_NAME -->
+                <div fxFlex="28" fxLayoutAlign="start center" class="description">{{(task.faultName && task.faultName.length > 65) ? (task.faultName | slice:0:65) + '...' : task.faultName }}</div>
                 <!-- DEFERRAL REFERENCE -->
                 <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">{{(task.deferralReference && task.deferralReference.length > 30) ? (task.deferralReference | slice:0:30) + '...' : task.deferralReference }}</div>
                 <!-- DEFERRAL CLASS -->
