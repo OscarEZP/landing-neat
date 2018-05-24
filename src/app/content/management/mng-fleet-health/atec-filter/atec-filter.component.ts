@@ -211,8 +211,6 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         }
     }
 
-
-
     public updateTabs(authorities: string[]): TechnicalAnalysis[] {
         authorities
             .filter(a => !this.technicalAnalyzes.find(ta => ta.authority === a))
@@ -274,7 +272,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     public getDefaultDetail(index: any): AnalysisDetail[] {
-        return this.defaultConfiguration.map(c => new AnalysisDetail(c.deferral, c.day));
+        return this.defaultConfiguration.map(c => new AnalysisDetail(c.deferral, c.day)).slice();
     }
 
     get technicalStations(): TechnicalStation[] {
