@@ -202,10 +202,6 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         return days;
     }
 
-    public logChanges(value: any) {
-        console.log(value);
-    }
-
     public openCancelDialog(): void {
         if (this.edited) {
             this._translate.get(AtecFilterComponent.CANCEL_COMPONENT_MESSAGE)
@@ -308,10 +304,6 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
             .then((res: string) => {
                 this._messageService.openSnackBar(res, time);
             });
-    }
-
-    public getDefaultDetail(): AnalysisDetail[] {
-        return this.defaultConfiguration.map(c => new AnalysisDetail(c.deferral, c.day)).slice();
     }
 
     get technicalStations(): TechnicalStation[] {
