@@ -43,7 +43,7 @@ export class TimelineTask {
         this._className = this.generateClassName();
         this._group = task.barcode;
         this._type = '';
-        this._content = this.getContent();
+        this._content = '';
     }
 
     public generateClassName(): string {
