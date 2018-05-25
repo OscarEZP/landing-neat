@@ -52,6 +52,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     private _defaultConfigurationSub: Subscription;
     private _audit: Audit;
     private _defaultLabel: string;
+    private _edited: boolean;
 
     constructor(
         private _apiRestService: ApiRestService,
@@ -85,6 +86,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         this.authoritiesNoRelatedSub = this.getAuthoritiesNotRelated();
         this.deferralClassesSub = new Subscription();
         this.defaultConfigurationSub = this.getDefaultConfiguration();
+        this.edited = false;
     }
 
     ngOnDestroy() {
@@ -148,7 +150,15 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
                     return r;
                 });
                 this.technicalAnalyzes = res;
-                this.originalAnalyzes = res;
+                this.originalAnalyzes = res.map(r =>
+                    new TechnicalAnalysis(
+                        r.station,
+                        r.authority,
+                        r.detail.map(d => new AnalysisDetail(d.deferral, d.day)),
+                        r.audit,
+                        r.isDefault
+                    )
+                );
             });
     }
 
@@ -186,13 +196,18 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
             return AtecFilterComponent.MAX_DAYS;
         }
         if (days < AtecFilterComponent.MIN_DAYS) {
-            return AtecFilterComponent.MIN_DAYS;
+            return 0;
         }
+
         return days;
     }
 
+    public logChanges(value: any) {
+        console.log(value);
+    }
+
     public openCancelDialog(): void {
-        if (this.selectedStation) {
+        if (this.edited) {
             this._translate.get(AtecFilterComponent.CANCEL_COMPONENT_MESSAGE)
                 .toPromise()
                 .then(res => {
@@ -214,13 +229,33 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         }
     }
 
+    private markAsEdited() {
+        this.edited = this.technicalAnalyzes.filter(ta => !this.originalAnalyzes.find(oa => oa.authority === ta.authority )).length > 0;
+        if (!this.edited) {
+            this.edited = !!this.technicalAnalyzes.find(ta =>
+                !!this.originalAnalyzes
+                    .find(oa => ta.authority === oa.authority)
+                    .detail
+                    .find(d => !!ta.detail.find(tad => d.deferral === tad.deferral && d.day !== tad.day))
+            );
+        }
+    }
+
     public updateTabs(authorities: string[]): TechnicalAnalysis[] {
         authorities
             .filter(a => !this.technicalAnalyzes.find(ta => ta.authority === a))
             .forEach(a => {
                 const originalAnalysis = this.originalAnalyzes.find(oa => oa.authority === a);
                 if (!originalAnalysis) {
-                    this.technicalAnalyzes.push(new TechnicalAnalysis(this.selectedStation.station, a, this.defaultConfiguration, this.audit, true));
+                    this.technicalAnalyzes.push(
+                        new TechnicalAnalysis(
+                            this.selectedStation.station,
+                            a,
+                            this.defaultConfiguration.map(v => new AnalysisDetail(v.deferral, v.day)),
+                            this.audit,
+                            true
+                        )
+                    );
                 } else {
                     this.technicalAnalyzes.push(originalAnalysis);
                 }
@@ -228,11 +263,11 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
 
         this.technicalAnalyzes = this.technicalAnalyzes
             .filter(ta => !!authorities.find(a => a === ta.authority));
-
         return this.technicalAnalyzes;
     }
 
     public cancel(): void {
+        this.markAsEdited();
         this.openCancelDialog();
     }
 
@@ -241,6 +276,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         this.selectedAuthorities = [];
         this.technicalAnalyzes = [];
         this.originalAnalyzes = [];
+        this.edited = false;
     }
 
     public getAuthoritiesLbl(station: string): string {
@@ -343,11 +379,11 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
     }
 
     get originalAnalyzes(): TechnicalAnalysis[] {
-        return this._originalAnalyzes;
+        return this._originalAnalyzes.sort((r1, r2) => r1.authority > r2.authority ? 1 : -1);
     }
 
     set originalAnalyzes(value: TechnicalAnalysis[]) {
-        this._originalAnalyzes = isArray(value) ? value.sort((r1, r2) => r1.authority > r2.authority ? 1 : -1) : [];
+        this._originalAnalyzes = isArray(value) ? value.map(v => Object.assign(TechnicalAnalysis.getInstance(), v)) : [];
     }
 
     get authoritiesSub(): Subscription {
@@ -408,6 +444,14 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
 
     set defaultLabel(value: string) {
         this._defaultLabel = value;
+    }
+
+    get edited(): boolean {
+        return this._edited;
+    }
+
+    set edited(value: boolean) {
+        this._edited = value;
     }
 }
 

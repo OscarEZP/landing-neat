@@ -50,17 +50,17 @@
                     </div>
                     <div fxLayout="column" class="column-atec-filter column-input-atec-filter column-due-date" fxFlex="20">
                         <mat-form-field>
-                            <input [disabled]="!detail.day" #days id="in-atec-filter-{{detail.deferral.toLowerCase()}}"
+                            <input [disabled]="detail.day === 0" #days id="in-atec-filter-{{detail.deferral.toLowerCase()}}"
                                    class="label-placeholder-atec-filter mat-form-field-infix"
+                                   type="number"
                                    placeholder="Days"
                                    matInput
                                    maxlength="3"
-                                   type="number"
                                    min="1"
                                    max="999"
                                    [(ngModel)]="detail.day"
                                    [ngModelOptions]="{standalone: true}"
-                                   (change)="detail.day = validateDays(detail.day)"
+                                   (blur)="detail.day = validateDays(detail.day)"
                             />
                         </mat-form-field>
                     </div>

@@ -3,7 +3,7 @@ export class AnalysisDetail {
     private _deferral: string;
     private _day: number;
 
-   private constructor(deferral: string, day: number) {
+   public constructor(deferral: string, day: number) {
         this._day = day;
         this._deferral = deferral;
     }
