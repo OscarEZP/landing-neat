@@ -1,21 +1,21 @@
 export class Pagination {
 
-    private _offSet: number;
+    private _offset: number;
     private _limit: number;
 
     constructor( offset: number, limit: number) {
-        this.offSet= offset;
+        this.offset = offset;
         this.limit = limit;
     }
-    static getInstance():Pagination{
-        return new Pagination(null,null);
+    static getInstance(): Pagination {
+        return new Pagination(null, null);
     }
-    get offSet(): number {
-        return this._offSet;
+    get offset(): number {
+        return this._offset;
     }
 
-    set offSet(value: number) {
-        this._offSet = value;
+    set offset(value: number) {
+        this._offset = value;
     }
 
     get limit(): number {

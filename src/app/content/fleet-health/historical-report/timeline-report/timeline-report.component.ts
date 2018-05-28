@@ -43,6 +43,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _analysis: Analysis;
     private _clickEvent: object;
     private _listSubscription: Subscription;
+    private _dataSet: DataSet<any>;
 
     constructor(
         private _translate: TranslateService,
@@ -60,7 +61,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.timelineData = this.getTimelineInitData();
-        this.timeline = this.createTimeline(this.timelineData);
+        this.createTimeline(this.timelineData);
         this.clickEvent = null;
     }
 
@@ -91,26 +92,22 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @param {TimelineTask[]} data
      * @returns {Timeline}
      */
-    private createTimeline(data: TimelineTask[]): Timeline {
+    private createTimeline(data: TimelineTask[]) {
         data = data.map(task => task.getJson());
-
-        const items = new DataSet(data);
         const dataMinDate = this.taskList
             .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1)
             .shift();
         this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime)
             .utc()
             .subtract(TimelineReportComponent.DAYS_FROM, 'days');
-
-        let timeline: Timeline;
         if (this.timeline) {
             this.tooltip = false;
-            timeline = this.timeline;
-            timeline.setData({items: items});
+            this.dataSet.update(data);
+            this.timeline.setData({items: this.dataSet});
         } else {
-            timeline = this.getNewTimeline(items);
+            this.dataSet = new DataSet(data);
+            this.timeline = this.getNewTimeline(this.dataSet);
         }
-        return timeline;
     }
 
     /**
@@ -134,7 +131,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             }
         });
         timeline.on('rangechange', () => {
-            this.showTooltip();
+            this.tooltip = false;
         });
         return timeline;
     }
@@ -173,7 +170,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Update the ATA
+     * Process after update ATA
      * @param {boolean} result
      */
     public checkCorrectedATA(result: boolean) {
@@ -193,11 +190,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                     return new TimelineTask(task, task.id === this.activeTask.id, true, this.validateApply(task.review));
                 });
                 const findTask = this.timelineData.find(value => value.barcode === this.activeTask.barcode);
-
                 if (typeof findTask === 'undefined') {
                     this.timelineData.push(new TimelineTask(this.activeTask, true, true));
                 }
-                this.timeline = this.createTimeline(this.timelineData);
+                this.createTimeline(this.timelineData);
                 this.onAtaCorrected.emit(result);
             });
         }
@@ -205,7 +201,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private validateApply(review: Review): boolean {
         let apply: boolean = null;
-        if (review != null) {
+        if (review !== null) {
             if (review.apply) {
                 this.updateReview(review);
             }
@@ -233,7 +229,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * Show tooltip if there is a TimelineTask selected and isn't the active task (first task)
      */
     public showTooltip(): void {
-        this.tooltip = !!(this.timelineTaskSelected && !this.timelineTaskSelected['data']['active']);
+        const timelineSelected = this.timelineTaskSelected;
+        this.tooltip = !!(timelineSelected && !timelineSelected['data']['active']);
+        if (this.tooltip) {
+            this.getTooltipStyle();
+        }
     }
 
     /**
@@ -241,19 +241,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @param {Review} review
      */
     public refreshOnApply(review: Review): void {
-        let updatedTimelineTask = TimelineTask.getInstance();
-        const newData = this.timelineData.map(item => {
-            if (item.task.barcode === review.barcode) {
-                updatedTimelineTask = new TimelineTask(item.task, false, false, review.apply === true);
-                return updatedTimelineTask;
-            } else {
-                return item;
-            }
-        });
-        this.timelineData = newData;
-        this.timeline = this.createTimeline(newData);
+        const itemUpdated = this.timelineData
+            .find(item => item.task.barcode === review.barcode);
+        itemUpdated.apply = review.apply;
+        itemUpdated.className = itemUpdated.generateClassName();
+        this.timelineData = this.timelineData.map(v => v.barcode === itemUpdated.barcode ? itemUpdated : v );
+        this.createTimeline([itemUpdated]);
         this.updateReview(review);
-        this.onAnalyzedTaskSelected.emit(updatedTimelineTask);
     }
 
     /**
@@ -381,5 +375,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     set listSubscription(value: Subscription) {
         this._listSubscription = value;
+    }
+
+    get dataSet(): DataSet<any> {
+        return this._dataSet;
+    }
+
+    set dataSet(value: DataSet<any>) {
+        this._dataSet = value;
     }
 }

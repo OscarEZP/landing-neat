@@ -1,2 +1,2 @@
-<lsl-tooltip (onApply)="refreshOnApply($event)"  [timelineTaskData]="timelineTaskSelected" class="tooltip-container" *ngIf="tooltip" [ngStyle]="getTooltipStyle().getJson()"></lsl-tooltip>
+<lsl-tooltip (onApply)="refreshOnApply($event)"  [timelineTaskData]="timelineTaskSelected" class="tooltip-container" *ngIf="tooltip" [ngStyle]="tooltipStyle.getJson()"></lsl-tooltip>
 <lsl-ata-correction (corrected)="checkCorrectedATA($event)"></lsl-ata-correction>
