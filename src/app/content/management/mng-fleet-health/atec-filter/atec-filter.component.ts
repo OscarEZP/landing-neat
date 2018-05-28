@@ -155,6 +155,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
                         r.station,
                         r.authority,
                         r.detail.map(d => new AnalysisDetail(d.deferral, d.day)),
+                        null,
                         r.audit,
                         r.isDefault
                     )
@@ -248,6 +249,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
                             this.selectedStation.station,
                             a,
                             this.defaultConfiguration.map(v => new AnalysisDetail(v.deferral, v.day)),
+                            null,
                             this.audit,
                             true
                         )

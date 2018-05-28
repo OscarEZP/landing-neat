@@ -17,7 +17,7 @@ export class AuthService {
     static LOGIN_ENDPOINT = 'login';
     static MANAGEMENT_USERS_ENDPOINT = 'managementUsers';
     static MANAGEMENT_ENDPOINT = 'management';
-    static MANAGEMENT_ATEC_FILTER = 'technicalAnalysisSearch';
+    static MANAGEMENT_ATEC_FILTER = 'technicalAnalysisUserSearch';
     static USER_MODE = 'user';
     static ADMIN_MODE = 'admin';
 

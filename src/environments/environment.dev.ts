@@ -46,6 +46,7 @@ export const environment = {
         tasksFleethealthSearchCount: ':9006/api/v1/tasks/fleethealth/_search/count',
         tasksFleethealthSearch: ':9006/api/v1/tasks/fleethealth/_search',
         technicalAnalysisSearch: ':9015/api/v1/management/tech-analysis/_search',
+        technicalAnalysisUserSearch: ':9015/api/v2/management/tech-analysis/_search',
         technicalAnalysisSave:  ':9015/api/v1/management/tech-analysis',
         technicalAnalysisSaveAll:  ':9015/api/v1/management/tech-analysis/_save-all',
         technicalConfiguredAuthoritySearch: ':9015/api/v1/management/tech-station/configured-authority/_search',

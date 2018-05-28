@@ -46,6 +46,7 @@ export const environment = {
         tasksFleethealthDone: '/api/v1/tasks/fleethealth/manualstate/_apply',
         tasksFleethealthSearch: '/api/v1/tasks/fleethealth/_search',
         technicalAnalysisSearch: '/api/v1/management/tech-analysis/_search',
+        technicalAnalysisUserSearch: '/api/v2/management/tech-analysis/_search',
         technicalAnalysisSave:  '/api/v1/management/tech-analysis',
         technicalAnalysisSaveAll:  '/api/v1/management/tech-analysis/_save-all',
         technicalConfiguredAuthoritySearch: '/api/v1/management/tech-station/configured-authority/_search',

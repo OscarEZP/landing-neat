@@ -6,19 +6,21 @@ export class TechnicalAnalysis {
     private _station: string;
     private _authority: string;
     private _detail: AnalysisDetail[];
+    private _detailEncoded: string;
     private _audit: Audit;
     private _isDefault: boolean;
 
-    public constructor(station: string = '', authority: string = '', detail: AnalysisDetail[] = [], audit: Audit = Audit.getInstance(), isDefault: boolean = false) {
+    public constructor(station: string = '', authority: string = '', detail: AnalysisDetail[] = [], detailEncoded: string = '', audit: Audit = Audit.getInstance(), isDefault: boolean = false) {
         this._station = station;
         this._authority = authority;
         this._detail = detail;
+        this._detailEncoded = detailEncoded;
         this._audit = audit;
         this._isDefault = isDefault;
     }
 
     static getInstance(): TechnicalAnalysis {
-        return new TechnicalAnalysis(null, null, [], Audit.getInstance(), true);
+        return new TechnicalAnalysis(null, null, [], null, Audit.getInstance(), true);
     }
     get station(): string {
         return this._station;
@@ -42,6 +44,14 @@ export class TechnicalAnalysis {
 
     set detail(value: AnalysisDetail[]) {
         this._detail = value;
+    }
+
+    get detailEncoded(): string {
+        return this._detailEncoded;
+    }
+
+    set detailEncoded(value: string) {
+        this._detailEncoded = value;
     }
 
     get audit(): Audit {
