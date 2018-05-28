@@ -199,6 +199,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Validation when a review is not null
+     * @param {Review} review
+     * @returns {boolean}
+     */
     private validateApply(review: Review): boolean {
         let apply: boolean = null;
         if (review !== null) {
@@ -262,7 +267,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             findReview.apply = review.apply;
         }
     }
-
 
     /**
      * Handler for error process on api request
