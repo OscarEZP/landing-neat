@@ -1,11 +1,11 @@
 import {TimeInstant} from '../../timeInstant';
-import {Name} from "../../common/name";
+import {Name} from '../../common/name';
 
 
 export class StepLabour {
-    private _labourId:number;
-    private _name:Name;
-    private _notes:string;
+    private _labourId: number;
+    private _name: Name;
+    private _notes: string;
     private _createDate: TimeInstant;
     private _reviseDate: TimeInstant;
 

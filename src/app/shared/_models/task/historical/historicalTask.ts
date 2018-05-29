@@ -1,6 +1,7 @@
 import {TimeInstant} from '../../timeInstant';
 import {CorrectiveAction} from './correctiveAction';
 import {Step} from './step';
+import {Part} from './part';
 
 export class HistoricalTask {
 
@@ -12,6 +13,7 @@ export class HistoricalTask {
     private _faultName: string;
     private _correctiveActions: CorrectiveAction[];
     private _steps: Step[];
+    private _parts: Part[];
 
 
    private constructor() {
@@ -22,6 +24,7 @@ export class HistoricalTask {
         this._steps = [];
         this._creationDate = TimeInstant.getInstance();
         this._faultName = '';
+        this._parts = [];
 
     }
 
@@ -84,6 +87,16 @@ export class HistoricalTask {
 
     set faultName(value: string) {
         this._faultName = value;
+    }
+
+    get parts(): Part[] {
+        return this._parts;
+    }
+
+    set parts(value: Part[]) {
+        this._parts = value ?  value.map(v =>
+            Object.assign(Part.getInstance(), v )
+        ) : [];
     }
 }
 
