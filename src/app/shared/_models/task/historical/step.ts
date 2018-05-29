@@ -1,13 +1,13 @@
 import {TimeInstant} from '../../timeInstant';
-import {StepLabour} from "./stepLabour";
+import {StepLabour} from './stepLabour';
 
 
 export class Step {
-    private _barcode:string;
-    private _id:number;
-    private _ord:number;
-    private _status:string;
-    private _description:string;
+    private _barcode: string;
+    private _id: number;
+    private _ord: number;
+    private _status: string;
+    private _description: string;
     private _createDate: TimeInstant;
     private _reviseDate: TimeInstant;
     private _stepLabours: StepLabour[];
@@ -16,7 +16,7 @@ export class Step {
         this._barcode = '';
         this._id = null;
         this._ord = null;
-        this._status= '';
+        this._status = '';
         this._description = '';
         this._createDate = TimeInstant.getInstance();
         this._reviseDate = TimeInstant.getInstance();

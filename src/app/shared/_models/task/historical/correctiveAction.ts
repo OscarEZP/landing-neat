@@ -1,19 +1,19 @@
 import {TimeInstant} from '../../timeInstant';
-import {Name} from "../../common/name";
+import {Name} from '../../common/name';
 
 
 export class CorrectiveAction {
-    private _id:number;
-    private _barcode:string;
-    private _name:Name;
-    private _description:string;
+    private _id: number;
+    private _barcode: string;
+    private _name: Name;
+    private _description: string;
     private _createDate: TimeInstant;
     private _reviseDate: TimeInstant;
 
 
    private constructor() {
         this._id = null;
-        this._barcode='';
+        this._barcode = '';
         this._name = Name.getInstance();
         this._description = '';
         this._createDate = TimeInstant.getInstance();
