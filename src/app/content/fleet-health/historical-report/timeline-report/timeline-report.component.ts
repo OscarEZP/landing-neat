@@ -24,7 +24,9 @@ import {TimelineOptions} from '../../../../shared/_models/task/timelineOptions';
 export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private static DAYS_FROM = 30;
-    private static DAYS_TO = 1;
+    private static ZOOM_MIN_DAYS = 15;
+    private static ZOOM_MAX_MONTH = 12;
+
     private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
 
     @Output()
@@ -43,7 +45,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _analysis: Analysis;
     private _clickEvent: object;
     private _listSubscription: Subscription;
-    private _dataSet: DataSet<any>;
+    private _dataSet: DataSet<object>;
 
     constructor(
         private _translate: TranslateService,
@@ -81,8 +83,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return new TimelineOptions(
             this.minDate.format('YYYY-MM-DD'),
             maxTime.format('YYYY-MM-DD'),
-            15,
-            30 * 12,
+            TimelineReportComponent.ZOOM_MIN_DAYS,
+            TimelineReportComponent.ZOOM_MAX_MONTH * 30,
             true
         );
     }
@@ -381,11 +383,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this._listSubscription = value;
     }
 
-    get dataSet(): DataSet<any> {
+    get dataSet(): DataSet<object> {
         return this._dataSet;
     }
 
-    set dataSet(value: DataSet<any>) {
+    set dataSet(value: DataSet<object>) {
         this._dataSet = value;
     }
 }
