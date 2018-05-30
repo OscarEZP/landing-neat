@@ -21,7 +21,7 @@
         <div fxLayout="row" class="sections-content">
 
             <div fxFlex="33" fxLayout="column" class="operation-container">
-                <span class="title-section bottom-margin-10">{{'OPERATIONS.CONTINGENCY_FORM.OPERATION_INFO'|translate}}</span>
+                <div class="title-section" fxLayout="row" fxLayoutGap="20px">{{'OPERATIONS.CONTINGENCY_FORM.OPERATION_INFO'|translate}}</div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px">
 
                     <mat-form-field fxFlex="20">
@@ -151,7 +151,7 @@
                         <label fxFlex="10">UTC</label>
                         <mat-form-field fxFlex="25">
                             <input id="in-contingency-form-slot-date" matInput [matDatepicker]="slotDatePicker"
-                                   placeholder="Slot Date"
+                                   placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.SLOT_DATE' | translate }}"
                                    [(ngModel)]="this.contingencyDateModel[1].dateObj"
                                    [min]="this.contingencyDateModel[2].dateObj"
                                    [max]="this.contingencyDateModel[3].dateObj"
@@ -178,7 +178,7 @@
                         <label fxFlex="10">UTC</label>
                         <mat-form-field fxFlex="25">
                             <input id="in-contingency-form-flight-date" matInput [matDatepicker]="picker"
-                                   placeholder="Flight Date"
+                                   placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.FLIGHT_DATE' | translate }}"
                                    [(ngModel)]="this.contingencyDateModel[0].dateObj"
                                    [formControl]="contingencyForm.controls['dt']" readonly
                                    name="dt">
@@ -190,7 +190,7 @@
                 </div>
                 <div fxLayout="column" fxLayoutGap="15px">
 
-                    <span class="label-element">Informer * :</span>
+                    <label class="label-element">{{'OPERATIONS.CONTINGENCY_FORM.INFORMER'|translate}} * :</label>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
                         <mat-radio-group id="rad-contingency-form-informer" fxLayoutGap="20px"
                                          [formControl]="contingencyForm.controls['informer']" [(ngModel)]="contingency.informer">
@@ -208,7 +208,7 @@
                     <div class="barcode-container" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
 
                         <mat-form-field fxFlex="20">
-                            <input id="in-contingency-form-barcode" matInput placeholder="barcode"
+                            <input id="in-contingency-form-barcode" matInput placeholder="{{'OPERATIONS.CONTINGENCY_FORM.BARCODE'|translate}}"
                                    [formControl]="contingencyForm.controls['barcode']" [(ngModel)]="contingency.barcode">
                         </mat-form-field>
                         <mat-error *ngIf="contingencyForm.controls['barcode'].hasError('pattern') && formDir.submitted">
@@ -230,6 +230,7 @@
                                   [formControl]="contingencyForm.controls['safety']" [(ngModel)]="isSafetyEvent"
                                   (click)="onSelectOptional('safety', ['safetyEventCode'])">
                         Safety Event
+                        {{'OPERATIONS.CONTINGENCY_FORM.SAFETY_EVENT'|translate}}
                     </mat-checkbox>
                 </div>
                 <div fxLayout="column" *ngIf="contingencyForm.controls['safety'].value">
