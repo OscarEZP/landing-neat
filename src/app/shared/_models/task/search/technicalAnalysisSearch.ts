@@ -5,14 +5,13 @@ export class TechnicalAnalysisSearch {
     private _pagination: Pagination;
 
     private constructor(pagination: Pagination, station: string) {
-        this._pagination = Pagination.getInstance();
+        this._pagination = pagination ? Pagination.getInstance() : pagination;
         this._station = station;
     }
 
     static getInstance(): TechnicalAnalysisSearch {
         return new TechnicalAnalysisSearch(Pagination.getInstance(), null);
     }
-
 
     get station(): string {
         return this._station;

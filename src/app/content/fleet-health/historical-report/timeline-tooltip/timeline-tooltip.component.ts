@@ -38,9 +38,7 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
     private updateTask() {
         this.timelineTask = this.timelineTaskData['data'];
         this.task = this.timelineTask.task;
-        if (this.timelineTask.apply !== null) {
-            this.review.apply = this.timelineTask.apply;
-        }
+        this.review.apply = this.timelineTask.apply !== null ? this.timelineTask.apply : null;
     }
 
     public checkStatus() {
@@ -53,7 +51,7 @@ export class TimelineTooltipComponent implements OnInit, OnDestroy {
     }
 
     get apply(): string {
-        if (this.review.apply != null) {
+        if (this.review.apply !== null) {
             return this.review.apply.toString();
         } else {
             return '';

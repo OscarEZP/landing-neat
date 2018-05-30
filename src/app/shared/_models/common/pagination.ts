@@ -4,11 +4,11 @@ export class Pagination {
     private _limit: number;
 
     constructor( offset: number, limit: number) {
-        this.offset= offset;
+        this.offset = offset;
         this.limit = limit;
     }
-    static getInstance():Pagination{
-        return new Pagination(null,null);
+    static getInstance(): Pagination {
+        return new Pagination(null, null);
     }
     get offset(): number {
         return this._offset;
