@@ -75,7 +75,7 @@ export class HistoricalTaskComponent implements OnInit {
                 this.historicalTask = response;
                 this.tableData = response.parts.map(p => {
                     const newPart: PartInterface = {
-                        description: p.name,
+                        description: p.code,
                         partGroup: p.partGroup,
                         quantity: p.quantity,
                         estimatedArrivalDate: p.estimatedArrivalDate,
