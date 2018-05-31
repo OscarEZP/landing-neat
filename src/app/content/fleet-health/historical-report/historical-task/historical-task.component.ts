@@ -56,8 +56,7 @@ export class HistoricalTaskComponent implements OnInit {
         this._displayedColumns = ['description', 'partGroup', 'quantity', 'eta', 'status'];
         this._tableData = [];
         this._pageSize = 5;
-        this._dateFormat = 'dd-MM-yyyy';
-        this._hourFormat = 'HH:mm';
+        this._dateFormat = 'dd-MM-yyyy HH:mm';
     }
 
     ngOnInit() {
@@ -208,13 +207,5 @@ export class HistoricalTaskComponent implements OnInit {
 
     set dateFormat(value: string) {
         this._dateFormat = value;
-    }
-
-    get hourFormat(): string {
-        return this._hourFormat;
-    }
-
-    set hourFormat(value: string) {
-        this._hourFormat = value;
     }
 }

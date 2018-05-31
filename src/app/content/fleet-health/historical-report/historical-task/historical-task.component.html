@@ -44,8 +44,8 @@
                             {{'FLEET_HEALTH.REPORT.MAINTENANCE_ACTION' | translate}} {{i+1}}
                         </mat-panel-title>
                         <mat-panel-description>
-                            {{ action.actionDate.epochTime | utcDate | date: dateFormat + ' ' + hourFormat }} |
-                            {{ action.updateDate.epochTime | utcDate | date: dateFormat + ' ' + hourFormat }}
+                            {{ action.actionDate.epochTime | utcDate | date: dateFormat }} |
+                            {{ action.updateDate.epochTime | utcDate | date: dateFormat }}
                         </mat-panel-description>
                     </mat-expansion-panel-header>
                     <p>{{action.name.firstName}} {{action.name.lastName}}</p>
@@ -63,13 +63,13 @@
                             {{'FLEET_HEALTH.REPORT.JOB_STEP' | translate}} {{step.ord}} | {{step.status}}
                         </mat-panel-title>
                         <mat-panel-description>
-                            {{ step.createDate.epochTime | utcDate | date: dateFormat + ' ' + hourFormat }}
+                            {{ step.createDate.epochTime | utcDate | date: dateFormat }}
                         </mat-panel-description>
                     </mat-expansion-panel-header>
                     <div [innerHtml]="step.description"></div>
                     <ol *ngIf="step.stepLabours.length > 0">
                         <li *ngFor="let labour of step.stepLabours">
-                            <span>Id: {{labour.labourId}} | Creation: {{labour.createDate.epochTime | utcDate | date: dateFormat + ' ' + hourFormat}} | Update: {{labour.reviseDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</span>
+                            <span>Id: {{labour.labourId}} | Creation: {{labour.createDate.epochTime | utcDate | date: dateFormat}} | Update: {{labour.reviseDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</span>
                             <div [innerHtml]="labour.notes"></div>
                         </li>
                     </ol>
@@ -100,8 +100,8 @@
                     <ng-container matColumnDef="eta">
                         <div fxFlexOffset="2" fxFlex="20" *matHeaderCellDef>{{'FLEET_HEALTH.REPORT.ETA' | translate}}</div>
                         <div fxFlexOffset="2" fxFlex="20" *matCellDef="let part">
-                            <span>{{part.estimatedArrivalDate.epochTime | utcDate | date: dateFormat}}</span>
-                            <span>{{part.estimatedArrivalDate.epochTime | utcDate | date: hourFormat}}</span>
+                            <span>{{part.estimatedArrivalDate.epochTime | utcDate | date: dateFormat.split(' ')[0]}}</span>
+                            <span>{{part.estimatedArrivalDate.epochTime | utcDate | date: dateFormat.split(' ')[1]}}</span>
                         </div>
                     </ng-container>
                     <ng-container matColumnDef="status">
