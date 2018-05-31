@@ -34,6 +34,8 @@ export class HistoricalTaskComponent implements OnInit {
     private _displayedColumns: string[];
     private _tableData: PartInterface[];
     private _pageSize: number;
+    private _dateFormat: string;
+    private _hourFormat: string;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -45,7 +47,6 @@ export class HistoricalTaskComponent implements OnInit {
         }
     }
 
-
     constructor(
         httpClient: HttpClient,
         private _historicalReportService: HistoricalReportService
@@ -55,6 +56,8 @@ export class HistoricalTaskComponent implements OnInit {
         this._displayedColumns = ['description', 'partGroup', 'quantity', 'eta', 'status'];
         this._tableData = [];
         this._pageSize = 5;
+        this._dateFormat = 'dd-MM-yyyy';
+        this._hourFormat = 'HH:mm';
     }
 
     ngOnInit() {
@@ -197,5 +200,21 @@ export class HistoricalTaskComponent implements OnInit {
 
     set pageSize(value: number) {
         this._pageSize = value;
+    }
+
+    get dateFormat(): string {
+        return this._dateFormat;
+    }
+
+    set dateFormat(value: string) {
+        this._dateFormat = value;
+    }
+
+    get hourFormat(): string {
+        return this._hourFormat;
+    }
+
+    set hourFormat(value: string) {
+        this._hourFormat = value;
     }
 }
