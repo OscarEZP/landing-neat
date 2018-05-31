@@ -68,6 +68,7 @@
         "REQUIRED_REVIEWS": "You must review all related tasks",
         "REQUIRED_REPORT": "You must insert a report"
       },
+      "ETA": "ETA",
       "HISTORICAL_REPORTS": "Historical Reports",
       "JOB_STEP": "Step",
       "JOB_STEPS": "Job Steps",
@@ -78,8 +79,12 @@
         "NO_TASKS": "There are no related tasks for this ATA",
         "SAVED_ANALYSIS": "Saved analysis"
       },
+      "PART_GROUP": "Part Group",
+      "PART_REPLACEMENT": "Part Replacement",
+      "QUANTITY": "Quantity",
       "REPORTS_TIMELINE": "Reports Timeline",
-      "START_NEW_PROJECT": "Start new project"
+      "START_NEW_PROJECT": "Start new project",
+      "STATUS": "Status"
     }
   },
   "MANAGEMENT": {

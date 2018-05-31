@@ -1,8 +1,14 @@
 @import '../../../../../assets/style/base.scss';
 
 $top-header-size: 11px;
+$font-size: 14px;
 
 section {
+
+  b {
+    font-weight: bold;
+  }
+
   padding: 10px;
   background-color: mat-color($mat-palette-custom, background-grey);
 
@@ -23,7 +29,7 @@ section {
         font-size: $top-header-size;
       }
       h1 {
-        font-size: 15px;
+        @include generate-font-size(-1);
       }
       .badge {
         border-radius: 2px;
@@ -53,26 +59,60 @@ section {
   }
 
   .content {
+    p, div {
+      @include generate-font-size(-3);
+      line-height: 18px;
+    }
+
+    #fault-name {
+      margin: 0 0 15px 0;
+      p {
+        text-transform: uppercase;
+      }
+    }
+
     #description {
       p {
         color: mat-color($foreground, secondary-text);
-        font-size: 12px;
       }
     }
     #job-steps {
       ol {
         list-style: inside decimal;
         color: mat-color($foreground, secondary-text);
-        font-size: 12px;
+        @include generate-font-size(-5);
       }
     }
     h2 {
       text-transform: uppercase;
+      @include generate-font-size(-3);
       padding: 5px 0 15px 0;
+      font-weight: bold;
     }
     .mat-accordion {
       .mat-expansion-panel {
         box-shadow: none;
+      }
+    }
+
+    .mat-table {
+      background-color: transparent;
+
+      .mat-header-row {
+        font-weight: bold;
+      }
+
+      .mat-row {
+        > div {
+          word-break: break-all;
+        }
+      }
+
+      div {
+        @include generate-font-size(-4);
+        > span {
+          display: block;
+        }
       }
     }
   }

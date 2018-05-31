@@ -4,7 +4,7 @@
             <div fxFlex="">
                 <span class="badge" [ngClass]="taskType.toLowerCase()">{{taskType}}</span>
             </div>
-            <div fxFlexAlign="end center" fxLayout="row" fxLayoutGap="20px">
+            <div fxFlexAlign="end center" fxLayout="row">
             </div>
         </div>
         <div fxLayout="row">
@@ -75,6 +75,44 @@
                     </ol>
                 </mat-expansion-panel>
             </mat-accordion>
+        </div>
+        <div id="part-replacemnt" [hidden]="tableData.length == 0">
+            <hr class="segment">
+            <h2>{{'FLEET_HEALTH.REPORT.PART_REPLACEMENT' | translate}}</h2>
+
+            <div class="">
+                <mat-table class="" [dataSource]="dataSource">
+                    <ng-container matColumnDef="description">
+                        <div fxFlex="20" *matHeaderCellDef>{{'FLEET_HEALTH.REPORT.DESCRIPTION' | translate}}</div>
+                        <div fxFlex="20" *matCellDef="let part">{{part.description}}</div>
+                    </ng-container>
+                    <ng-container matColumnDef="partGroup">
+                        <div fxFlexOffset="2" fxFlex="30" *matHeaderCellDef>{{'FLEET_HEALTH.REPORT.PART_GROUP' | translate}}</div>
+                        <div fxFlexOffset="2" fxFlex="30" *matCellDef="let part">
+                            <span><b>{{part.partGroup.code}}</b></span>
+                            <span>{{part.partGroup.name}}</span>
+                        </div>
+                    </ng-container>
+                    <ng-container matColumnDef="quantity">
+                        <div fxFlexOffset="2" fxFlex="10" *matHeaderCellDef>{{'FLEET_HEALTH.REPORT.QUANTITY' | translate}}</div>
+                        <div fxFlexOffset="2" fxFlex="10" *matCellDef="let part">{{part.quantity}}</div>
+                    </ng-container>
+                    <ng-container matColumnDef="eta">
+                        <div fxFlexOffset="2" fxFlex="20" *matHeaderCellDef>{{'FLEET_HEALTH.REPORT.ETA' | translate}}</div>
+                        <div fxFlexOffset="2" fxFlex="20" *matCellDef="let part">
+                            <span>{{part.estimatedArrivalDate.epochTime | utcDate | date: 'dd-MM-yyyy'}}</span>
+                            <span>{{part.estimatedArrivalDate.epochTime | utcDate | date: 'HH:mm'}}</span>
+                        </div>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <div fxFlexOffset="2" fxFlex="10" *matHeaderCellDef>{{'FLEET_HEALTH.REPORT.STATUS' | translate}}</div>
+                        <div fxFlexOffset="2" fxFlex="10" *matCellDef="let part">{{part.status}}</div>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+                </mat-table>
+                <mat-paginator [hidden]="tableData.length < pageSize" [pageSizeOptions]="[pageSize]" showFirstLastButtons></mat-paginator>
+            </div>
         </div>
     </div>
 </section>
