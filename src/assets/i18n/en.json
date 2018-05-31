@@ -60,6 +60,7 @@
       "TIMELINE_STATUS": "Timeline Status"
     },
     "REPORT": {
+      "COPY_TEXT": "Copy text",
       "DESCRIPTION": "Description",
       "FAULT_NAME": "Fault Name",
       "ERROR": {
