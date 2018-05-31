@@ -1,10 +1,21 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {HistoricalTask} from '../../../../shared/_models/task/historical/historicalTask';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiRestService} from '../../../../shared/_services/apiRest.service';
 import {HttpClient} from '@angular/common/http';
 import {HistoricalReportService} from '../_services/historical-report.service';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
+import {MatPaginator, MatTableDataSource} from '@angular/material';
+import {PartGroup} from '../../../../shared/_models/task/historical/partGroup';
+import {TimeInstant} from '../../../../shared/_models/timeInstant';
+
+export interface PartInterface {
+    description: string;
+    partGroup: PartGroup;
+    quantity: number;
+    estimatedArrivalDate: TimeInstant;
+    status: string;
+}
 
 @Component({
     selector: 'lsl-historical-task',
@@ -13,11 +24,20 @@ import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 })
 export class HistoricalTaskComponent implements OnInit {
 
+
     private static TASK_HISTORICAL_REPORT_ENDPOINT = 'taskHistoricalReport';
 
     private _historicalTask: HistoricalTask;
     private _apiRestService: ApiRestService;
     private _analyzedTask: TimelineTask;
+    private _dataSource: MatTableDataSource<any>;
+    private _displayedColumns: string[];
+    private _tableData: PartInterface[];
+    private _pageSize: number;
+    private _dateFormat: string;
+    private _hourFormat: string;
+
+    @ViewChild(MatPaginator) paginator: MatPaginator;
 
     @Input()
     set analyzedTask(value: TimelineTask) {
@@ -33,6 +53,10 @@ export class HistoricalTaskComponent implements OnInit {
     ) {
         this.apiRestService = new ApiRestService(httpClient);
         this._analyzedTask = null;
+        this._displayedColumns = ['description', 'partGroup', 'quantity', 'eta', 'status'];
+        this._tableData = [];
+        this._pageSize = 5;
+        this._dateFormat = 'dd-MM-yyyy HH:mm';
     }
 
     ngOnInit() {
@@ -49,6 +73,18 @@ export class HistoricalTaskComponent implements OnInit {
             .getSingle<HistoricalTask>(HistoricalTaskComponent.TASK_HISTORICAL_REPORT_ENDPOINT, barcode)
             .subscribe((response: HistoricalTask) => {
                 this.historicalTask = response;
+                this.tableData = response.parts.map(p => {
+                    const newPart: PartInterface = {
+                        description: p.name,
+                        partGroup: p.partGroup,
+                        quantity: p.quantity,
+                        estimatedArrivalDate: p.estimatedArrivalDate,
+                        status: p.status
+                    };
+                    return newPart;
+                });
+                this.dataSource = new MatTableDataSource<any>(this.tableData);
+                this.dataSource.paginator = this.paginator;
             });
     }
 
@@ -129,11 +165,47 @@ export class HistoricalTaskComponent implements OnInit {
         return this._historicalReportService.qEditorInstance;
     }
 
-    get isAtaCorrected(): boolean {
-        return this._historicalReportService.isAtaCorrected;
-    }
-
     public getRelatedTimelineData(): TimelineTask[] {
         return this._historicalReportService.timelineData.filter(data => data.active === false);
+    }
+
+    get dataSource(): MatTableDataSource<any> {
+        return this._dataSource;
+    }
+
+    set dataSource(value: MatTableDataSource<any>) {
+        this._dataSource = value;
+    }
+
+    get displayedColumns(): string[] {
+        return this._displayedColumns;
+    }
+
+    set displayedColumns(value: string[]) {
+        this._displayedColumns = value;
+    }
+
+    get tableData(): PartInterface[] {
+        return this._tableData;
+    }
+
+    set tableData(value: PartInterface[]) {
+        this._tableData = value;
+    }
+
+    get pageSize(): number {
+        return this._pageSize;
+    }
+
+    set pageSize(value: number) {
+        this._pageSize = value;
+    }
+
+    get dateFormat(): string {
+        return this._dateFormat;
+    }
+
+    set dateFormat(value: string) {
+        this._dateFormat = value;
     }
 }
