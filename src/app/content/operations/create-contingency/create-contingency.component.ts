@@ -74,15 +74,19 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _aircraftSubscription: Subscription;
     private _safetyEventSubscription: Subscription;
 
-    constructor(private _dialogService: DialogService,
-                private _fb: FormBuilder,
-                private _datetimeService: DatetimeService,
-                private _clockService: ClockService,
-                private _messageData: DataService,
-                private _messageService: MessageService,
-                private _storageService: StorageService,
-                private _apiRestService: ApiRestService,
-                private _translate: TranslateService) {
+    private _plannedFlights: boolean;
+
+    constructor(
+        private _dialogService: DialogService,
+        private _fb: FormBuilder,
+        private _datetimeService: DatetimeService,
+        private _clockService: ClockService,
+        private _messageData: DataService,
+        private _messageService: MessageService,
+        private _storageService: StorageService,
+        private _apiRestService: ApiRestService,
+        private _translate: TranslateService
+    ) {
 
         const initFakeDate = new Date().getTime();
 
@@ -143,7 +147,8 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             'observation': [this.contingency.status.observation, [Validators.required, Validators.maxLength(400)]],
             'reason': [this.contingency.reason, [Validators.required, Validators.maxLength(400)]],
             'statusCode': [this.contingency.status.code, Validators.required],
-            'duration': [this.contingency.status.requestedInterval.duration, Validators.required]
+            'duration': [this.contingency.status.requestedInterval.duration, Validators.required],
+            'plannedFlights': [this.plannedFlights]
         });
 
         this.validations = new Validation(false, true, true, false);
@@ -809,5 +814,13 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
     set observableOperatorList(value: Observable<Types[]>) {
         this._observableOperatorList = value;
+    }
+
+    get plannedFlights(): boolean {
+        return this._plannedFlights;
+    }
+
+    set plannedFlights(value: boolean) {
+        this._plannedFlights = value;
     }
 }

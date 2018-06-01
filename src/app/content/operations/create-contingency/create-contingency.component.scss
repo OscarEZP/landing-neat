@@ -72,6 +72,10 @@
             .barcode-container{
                 min-height: 77.44px;
             }
+
+            > div.row {
+
+            }
         }
         .safety-container{
             @include border-padd-top();

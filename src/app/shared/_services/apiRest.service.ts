@@ -9,6 +9,9 @@ import {DialogService} from '../../content/_services/dialog.service';
 import {MessageService} from './message.service';
 import {DataService} from './data.service';
 
+import 'rxjs/add/operator/timeout';
+import {TimeoutError} from 'rxjs/Rx';
+
 @Injectable()
 export class ApiRestService {
 
@@ -72,7 +75,7 @@ export class CustomInterceptor implements HttpInterceptor {
 
     private static TOKEN_ATTR = 'Authorization';
     private static CONTENT_TYPE = 'application/json';
-    private static LOGIN_PATH = '/login';
+    private static TIMEOUT = 1000;
 
     private _storageService: StorageService;
     private _router: Router;
@@ -97,11 +100,14 @@ export class CustomInterceptor implements HttpInterceptor {
         const idToken = this._storageService.getCurrentUser().idToken ? this._storageService.getCurrentUser().idToken : '';
         req = req.clone({headers: req.headers.set(CustomInterceptor.TOKEN_ATTR, idToken)});
 
-        return next.handle(req).do(
-            event => {
-                return event;
-            },
+        return next.handle(req)
+            .timeout(CustomInterceptor.TIMEOUT)
+            .do(
+            event => event,
             err => {
+                if (err instanceof TimeoutError) {
+                    err = new HttpErrorResponse({ status: 408 });
+                }
                 if (err instanceof HttpErrorResponse) {
                     this._dataService.triggerError(err);
                 }

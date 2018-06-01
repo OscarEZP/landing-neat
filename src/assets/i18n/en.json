@@ -35,7 +35,8 @@
     "DEFAULT": "Ooops, something went wrong",
     "NOT_FOUND": "Your request was not found. Please, try again in few minutes",
     "SESSION": "Your session has expired",
-    "UNAUTHORIZED": "You don't have permissions to access this content"
+    "UNAUTHORIZED": "You don't have permissions to access this content",
+    "TIMEOUT": "Please, reload this content"
   },
   "ESS":{
     "NO_CONTINGENCIES_FOUND": "There are no contingencies. Have a nice day!",
@@ -219,6 +220,7 @@
       "OPERATOR": "Operator",
       "OPERATOR_OUT_DOMAIN": "Operator out of domain",
       "OPERATOR_REQUIRED": "Operator is required",
+      "PLANNED_FLIGHTS_IN_THE_NEXT_HOURS": "Planned flights in the next {{value}} hours",
       "REASON_PLACEHOLDER": "Reason",
       "REASON_REQUIRED_VALIDATION": "Reason is required",
       "REQUIRE_FIELDS": "All fields with (*) are required",

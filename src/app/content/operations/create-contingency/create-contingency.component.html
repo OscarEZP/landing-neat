@@ -78,7 +78,7 @@
                     </mat-form-field>
 
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px">
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlexOffset="20px" fxLayoutGap="30px">
                     <mat-checkbox id="in-contingency-form-backup" labelPosition="after" fxFlex="20"
                                   [formControl]="contingencyForm.controls['isBackup']" [(ngModel)]="contingency.isBackup" (click)="onSelectOptional('isBackup', ['station', 'slotTm', 'slotDate'], ['destination', 'dt', 'flightNumber', 'origin', 'tm'])">{{
                         'OPERATIONS.CONTINGENCY_FORM.BACKUP' | translate }}
@@ -136,8 +136,7 @@
                     </mat-form-field>
                 </div>
 
-                <div fxLayout="column" *ngIf="contingency.isBackup">
-
+                <div fxLayout="column" *ngIf="contingency.isBackup" fxFlexOffset="20px" >
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
 
                         <label fxFlex="20">{{ 'OPERATIONS.CONTINGENCY_FORM.SLOT_TIME' | translate }}</label>
@@ -161,11 +160,19 @@
                             <mat-datepicker #slotDatePicker></mat-datepicker>
                         </mat-form-field>
                     </div>
-
                 </div>
 
-                <div fxLayout="column" *ngIf="!contingency.isBackup">
+                <div fxLayout="column" fxFlexOffset="20px" >
+                    <div fxLayout="row">
+                        <mat-checkbox id="chk-contingency-form-next-flights" labelPosition="after" fxFlex="20"
+                                      [formControl]="contingencyForm.controls['plannedFlights']" [(ngModel)]="nextFlights"
+                                      (click)="onSelectOptional('plannedFlights', ['safetyEventCode'])">
+                            {{'OPERATIONS.CONTINGENCY_FORM.PLANNED_FLIGHTS_IN_THE_NEXT_HOURS'|translate:{value: 4} }}
+                        </mat-checkbox>
+                    </div>
+                </div>
 
+                <div fxLayout="column" *ngIf="!contingency.isBackup" fxFlexOffset="20px" >
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
 
                         <mat-form-field fxFlex="20">
@@ -186,10 +193,9 @@
                             <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
                     </div>
-
                 </div>
-                <div fxLayout="column" fxLayoutGap="15px">
 
+                <div fxLayout="column" fxLayoutGap="15px">
                     <label class="label-element">{{'OPERATIONS.CONTINGENCY_FORM.INFORMER'|translate}} * :</label>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
                         <mat-radio-group id="rad-contingency-form-informer" fxLayoutGap="20px"
@@ -229,7 +235,6 @@
                     <mat-checkbox id="chk-contingency-form-safety-event" labelPosition="after" fxFlex="20"
                                   [formControl]="contingencyForm.controls['safety']" [(ngModel)]="isSafetyEvent"
                                   (click)="onSelectOptional('safety', ['safetyEventCode'])">
-                        Safety Event
                         {{'OPERATIONS.CONTINGENCY_FORM.SAFETY_EVENT'|translate}}
                     </mat-checkbox>
                 </div>
@@ -255,9 +260,9 @@
                 <div fxLayout="column" fxLayoutGap="15px">
 
                     <span class="label-element">Contingency Type * :</span>
-                    <mat-radio-group id="rad-contingency-form-contingency-type" fxLayoutGap="20px"
+                    <mat-radio-group fxLayout="column" id="rad-contingency-form-contingency-type" fxLayoutGap="20px"
                                      [formControl]="contingencyForm.controls['contingencyType']" [(ngModel)]="contingency.type">
-                        <mat-radio-button labelPosition="after"
+                        <mat-radio-button  fxFlexOffset="10px" labelPosition="after"
                                           *ngFor="let ct of contingencyType"
                                           value="{{ ct.code }}">{{ ct.description }}
                         </mat-radio-button>
