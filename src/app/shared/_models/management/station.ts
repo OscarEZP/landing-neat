@@ -14,6 +14,6 @@ export class Station {
     }
 
     set code(value: string) {
-        this._code = value;
+        this._code = value ? value.trim() : null;
     }
 }
