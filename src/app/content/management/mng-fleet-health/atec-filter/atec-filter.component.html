@@ -13,9 +13,7 @@
                             <mat-option *ngFor="let authority of authoritiesMerged" value="{{authority}}">{{authority}}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <span fxFlex="100" *ngIf="station.code !== selectedStation.station">
-                        {{getAuthoritiesLbl(station.code)}}
-                    </span>
+                    <span fxFlex="100" *ngIf="station.code !== selectedStation.station">{{getAuthoritiesLbl(station.code)}}</span>
                     <span fxLayoutAlign="end end">
                         <button [disabled]="selectedStation.station !== null" (click)="setSelectedStation(station.code)" mat-icon-button color="primary" type="button" ><mat-icon>create</mat-icon></button>
                     </span>
