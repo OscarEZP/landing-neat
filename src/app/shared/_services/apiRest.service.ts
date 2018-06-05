@@ -75,7 +75,7 @@ export class CustomInterceptor implements HttpInterceptor {
 
     private static TOKEN_ATTR = 'Authorization';
     private static CONTENT_TYPE = 'application/json';
-    private static TIMEOUT = 1000;
+    private static TIMEOUT = 15000;
 
     private _storageService: StorageService;
     private _router: Router;

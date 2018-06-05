@@ -20,7 +20,7 @@
 
         <div fxLayout="row" class="sections-content">
 
-            <div fxFlex="33" fxLayout="column" class="operation-container">
+            <div fxFlex="33" fxLayout="column" class="operation-container" fxLayoutGap="20px">
                 <div class="title-section" fxLayout="row" fxLayoutGap="20px">{{'OPERATIONS.CONTINGENCY_FORM.OPERATION_INFO'|translate}}</div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px">
 
@@ -260,9 +260,9 @@
                 <div fxLayout="column" fxLayoutGap="15px">
 
                     <span class="label-element">Contingency Type * :</span>
-                    <mat-radio-group fxLayout="column" id="rad-contingency-form-contingency-type" fxLayoutGap="20px"
+                    <mat-radio-group fxLayout="column" id="rad-contingency-form-contingency-type" fxLayoutGap="10px"
                                      [formControl]="contingencyForm.controls['contingencyType']" [(ngModel)]="contingency.type">
-                        <mat-radio-button  fxFlexOffset="10px" labelPosition="after"
+                        <mat-radio-button labelPosition="after"
                                           *ngFor="let ct of contingencyType"
                                           value="{{ ct.code }}">{{ ct.description }}
                         </mat-radio-button>
