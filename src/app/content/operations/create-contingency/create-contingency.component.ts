@@ -41,7 +41,11 @@ import {CancelComponent} from '../cancel/cancel.component';
 export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _messageUTCSubscription: Subscription;
     private _aircraftList: Aircraft[];
+
     private _flightList: Flight[];
+    private _defaultFlightList: Flight[];
+    private _plannedFlightList: Flight[];
+
     private _statusCodes: StatusCode[];
     private _safetyEventList: Safety[];
     private _groupTypeList: GroupTypes[];
@@ -87,7 +91,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         private _apiRestService: ApiRestService,
         private _translate: TranslateService
     ) {
-
         const initFakeDate = new Date().getTime();
 
         this.alive = true;
@@ -434,13 +437,13 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     public onSelectAircraft(selectedOption: string): void {
 
         const flightSearch = new FlightSearch(selectedOption, 0, 5, new TimeInstant(this.utcModel.epochTime, null));
-        this.flightList = [null];
+        this.flightList = [];
 
         this._apiRestService
             .search<Flight[]>('flights', flightSearch)
             .subscribe((response: Flight[]) => {
                 this.flightList = response;
-
+                this.defaultFlightList = response.map(val => new Flight(val.flightNumber, val.origin, val.destination, val.etd));
                 for (const item of this.aircraftList) {
                     if (item.tail === selectedOption) {
                         this.contingency.aircraft = new Aircraft(item.tail, item.fleet, item.operator);
@@ -474,6 +477,10 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                         map(val => this.flightFilter(val))
                     );
             });
+    }
+
+    private switchFlightList(): void {
+        this.flightList = !this.plannedFlights ? this.plannedFlightList : this.defaultFlightList;
     }
 
     /**
@@ -529,14 +536,12 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     public tailDomainValidator(control: FormControl): Observable<any> {
         const tail = control.value;
-
         return Observable.of(this.aircraftList).map(res => {
             for (const item of res) {
                 if (item.tail === tail) {
                     return null;
                 }
             }
-
             return {
                 tailDomain: true
             };
@@ -550,15 +555,12 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     public operatorDomainValidator(control: FormControl) {
         const operator = control.value;
-
-
         return Observable.of(this.operatorList).map(res => {
             for (const item of res) {
                 if (operator === item.code) {
                     return null;
                 }
             }
-
             return {
                 operatorDomain: true
             };
@@ -605,15 +607,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private operatorFilter(val: string): Types[] {
         return this.operatorList.filter(operator =>
             operator.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
-    }
-
-
-    get messageUTCSubscription(): Subscription {
-        return this._messageUTCSubscription;
-    }
-
-    set messageUTCSubscription(value: Subscription) {
-        this._messageUTCSubscription = value;
     }
 
     get aircraftList(): Aircraft[] {
@@ -822,5 +815,21 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
     set plannedFlights(value: boolean) {
         this._plannedFlights = value;
+    }
+
+    get defaultFlightList(): Flight[] {
+        return this._defaultFlightList;
+    }
+
+    set defaultFlightList(value: Flight[]) {
+        this._defaultFlightList = value;
+    }
+
+    get plannedFlightList(): Flight[] {
+        return this._plannedFlightList;
+    }
+
+    set plannedFlightList(value: Flight[]) {
+        this._plannedFlightList = value;
     }
 }
