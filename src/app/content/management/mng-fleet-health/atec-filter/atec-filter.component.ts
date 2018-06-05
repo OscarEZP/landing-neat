@@ -73,10 +73,7 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         });
         this.audit = Audit.getInstance();
         this.audit.username = this._storageService.username;
-        this._translate.get(AtecFilterComponent.NO_OPERATORS_MESSAGE)
-            .toPromise()
-            .then((res: string) => this.defaultLabel = res)
-            .catch(() => this.defaultLabel = '');
+        this.defaultLabel = '';
     }
 
     ngOnInit() {
@@ -87,6 +84,10 @@ export class AtecFilterComponent implements OnInit, OnDestroy {
         this.deferralClassesSub = new Subscription();
         this.defaultConfigurationSub = this.getDefaultConfiguration();
         this.edited = false;
+        this._translate.get(AtecFilterComponent.NO_OPERATORS_MESSAGE)
+            .toPromise()
+            .then((res: string) => this.defaultLabel = res)
+            .catch(() => this.defaultLabel = '');
     }
 
     ngOnDestroy() {
