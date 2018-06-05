@@ -224,10 +224,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     public getTooltipStyle(): Style {
         const item = this.timelineTaskSelected;
         if (item) {
-            const correctionLeft = this.timeline['body']['dom']['left']['clientWidth'];
             this.tooltipStyle.top = this.clickEvent['y'] + 'px';
-            this.tooltipStyle.left = (item['left'] + correctionLeft) + 'px';
-            this.tooltipStyle.display = item['left'] <= 0 ? 'none' : 'block';
+            this.tooltipStyle.left = this.clickEvent['x'] + 'px';
         }
         return this.tooltipStyle;
     }
