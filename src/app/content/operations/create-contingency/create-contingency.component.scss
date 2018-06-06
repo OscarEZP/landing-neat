@@ -45,6 +45,30 @@
     }
 }
 
+#in-contingency-form-flight {
+    width: 70px;
+    float: left;
+}
+
+.sufix {
+    display: inline-block;
+}
+
+.small {
+    font-size: 12px;
+}
+
+.right {
+    text-align: right;
+}
+
+/deep/
+.mat-option-text {
+    b {
+        font-weight: bold;
+    }
+}
+
 .content-dialog-container{
 
     div.title-dialog{

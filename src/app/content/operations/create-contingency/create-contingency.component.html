@@ -1,5 +1,5 @@
 <form [formGroup]="contingencyForm" #formDir="ngForm" (ngSubmit)="submitForm(contingencyForm.value)">
-    <div mat-dialog-title fxLayoutGap="30px" class="title-dialog-container" fxLayout="column">
+    <div mat-dialog-title fxLayoutGap="20px" class="title-dialog-container" fxLayout="column">
         <div fxLayout="row" fxFlex>
             <span class="title-dialog" fxFlex>{{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_CREATION' | translate}}</span>
             <span class="date-title-dialog">{{ utcModel.label | utcDate | date: 'dd MMM yyyy'}} | {{ timeClock | utcDate | date: 'HH:mm:ss' }} UTC</span>
@@ -22,9 +22,9 @@
 
             <div fxFlex="33" fxLayout="column" class="operation-container" fxLayoutGap="20px">
                 <div class="title-section" fxLayout="row" fxLayoutGap="20px">{{'OPERATIONS.CONTINGENCY_FORM.OPERATION_INFO'|translate}}</div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px">
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
 
-                    <mat-form-field fxFlex="20">
+                    <mat-form-field fxFlex="25">
                         <input id="in-contingency-form-search-aircraft"
                                #searchAircraft type="text"
                                placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.AC' | translate }}" matInput
@@ -44,7 +44,7 @@
                         </mat-autocomplete>
                     </mat-form-field>
 
-                    <mat-form-field fxFlex="20">
+                    <mat-form-field fxFlex="30">
                         <input id="in-contingency-form-fleet" matInput
                                placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.FLEET' | translate }}"
                                [formControl]="contingencyForm.controls['fleet']"
@@ -56,7 +56,7 @@
                         </mat-error>
                     </mat-form-field>
 
-                    <mat-form-field fxFlex="20">
+                    <mat-form-field fxFlex="25">
                         <input id="in-contingency-form-operator"
                                #searchOperator type="text"
                                placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.OPERATOR' | translate }}" matInput
@@ -78,46 +78,27 @@
                     </mat-form-field>
 
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlexOffset="20px" fxLayoutGap="30px">
-                    <mat-checkbox id="in-contingency-form-backup" labelPosition="after" fxFlex="20"
-                                  [formControl]="contingencyForm.controls['isBackup']" [(ngModel)]="contingency.isBackup" (click)="onSelectOptional('isBackup', ['station', 'slotTm', 'slotDate'], ['destination', 'dt', 'flightNumber', 'origin', 'tm'])">{{
-                        'OPERATIONS.CONTINGENCY_FORM.BACKUP' | translate }}
-                    </mat-checkbox>
-                    <mat-form-field fxFlex="15" *ngIf="contingency.isBackup">
-                        <input id="in-contingency-form-backup-station"
-                               #searchStation type="text"
-                               placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.STATION' | translate }}" matInput
-                               [formControl]="contingencyForm.controls['station']" [matAutocomplete]="stationString">
-                        <mat-error
-                                *ngIf="contingencyForm.controls['station'].hasError('required') && contingencyForm.controls['station'].touched">
-                            {{'OPERATIONS.CONTINGENCY_FORM.STATION_REQUIRED'|translate}}
-                        </mat-error>
-                        <mat-autocomplete #stationString="matAutocomplete"
-                                          (optionSelected)="contingency.backup.location = searchStation.value">
-                            <mat-option *ngFor="let st of observableLocationList | async" [value]="st.code">
-                                {{ st.code }}
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
 
-                    <mat-form-field fxFlex="15" *ngIf="!contingency.isBackup">
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlexOffset="20px" fxLayoutGap="20px" *ngIf="!contingency.isBackup">
+                    <mat-form-field fxFlex="50" >
                         <input id="in-contingency-form-flight"
                                type="text" aria-label="Flight"
                                placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.FLIGHT' | translate }}" matInput
                                [formControl]="contingencyForm.controls['flightNumber']"
                                [matAutocomplete]="flightNumber">
+                        <div class="small sufix" *ngIf="contingencyForm.controls['flightNumber'].value">{{contingency.flight.etd.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</div>
                         <mat-error
                                 *ngIf="contingencyForm.controls['flightNumber'].hasError('required') && contingencyForm.controls['flightNumber'].touched">
                             {{'OPERATIONS.CONTINGENCY_FORM.FLIGHT_REQUIRED'|translate}}
                         </mat-error>
                         <mat-autocomplete #flightNumber="matAutocomplete">
-                            <mat-option *ngFor="let item of observableFlightList | async" [value]="item.flightNumber" (click)="onSelectFlight($event, item)">
-                                {{ item.flightNumber }}
+                            <mat-option *ngFor="let item of observableFlightList | async" [value]="item.flightNumber" (click)="onSelectFlight(item)">
+                                <b>{{ item.flightNumber }}</b> <span class="small right">{{ item.etd.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</span>
                             </mat-option>
                         </mat-autocomplete>
                     </mat-form-field>
 
-                    <mat-form-field fxFlex="15" *ngIf="!contingency.isBackup">
+                    <mat-form-field fxFlex="15" >
                         <input id="sel-contingency-form-from"
                                #origin type="text"
                                placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.FROM' | translate }}" matInput
@@ -126,7 +107,7 @@
                                readonly>
                     </mat-form-field>
 
-                    <mat-form-field fxFlex="15" *ngIf="!contingency.isBackup">
+                    <mat-form-field fxFlex="15" >
                         <input id="sel-contingency-form-to"
                                #destination type="text"
                                placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.TO' | translate }}" matInput
@@ -162,7 +143,30 @@
                     </div>
                 </div>
 
-                <div fxLayout="column" fxFlexOffset="20px" >
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlexOffset="20px" fxLayoutGap="20px">
+                    <mat-checkbox id="in-contingency-form-backup" labelPosition="after" fxFlex="20"
+                                  [formControl]="contingencyForm.controls['isBackup']" [(ngModel)]="contingency.isBackup" (click)="onSelectOptional('isBackup', ['station', 'slotTm', 'slotDate'], ['destination', 'dt', 'flightNumber', 'origin', 'tm'])">{{
+                        'OPERATIONS.CONTINGENCY_FORM.BACKUP' | translate }}
+                    </mat-checkbox>
+                    <mat-form-field fxFlex="15" *ngIf="contingency.isBackup">
+                        <input id="in-contingency-form-backup-station"
+                               #searchStation type="text"
+                               placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.STATION' | translate }}" matInput
+                               [formControl]="contingencyForm.controls['station']" [matAutocomplete]="stationString">
+                        <mat-error
+                                *ngIf="contingencyForm.controls['station'].hasError('required') && contingencyForm.controls['station'].touched">
+                            {{'OPERATIONS.CONTINGENCY_FORM.STATION_REQUIRED'|translate}}
+                        </mat-error>
+                        <mat-autocomplete #stationString="matAutocomplete"
+                                          (optionSelected)="contingency.backup.location = searchStation.value">
+                            <mat-option *ngFor="let st of observableLocationList | async" [value]="st.code">
+                                {{ st.code }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+
+                <div fxLayout="column" fxFlexOffset="20px" *ngIf="!contingency.isBackup">
                     <div fxLayout="row">
                         <mat-checkbox id="chk-contingency-form-next-flights" labelPosition="after" fxFlex="20"
                                       [formControl]="contingencyForm.controls['plannedFlights']" [(ngModel)]="plannedFlights"
@@ -182,8 +186,8 @@
                                    name="tm">
                         </mat-form-field>
 
-                        <label fxFlex="10">UTC</label>
-                        <mat-form-field fxFlex="25">
+                        <label fxFlex="20">UTC</label>
+                        <mat-form-field fxFlex="35">
                             <input id="in-contingency-form-flight-date" matInput [matDatepicker]="picker"
                                    placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.FLIGHT_DATE' | translate }}"
                                    [(ngModel)]="this.contingencyDateModel[0].dateObj"
@@ -229,8 +233,8 @@
                 </div>
 
             </div>
-            <div fxFlex="33" fxLayout="column" fxLayoutGap="30px" class="safety-container">
-                <span class="title-section">Safety Event</span>
+            <div fxFlex="33" fxLayout="column" fxLayoutGap="20px" class="safety-container">
+                <span class="title-section">{{'OPERATIONS.CONTINGENCY_FORM.SAFETY_EVENT'|translate}}</span>
                 <div fxLayout="column" fxLayoutGap="15px">
                     <mat-checkbox id="chk-contingency-form-safety-event" labelPosition="after" fxFlex="20"
                                   [formControl]="contingencyForm.controls['safety']" [(ngModel)]="isSafetyEvent"

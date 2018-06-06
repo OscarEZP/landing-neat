@@ -1,21 +1,28 @@
 @import '../../../assets/style/base.scss';
 
+$historical-search-width: 70%;
+
 /deep/
 #operations-container {
   color: mat-color($foreground, secondary-text);
   width: 100%;
 
+  > div {
+    background-color: mat-color($custom, 'background-grey');
+    min-height: 60px;
+  }
+
   #historical-search {
     font-family: 'Noto Sans', 'Arial', sans-serif;
+    display: inline-block;
     @include generate-font-size(-5);
-    position: absolute;
-    right: 30px;
-    top: 8px;
-    z-index: 100;
     background-color: mat-color($custom, 'background-grey');
+    width: 100%;
+    max-width: $historical-search-width;
     strong {
       font-weight: bold;
     }
+
   }
 
   nav {
@@ -24,6 +31,10 @@
     padding: 13px 16px;
     box-sizing: border-box;
     height: 57px;
+    display: inline-block;
+    float: left;
+    width: 100%;
+    max-width: calc(100% - #{$historical-search-width});
 
     a {
       @include generate-font-size(-3);
@@ -49,12 +60,12 @@
 }
 
 /deep/
-.loader-container{
+.loader-container {
   height: 75vh;
 }
 
 /deep/
-.counter-container{
+.counter-container {
   height: 40px;
   padding: 0 16px;
   color: mat-color($foreground, text);
@@ -68,5 +79,16 @@
     font-size: 16px;
     height: 16px;
     width: 16px;
+  }
+}
+
+@media (max-width: 1200px) {
+  #operations-container {
+    > div {
+      > nav,
+      #historical-search  {
+        max-width: none;
+      }
+    }
   }
 }
