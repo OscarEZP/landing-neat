@@ -18,7 +18,7 @@ branches:
     - develop
     - master
 
-cache: true
+cache: false
 
 cache_dir_list:
   - $SHIPPABLE_BUILD_DIR/node_modules
@@ -27,7 +27,7 @@ build:
   #commands in this section run inside your CI container. In addition, any commands such as ls, in this section can be used to skip default processing for CI.
   ci:
     # Shippable code coverage folder
-    #- mkdir -p $SHIPPABLE_CODE_COVERAGE_DIR
+    - mkdir -p $SHIPPABLE_CODE_COVERAGE_DIR
     # Since caching is enabled, cleanup git leftovers
     - git clean -f -x
 
@@ -36,7 +36,7 @@ build:
     - shippable_retry npm install --quiet
 
     #Run the test
-    - npm run test --coverage --temp-directory=coverage --reporter=text-lcov
+    - npm run test --coverage --temp-directory=$SHIPPABLE_CODE_COVERAGE_DIR --reporter=text-lcov
     - mv junit.xml shippable/codecoverage
 
     #Run the build for staging environment

@@ -1,5 +1,5 @@
 # Image
-FROM node:7.4.0
+FROM node:9.11.1
 
 # Updating repositories
 RUN npm install -g @angular/cli
