@@ -6,7 +6,7 @@
 language: node_js
 
 node_js:
-  - 7.4.0
+  - 9.11.1
 
 env:
   global:
@@ -36,7 +36,7 @@ build:
     - shippable_retry npm install --quiet
 
     #Run the test
-    - npm run test --coverage --temp-directory=coverage --reporter=text-lcov
+    - npm run test --coverage --temp-directory=coverage --reporter=text-lcov --ci --testResultsProcessor="jest-junit"
     - mv junit.xml shippable/codecoverage
 
     #Run the build for staging environment

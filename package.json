@@ -13,18 +13,6 @@
     "freshtall": "npm cache clean --force && rm -rf node_modules && rm -f package-lock.json && npm install",
     "compodoc": "./node_modules/.bin/compodoc -p src/tsconfig.app.json"
   },
-  "jest": {
-    "verbose": true,
-    "preset": "jest-preset-angular",
-    "setupTestFrameworkScriptFile": "<rootDir>/src/setupJest.ts",
-    "reporters": [
-      "default",
-      "jest-junit"
-    ],
-    "coverageReporters": [
-      "lcov"
-    ]
-  },
   "private": true,
   "dependencies": {
     "@angular/animations": "5.0.3",
@@ -57,11 +45,12 @@
     "zone.js": "0.8.18"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "~0.6.8",
     "@angular/cli": "6.0.8",
     "@angular/compiler-cli": "5.0.3",
     "@angular/language-service": "5.0.3",
     "@compodoc/compodoc": "1.1.2",
-    "@types/jest": "23.0.0",
+    "@types/jest": "^23.0.0",
     "@types/lodash": "4.14.50",
     "@types/node": "6.0.60",
     "@types/vis": "4.21.4",
@@ -77,7 +66,7 @@
     "istanbul-instrumenter-loader": "2.0.0",
     "jest": "23.1.0",
     "jest-junit": "5.0.0",
-    "jest-preset-angular": "5.2.2",
+    "jest-preset-angular": "^5.2.2",
     "less-loader": "4.0.5",
     "moment": "2.22.1",
     "postcss-loader": "1.3.3",
@@ -96,7 +85,10 @@
     "url-loader": "0.5.7",
     "webpack": "3.5.5",
     "webpack-concat-plugin": "1.4.0",
-    "webpack-dev-server": "2.7.1",
-    "@angular-devkit/build-angular": "~0.6.8"
+    "webpack-dev-server": "2.7.1"
+  },
+  "jest": {
+    "preset": "jest-preset-angular",
+    "setupTestFrameworkScriptFile": "<rootDir>/src/setupJest.ts"
   }
 }

@@ -1,7 +1,6 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {inject, TestBed} from '@angular/core/testing';
 import {DatetimeService} from './datetime.service';
-import {ApiRestService} from './apiRest.service';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
@@ -17,8 +16,7 @@ describe('DateTime Service Test', () => {
         TestBed.configureTestingModule({
             imports: [ HttpClientTestingModule ],
             providers: [
-                DatetimeService,
-                ApiRestService
+                DatetimeService
             ]
         });
     });
