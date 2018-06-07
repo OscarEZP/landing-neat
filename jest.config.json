@@ -1,0 +1,3 @@
+{
+  "testResultsProcessor": "jest-junit"
+}
