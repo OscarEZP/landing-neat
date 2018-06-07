@@ -34,8 +34,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private static BAD_REQUEST_ERROR = {code: 400, message: 'ERRORS.BAD_REQUEST'};
     private static UNAUTHORIZED_ERROR = {code: 401, message: 'ERRORS.UNAUTHORIZED'};
     private static NOT_FOUND_ERROR = {code: 404, message: 'ERRORS.NOT_FOUND'};
-
+    private static TIMEOUT_ERROR = {code: 408, message: 'ERRORS.TIMEOUT'};
     private static CUSTOM_ERROR = {code: 500, message: ''};
+
     private static DEFAULT_ERROR = 'ERRORS.DEFAULT';
 
     constructor(
@@ -99,6 +100,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
             }
             case LayoutComponent.NOT_FOUND_ERROR.code: {
                 subscription = this.showMessage(LayoutComponent.NOT_FOUND_ERROR.message);
+                break;
+            }
+            case LayoutComponent.TIMEOUT_ERROR.code: {
+                subscription = this.showMessage(LayoutComponent.TIMEOUT_ERROR.message);
                 break;
             }
             case LayoutComponent.CUSTOM_ERROR.code: {

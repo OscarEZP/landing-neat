@@ -45,6 +45,36 @@
     }
 }
 
+#in-contingency-form-flight {
+    width: 70px;
+    float: left;
+}
+
+.suffix.placeholder {
+    font-weight: 500;
+    color: mat-color($foreground, secondary-text);
+    font-size: 14px;
+}
+
+.suffix {
+    display: inline-block;
+}
+
+.small {
+    font-size: 12px;
+}
+
+.right {
+    text-align: right;
+}
+
+/deep/
+.mat-option-text {
+    b {
+        font-weight: bold;
+    }
+}
+
 .content-dialog-container{
 
     div.title-dialog{
@@ -71,6 +101,10 @@
             @include border-right();
             .barcode-container{
                 min-height: 77.44px;
+            }
+
+            > div.row {
+
             }
         }
         .safety-container{

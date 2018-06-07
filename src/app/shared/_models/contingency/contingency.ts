@@ -28,6 +28,7 @@ export class Contingency {
     private _ttlPending: number;
     private _hasPendingMeeting: boolean;
     private _openDate: TimeInstant;
+    private _isPlannedFlight: boolean;
 
     private constructor(
 
@@ -50,6 +51,7 @@ export class Contingency {
         this._ttlPending = 0;
         this._hasPendingMeeting = false;
         this._openDate = TimeInstant.getInstance();
+        this._isPlannedFlight = false;
     }
 
     static getInstance(): Contingency {
@@ -220,6 +222,14 @@ export class Contingency {
 
         return array.map(obj => Contingency.parser(obj)
         );
+    }
+
+    get isPlannedFlight(): boolean {
+        return this._isPlannedFlight;
+    }
+
+    set isPlannedFlight(value: boolean) {
+        this._isPlannedFlight = value;
     }
 
     private static parser(obj: Object): Contingency {

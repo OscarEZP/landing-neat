@@ -35,6 +35,7 @@ export const environment = {
         operator: ':9005/api/v1/configurations/operators/',
         pendingResolve: ':9002/api/v1/contingencies/pendings/_resolve',
         pendingSearch: ':9002/api/v1/contingencies/pendings/_search',
+        plannedFlights: '9002/api/v1/configurations/planned-flights/_search',
         safetyEvent: ':9005/api/v1/configurations/safetyEvents',
         tasks: ':9002/api/v1/tasks/',
         tasksSearch: ':9006/api/v1/tasks/_search',
