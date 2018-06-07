@@ -19,6 +19,7 @@ $historical-search-width: 70%;
     background-color: mat-color($custom, 'background-grey');
     width: 100%;
     max-width: $historical-search-width;
+    margin: 10px 0 0 0;
     strong {
       font-weight: bold;
     }
@@ -88,6 +89,7 @@ $historical-search-width: 70%;
       > nav,
       #historical-search  {
         max-width: none;
+        margin: 0;
       }
     }
   }
