@@ -27,17 +27,17 @@ build:
   #commands in this section run inside your CI container. In addition, any commands such as ls, in this section can be used to skip default processing for CI.
   ci:
     # Shippable code coverage folder
-    #- mkdir -p $SHIPPABLE_CODE_COVERAGE_DIR
+    - mkdir -p $SHIPPABLE_CODE_COVERAGE_DIR
     # Since caching is enabled, cleanup git leftovers
     - git clean -f -x
 
     # install NPM depedencies
     - cd $SHIPPABLE_BUILD_DIR
-    - shippable_retry npm install --quiet
+    - shippable_retry npm install
 
     #Run the test
-    - npm run test --coverage --temp-directory=coverage --reporter=text-lcov --ci --testResultsProcessor="jest-junit"
-    - mv junit.xml shippable/codecoverage
+    - npm run test --coverage --temp-directory=coverage --reporter=text-lcov --ci --testResultsProcessor="./node_modules/jest-junit-reporter"
+    - mv test-report.xml ../shippable/testresults/test-report.xml
 
     #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR

@@ -66,6 +66,7 @@
     "istanbul-instrumenter-loader": "2.0.0",
     "jest": "23.1.0",
     "jest-junit": "5.0.0",
+    "jest-junit-reporter": "^1.1.0",
     "jest-preset-angular": "^5.2.2",
     "less-loader": "4.0.5",
     "moment": "2.22.1",
@@ -89,6 +90,7 @@
   },
   "jest": {
     "preset": "jest-preset-angular",
-    "setupTestFrameworkScriptFile": "<rootDir>/src/setupJest.ts"
+    "setupTestFrameworkScriptFile": "<rootDir>/src/setupJest.ts",
+    "testResultsProcessor": "<rootDir>/node_modules/jest-junit-reporter"
   }
 }
