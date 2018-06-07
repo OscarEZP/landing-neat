@@ -46,7 +46,7 @@ build:
 
     #Run the test
     - npm run test --coverage --temp-directory=coverage --reporter=text-lcov
-    - mv shippable/codecoverage/*/coverage.xml shippable/codecoverage
+    - mv junit.xml shippable/codecoverage
 
   on_success:
     # WEB IMAGE

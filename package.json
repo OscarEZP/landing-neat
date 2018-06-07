@@ -17,21 +17,38 @@
     "verbose": true,
     "preset": "jest-preset-angular",
     "setupTestFrameworkScriptFile": "<rootDir>/src/setupJest.ts",
-    "testResultsProcessor": "./node_modules/jest-html-reporter",
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
     "coverageReporters": [
       "lcov"
     ],
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "src/tsconfig.spec.json"
+      },
+      "__TRANSFORM_HTML__": true
     },
-    "testMatch": ["**/__tests__/**/*.ts?(x)","**/?(*.)(spec|test).ts?(x)"],
+    "transform": {
+      "^.+\\.(ts|js|html)$": "<rootDir>/node_modules/jest-preset-angular/preprocessor.js"
+    },
+    "testMatch": [
+      "**/__tests__/**/*.+(ts|js)?(x)",
+      "**/+(*.)+(spec|test).+(ts|js)?(x)"
+    ],
     "moduleFileExtensions": [
       "ts",
-      "tsx",
       "js",
-      "jsx",
-      "json",
-      "node"
+      "html"
+    ],
+    "moduleNameMapper": {
+      "app/(.*)": "<rootDir>/src/app/$1",
+      "assets/(.*)": "<rootDir>/src/assets/$1",
+      "environments/(.*)": "<rootDir>/src/environments/$1"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!@ngrx)"
     ]
   },
   "private": true,
@@ -85,7 +102,8 @@
     "html-webpack-plugin": "2.29.0",
     "istanbul-instrumenter-loader": "2.0.0",
     "jest": "23.1.0",
-    "jest-html-reporter": "2.3.0",
+    "jest-junit": "5.0.0",
+    "jest-preset-angular": "5.2.2",
     "less-loader": "4.0.5",
     "moment": "2.22.1",
     "postcss-loader": "1.3.3",

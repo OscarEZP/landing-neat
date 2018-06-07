@@ -1,7 +1,0 @@
-{
-  "pageTitle" : "PMOC Frontend Tests",
-  "outputPath" : "./coverage-report/test-report.html",
-  "includeFailureMsg" : true,
-  "includeConsoleLog" : true,
-  "dateFormat" : "dd/mm/yyyy HH:MM:ss"
-}
