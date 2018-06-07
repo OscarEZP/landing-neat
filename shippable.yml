@@ -35,6 +35,10 @@ build:
     - cd $SHIPPABLE_BUILD_DIR
     - shippable_retry npm install --quiet
 
+    #Run the test
+    - npm run test --coverage --temp-directory=coverage --reporter=text-lcov
+    - mv junit.xml shippable/codecoverage
+
     #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR
     - >
@@ -43,10 +47,6 @@ build:
       elif [ "$BRANCH" == "develop" ]; then
         npm run ng -- build --env=staging --output-hashing=all
       fi
-
-    #Run the test
-    - npm run test --coverage --temp-directory=coverage --reporter=text-lcov
-    - mv junit.xml shippable/codecoverage
 
   on_success:
     # WEB IMAGE
