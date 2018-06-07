@@ -45,8 +45,8 @@ build:
       fi
 
     #Run the test
-    #- npm run ng test
-    #- mv shippable/codecoverage/*/coverage.xml shippable/codecoverage
+    - npm run test --coverage --temp-directory=coverage --reporter=text-lcov
+    - mv shippable/codecoverage/*/coverage.xml shippable/codecoverage
 
   on_success:
     # WEB IMAGE
