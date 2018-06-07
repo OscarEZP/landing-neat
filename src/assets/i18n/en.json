@@ -239,6 +239,7 @@
       "TO": "To",
       "TYPOLOGY": "Typology",
       "TYPOLOGY_MESSAGE": "The ETR must be validated by the Maintenance Team",
+      "UTC": "UTC",
       "YES": "Yes"
     },
     "CONTINGENCY_LIMIT": "Last 3 hours",
