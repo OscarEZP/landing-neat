@@ -2,7 +2,7 @@
     <div mat-dialog-title fxLayoutGap="20px" class="title-dialog-container" fxLayout="column">
         <div fxLayout="row" fxFlex>
             <span class="title-dialog" fxFlex>{{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_CREATION' | translate}}</span>
-            <span class="date-title-dialog">{{ utcModel.label | utcDate | date: 'dd MMM yyyy'}} | {{ timeClock | utcDate | date: 'HH:mm:ss' }} UTC</span>
+            <span class="date-title-dialog">{{ utcModel.label | utcDate | date: dateFormat}} | {{ timeClock | utcDate | date: hourFormat }} UTC</span>
             <button id="btn-contingency-form-close-btn" type="button" class="close-btn" mat-icon-button
                     fxFlexOffset="1">
                 <mat-icon aria-label="Example icon-button" class="material-icons close-dialog"
@@ -93,7 +93,7 @@
                         </mat-error>
                         <mat-autocomplete #flightNumber="matAutocomplete">
                             <mat-option *ngFor="let item of observableFlightList | async" [value]="item.flightNumber" (onSelectionChange)="onSelectFlight(item, $event)">
-                                <b>{{ item.flightNumber }}</b> <span class="small right">{{ item.etd.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</span>
+                                <b>{{ item.flightNumber }}</b> <span class="small right">{{ item.etd.epochTime | utcDate | date: dateTimeFormat}}</span>
                             </mat-option>
                         </mat-autocomplete>
                     </mat-form-field>
@@ -258,7 +258,7 @@
 
             </div>
             <div fxFlex="33" fxLayout="column" fxLayoutGap="20px" class="maintenance-container">
-                <span class="title-section">Maintenance</span>
+                <span class="title-section">{{'OPERATIONS.CONTINGENCY_FORM.MAINTENANCE'|translate}}</span>
                 <div fxLayout="column" fxLayoutGap="15px">
 
                     <span class="label-element">Contingency Type * :</span>
@@ -350,14 +350,14 @@
                         <mat-form-field fxFlex="25">
                             <mat-select id="rad-contingency-form-duration" placeholder="Interval"
                                         [formControl]="contingencyForm.controls['duration']" [(ngModel)]="contingency.status.requestedInterval.duration">
-                                <mat-option [value]="time" *ngFor="let time of durationArray">{{ time }} minutes
+                                <mat-option [value]="time" *ngFor="let time of durationArray">{{ time }} {{'OPERATIONS.CONTINGENCY_FORM.MINUTES'| translate}}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
                         <div fxFlexOffset="5" fxLayoutAlign="center center" fxFlex>
                             <div fxLayout="row" fxFlex="60">
                                 <mat-icon>today</mat-icon>
-                                <span fxLayoutAlign="center center">{{ utcModel.epochTime | date : 'dd-MMM-yyyy'}}</span>
+                                <span fxLayoutAlign="center center">{{ utcModel.epochTime | date : dateFormat}}</span>
                             </div>
                             <div fxLayout="row" fxFlex="30">
                                 <mat-icon>access_time</mat-icon>

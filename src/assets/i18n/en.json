@@ -213,6 +213,7 @@
       "INTERVAL": "Interval",
       "MAINTENANCE": "Maintenance",
       "MAX_LENGTH_VALIDATION": "Must be less than 400 characters",
+      "MINUTES": "minutes",
       "NO": "No",
       "OBSERVATION_REQUIRED_VALIDATION": "Status is required",
       "OBSERVATIONS_PLACEHOLDER": "Status",

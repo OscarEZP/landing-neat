@@ -59,6 +59,10 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
 
+    private static DATE_FORMAT = 'dd MMM yyyy ';
+    private static HOUR_FORMAT = 'HH:mm:ss';
+    private static DATE_TIME_FORMAT = 'dd-MM-yyyy HH:mm';
+
     private _messageUTCSubscription: Subscription;
     private _aircraftList: Aircraft[];
 
@@ -429,6 +433,9 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Open a cancel message if there is a filled item
+     */
     public openCancelDialog(): void {
         if (this.validateFilledItems()) {
             this.getTranslateString(ContingencyFormComponent.CANCEL_COMPONENT_MESSAGE);
@@ -500,6 +507,9 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             });
     }
 
+    /**
+     * Switch lists between planned flights and default flights
+     */
     public switchFlightList(): void {
         this.flightList = !this.plannedFlights ? this.plannedFlightList : this.defaultFlightList;
         this.contingencyForm
@@ -510,6 +520,10 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Get an observable for flight list
+     * @returns {Observable<Flight[]>}
+     */
     private getObservableFlightList(): Observable<Flight[]> {
         return this.contingencyForm
             .controls['flightNumber']
@@ -869,5 +883,17 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
     set plannedFlightList(value: Flight[]) {
         this._plannedFlightList = value;
+    }
+
+    get dateFormat(): string {
+        return ContingencyFormComponent.DATE_FORMAT;
+    }
+
+    get hourFormat(): string {
+        return ContingencyFormComponent.HOUR_FORMAT;
+    }
+
+    get dateTimeFormat(): string {
+        return ContingencyFormComponent.DATE_TIME_FORMAT;
     }
 }
