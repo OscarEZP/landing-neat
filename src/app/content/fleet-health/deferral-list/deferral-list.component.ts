@@ -33,7 +33,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private static TASK_FLEETHEALTH_ENDPOINT = 'tasksFleethealthSearch';
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
-    private static DEFAULT_INTERVAL = 15;
+    private static DEFAULT_INTERVAL = 30;
 
     private _listSubscription: Subscription;
     private _reloadSubscription: Subscription;
@@ -107,10 +107,9 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private validateStations(): boolean {
         const currentUser: ManagementUser = this._localStorage.userManagement;
-        if (currentUser === null || currentUser.detailStation === null || currentUser.detailStation.defaults === null || currentUser.detailStation.defaults.code === null || currentUser.detailStation.defaults.code === '') {
-            return false;
-        }
-        return true;
+
+        return !(currentUser === null || currentUser.detailStation === null || currentUser.detailStation.defaults === null || currentUser.detailStation.defaults.code === null || currentUser.detailStation.defaults.code === '');
+
     }
 
     /**
@@ -245,6 +244,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
             this.selectedRegisterPivot = register;
             this.openHistoricalReport(register);
             this.serviceTask = register;
+            this.list = [];
+            this.listSubscription.unsubscribe();
         }
     }
 
@@ -257,7 +258,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
             maxWidth: '100vw',
             width: '100%',
             height: '100%',
-            hasBackdrop: false
+            hasBackdrop: false,
+            disableClose: true
         });
     }
 

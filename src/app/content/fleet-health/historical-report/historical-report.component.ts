@@ -72,8 +72,10 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
                     horizontalPosition: 'center',
                     verticalPosition: 'top'
                 });
+                this._messageData.stringMessage('reload');
             });
         } else {
+            this._messageData.stringMessage('reload');
             this._dialogService.closeAllDialogs();
         }
     }
