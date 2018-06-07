@@ -27,7 +27,7 @@ build:
   #commands in this section run inside your CI container. In addition, any commands such as ls, in this section can be used to skip default processing for CI.
   ci:
     # Shippable code coverage folder
-    - mkdir -p $SHIPPABLE_CODE_COVERAGE_DIR
+    - mkdir -p "$SHIPPABLE_CODE_COVERAGE_DIR"
     # Since caching is enabled, cleanup git leftovers
     - git clean -f -x
 
