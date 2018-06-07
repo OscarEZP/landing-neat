@@ -40,7 +40,7 @@ build:
 
     #Run the test
     - npm run test --coverage --temp-directory=coverage --reporter=text-lcov --ci --testResultsProcessor="./node_modules/jest-junit-reporter"
-    - cp $SHIPPABLE_TEST_RESULTS_DIR/test-report.xml $SHIPPABLE_TEST_RESULTS_DIR/test-report.xml
+    - cp $SHIPPABLE_BUILD_DIR/test-report.xml $SHIPPABLE_TEST_RESULTS_DIR/test-report.xml
 
     #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR
