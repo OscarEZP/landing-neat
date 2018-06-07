@@ -350,7 +350,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private getPlannedFlights$(): Observable<Flight[]> {
         const flightSearch = new PlannedFlightSearch(
             ContingencyFormComponent.HOURS_LIMIT,
-            new Pagination(1, ContingencyFormComponent.PLANNED_FLIGTHS_LIMIT),
+            new Pagination(0, ContingencyFormComponent.PLANNED_FLIGTHS_LIMIT),
             new TimeInstant(new Date().getTime(), '')
         );
         return this._apiRestService
