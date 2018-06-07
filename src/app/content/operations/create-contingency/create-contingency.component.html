@@ -86,13 +86,13 @@
                                placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.FLIGHT' | translate }}" matInput
                                [formControl]="contingencyForm.controls['flightNumber']"
                                [matAutocomplete]="flightNumber">
-                        <div class="small sufix" *ngIf="contingencyForm.controls['flightNumber'].value">{{contingency.flight.etd.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</div>
+                        <div class="small suffix placeholder" *ngIf="contingencyForm.controls['flightNumber'].value">{{contingency.flight.etd.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</div>
                         <mat-error
                                 *ngIf="contingencyForm.controls['flightNumber'].hasError('required') && contingencyForm.controls['flightNumber'].touched">
                             {{'OPERATIONS.CONTINGENCY_FORM.FLIGHT_REQUIRED'|translate}}
                         </mat-error>
                         <mat-autocomplete #flightNumber="matAutocomplete">
-                            <mat-option *ngFor="let item of observableFlightList | async" [value]="item.flightNumber" (click)="onSelectFlight(item)">
+                            <mat-option *ngFor="let item of observableFlightList | async" [value]="item.flightNumber" (onSelectionChange)="onSelectFlight(item, $event)">
                                 <b>{{ item.flightNumber }}</b> <span class="small right">{{ item.etd.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</span>
                             </mat-option>
                         </mat-autocomplete>
@@ -168,7 +168,7 @@
 
                 <div fxLayout="column" fxFlexOffset="20px" *ngIf="!contingency.isBackup">
                     <div fxLayout="row">
-                        <mat-checkbox id="chk-contingency-form-next-flights" labelPosition="after" fxFlex="20"
+                        <mat-checkbox [disabled]="!searchAircraft.value" id="chk-contingency-form-next-flights" labelPosition="after" fxFlex="20"
                                       [formControl]="contingencyForm.controls['plannedFlights']" [(ngModel)]="plannedFlights"
                                       (click)="switchFlightList()">{{'OPERATIONS.CONTINGENCY_FORM.PLANNED_FLIGHTS_IN_THE_NEXT_HOURS'|translate:{value: 4} }}</mat-checkbox>
                     </div>

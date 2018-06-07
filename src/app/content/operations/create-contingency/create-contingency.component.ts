@@ -99,8 +99,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _safetyEventSubscription: Subscription;
     private _plannedFlightsSubscription: Subscription;
 
-    private _plannedFlights: boolean;
-
     constructor(
         private _dialogService: DialogService,
         private _fb: FormBuilder,
@@ -467,7 +465,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @param {string} selectedOption
      */
     public onSelectAircraft(selectedOption: string): void {
-
         const flightSearch = new FlightSearch(selectedOption, 0, 5, new TimeInstant(this.utcModel.epochTime, null));
         this.flightList = [];
         this.plannedFlights = false;
@@ -527,13 +524,15 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * Method triggered when a flight is selected and populate selected values in the contingency.flight model
      * @param {Flight} fl
      */
-    public onSelectFlight(fl: Flight): void {
-        this.contingency.flight.flightNumber = fl.flightNumber;
-        this.contingency.flight.origin = fl.origin;
-        this.contingency.flight.destination = fl.destination;
-        this.contingency.flight.etd.epochTime = fl.etd.epochTime;
-        this.contingency.flight.etd.label = fl.etd.label;
-        this.contingencyDateModel[0].updateFromEpoch(fl.etd.epochTime);
+    public onSelectFlight(fl: Flight, event = {isUserInput: true}): void {
+        if (event.isUserInput) {
+            this.contingency.flight.flightNumber = fl.flightNumber;
+            this.contingency.flight.origin = fl.origin;
+            this.contingency.flight.destination = fl.destination;
+            this.contingency.flight.etd.epochTime = fl.etd.epochTime;
+            this.contingency.flight.etd.label = fl.etd.label;
+            this.contingencyDateModel[0].updateFromEpoch(fl.etd.epochTime);
+        }
     }
 
     /**
@@ -849,11 +848,11 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     }
 
     get plannedFlights(): boolean {
-        return this._plannedFlights;
+        return this._contingency.isPlannedFlight;
     }
 
     set plannedFlights(value: boolean) {
-        this._plannedFlights = value;
+        this._contingency.isPlannedFlight = value;
     }
 
     get defaultFlightList(): Flight[] {
