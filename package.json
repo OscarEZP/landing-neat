@@ -18,7 +18,21 @@
     "preset": "jest-preset-angular",
     "setupTestFrameworkScriptFile": "<rootDir>/src/setupJest.ts",
     "testResultsProcessor": "./node_modules/jest-html-reporter",
-    "coverageReporters" : ["lcov"]
+    "coverageReporters": [
+      "lcov"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": ["**/__tests__/**/*.ts?(x)","**/?(*.)(spec|test).ts?(x)"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   },
   "private": true,
   "dependencies": {
@@ -72,7 +86,6 @@
     "istanbul-instrumenter-loader": "2.0.0",
     "jest": "23.1.0",
     "jest-html-reporter": "2.3.0",
-    "jest-preset-angular": "5.2.2",
     "less-loader": "4.0.5",
     "moment": "2.22.1",
     "postcss-loader": "1.3.3",
