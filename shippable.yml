@@ -12,8 +12,8 @@ env:
   global:
     - IMAGE_NAME=mcp/moc-web
     - IMAGE_REPO_URL=693532776274.dkr.ecr.us-east-1.amazonaws.com/mcp/moc-web
-    - $SHIPPABLE_TEST_RESULTS_DIR=shippable/testresults
-    - $SHIPPABLE_CODE_COVERAGE_DIR=shippable/codecoverage
+    - SHIPPABLE_TEST_RESULTS_DIR=shippable/testresults
+    - SHIPPABLE_CODE_COVERAGE_DIR=shippable/codecoverage
 
 branches:
   only:
