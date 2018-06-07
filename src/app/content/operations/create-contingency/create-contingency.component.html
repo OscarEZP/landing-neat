@@ -2,7 +2,7 @@
     <div mat-dialog-title fxLayoutGap="20px" class="title-dialog-container" fxLayout="column">
         <div fxLayout="row" fxFlex>
             <span class="title-dialog" fxFlex>{{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_CREATION' | translate}}</span>
-            <span class="date-title-dialog">{{ utcModel.label | utcDate | date: dateFormat}} | {{ timeClock | utcDate | date: hourFormat }} UTC</span>
+            <span class="date-title-dialog">{{ utcModel.label | utcDate | date: dateFormat}} | {{ timeClock | utcDate | date: hourFormat }} {{'OPERATIONS.CONTINGENCY_FORM.UTC'| translate}}</span>
             <button id="btn-contingency-form-close-btn" type="button" class="close-btn" mat-icon-button
                     fxFlexOffset="1">
                 <mat-icon aria-label="Example icon-button" class="material-icons close-dialog"
@@ -128,7 +128,7 @@
                             name="slotTm">
                         </mat-form-field>
 
-                        <label fxFlex="10">UTC</label>
+                        <label fxFlex="10">{{'OPERATIONS.CONTINGENCY_FORM.UTC'| translate}}</label>
                         <mat-form-field fxFlex="25">
                             <input id="in-contingency-form-slot-date" matInput [matDatepicker]="slotDatePicker"
                                    placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.SLOT_DATE' | translate }}"
@@ -184,7 +184,7 @@
                                    name="tm">
                         </mat-form-field>
 
-                        <label fxFlex="20">UTC</label>
+                        <label fxFlex="20">{{'OPERATIONS.CONTINGENCY_FORM.UTC'| translate}}</label>
                         <mat-form-field fxFlex="35">
                             <input id="in-contingency-form-flight-date" matInput [matDatepicker]="picker"
                                    placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.FLIGHT_DATE' | translate }}"
@@ -363,7 +363,7 @@
                                 <mat-icon>access_time</mat-icon>
                                 <span fxLayoutAlign="center center">{{ utcModel.epochTime + (contingencyForm.controls['duration'].value * 60000) | date : 'HH:mm' : '+0'}}</span>
                             </div>
-                            <span fxFlex=""> UTC</span>
+                            <span fxFlex=""> {{'OPERATIONS.CONTINGENCY_FORM.UTC'| translate}}</span>
                         </div>
                     </div>
                 </div>
