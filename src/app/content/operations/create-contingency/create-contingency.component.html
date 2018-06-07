@@ -170,9 +170,7 @@
                     <div fxLayout="row">
                         <mat-checkbox id="chk-contingency-form-next-flights" labelPosition="after" fxFlex="20"
                                       [formControl]="contingencyForm.controls['plannedFlights']" [(ngModel)]="plannedFlights"
-                                      (click)="switchFlightList()">
-                            {{'OPERATIONS.CONTINGENCY_FORM.PLANNED_FLIGHTS_IN_THE_NEXT_HOURS'|translate:{value: 4} }}
-                        </mat-checkbox>
+                                      (click)="switchFlightList()">{{'OPERATIONS.CONTINGENCY_FORM.PLANNED_FLIGHTS_IN_THE_NEXT_HOURS'|translate:{value: 4} }}</mat-checkbox>
                     </div>
                 </div>
 

@@ -470,7 +470,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
         const flightSearch = new FlightSearch(selectedOption, 0, 5, new TimeInstant(this.utcModel.epochTime, null));
         this.flightList = [];
-
+        this.plannedFlights = false;
         this._apiRestService
             .search<Flight[]>(ContingencyFormComponent.FLIGTHS_ENDPOINT, flightSearch)
             .subscribe((response: Flight[]) => {
