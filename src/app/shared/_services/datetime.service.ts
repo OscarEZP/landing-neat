@@ -1,22 +1,23 @@
-import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
-import { ActualTimeModel } from '../_models/actualTime';
-import { Observable } from 'rxjs/Observable';
-import { environment } from '../../../environments/environment';
-
+import {ActualTimeModel} from '../_models/actualTime';
+import {Observable} from 'rxjs/Observable';
+import {environment} from '../../../environments/environment';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable()
 export class DatetimeService {
     private url = environment.apiUrl + environment.paths.dateTime;
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
-    getTime(): Observable<ActualTimeModel> {
+    public getTime(): Observable<ActualTimeModel> {
         return this.http
-                   .get(this.url)
-                   .map(res => res.json());
+            .get<ActualTimeModel>(this.url)
+            .map((actualTimeModel: ActualTimeModel) => {
+                actualTimeModel = new ActualTimeModel(actualTimeModel.currentTime, actualTimeModel.currentTimeLong);
+                return actualTimeModel;
+            });
     }
-
 }
