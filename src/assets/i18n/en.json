@@ -221,7 +221,7 @@
       "OPERATOR": "Operator",
       "OPERATOR_OUT_DOMAIN": "Operator out of domain",
       "OPERATOR_REQUIRED": "Operator is required",
-      "PLANNED_FLIGHTS_IN_THE_NEXT_HOURS": "Planned flights in the next {{value}} hours",
+      "PLANNED_FLIGHTS_IN_THE_NEXT_HOURS": "Planned flights",
       "REASON_PLACEHOLDER": "Reason",
       "REASON_REQUIRED_VALIDATION": "Reason is required",
       "REQUIRE_FIELDS": "All fields with (*) are required",
