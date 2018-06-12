@@ -12,7 +12,7 @@ services:
       - "4200:4200"
       volumes:    # Volumes (directories) to mount
       - ../../:/var/www/html/
-      command: bash -c "npm install && ng serve --env=staging -o --host 0.0.0.0 --port 4200"
+      command: bash -c "npm cache clean --force && npm install && ng serve --env=staging -o --host 0.0.0.0 --port 4200"
 
   local:  # Local web service
       image: moc-web-img
@@ -22,7 +22,7 @@ services:
       - "4200:4200"
       volumes:    # Volumes (directories) to mount
       - ../../:/var/www/html/
-      command: bash -c "npm install && ng serve --env=dev -o --host 0.0.0.0 --port 4200"
+      command: bash -c "npm cache clean --force && npm install && ng serve --env=dev -o --host 0.0.0.0 --port 4200"
 
 #  prod:  # Production web service
 #    container_name: moc_prod

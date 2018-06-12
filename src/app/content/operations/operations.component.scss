@@ -1,6 +1,6 @@
 @import '../../../assets/style/base.scss';
 
-$historical-search-width: 70%;
+$responsive-limit: 950px;
 
 /deep/
 #operations-container {
@@ -18,7 +18,6 @@ $historical-search-width: 70%;
     @include generate-font-size(-5);
     background-color: mat-color($custom, 'background-grey');
     width: 100%;
-    max-width: $historical-search-width;
     margin: 10px 0 0 0;
     strong {
       font-weight: bold;
@@ -35,7 +34,7 @@ $historical-search-width: 70%;
     display: inline-block;
     float: left;
     width: 100%;
-    max-width: calc(100% - #{$historical-search-width});
+    min-width: 280px;
 
     a {
       @include generate-font-size(-3);
@@ -83,13 +82,13 @@ $historical-search-width: 70%;
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: $responsive-limit) {
   #operations-container {
     > div {
       > nav,
       #historical-search  {
-        max-width: none;
-        margin: 0;
+        //max-width: none;
+        //margin: 0;
       }
     }
   }
