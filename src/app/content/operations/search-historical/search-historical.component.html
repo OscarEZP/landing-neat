@@ -1,7 +1,7 @@
 <form [formGroup]="searchForm" (ngSubmit)="submitForm(searchForm.value)">
-    <div fxLayout="row" fxLayoutGap="20px">
+    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign.lt-md="start center" fxLayoutAlign="end center">
         <span fxFlex="20" fxLayoutAlign="end center">{{'OPERATIONS.SEARCH_HISTORICAL.TITLE'|translate}}</span>
-        <mat-form-field fxFlex="">
+        <mat-form-field fxFlex="15">
             <mat-select placeholder="{{'OPERATIONS.SEARCH_HISTORICAL.TAIL'|translate}}" multiple
                         [formControl]="searchForm.controls['tails']" required
                         [(ngModel)]="selectedOptions">
@@ -42,7 +42,7 @@
             <mat-datepicker #to></mat-datepicker>
         </mat-form-field>
 
-        <div fxFlex="" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end center">
+        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end center">
             <button id="btn-search-historical-submit" type="submit" mat-button color="primary">
                 {{'OPERATIONS.SEARCH_HISTORICAL.FILTER'|translate}}
             </button>
