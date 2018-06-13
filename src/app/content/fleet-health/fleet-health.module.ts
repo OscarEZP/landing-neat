@@ -9,7 +9,7 @@ import { DateUtil } from '../../shared/util/dateUtil';
 import { DialogService } from '../_services/dialog.service';
 import { ContingencyService } from '../_services/contingency.service';
 import { HistoricalSearchService } from '../_services/historical-search.service';
-import { InfiniteScrollService } from '../_services/infinite-scroll.service';
+import { PaginatorObjectService } from '../_services/paginator-object.service';
 import { LogService } from '../_services/log.service';
 import { FleetHealthComponent } from './fleet-health.component';
 import { DeferralListComponent } from './deferral-list/deferral-list.component';
@@ -34,7 +34,7 @@ import {HistoricalReportService} from './historical-report/_services/historical-
         LogService,
         ClockService,
         ApiRestService,
-        InfiniteScrollService,
+        PaginatorObjectService,
         HistoricalSearchService,
         {provide: MAT_DATE_LOCALE, useValue: 'es-CL'},
         DateUtil,

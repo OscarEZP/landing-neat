@@ -10,7 +10,6 @@ import {CloseContingencyComponent} from '../close-contingency/close-contingency.
 import {ActivatedRoute} from '@angular/router';
 import {HistoricalSearchService} from '../../_services/historical-search.service';
 import {ContingencyService} from '../../_services/contingency.service';
-import {InfiniteScrollService} from '../../_services/infinite-scroll.service';
 import {MatPaginator} from '@angular/material';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
@@ -19,6 +18,7 @@ import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {MeetingComponent} from '../meeting/meeting.component';
 import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
+import {PaginatorObjectService} from '../../_services/paginator-object.service';
 
 
 @Component({
@@ -37,13 +37,13 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private _contingenciesSubscription: Subscription;
     private _historicalSubscription: Subscription;
     private _timerSubscription: Subscription;
-    private _paginatorSubscription: Subscription;
     private _routingSubscription: Subscription;
     private _intervalRefreshSubscription: Subscription;
     private _currentUTCTime: number;
     private _selectedContingency: Contingency;
     private _selectedContingencyPivot: Contingency;
     private _intervalToRefresh: number;
+    private _paginatorObject: PaginatorObjectService;
 
     constructor(private _messageData: DataService,
                 private _dialogService: DialogService,
@@ -51,7 +51,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 private _detailsService: DetailsService,
                 private _historicalSearchService: HistoricalSearchService,
                 private _contingencyService: ContingencyService,
-                private _infiniteScrollService: InfiniteScrollService,
                 private _translate: TranslateService,
                 private _apiRestService: ApiRestService
     ) {
@@ -63,23 +62,41 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.currentUTCTime = 0;
-        this._messageSubscriptions = this._messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
-        this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
-        this._routingSubscription = this._route.data.subscribe((data: any) => {
-            this.historicalSearchService.active = data.historical;
-        });
+        this.messageSubscriptions = this._messageData.currentNumberMessage.subscribe(message => this.currentUTCTime = message);
+        this.reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
+        this.routingSubscription = this._route.data.subscribe(data => this.historicalSearchService.active = data.historical);
         this.contingencyService.clearList();
-        this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
-        this._paginatorSubscription = this.getPaginationSubscription();
+        this.paginatorObject = PaginatorObjectService.getInstance();
+        this.getPaginationSubscription();
+        this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
     }
 
-    public getPaginationSubscription(): Subscription {
+    /**
+     * Event when component is destroyed
+     */
+    public ngOnDestroy() {
+        this.messageSubscriptions.unsubscribe();
+        this.reloadSubscription.unsubscribe();
+        this.routingSubscription.unsubscribe();
+        this.intervalRefreshSubscription.unsubscribe();
+        if (this.contingenciesSubscription) {
+            this.contingenciesSubscription.unsubscribe();
+        }
+        if (this.timerSubscription) {
+            this.timerSubscription.unsubscribe();
+        }
+        if (this.historicalSubscription) {
+            this.historicalSubscription.unsubscribe();
+        }
+    }
+
+    private getPaginationSubscription(): Subscription {
         return this.paginator.page.subscribe((page) => {
-            this.infiniteScrollService.pageSize = page.pageSize;
-            this.infiniteScrollService.pageIndex = page.pageIndex;
+            this.paginatorObject.pageSize = page.pageSize;
+            this.paginatorObject.pageIndex = page.pageIndex;
             const search = new SearchContingency(
-                this.infiniteScrollService.offset,
-                this.infiniteScrollService.pageSize,
+                this.paginatorObject.offset,
+                this.paginatorObject.pageSize,
                 this.historicalSearchService.tails,
                 new TimeInstant(this.historicalSearchService.fromTS, ''),
                 new TimeInstant(this.historicalSearchService.toTS, ''),
@@ -87,7 +104,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 false
             );
             this.contingencyService.loading = true;
-            this._historicalSubscription = this.contingencyService.postHistoricalSearch(search).subscribe(() => { this.contingencyService.loading = false; });
+            this.historicalSubscription = this.contingencyService.postHistoricalSearch(search).subscribe(() => { this.contingencyService.loading = false; });
         });
     }
 
@@ -118,26 +135,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     public setSelectedContingency(contingency: Contingency) {
         this.selectedContingency = contingency;
         this.selectedContingencyPivot = contingency;
-    }
-
-    /**
-     * Event when component is destroyed
-     */
-    public ngOnDestroy() {
-        this._messageSubscriptions.unsubscribe();
-        this._reloadSubscription.unsubscribe();
-        this._routingSubscription.unsubscribe();
-        this._paginatorSubscription.unsubscribe();
-        this._intervalRefreshSubscription.unsubscribe();
-        if (this._contingenciesSubscription) {
-            this._contingenciesSubscription.unsubscribe();
-        }
-        if (this._timerSubscription) {
-            this._timerSubscription.unsubscribe();
-        }
-        if (this._historicalSubscription) {
-            this._historicalSubscription.unsubscribe();
-        }
     }
 
     public openCloseContingency(contingency: any) {
@@ -173,7 +170,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private getContingencies() {
         if (!this.historicalSearchService.active) {
             this.contingencyService.loading = true;
-            this._contingenciesSubscription = this.contingencyService.getContingencies().subscribe((contingencyList: Contingency[]) => {
+            this.contingenciesSubscription = this.contingencyService.getContingencies().subscribe((contingencyList: Contingency[]) => {
                 const ctgInArray = contingencyList.filter(ctg => ctg.id === this.selectedContingencyPivot.id).length;
                 if (this.selectedContingencyPivot.id !== null && ctgInArray === 1) {
                     this.selectedContingency = this.selectedContingencyPivot;
@@ -187,21 +184,19 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     private subscribeTimer(): Subscription {
-        if (this._timerSubscription) {
-            this._timerSubscription.unsubscribe();
+        if (this.timerSubscription) {
+            this.timerSubscription.unsubscribe();
         }
-        return this._timerSubscription = Observable.timer(this.intervalToRefresh).first().subscribe(() => {
+        return this.timerSubscription = Observable.timer(this.intervalToRefresh).first().subscribe(() => {
             this.getContingencies();
         });
     }
 
     private getIntervalToRefresh(): Subscription {
         this.contingencyService.loading = true;
-        return this._apiRestService.getSingle('configTypes', 'CONTINGENCY_UPDATE_INTERVAL').subscribe(
-            rs => {
-                const res = rs as GroupTypes;
-                this.intervalToRefresh = Number(res.types[0].code) * 1000;
-            },
+
+        return this._apiRestService.getSingle<GroupTypes>('configTypes', 'CONTINGENCY_UPDATE_INTERVAL').subscribe(
+            (rs: GroupTypes) => this.intervalToRefresh = Number(rs.types[0].code) * 1000,
             () => this.intervalToRefresh = 60 * 1000,
             () => this.contingencyService.loading = false
         );
@@ -234,10 +229,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     set currentUTCTime(value: number) {
         this._currentUTCTime = value;
-    }
-
-    get infiniteScrollService(): InfiniteScrollService {
-        return this._infiniteScrollService;
     }
 
     get detailsService(): DetailsService {
@@ -274,5 +265,69 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     set intervalToRefresh(value: number) {
         this._intervalToRefresh = value;
+    }
+
+    get paginatorObject(): PaginatorObjectService {
+        return this._paginatorObject;
+    }
+
+    set paginatorObject(value: PaginatorObjectService) {
+        this._paginatorObject = value;
+    }
+
+    get intervalRefreshSubscription(): Subscription {
+        return this._intervalRefreshSubscription;
+    }
+
+    set intervalRefreshSubscription(value: Subscription) {
+        this._intervalRefreshSubscription = value;
+    }
+
+    get messageSubscriptions(): Subscription {
+        return this._messageSubscriptions;
+    }
+
+    set messageSubscriptions(value: Subscription) {
+        this._messageSubscriptions = value;
+    }
+
+    get reloadSubscription(): Subscription {
+        return this._reloadSubscription;
+    }
+
+    set reloadSubscription(value: Subscription) {
+        this._reloadSubscription = value;
+    }
+
+    get routingSubscription(): Subscription {
+        return this._routingSubscription;
+    }
+
+    set routingSubscription(value: Subscription) {
+        this._routingSubscription = value;
+    }
+
+    get contingenciesSubscription(): Subscription {
+        return this._contingenciesSubscription;
+    }
+
+    set contingenciesSubscription(value: Subscription) {
+        this._contingenciesSubscription = value;
+    }
+
+    get historicalSubscription(): Subscription {
+        return this._historicalSubscription;
+    }
+
+    set historicalSubscription(value: Subscription) {
+        this._historicalSubscription = value;
+    }
+
+    get timerSubscription(): Subscription {
+        return this._timerSubscription;
+    }
+
+    set timerSubscription(value: Subscription) {
+        this._timerSubscription = value;
     }
 }

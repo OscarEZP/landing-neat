@@ -29,9 +29,9 @@
   </main>
 </div>
 <mat-paginator #contPaginator [hidden]="!checkDataStatus() || loading"
-               [length]="infiniteScrollService.length"
-               [pageIndex]="infiniteScrollService.pageIndex"
-               [pageSize]="infiniteScrollService.pageSize"
-               [pageSizeOptions]="infiniteScrollService.pageSizeOptions"
+               [length]="paginatorObjectService.length"
+               [pageIndex]="paginatorObjectService.pageIndex"
+               [pageSize]="paginatorObjectService.pageSize"
+               [pageSizeOptions]="paginatorObjectService.pageSizeOptions"
 >
 </mat-paginator>

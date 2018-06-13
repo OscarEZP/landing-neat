@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {InfiniteScrollService} from '../../../../_services/infinite-scroll.service';
+import {PaginatorObjectService} from '../../../../_services/paginator-object.service';
 import {User} from '../../../../../shared/_models/user/user';
 import {Observable} from 'rxjs/Observable';
 import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
@@ -9,7 +9,7 @@ import {UserSearch} from '../../../../../shared/_models/management/userSearch';
 import {Subscription} from 'rxjs/Subscription';
 import {MatPaginator} from '@angular/material';
 import {tap} from 'rxjs/operators';
-import {Station} from "../../../../../shared/_models/management/station";
+import {Station} from '../../../../../shared/_models/management/station';
 
 @Component({
     selector: 'lsl-user-list',
@@ -29,12 +29,12 @@ export class UserListComponent implements OnInit {
     private _error: boolean;
 
     constructor(
-        private _infiniteScrollService: InfiniteScrollService,
+        private _paginatorObjectService: PaginatorObjectService,
         private _translate: TranslateService,
         private _apiRestService: ApiRestService
     ) {
         this._translate.setDefaultLang('en');
-        this.infiniteScrollService.length = 0;
+        this.paginatorObjectService = PaginatorObjectService.getInstance();
         this.loading = false;
         this.error = false;
     }
@@ -55,7 +55,7 @@ export class UserListComponent implements OnInit {
     public getUserCount(signature: UserSearch): Subscription {
         return this._apiRestService.search<{items: number}>(UserListComponent.MANAGEMENT_USERS_SEARCH_COUNT_ENDPOINT, signature)
             .subscribe(res => {
-                this.infiniteScrollService.length = res.items;
+                this.paginatorObjectService.length = res.items;
             });
     }
 
@@ -78,8 +78,8 @@ export class UserListComponent implements OnInit {
      */
     public getPaginationSubscription(): Subscription {
         return this.paginator.page.subscribe((page) => {
-            this.infiniteScrollService.pageSize = page.pageSize;
-            this.infiniteScrollService.pageIndex = page.pageIndex;
+            this.paginatorObjectService.pageSize = page.pageSize;
+            this.paginatorObjectService.pageIndex = page.pageIndex;
             this.userList = this.getUserList(this.getSearchSignature());
         });
     }
@@ -90,7 +90,7 @@ export class UserListComponent implements OnInit {
      */
     private getSearchSignature(): UserSearch {
         return new UserSearch(
-            new Pagination(this.infiniteScrollService.offset, this.infiniteScrollService.pageSize),
+            new Pagination(this.paginatorObjectService.offset, this.paginatorObjectService.pageSize),
             ['true', 'false']
         );
     }
@@ -110,15 +110,15 @@ export class UserListComponent implements OnInit {
      * @return {boolean}
      */
     public checkDataStatus(): boolean {
-        return this.infiniteScrollService.length > 10;
+        return this.paginatorObjectService.length > 10;
     }
 
-    get infiniteScrollService(): InfiniteScrollService {
-        return this._infiniteScrollService;
+    get paginatorObjectService(): PaginatorObjectService {
+        return this._paginatorObjectService;
     }
 
-    set infiniteScrollService(value: InfiniteScrollService) {
-        this._infiniteScrollService = value;
+    set paginatorObjectService(value: PaginatorObjectService) {
+        this._paginatorObjectService = value;
     }
 
     get userList(): Observable<User[]> {

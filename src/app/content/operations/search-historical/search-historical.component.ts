@@ -7,7 +7,7 @@ import { Aircraft } from '../../../shared/_models/aircraft';
 import { ContingencyService } from '../../_services/contingency.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HistoricalSearchService } from '../../_services/historical-search.service';
-import { InfiniteScrollService } from '../../_services/infinite-scroll.service';
+import { PaginatorObjectService } from '../../_services/paginator-object.service';
 import {MatDatepickerInputEvent} from '@angular/material';
 import { DateUtil } from '../../../shared/util/dateUtil';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
@@ -43,7 +43,7 @@ export class SearchHistoricalComponent implements OnInit {
         private route: ActivatedRoute,
         private _contingencyService: ContingencyService,
         private _searchHistoricalService: HistoricalSearchService,
-        private _infiniteScrollService: InfiniteScrollService,
+        private _paginatorObjectService: PaginatorObjectService,
     ) {
         this.translate.setDefaultLang('en');
         this.searchHistoricalService.initForm(
@@ -66,6 +66,7 @@ export class SearchHistoricalComponent implements OnInit {
         this.maxDate = new Date();
         this.minFrom = new Date();
         this.minTo = new Date();
+        this.paginatorObjectService = PaginatorObjectService.getInstance();
     }
 
     get contingencyService(): ContingencyService {
@@ -76,8 +77,12 @@ export class SearchHistoricalComponent implements OnInit {
         return this._searchHistoricalService;
     }
 
-    get infiniteScrollService(): InfiniteScrollService {
-        return this._infiniteScrollService;
+    get paginatorObjectService(): PaginatorObjectService {
+        return this._paginatorObjectService;
+    }
+
+    set paginatorObjectService(value: PaginatorObjectService) {
+        this._paginatorObjectService = value;
     }
 
     ngOnInit() {
@@ -116,14 +121,13 @@ export class SearchHistoricalComponent implements OnInit {
 
     public clearSearch(): void {
         this.searchHistoricalService.searchForm.reset();
-        this.infiniteScrollService.init();
         this.router.navigate(['../'], {relativeTo: this.route});
     }
 
     public getSearchContingency(): SearchContingency {
         return new SearchContingency(
-            this.infiniteScrollService.offset,
-            this.infiniteScrollService.pageSize,
+            this.paginatorObjectService.offset,
+            this.paginatorObjectService.pageSize,
             this.searchHistoricalService.tails,
             new TimeInstant(this.searchHistoricalService.fromTS, ''),
             new TimeInstant(this.searchHistoricalService.toTS, ''),
@@ -135,14 +139,13 @@ export class SearchHistoricalComponent implements OnInit {
     public submitForm() {
         this.searchHistoricalService.searchForm.updateValueAndValidity();
         if (this.searchHistoricalService.searchForm.valid) {
-            this.infiniteScrollService.init();
             const search = this.getSearchContingency();
             this.contingencyService.loading = true;
             this.contingencyService.postHistoricalSearch(search).subscribe(() => {
                 this.contingencyService.loading = false;
             });
             this.contingencyService.getTotalRecords(search).subscribe((count) => {
-                this.infiniteScrollService.length = count.items;
+                this.paginatorObjectService.length = count.items;
             });
             if (!this.searchHistoricalService.active) {
                 this.router.navigate([SearchHistoricalComponent.HISTORICAL_URL]);

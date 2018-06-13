@@ -1,9 +1,9 @@
 <div class="counter-container" fxLayout="column" fxLayoutAlign="center" *ngIf="checkDataStatus()">
     <div *ngIf="historicalSearchService.active">
         {{ 'OPERATIONS.SHOWING' | translate }}
-        {{infiniteScrollService.viewedRecords}}
+        {{paginatorObject.viewedRecords}}
         {{ 'OPERATIONS.OF' | translate }}
-        {{infiniteScrollService.length}}
+        {{paginatorObject.length}}
         {{ 'OPERATIONS.CLOSED_CONTINGENCIES' | translate }}
     </div>
     <div *ngIf="!historicalSearchService.active">
@@ -133,10 +133,10 @@
     </main>
 </div>
 <mat-paginator #contPaginator [hidden]="!checkDataStatus() || !historicalSearchService.active"
-               [length]="infiniteScrollService.length"
-               [pageIndex]="infiniteScrollService.pageIndex"
-               [pageSize]="infiniteScrollService.pageSize"
-               [pageSizeOptions]="infiniteScrollService.pageSizeOptions"
+               [length]="paginatorObject.length"
+               [pageIndex]="paginatorObject.pageIndex"
+               [pageSize]="paginatorObject.pageSize"
+               [pageSizeOptions]="paginatorObject.pageSizeOptions"
 >
 </mat-paginator>
 <lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading && !historicalSearchService.active"></lsl-ess>

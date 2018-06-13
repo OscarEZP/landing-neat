@@ -4,7 +4,7 @@ import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {Observable} from 'rxjs/Observable';
 import {DetailsService} from '../../../details/_services/details.service';
-import {InfiniteScrollService} from '../../_services/infinite-scroll.service';
+import {PaginatorObjectService} from '../../_services/paginator-object.service';
 import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
@@ -55,7 +55,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         private _messageData: DataService,
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
-        private _infiniteScrollService: InfiniteScrollService,
+        private _infiniteScrollService: PaginatorObjectService,
         private _dialogService: DialogService,
         private _historicalReportService: HistoricalReportService,
         private _localStorage: StorageService,
@@ -64,6 +64,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     ) {
         this.selectedRegister = Task.getInstance();
         this.selectedRegisterPivot = Task.getInstance();
+        this.paginatorObjectService = PaginatorObjectService.getInstance();
         this.intervalToRefresh = DeferralListComponent.DEFAULT_INTERVAL;
     }
 
@@ -72,7 +73,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this.reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
         this.paginatorSubscription = this.getPaginationSubscription();
-        this.infiniteScrollService.init();
         this.haveStationsConf = this.validateStations();
         this.haveAuthoritiesConf = this.validateAuthorities();
     }
@@ -96,7 +96,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {boolean}
      */
     private getError(): boolean {
-        this.infiniteScrollService.length = 0;
+        this.paginatorObjectService.length = 0;
         this.loading = false;
         return this.error = true;
     }
@@ -144,7 +144,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
                 this.subscribeTimer();
                 this.list = response.fleetHealths;
                 this.loading = false;
-                this.infiniteScrollService.length = !isNaN(response.count.items) ? response.count.items : 0;
+                this.paginatorObjectService.length = !isNaN(response.count.items) ? response.count.items : 0;
 
             },
             () => this.getError());
@@ -162,8 +162,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     public getPaginationSubscription(): Subscription {
         return this.paginator.page.subscribe((page) => {
-            this.infiniteScrollService.pageSize = page.pageSize;
-            this.infiniteScrollService.pageIndex = page.pageIndex;
+            this.paginatorObjectService.pageSize = page.pageSize;
+            this.paginatorObjectService.pageIndex = page.pageIndex;
             this.getList();
         });
     }
@@ -175,7 +175,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private getSearchSignature(): FleetHealthSearch {
         const signature: FleetHealthSearch = FleetHealthSearch.getInstance();
         signature.technicalAnalysis = this._localStorage.userAtecFilter;
-        signature.pagination = new Pagination(this.infiniteScrollService.offset, this.infiniteScrollService.pageSize);
+        signature.pagination = new Pagination(this.paginatorObjectService.offset, this.paginatorObjectService.pageSize);
        return signature;
     }
 
@@ -319,11 +319,11 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         return this._detailsService;
     }
 
-    get infiniteScrollService(): InfiniteScrollService {
+    get paginatorObjectService(): PaginatorObjectService {
         return this._infiniteScrollService;
     }
 
-    set infiniteScrollService(value: InfiniteScrollService) {
+    set paginatorObjectService(value: PaginatorObjectService) {
         this._infiniteScrollService = value;
     }
 

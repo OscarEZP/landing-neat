@@ -92,9 +92,9 @@
         </content>
     </div>
     <mat-paginator #contPaginator [hidden]="!(list.length && !loading && !error)"
-           [length]="infiniteScrollService.length"
-           [pageSize]="infiniteScrollService.pageSize"
-           [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
+           [length]="paginatorObjectService.length"
+           [pageSize]="paginatorObjectService.pageSize"
+           [pageSizeOptions]="paginatorObjectService.pageSizeOptions">
     </mat-paginator>
     <lsl-ess icon="location_off" message="ESS.STATIONS_WITHOUT_CONF" *ngIf="!haveStationsConf && !loading"></lsl-ess>
     <lsl-ess icon="filter_list" message="ESS.AUTHORITIES_WITHOUT_CONF" *ngIf="!haveAuthoritiesConf && haveStationsConf && !loading"></lsl-ess>

@@ -9,7 +9,7 @@ import { DateUtil } from '../../shared/util/dateUtil';
 import { DialogService } from '../_services/dialog.service';
 import { ContingencyService } from '../_services/contingency.service';
 import { HistoricalSearchService } from '../_services/historical-search.service';
-import { InfiniteScrollService } from '../_services/infinite-scroll.service';
+import { PaginatorObjectService } from '../_services/paginator-object.service';
 import { LogService } from '../_services/log.service';
 import { CancelComponent } from './cancel/cancel.component';
 import { CloseContingencyComponent } from './close-contingency/close-contingency.component';
@@ -49,7 +49,7 @@ import {ResolvePendingComponent} from './resolve-pending/resolve-pending.compone
         LogService,
         ClockService,
         ApiRestService,
-        InfiniteScrollService,
+        PaginatorObjectService,
         HistoricalSearchService,
         {provide: MAT_DATE_LOCALE, useValue: 'es-CL'},
         DateUtil
