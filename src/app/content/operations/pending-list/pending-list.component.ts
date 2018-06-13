@@ -38,6 +38,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
     private _selectedContingency: Contingency;
     private _selectedContingencyPivot: Contingency;
     private _intervalToRefresh: number;
+    private _paginatorObjectService: PaginatorObjectService;
 
     constructor(
         private _messageData: DataService,
@@ -45,17 +46,16 @@ export class PendingListComponent implements OnInit, OnDestroy {
         private _contingencyService: ContingencyService,
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
-        private _paginatorObjectService: PaginatorObjectService,
         private _dialogService: DialogService
     ) {
-        this.contingencyService.loading = true;
-        this.selectedContingency = Contingency.getInstance();
-        this.selectedContingencyPivot = Contingency.getInstance();
-        this.paginatorObjectService = PaginatorObjectService.getInstance();
-        this.intervalToRefresh = 0;
     }
 
     ngOnInit() {
+        this.contingencyService.loading = true;
+        this.intervalToRefresh = 0;
+        this.selectedContingency = Contingency.getInstance();
+        this.selectedContingencyPivot = Contingency.getInstance();
+        this.paginatorObjectService = PaginatorObjectService.getInstance();
         this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.contingencyService.clearList();
         this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());

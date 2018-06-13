@@ -132,13 +132,15 @@
         </div>
     </main>
 </div>
-<mat-paginator #contPaginator [hidden]="!checkDataStatus() || !historicalSearchService.active"
-               [length]="paginatorObject.length"
-               [pageIndex]="paginatorObject.pageIndex"
-               [pageSize]="paginatorObject.pageSize"
-               [pageSizeOptions]="paginatorObject.pageSizeOptions"
->
-</mat-paginator>
+<div [hidden]="checkDataStatus() || !historicalSearchService.active">
+    <mat-paginator #contPaginator
+                   [length]="paginatorObject.length"
+                   [pageIndex]="paginatorObject.pageIndex"
+                   [pageSize]="paginatorObject.pageSize"
+                   [pageSizeOptions]="paginatorObject.pageSizeOptions"
+    >
+    </mat-paginator>
+</div>
 <lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading && !historicalSearchService.active"></lsl-ess>
 <lsl-ess icon="assignment_late" message="ESS.NO_HISTORICAL_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading && historicalSearchService.active"></lsl-ess>
 <div class="loader-container" fxLayoutAlign="center center" *ngIf="contingencyService.loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>

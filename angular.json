@@ -42,6 +42,9 @@
                 }
               ]
             },
+            "staging": {
+
+            },
             "production": {
               "optimization": true,
               "outputHashing": "all",
@@ -50,7 +53,7 @@
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
+              "vendorChunk": true,
               "buildOptimizer": true,
               "fileReplacements": [
                 {
@@ -69,6 +72,9 @@
           "configurations": {
             "dev": {
               "browserTarget": "MOC portal:build:dev"
+            },
+            "staging": {
+              "browserTarget": "MOC portal:build:staging"
             },
             "production": {
               "browserTarget": "MOC portal:build:production"

@@ -7,7 +7,6 @@ import {DialogService} from '../../_services/dialog.service';
 import {DetailsService} from '../../../details/_services/details.service';
 import {HistoricalSearchService} from '../../_services/historical-search.service';
 import {ContingencyService} from '../../_services/contingency.service';
-import {PaginatorObjectService} from '../../_services/paginator-object.service';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs/Observable';
 import {CommonModule} from '@angular/common';
@@ -115,7 +114,6 @@ describe('Contingency List Test', () => {
                 HistoricalSearchService,
                 // ContingencyService,
                 {provide: ContingencyService, useValue: MockContingencyList},
-                PaginatorObjectService,
                 StorageService,
                 MessageService,
                 {provide: ApiRestService, useValue: MockApiRestService},
@@ -141,11 +139,17 @@ describe('Contingency List Test', () => {
         contingencyListComponent = fixture.componentInstance;
     });
 
+    afterEach(() => {
+        contingencyListComponent.ngOnDestroy();
+    });
+
 
     it('Test to know if the module exist', () => {
-/*        injector = getTestBed();
+        /*
+        injector = getTestBed();
         translate = injector.get(TranslateService);
-        translate.use('en');*/
+        translate.use('en');
+        */
         expect(contingencyListComponent).toBeDefined();
     });
 

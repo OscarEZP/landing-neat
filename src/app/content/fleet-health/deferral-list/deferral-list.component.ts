@@ -50,25 +50,24 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private _error: boolean;
     private _haveStationsConf: boolean;
     private _haveAuthoritiesConf: boolean;
+    private _paginatorObject: PaginatorObjectService;
 
     constructor(
         private _messageData: DataService,
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
-        private _infiniteScrollService: PaginatorObjectService,
         private _dialogService: DialogService,
         private _historicalReportService: HistoricalReportService,
         private _localStorage: StorageService,
         private _messageService: MessageService,
         private _dataService: DataService,
-    ) {
+    ) {}
+
+    ngOnInit() {
+        this.intervalToRefresh = DeferralListComponent.DEFAULT_INTERVAL;
         this.selectedRegister = Task.getInstance();
         this.selectedRegisterPivot = Task.getInstance();
         this.paginatorObjectService = PaginatorObjectService.getInstance();
-        this.intervalToRefresh = DeferralListComponent.DEFAULT_INTERVAL;
-    }
-
-    ngOnInit() {
         this.list = [];
         this.reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
@@ -320,11 +319,11 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     }
 
     get paginatorObjectService(): PaginatorObjectService {
-        return this._infiniteScrollService;
+        return this._paginatorObject;
     }
 
     set paginatorObjectService(value: PaginatorObjectService) {
-        this._infiniteScrollService = value;
+        this._paginatorObject = value;
     }
 
     set loading(value: boolean) {

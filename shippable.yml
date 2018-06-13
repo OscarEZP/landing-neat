@@ -13,7 +13,6 @@ env:
     - IMAGE_NAME=mcp/moc-web
     - IMAGE_REPO_URL=693532776274.dkr.ecr.us-east-1.amazonaws.com/mcp/moc-web
     - SHIPPABLE_TEST_RESULTS_DIR=shippable/testresults
-    - SHIPPABLE_CODE_COVERAGE_DIR=shippable/codecoverage
 
 branches:
   only:
@@ -30,7 +29,6 @@ build:
   ci:
     # Shippable test & code coverage folders
     - mkdir -p $SHIPPABLE_TEST_RESULTS_DIR
-    - mkdir -p $SHIPPABLE_CODE_COVERAGE_DIR
     # Since caching is enabled, cleanup git leftovers
     - git clean -f -x
 
@@ -39,16 +37,16 @@ build:
     - shippable_retry npm install --quiet
 
     #Run the test
-    - npm run test --coverage --temp-directory=coverage --reporter=text-lcov --ci --testResultsProcessor="./node_modules/jest-junit-reporter"
+    - npm run test --coverage
     - cp $SHIPPABLE_BUILD_DIR/test-report.xml $SHIPPABLE_TEST_RESULTS_DIR/test-report.xml
 
     #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR
     - >
       if [ "$BRANCH" == "master" ]; then
-        npm run ng -- build --env=prod --output-hashing=all
+        npm run ng build --configuration production --prod
       elif [ "$BRANCH" == "develop" ]; then
-        npm run ng -- build --env=staging --output-hashing=all
+        npm run ng build --configuration staging
       fi
 
   on_success:

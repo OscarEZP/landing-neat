@@ -49,7 +49,7 @@ import {ResolvePendingComponent} from './resolve-pending/resolve-pending.compone
         LogService,
         ClockService,
         ApiRestService,
-        PaginatorObjectService,
+        // PaginatorObjectService,
         HistoricalSearchService,
         {provide: MAT_DATE_LOCALE, useValue: 'es-CL'},
         DateUtil

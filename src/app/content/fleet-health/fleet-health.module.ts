@@ -34,7 +34,7 @@ import {HistoricalReportService} from './historical-report/_services/historical-
         LogService,
         ClockService,
         ApiRestService,
-        PaginatorObjectService,
+        // PaginatorObjectService,
         HistoricalSearchService,
         {provide: MAT_DATE_LOCALE, useValue: 'es-CL'},
         DateUtil,

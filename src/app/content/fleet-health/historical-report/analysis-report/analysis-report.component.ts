@@ -16,9 +16,7 @@ export class AnalysisReportComponent implements OnInit {
         this._historicalReportService.quillEditor = qe;
     }
 
-    constructor(
-        private _historicalReportService: HistoricalReportService
-    ) {
+    constructor(private _historicalReportService: HistoricalReportService) {
     }
 
     ngOnInit() {

@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 
-@Injectable()
 export class PaginatorObjectService {
     private _pageSize: number;
     private _pageSizeOptions: number[];
@@ -8,7 +7,7 @@ export class PaginatorObjectService {
     private _length: number;
     private _offset: number;
 
-    private constructor(pageIndex: number, pageSize: number, length: number, offset: number, pageSizeOptions: number[]) {
+    constructor(pageIndex: number, pageSize: number, length: number, offset: number, pageSizeOptions: number[]) {
         this._pageIndex = pageIndex;
         this._pageSize = pageSize;
         this._length = length;
@@ -22,7 +21,7 @@ export class PaginatorObjectService {
 
     get viewedRecords(): number {
         const viewedRecords = this.pageSize * (this.pageIndex + 1);
-        return viewedRecords < this._length ? viewedRecords : this.length;
+        return viewedRecords < this.length ? viewedRecords : this.length;
     }
 
     set offset(value: number) {

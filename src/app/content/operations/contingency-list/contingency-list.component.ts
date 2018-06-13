@@ -72,13 +72,21 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Event when component is destroyed
+     * Event when component is destroyed the conditionals is because if they're not present the test fails to unsubscribe when there's not subscription before
      */
     public ngOnDestroy() {
-        this.messageSubscriptions.unsubscribe();
-        this.reloadSubscription.unsubscribe();
-        this.routingSubscription.unsubscribe();
-        this.intervalRefreshSubscription.unsubscribe();
+        if (this.messageSubscriptions) {
+            this.messageSubscriptions.unsubscribe();
+        }
+        if (this.reloadSubscription) {
+            this.reloadSubscription.unsubscribe();
+        }
+        if (this.routingSubscription) {
+            this.routingSubscription.unsubscribe();
+        }
+        if (this.intervalRefreshSubscription) {
+            this.intervalRefreshSubscription.unsubscribe();
+        }
         if (this.contingenciesSubscription) {
             this.contingenciesSubscription.unsubscribe();
         }

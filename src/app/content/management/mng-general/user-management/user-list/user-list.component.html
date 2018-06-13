@@ -28,10 +28,10 @@
     </div>
   </main>
 </div>
-<mat-paginator #contPaginator [hidden]="!checkDataStatus() || loading"
-               [length]="paginatorObjectService.length"
-               [pageIndex]="paginatorObjectService.pageIndex"
-               [pageSize]="paginatorObjectService.pageSize"
-               [pageSizeOptions]="paginatorObjectService.pageSizeOptions"
+<mat-paginator #contPaginator [hidden]="checkDataStatus() || loading"
+               [length]="paginatorObject.length"
+               [pageIndex]="paginatorObject.pageIndex"
+               [pageSize]="paginatorObject.pageSize"
+               [pageSizeOptions]="paginatorObject.pageSizeOptions"
 >
 </mat-paginator>

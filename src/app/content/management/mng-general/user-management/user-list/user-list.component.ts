@@ -24,23 +24,22 @@ export class UserListComponent implements OnInit {
     @ViewChild('contPaginator') public paginator: MatPaginator;
 
     private _userList: Observable<User[]>;
-    private _paginationSubscription: Subscription;
     private _loading: boolean;
     private _error: boolean;
+    private _paginatorObject: PaginatorObjectService;
 
     constructor(
-        private _paginatorObjectService: PaginatorObjectService,
         private _translate: TranslateService,
         private _apiRestService: ApiRestService
     ) {
         this._translate.setDefaultLang('en');
-        this.paginatorObjectService = PaginatorObjectService.getInstance();
-        this.loading = false;
-        this.error = false;
     }
 
     ngOnInit() {
-        this._paginationSubscription = this.getPaginationSubscription();
+        this.paginatorObject = PaginatorObjectService.getInstance();
+        this.getPaginationSubscription();
+        this.loading = false;
+        this.error = false;
         this.getUserCount(this.getSearchSignature())
             .add(
                 () => this.userList = this.getUserList(this.getSearchSignature())
@@ -55,7 +54,7 @@ export class UserListComponent implements OnInit {
     public getUserCount(signature: UserSearch): Subscription {
         return this._apiRestService.search<{items: number}>(UserListComponent.MANAGEMENT_USERS_SEARCH_COUNT_ENDPOINT, signature)
             .subscribe(res => {
-                this.paginatorObjectService.length = res.items;
+                this.paginatorObject.length = res.items;
             });
     }
 
@@ -78,8 +77,8 @@ export class UserListComponent implements OnInit {
      */
     public getPaginationSubscription(): Subscription {
         return this.paginator.page.subscribe((page) => {
-            this.paginatorObjectService.pageSize = page.pageSize;
-            this.paginatorObjectService.pageIndex = page.pageIndex;
+            this.paginatorObject.pageSize = page.pageSize;
+            this.paginatorObject.pageIndex = page.pageIndex;
             this.userList = this.getUserList(this.getSearchSignature());
         });
     }
@@ -90,7 +89,7 @@ export class UserListComponent implements OnInit {
      */
     private getSearchSignature(): UserSearch {
         return new UserSearch(
-            new Pagination(this.paginatorObjectService.offset, this.paginatorObjectService.pageSize),
+            new Pagination(this.paginatorObject.offset, this.paginatorObject.pageSize),
             ['true', 'false']
         );
     }
@@ -110,15 +109,7 @@ export class UserListComponent implements OnInit {
      * @return {boolean}
      */
     public checkDataStatus(): boolean {
-        return this.paginatorObjectService.length > 10;
-    }
-
-    get paginatorObjectService(): PaginatorObjectService {
-        return this._paginatorObjectService;
-    }
-
-    set paginatorObjectService(value: PaginatorObjectService) {
-        this._paginatorObjectService = value;
+        return this.paginatorObject.length > 10;
     }
 
     get userList(): Observable<User[]> {
@@ -143,5 +134,13 @@ export class UserListComponent implements OnInit {
 
     set error(value: boolean) {
         this._error = value;
+    }
+
+    get paginatorObject(): PaginatorObjectService {
+        return this._paginatorObject;
+    }
+
+    set paginatorObject(value: PaginatorObjectService) {
+        this._paginatorObject = value;
     }
 }
