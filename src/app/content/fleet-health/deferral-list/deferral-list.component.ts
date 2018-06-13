@@ -70,7 +70,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         this.paginatorObjectService = PaginatorObjectService.getInstance();
         this.list = [];
         this.reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
-        this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getList());
+        this.intervalRefreshSubscription = this.getIntervalToRefresh();
         this.paginatorSubscription = this.getPaginationSubscription();
         this.haveStationsConf = this.validateStations();
         this.haveAuthoritiesConf = this.validateAuthorities();
@@ -106,7 +106,6 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {boolean}
      */
     private validateStations(): boolean {
-
         const currentUser: ManagementUser = this._localStorage.userManagement;
 
         return !(currentUser === null || currentUser.detailStation === null || currentUser.detailStation.defaults === null || currentUser.detailStation.defaults.code === null || currentUser.detailStation.defaults.code === '');
@@ -130,6 +129,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private getListSubscription(signature: FleetHealthSearch): Subscription {
         this.loading = true;
+        this.error = false;
+
         this.haveAuthoritiesConf = this.validateAuthorities();
         if (this.haveAuthoritiesConf) {
         return this._apiRestService.search<FleetHealthResponse>(DeferralListComponent.TASK_FLEETHEALTH_ENDPOINT, signature).subscribe(
@@ -146,9 +147,11 @@ export class DeferralListComponent implements OnInit, OnDestroy {
                 this.paginatorObjectService.length = !isNaN(response.count.items) ? response.count.items : 0;
 
             },
-            () => this.getError());
+            () => {
+                this.getError();
+                this.subscribeTimer();
+            });
         } else {
-
             this.loading = false;
             return new Subscription();
         }
@@ -204,13 +207,20 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     private getIntervalToRefresh(): Subscription {
         this.loading = true;
+        this.error = false;
         return this._apiRestService.getSingle('configTypes', DeferralListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(
             rs => {
                 const res = rs as GroupTypes;
                 this.intervalToRefresh = Number(res.types[0].code) * 1000;
                 this.loading = false;
             },
-            () => this.loading = false
+            () => {
+                this.loading = false;
+                this.intervalToRefresh = DeferralListComponent.DEFAULT_INTERVAL * 1000;
+                this.getList();
+            }, () => {
+                this.getList();
+            }
         );
     }
 
@@ -261,15 +271,12 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     public markAsDone(barcode: string): Subscription {
         this.loading = true;
-
         const localStorage = this._localStorage.getCurrentUser();
-
         const user = {
             'username' : localStorage.username,
             'firstName' : localStorage.firstName,
             'lastName' : localStorage.lastName
         };
-
         return this._apiRestService
             .add('tasksFleethealthDone', user, barcode)
             .subscribe(() => {

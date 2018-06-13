@@ -6,7 +6,7 @@ import 'rxjs/add/operator/startWith';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
-import {map, startWith} from 'rxjs/operators';
+import {map, startWith, tap} from 'rxjs/operators';
 import {Subscription} from 'rxjs/Subscription';
 import {Aircraft} from '../../../shared/_models/aircraft';
 import {AircraftSearch} from '../../../shared/_models/configuration/aircraftSearch';
@@ -31,6 +31,8 @@ import {StorageService} from '../../../shared/_services/storage.service';
 import {DateUtil} from '../../../shared/util/dateUtil';
 import {DialogService} from '../../_services/dialog.service';
 import {CancelComponent} from '../cancel/cancel.component';
+import {PlannedFlightSearch} from '../../../shared/_models/configuration/plannedFlightSearch';
+import {Pagination} from '../../../shared/_models/common/pagination';
 
 @Component({
     selector: 'lsl-contingency-form',
@@ -39,9 +41,35 @@ import {CancelComponent} from '../cancel/cancel.component';
 })
 
 export class ContingencyFormComponent implements OnInit, OnDestroy {
+
+    private static CONTINGENCY_LIST_ENDPOINT = 'contingencyList';
+    private static OPERATOR_LIST_ENDPOINT = 'operator';
+    private static SAFETY_EVENT_LIST_ENDPOINT = 'safetyEvent';
+    private static AIRCRAFTS_SEARCH_ENDPOINT = 'aircraftsSearch';
+    private static TYPES_LIST_ENDPOINT = 'types';
+    private static LOCATIONS_ENDPOINT = 'locations';
+    private static CONFIG_STATUS_ENDPOINT = 'configStatus';
+    private static FLIGTHS_ENDPOINT = 'flights';
+    private static PLANNED_FLIGTHS_ENDPOINT = 'plannedFlights';
+    private static HOURS_LIMIT = 4;
+    private static PLANNED_FLIGTHS_LIMIT = 500;
+
+    private static FORM_FAILURE_MESSAGE = 'OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE';
+    private static FORM_SUCCESSFULLY_MESSAGE = 'OPERATIONS.CONTINGENCY_FORM.SUCCESSFULLY_MESSAGE';
+    private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
+    private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
+
+    private static DATE_FORMAT = 'dd MMM yyyy ';
+    private static HOUR_FORMAT = 'HH:mm:ss';
+    private static DATE_TIME_FORMAT = 'dd-MM-yyyy HH:mm';
+
     private _messageUTCSubscription: Subscription;
     private _aircraftList: Aircraft[];
+
     private _flightList: Flight[];
+    private _defaultFlightList: Flight[];
+    private _plannedFlightList: Flight[];
+
     private _statusCodes: StatusCode[];
     private _safetyEventList: Safety[];
     private _groupTypeList: GroupTypes[];
@@ -73,19 +101,22 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
     private _aircraftSubscription: Subscription;
     private _safetyEventSubscription: Subscription;
+    private _plannedFlightsSubscription: Subscription;
 
-    constructor(private _dialogService: DialogService,
-                private _fb: FormBuilder,
-                private _datetimeService: DatetimeService,
-                private _clockService: ClockService,
-                private _messageData: DataService,
-                private _messageService: MessageService,
-                private _storageService: StorageService,
-                private _apiRestService: ApiRestService,
-                private _translate: TranslateService) {
-
+    constructor(
+        private _dialogService: DialogService,
+        private _fb: FormBuilder,
+        private _datetimeService: DatetimeService,
+        private _clockService: ClockService,
+        private _messageData: DataService,
+        private _messageService: MessageService,
+        private _storageService: StorageService,
+        private _apiRestService: ApiRestService,
+        private _translate: TranslateService
+    ) {
         const initFakeDate = new Date().getTime();
-
+        this.flightList = [];
+        this.plannedFlightList = [];
         this.alive = true;
         this.interval = 1000 * 60;
         this.isSafetyEvent = false;
@@ -143,7 +174,8 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             'observation': [this.contingency.status.observation, [Validators.required, Validators.maxLength(400)]],
             'reason': [this.contingency.reason, [Validators.required, Validators.maxLength(400)]],
             'statusCode': [this.contingency.status.code, Validators.required],
-            'duration': [this.contingency.status.requestedInterval.duration, Validators.required]
+            'duration': [this.contingency.status.requestedInterval.duration, Validators.required],
+            'plannedFlights': [this.plannedFlights]
         });
 
         this.validations = new Validation(false, true, true, false);
@@ -151,6 +183,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
 
     public ngOnInit() {
+        this._plannedFlightsSubscription = this.getPlannedFlights$().subscribe();
         this._messageUTCSubscription = this._messageData.currentNumberMessage.subscribe(message => this.utcModel.epochTime = message);
         TimerObservable.create(0, this.interval)
             .takeWhile(() => this.alive)
@@ -200,6 +233,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         this._messageUTCSubscription.unsubscribe();
         this._aircraftSubscription.unsubscribe();
         this._safetyEventSubscription.unsubscribe();
+        this._plannedFlightsSubscription.unsubscribe();
     }
 
     /**
@@ -208,32 +242,27 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @return {Subscription}
      */
     public submitForm(value: any) {
-
         if (this.contingencyForm.valid) {
-
             this.isBackupCheck();
-
             this.validations.isSending = true;
-
             let res: Response;
             this._apiRestService
-                .add<Response>('contingencyList', this.contingency)
+                .add<Response>(ContingencyFormComponent.CONTINGENCY_LIST_ENDPOINT, this.contingency)
                 .subscribe(response => res = response,
                     err => {
-
-                        this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE');
+                        this.getTranslateString(ContingencyFormComponent.FORM_FAILURE_MESSAGE);
                         const message: string = (err.error != null && err.error.message != null) ? err.error.message : this.snackbarMessage;
                         this._messageService.openSnackBar(message);
                         this.validations.isSending = false;
                     }, () => {
-                        this.getTranslateString('OPERATIONS.CONTINGENCY_FORM.SUCCESSFULLY_MESSAGE');
+                        this.getTranslateString(ContingencyFormComponent.FORM_SUCCESSFULLY_MESSAGE);
                         this._messageService.openSnackBar(this.snackbarMessage);
                         this._dialogService.closeAllDialogs();
                         this._messageData.stringMessage('reload');
                         this.validations.isSending = false;
                     });
         } else {
-            this.getTranslateString('OPERATIONS.VALIDATION_ERROR_MESSAGE');
+            this.getTranslateString(ContingencyFormComponent.VALIDATION_ERROR_MESSAGE);
             this._messageService.openSnackBar(this.snackbarMessage);
             this.validations.isSending = false;
         }
@@ -259,7 +288,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         for (i = 0; i < quantity; i++) {
             this.durationArray.push(i * 5 + 5);
         }
-
         return this.durationArray;
     }
 
@@ -269,10 +297,9 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     private getOperatorList(): Subscription {
         return this._apiRestService
-            .getAll<Types[]>('operator')
+            .getAll<Types[]>(ContingencyFormComponent.OPERATOR_LIST_ENDPOINT)
             .subscribe(response => {
                 this.operatorList = response;
-
                 this.observableOperatorList = this.contingencyForm
                     .controls['operator']
                     .valueChanges
@@ -290,7 +317,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
     private getSafetyEventList(): Subscription {
         return this._apiRestService
-            .getAll<Safety[]>('safetyEvent')
+            .getAll<Safety[]>(ContingencyFormComponent.SAFETY_EVENT_LIST_ENDPOINT)
             .subscribe(data => this.safetyEventList = data,
                 error => () => {
                     this._messageService.openSnackBar(error.message);
@@ -301,10 +328,9 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * Get aircraft list and create an observable list of fligths will be consumed in the view
      * @return {Subscription}
      */
-
     private getAircraftList(): Subscription {
         return this._apiRestService
-            .search<Aircraft[]>('aircraftsSearch', new AircraftSearch(1))
+            .search<Aircraft[]>(ContingencyFormComponent.AIRCRAFTS_SEARCH_ENDPOINT, new AircraftSearch(1))
             .subscribe((response: Aircraft[]) => {
                 this.aircraftList = response;
                 this.observableAircraftList = this.contingencyForm
@@ -318,13 +344,29 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Get planned flights observable
+     * @return {Observable}
+     */
+    private getPlannedFlights$(): Observable<Flight[]> {
+        const flightSearch = new PlannedFlightSearch(
+            ContingencyFormComponent.HOURS_LIMIT,
+            new Pagination(0, ContingencyFormComponent.PLANNED_FLIGTHS_LIMIT),
+            new TimeInstant(new Date().getTime(), '')
+        );
+        return this._apiRestService
+            .search<Flight[]>(ContingencyFormComponent.PLANNED_FLIGTHS_ENDPOINT, flightSearch)
+            .pipe(
+                tap((response: Flight[]) => this.plannedFlightList = response)
+            );
+    }
+
+    /**
      * Get all group types
      * @return {Subscription}
      */
     private getGroupTypes(): Subscription {
-
         return this._apiRestService
-            .getAll<GroupTypes[]>('types')
+            .getAll<GroupTypes[]>(ContingencyFormComponent.TYPES_LIST_ENDPOINT)
             .subscribe((response: GroupTypes[]) => {
                 this.groupTypeList = response;
                 this.getSelectedGroupType();
@@ -351,7 +393,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     private getLocationsList(): Subscription {
         return this._apiRestService
-            .getAll<Location[]>('locations')
+            .getAll<Location[]>(ContingencyFormComponent.LOCATIONS_ENDPOINT)
             .subscribe((response: Location[]) => {
                 this.stations = response;
 
@@ -371,7 +413,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     private getMaxStatusCodes(): Subscription {
         return this._apiRestService
-            .getSingle<StatusCode[]>('configStatus', null)
+            .getSingle<StatusCode[]>(ContingencyFormComponent.CONFIG_STATUS_ENDPOINT, null)
             .subscribe((response: StatusCode[]) => {
                 this.statusCodes = response;
             });
@@ -391,9 +433,12 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Open a cancel message if there is a filled item
+     */
     public openCancelDialog(): void {
         if (this.validateFilledItems()) {
-            this.getTranslateString('OPERATIONS.CANCEL_COMPONENT.MESSAGE');
+            this.getTranslateString(ContingencyFormComponent.CANCEL_COMPONENT_MESSAGE);
             this._messageService.openFromComponent(CancelComponent, {
                 data: {message: this.snackbarMessage},
                 horizontalPosition: 'center',
@@ -427,15 +472,14 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @param {string} selectedOption
      */
     public onSelectAircraft(selectedOption: string): void {
-
         const flightSearch = new FlightSearch(selectedOption, 0, 5, new TimeInstant(this.utcModel.epochTime, null));
-        this.flightList = [null];
-
+        this.flightList = [];
+        this.plannedFlights = false;
         this._apiRestService
-            .search<Flight[]>('flights', flightSearch)
+            .search<Flight[]>(ContingencyFormComponent.FLIGTHS_ENDPOINT, flightSearch)
             .subscribe((response: Flight[]) => {
                 this.flightList = response;
-
+                this.defaultFlightList = response.map(val => new Flight(val.flightNumber, val.origin, val.destination, val.etd));
                 for (const item of this.aircraftList) {
                     if (item.tail === selectedOption) {
                         this.contingency.aircraft = new Aircraft(item.tail, item.fleet, item.operator);
@@ -451,9 +495,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                         } else {
                             this.contingency.flight = Flight.getInstance();
                         }
-
                         this.contingencyDateModel[0].updateFromEpoch(this.contingency.flight.etd.epochTime);
-
                         this.contingencyForm.get('operator').setValue(this.contingency.aircraft.operator);
                         this.contingencyForm.get('operator').updateValueAndValidity();
                         this.contingencyForm.get('flightNumber').setValue(this.contingency.flight.flightNumber);
@@ -461,28 +503,50 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                     }
                 }
 
-                this.observableFlightList = this.contingencyForm
-                    .controls['flightNumber']
-                    .valueChanges
-                    .pipe(
-                        startWith(''),
-                        map(val => this.flightFilter(val))
-                    );
+                this.observableFlightList = this.getObservableFlightList();
             });
     }
 
     /**
+     * Switch lists between planned flights and default flights
+     */
+    public switchFlightList(): void {
+        this.flightList = !this.plannedFlights ? this.plannedFlightList : this.defaultFlightList;
+        this.contingencyForm
+            .controls['flightNumber']
+            .setValue(this.flightList && this.flightList[0] && this.plannedFlights ? this.flightList[0].flightNumber : '');
+        if (this.contingencyForm.controls['flightNumber'].value) {
+            this.onSelectFlight(this.flightList[0]);
+        }
+    }
+
+    /**
+     * Get an observable for flight list
+     * @returns {Observable<Flight[]>}
+     */
+    private getObservableFlightList(): Observable<Flight[]> {
+        return this.contingencyForm
+            .controls['flightNumber']
+            .valueChanges
+            .pipe(
+                startWith(''),
+                map(val => this.flightFilter(val))
+            );
+    }
+
+    /**
      * Method triggered when a flight is selected and populate selected values in the contingency.flight model
-     * @param {Event} event
      * @param {Flight} fl
      */
-    public onSelectFlight(event: Event, fl: Flight): void {
-        this.contingency.flight.flightNumber = fl.flightNumber;
-        this.contingency.flight.origin = fl.origin;
-        this.contingency.flight.destination = fl.destination;
-        this.contingency.flight.etd.epochTime = fl.etd.epochTime;
-        this.contingency.flight.etd.label = fl.etd.label;
-        this.contingencyDateModel[0].updateFromEpoch(fl.etd.epochTime);
+    public onSelectFlight(fl: Flight, event = {isUserInput: true}): void {
+        if (event.isUserInput) {
+            this.contingency.flight.flightNumber = fl.flightNumber;
+            this.contingency.flight.origin = fl.origin;
+            this.contingency.flight.destination = fl.destination;
+            this.contingency.flight.etd.epochTime = fl.etd.epochTime;
+            this.contingency.flight.etd.label = fl.etd.label;
+            this.contingencyDateModel[0].updateFromEpoch(fl.etd.epochTime);
+        }
     }
 
     /**
@@ -524,14 +588,12 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     public tailDomainValidator(control: FormControl): Observable<any> {
         const tail = control.value;
-
         return Observable.of(this.aircraftList).map(res => {
             for (const item of res) {
                 if (item.tail === tail) {
                     return null;
                 }
             }
-
             return {
                 tailDomain: true
             };
@@ -545,15 +607,12 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      */
     public operatorDomainValidator(control: FormControl) {
         const operator = control.value;
-
-
         return Observable.of(this.operatorList).map(res => {
             for (const item of res) {
                 if (operator === item.code) {
                     return null;
                 }
             }
-
             return {
                 operatorDomain: true
             };
@@ -600,15 +659,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private operatorFilter(val: string): Types[] {
         return this.operatorList.filter(operator =>
             operator.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
-    }
-
-
-    get messageUTCSubscription(): Subscription {
-        return this._messageUTCSubscription;
-    }
-
-    set messageUTCSubscription(value: Subscription) {
-        this._messageUTCSubscription = value;
     }
 
     get aircraftList(): Aircraft[] {
@@ -809,5 +859,41 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
 
     set observableOperatorList(value: Observable<Types[]>) {
         this._observableOperatorList = value;
+    }
+
+    get plannedFlights(): boolean {
+        return this._contingency.isPlannedFlight;
+    }
+
+    set plannedFlights(value: boolean) {
+        this._contingency.isPlannedFlight = value;
+    }
+
+    get defaultFlightList(): Flight[] {
+        return this._defaultFlightList;
+    }
+
+    set defaultFlightList(value: Flight[]) {
+        this._defaultFlightList = value;
+    }
+
+    get plannedFlightList(): Flight[] {
+        return this._plannedFlightList;
+    }
+
+    set plannedFlightList(value: Flight[]) {
+        this._plannedFlightList = value;
+    }
+
+    get dateFormat(): string {
+        return ContingencyFormComponent.DATE_FORMAT;
+    }
+
+    get hourFormat(): string {
+        return ContingencyFormComponent.HOUR_FORMAT;
+    }
+
+    get dateTimeFormat(): string {
+        return ContingencyFormComponent.DATE_TIME_FORMAT;
     }
 }

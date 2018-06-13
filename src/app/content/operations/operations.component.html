@@ -1,11 +1,13 @@
 <div id="operations-container">
-    <nav>
-        <a *ngFor="let menu of arrMenu" routerLink="{{menu.link}}" routerLinkActive="active" class="mat-tab-item">
-            {{ menu.label | translate }}
-        </a>
-    </nav>
-    <div id="historical-search">
-        <lsl-search-historical></lsl-search-historical>
+    <div fxLayout="row" fxLayout.lt-md="column">
+        <nav fxFlex="30" fxFlex.lt-md="100">
+            <a *ngFor="let menu of arrMenu" routerLink="{{menu.link}}" routerLinkActive="active" class="mat-tab-item">
+                {{ menu.label | translate }}
+            </a>
+        </nav>
+        <div id="historical-search" fxFlex="70" fxFlex.lt-md="100">
+            <lsl-search-historical></lsl-search-historical>
+        </div>
     </div>
     <content>
         <router-outlet></router-outlet>

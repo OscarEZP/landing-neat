@@ -11,10 +11,10 @@ export class Flight {
         this._flightNumber = flightNumber;
         this._origin = origin;
         this._destination = destination;
-        this._etd = etd!=null?etd:TimeInstant.getInstance();
+        this._etd = etd != null ? etd : TimeInstant.getInstance();
     }
-    static getInstance():Flight{
-        return new Flight(null,null,null,null);
+    static getInstance(): Flight {
+        return new Flight(null, null, null, null);
     }
 
     get flightNumber(): string {
