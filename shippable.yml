@@ -24,6 +24,7 @@ cache: false
 build:
   #commands in this section run inside your CI container. In addition, any commands such as ls, in this section can be used to skip default processing for CI.
   ci:
+    - npm install -g @angular/cli
     # Shippable test & code coverage folders
     - mkdir -p $SHIPPABLE_TEST_RESULTS_DIR
     # Since caching is enabled, cleanup git leftovers
@@ -41,9 +42,9 @@ build:
     - cd $SHIPPABLE_BUILD_DIR
     - >
       if [ "$BRANCH" == "master" ]; then
-        npm run ng build --configuration production --prod
+        npm run ng -- build --configuration production --prod
       elif [ "$BRANCH" == "develop" ]; then
-        npm run ng build --configuration staging
+        npm run ng -- build --configuration staging
       fi
 
   on_success:
