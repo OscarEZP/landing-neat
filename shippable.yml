@@ -68,7 +68,7 @@ build:
 
         if [ "$BRANCH" == "master" ]; then
           echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/mcp-web-img-production.env
-        elif [ "$BRANCH" == "develop" || "$BRANCH" == "MOC-FrontendImprovemnt" ]; then
+        elif [ "$BRANCH" == "develop" ] || [ "$BRANCH" == "MOC-FrontendImprovemnt" ]; then
           echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/mcp-web-img-staging.env
         fi
       fi
