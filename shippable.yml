@@ -37,6 +37,7 @@ build:
 
     # install NPM depedencies
     - cd $SHIPPABLE_BUILD_DIR
+    - npm i npm@latest -g
     - shippable_retry npm install --quiet
 
     #Run the test
@@ -49,7 +50,7 @@ build:
       if [ "$BRANCH" == "master" ]; then
         npm run ng -- build --configuration production --prod
         cp -r dist/ ci/dist/
-      elif [ "$BRANCH" == "develop" || "$BRANCH" == "MOC-FrontendImprovemnt"]; then
+      elif [ "$BRANCH" == "develop" ] || [ "$BRANCH" == "MOC-FrontendImprovemnt" ]; then
         npm run ng -- build --configuration staging
         cp -r dist/ ci/dist/
       fi
