@@ -26,12 +26,12 @@ export class RecoverPasswordComponent implements OnInit {
     matcher = new MyErrorStateMatcher();
     recoverPasswordForm: FormGroup;
     destination: string;
-    protected hideCp: boolean;
-    protected hidePw: boolean;
+    private _hideCp: boolean;
+    private _hidePw: boolean;
+    private _recoverPasswordService: RecoverPasswordService;
+    private _storageService: StorageService;
 
     constructor(
-        public recoverPasswordService: RecoverPasswordService,
-        protected storageService: StorageService,
         private messageService: MessageService,
         private router: Router,
         private fb: FormBuilder,
@@ -42,7 +42,7 @@ export class RecoverPasswordComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.destination = this.storageService.getRecoverDestination();
+        this.destination = this._storageService.getRecoverDestination();
         this.recoverPasswordForm = this.fb.group({
             'verificationCodeFormControl': this.verificationCodeFormControl,
             'passwordFormControl': this.passwordFormControl,
@@ -50,15 +50,15 @@ export class RecoverPasswordComponent implements OnInit {
         });
     }
 
-    changePassword(form: NgForm) {
+    changePassword(form: FormGroup) {
         if (form.valid) {
-            const data: { password: string, confirmPassword: string, verificationCode: string } = this.recoverPasswordService.getData();
+            const data: { password: string, confirmPassword: string, verificationCode: string } = this._recoverPasswordService.getData();
             if (data.password === data.confirmPassword) {
-                this.recoverPasswordService.changePassword(this.storageService
+                this._recoverPasswordService.changePassword(this._storageService
                     .getRecoverAccount(), data.password, data.verificationCode)
                     .then(value => {
-                        this.storageService.removeRecoverPassword();
-                        this.router.navigate([this.recoverPasswordService.getRedirectUrl()]);
+                        this._storageService.removeRecoverPassword();
+                        this.router.navigate([this._recoverPasswordService.getRedirectUrl()]);
                 }).catch(reason => {
                     this.messageService.openSnackBar(reason);
                 });
@@ -70,21 +70,54 @@ export class RecoverPasswordComponent implements OnInit {
     }
 
     resend(username: string) {
-        this.recoverPasswordService.findAccount(username).catch(reason => {
+        this._recoverPasswordService.findAccount(username).catch(reason => {
             this.messageService.openSnackBar(reason);
         });
     }
 
     cancel() {
-        this.storageService.removeRecoverPassword();
-        this.router.navigate([this.recoverPasswordService.getRedirectUrl()]);
+        this._storageService.removeRecoverPassword();
+        this.router.navigate([this._recoverPasswordService.getRedirectUrl()]);
+    }
+
+
+    get hideCp(): boolean {
+        return this._hideCp;
+    }
+
+    set hideCp(value: boolean) {
+        this._hideCp = value;
+    }
+
+    get hidePw(): boolean {
+        return this._hidePw;
+    }
+
+    set hidePw(value: boolean) {
+        this._hidePw = value;
+    }
+
+    get recoverPasswordService(): RecoverPasswordService {
+        return this._recoverPasswordService;
+    }
+
+    set recoverPasswordService(value: RecoverPasswordService) {
+        this._recoverPasswordService = value;
+    }
+
+    get storageService(): StorageService {
+        return this._storageService;
+    }
+
+    set storageService(value: StorageService) {
+        this._storageService = value;
     }
 }
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
         const isSubmitted = form && form.submitted;
-        return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+        return (control && control.invalid && (control.dirty || control.touched || isSubmitted));
     }
 }
 

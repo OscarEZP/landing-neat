@@ -79,7 +79,7 @@ export class LoginComponent implements OnInit {
      * Method for get an access token, if success, the user will be redirected to any section enabled
      * @param {NgForm} form
      */
-    logIn(form: NgForm) {
+    logIn(form: FormGroup) {
         this.activateLoadingBar(true);
         if (form.valid && !this.disableButton) {
             this.disableButton = true;
@@ -128,8 +128,8 @@ export class LoginComponent implements OnInit {
      */
     private authModule(managementUser: ManagementUser): Access[] {
         return managementUser.access
-            .filter(m => !!(m.role === LoginComponent.ADMIN_MODE ||
-                    (m.role === LoginComponent.USER_MODE && m.module !== LoginComponent.GENERAL_CODE)));
+            .filter(m => (m.role === LoginComponent.ADMIN_MODE ||
+                (m.role === LoginComponent.USER_MODE && m.module !== LoginComponent.GENERAL_CODE)));
     }
 
     activateLoadingBar(show: boolean) {
@@ -156,6 +156,6 @@ export class LoginComponent implements OnInit {
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
         const isSubmitted = form && form.submitted;
-        return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+        return (control && control.invalid && (control.dirty || control.touched || isSubmitted));
     }
 }

@@ -9,7 +9,7 @@ import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {Observable} from 'rxjs/Observable';
 import {DetailsService} from '../../../details/_services/details.service';
 import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
-import {InfiniteScrollService} from '../../_services/infinite-scroll.service';
+import {PaginatorObjectService} from '../../_services/paginator-object.service';
 import {CloseContingencyComponent} from '../close-contingency/close-contingency.component';
 import {MeetingComponent} from '../meeting/meeting.component';
 import {DialogService} from '../../_services/dialog.service';
@@ -38,6 +38,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
     private _selectedContingency: Contingency;
     private _selectedContingencyPivot: Contingency;
     private _intervalToRefresh: number;
+    private _paginatorObjectService: PaginatorObjectService;
 
     constructor(
         private _messageData: DataService,
@@ -45,22 +46,21 @@ export class PendingListComponent implements OnInit, OnDestroy {
         private _contingencyService: ContingencyService,
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
-        private _infiniteScrollService: InfiniteScrollService,
         private _dialogService: DialogService
     ) {
-        this.contingencyService.loading = true;
-        this.selectedContingency = Contingency.getInstance();
-        this.selectedContingencyPivot = Contingency.getInstance();
-        this.intervalToRefresh = 0;
     }
 
     ngOnInit() {
+        this.contingencyService.loading = true;
+        this.intervalToRefresh = 0;
+        this.selectedContingency = Contingency.getInstance();
+        this.selectedContingencyPivot = Contingency.getInstance();
+        this.paginatorObjectService = PaginatorObjectService.getInstance();
         this._reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.contingencyService.clearList();
         this._intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
         this._paginatorSubscription = this.getPaginationSubscription();
         this._totalRecordsSubscription = this.getTotalRecordsSubscription();
-        this.infiniteScrollService.init();
     }
 
     /**
@@ -86,7 +86,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
     public getTotalRecordsSubscription(): Subscription {
         const searchSignature = this.getSearchSignature();
         return this.contingencyService.getTotalRecords(searchSignature).subscribe((count) => {
-            this.infiniteScrollService.length = count.items;
+            this.paginatorObjectService.length = count.items;
         });
     }
 
@@ -96,8 +96,8 @@ export class PendingListComponent implements OnInit, OnDestroy {
      */
     public getPaginationSubscription(): Subscription {
         return this.paginator.page.subscribe((page) => {
-            this.infiniteScrollService.pageSize = page.pageSize;
-            this.infiniteScrollService.pageIndex = page.pageIndex;
+            this.paginatorObjectService.pageSize = page.pageSize;
+            this.paginatorObjectService.pageIndex = page.pageIndex;
             this.contingencyService.loading = true;
             this.getContingencies();
         });
@@ -109,8 +109,8 @@ export class PendingListComponent implements OnInit, OnDestroy {
      */
     private getSearchSignature(): SearchContingency {
         return new SearchContingency(
-            this.infiniteScrollService.offset,
-            this.infiniteScrollService.pageSize,
+            this.paginatorObjectService.offset,
+            this.paginatorObjectService.pageSize,
             null,
             new TimeInstant(0, ''),
             new TimeInstant(0, ''),
@@ -291,11 +291,11 @@ export class PendingListComponent implements OnInit, OnDestroy {
         return this._detailsService;
     }
 
-    get infiniteScrollService(): InfiniteScrollService {
-        return this._infiniteScrollService;
+    get paginatorObjectService(): PaginatorObjectService {
+        return this._paginatorObjectService;
     }
 
-    set infiniteScrollService(value: InfiniteScrollService) {
-        this._infiniteScrollService = value;
+    set paginatorObjectService(value: PaginatorObjectService) {
+        this._paginatorObjectService = value;
     }
 }

@@ -12,6 +12,9 @@ import {StorageService} from '../../shared/_services/storage.service';
     styleUrls: ['./find-account.component.scss']
 })
 export class FindAccountComponent implements OnInit {
+
+    private _recoverPasswordService: RecoverPasswordService;
+
     usernameFormControl = new FormControl('', [
         Validators.required
     ]);
@@ -21,7 +24,6 @@ export class FindAccountComponent implements OnInit {
 
 
     constructor(
-        protected recoverPasswordService: RecoverPasswordService,
         private messageService: MessageService,
         private storageService: StorageService,
         private router: Router,
@@ -30,17 +32,17 @@ export class FindAccountComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.recoverPasswordService.reset();
+        this._recoverPasswordService.reset();
         this.findAccountForm = this.fb.group({
             'usernameFormControl': this.usernameFormControl
         });
     }
 
-    findAccount(form: NgForm) {
+    findAccount(form: FormGroup) {
         if (form.valid) {
-            this.recoverPasswordService.findAccount(this.usernameFormControl.value).then(value => {
+            this._recoverPasswordService.findAccount(this.usernameFormControl.value).then(value => {
                 this.storageService.addRecoverPassword(this.usernameFormControl.value, value);
-                this.router.navigate([this.recoverPasswordService.getRecoverUrl()]);
+                this.router.navigate([this._recoverPasswordService.getRecoverUrl()]);
 
             }).catch(reason => {
                 this.messageService.openSnackBar(reason);
@@ -48,11 +50,20 @@ export class FindAccountComponent implements OnInit {
 
         }
     }
+
+
+    get recoverPasswordService(): RecoverPasswordService {
+        return this._recoverPasswordService;
+    }
+
+    set recoverPasswordService(value: RecoverPasswordService) {
+        this._recoverPasswordService = value;
+    }
 }
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
         const isSubmitted = form && form.submitted;
-        return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+        return (control && control.invalid && (control.dirty || control.touched || isSubmitted));
     }
 }

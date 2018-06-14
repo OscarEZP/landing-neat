@@ -1,4 +1,4 @@
-<form [formGroup]="searchForm" (ngSubmit)="submitForm(searchForm.value)">
+<form [formGroup]="searchForm" (ngSubmit)="submitForm()">
     <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign.lt-md="start center" fxLayoutAlign="end center">
         <span fxFlex="20" fxLayoutAlign="end center">{{'OPERATIONS.SEARCH_HISTORICAL.TITLE'|translate}}</span>
         <mat-form-field fxFlex="15">
