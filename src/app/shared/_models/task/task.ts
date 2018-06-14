@@ -29,7 +29,7 @@ export class Task {
     private _review: Review;
     private _taskType: string;
     private _authority: string;
-
+    private _hasHistorical: boolean;
 
     private constructor() {
         this.id = null;
@@ -285,5 +285,13 @@ export class Task {
 
     set faultName(value: string) {
         this._faultName = value;
+    }
+
+    get hasHistorical(): boolean {
+        return this._hasHistorical;
+    }
+
+    set hasHistorical(value: boolean) {
+        this._hasHistorical = value;
     }
 }

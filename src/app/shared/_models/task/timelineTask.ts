@@ -4,8 +4,7 @@ import {DateUtil} from '../../util/dateUtil';
 
 export class TimelineTask {
 
-    private static OPEN_ICON = 'lock_open';
-    private static CLOSE_ICON = 'lock';
+    private static HISTORICAL_ICON = 'assignment';
     private static DATE_FORMAT = 'YYYY-MM-DD';
     public static TASK_DEFAULT_TITLE = 'TASK';
 
@@ -13,7 +12,6 @@ export class TimelineTask {
     private static FULL_CLASS = 'full';
     private static RELATED_CLASS = 'related';
     private static DONT_APPLY_CLASS = 'dont-apply';
-
 
     private _id: number;
     private _content: string;
@@ -43,7 +41,7 @@ export class TimelineTask {
         this._className = this.generateClassName();
         this._group = task.barcode;
         this._type = '';
-        this._content = '';
+        this._content = this.getContent();
     }
 
     public generateClassName(): string {
@@ -58,28 +56,23 @@ export class TimelineTask {
             arrStyles.push(TimelineTask.RELATED_CLASS);
             if (this.apply === true) {
                 arrStyles.push(TimelineTask.FULL_CLASS);
-            }else if (this.apply === false) {
+            } else if (this.apply === false) {
                 arrStyles.push(TimelineTask.DONT_APPLY_CLASS);
             }
         }
         return arrStyles.join(' ');
     }
 
-    public getContent(content: boolean = true): string {
-        const title = this.active === true ? TimelineTask.TASK_DEFAULT_TITLE : this.task.taskType;
-        const head = '<div class="head"><h1>' + title + '</h1> <span>' + (this.isOpen ? '<i class="material-icons icon-red">' : '<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
-        const body = '<p>' + this.task.ata + '/'  + this.task.barcode + '</p>' ;
-        return content ? head + body : '';
-    }
-
-    private getContentIcon() {
-        return this.isClose ? TimelineTask.CLOSE_ICON : TimelineTask.OPEN_ICON ;
+    public getContent(): string {
+        const type = this.task.taskType ? this.task.taskType : TimelineTask.TASK_DEFAULT_TITLE;
+        let html = '<h1>' + type.toUpperCase().substr(0, 3) + '</h1>';
+        html += this.task.hasHistorical ? '<i class="material-icons">' + TimelineTask.HISTORICAL_ICON + '</i>' : '';
+        return html;
     }
 
     public getJson() {
         return JSON.parse(JSON.stringify(this).replace(/\b[_]/g, ''));
     }
-
 
     get id(): number {
         return this._id;
@@ -115,6 +108,14 @@ export class TimelineTask {
 
     set active(value: boolean) {
         this._active = value;
+    }
+
+    set task(value: Task) {
+        this._task = value;
+    }
+
+    set corrected(value: boolean) {
+        this._corrected = value;
     }
 
     get task(): Task {
@@ -179,7 +180,6 @@ export class TimelineTask {
     }
     get isClose(): boolean{
         return this.task.isClose;
-
     }
 
     private calculateDateEndTaskNotDeferred(task: Task): number {

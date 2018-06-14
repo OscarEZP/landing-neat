@@ -46,6 +46,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _clickEvent: object;
     private _listSubscription: Subscription;
     private _dataSet: DataSet<object>;
+    private _updatedByUser: boolean;
 
     constructor(
         private _translate: TranslateService,
@@ -59,6 +60,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.taskList = [];
         this.analysis = Analysis.getInstance();
         this.listSubscription = null;
+        this.updatedByUser = false;
     }
 
     ngOnInit() {
@@ -105,7 +107,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         if (this.timeline) {
             this.tooltip = false;
             this.dataSet.update(data);
-            this.timeline.setData({items: this.dataSet});
         } else {
             this.dataSet = new DataSet(data);
             this.timeline = this.getNewTimeline(this.dataSet);
@@ -133,7 +134,25 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             }
         });
         timeline.on('rangechange', () => {
+            this.updatedByUser = true;
             this.tooltip = false;
+        });
+        timeline.on('changed', () => {
+            if (this.updatedByUser) {
+                const tlItems = timeline['itemSet']['items'];
+                const arrItems = Object
+                    .keys(tlItems)
+                    .map(i => tlItems[i])
+                    .map(i => {
+                        i.data.className = i.data.className.replace(' hide', '');
+                        if (i.width < 60) {
+                            i.data.className +=  ' hide';
+                        }
+                        return i;
+                    });
+                this.dataSet.update(arrItems.map(i => i.data));
+                this.updatedByUser = false;
+            }
         });
         return timeline;
     }
@@ -151,6 +170,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return arrItems.length > 0 ? arrItems[0] : null;
     }
 
+    /**
+     * Returns initial timeline data
+     * @returns {TimelineTask[]}
+     */
     private getTimelineInitData(): TimelineTask[] {
         return [new TimelineTask(this.activeTask, true)];
     }
@@ -162,10 +185,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private getListSubscription(signature: RelationedTaskSearch): Subscription {
         this.loading = true;
-        return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
+        return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature)
+            .subscribe(
             (list) => {
                 this.taskList = list;
                 this.loading = false;
+                this.setRelatedTasks();
+                this.onAtaCorrected.emit(true);
             },
             () => this.getError()
         );
@@ -177,8 +203,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     public checkCorrectedATA(result: boolean) {
         if (result) {
+            this.updatedByUser = true;
             const signature: RelationedTaskSearch = RelationedTaskSearch.getInstance();
-
             signature.tail = this.activeTask.tail;
             signature.ataGroup = this.activeTask.ata;
             signature.barcode = this.activeTask.barcode;
@@ -187,18 +213,20 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
 
             signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
-            this.listSubscription = this.getListSubscription(signature).add(() => {
-                this.timelineData = this.taskList.map(task => {
-                    return new TimelineTask(task, task.id === this.activeTask.id, true, this.validateApply(task.review));
-                });
-                const findTask = this.timelineData.find(value => value.barcode === this.activeTask.barcode);
-                if (typeof findTask === 'undefined') {
-                    this.timelineData.push(new TimelineTask(this.activeTask, true, true));
-                }
-                this.createTimeline(this.timelineData);
-                this.onAtaCorrected.emit(result);
-            });
+            this.listSubscription = this.getListSubscription(signature);
         }
+    }
+
+    private setRelatedTasks() {
+        this.timelineData = this.taskList.map(task => {
+            task.hasHistorical = true;
+            return new TimelineTask(task, task.id === this.activeTask.id, true, this.validateApply(task.review));
+        });
+        const findTask = this.timelineData.find(value => value.barcode === this.activeTask.barcode);
+        if (typeof findTask === 'undefined') {
+            this.timelineData.push(new TimelineTask(this.activeTask, true, true));
+        }
+        this.createTimeline(this.timelineData);
     }
 
     /**
@@ -387,5 +415,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     set dataSet(value: DataSet<object>) {
         this._dataSet = value;
+    }
+
+    get updatedByUser(): boolean {
+        return this._updatedByUser;
+    }
+
+    set updatedByUser(value: boolean) {
+        this._updatedByUser = value;
     }
 }
