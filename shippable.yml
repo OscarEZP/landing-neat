@@ -18,7 +18,6 @@ branches:
   only:
     - develop
     - master
-    - MOC-FrontendImprovemnt
 
 cache: false
 
@@ -50,7 +49,7 @@ build:
       if [ "$BRANCH" == "master" ]; then
         npm run ng -- build --configuration production --prod
         cp -r dist/ ci/dist/
-      elif [ "$BRANCH" == "develop" ] || [ "$BRANCH" == "MOC-FrontendImprovemnt" ]; then
+      elif [ "$BRANCH" == "develop" ]; then
         npm run ng -- build --configuration staging
         cp -r dist/ ci/dist/
       fi
@@ -59,7 +58,7 @@ build:
     # WEB IMAGE
     - cd $SHIPPABLE_BUILD_DIR/ci
     - >
-      if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ] || [ "$BRANCH" == "MOC-FrontendImprovemnt" ] && [ "$IS_PULL_REQUEST" == "false" ]; then
+      if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ] && [ "$IS_PULL_REQUEST" == "false" ]; then
         docker build -f $SHIPPABLE_BUILD_DIR/ci/docker/Dockerfile -t $IMAGE_NAME .
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:latest
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
@@ -68,7 +67,7 @@ build:
 
         if [ "$BRANCH" == "master" ]; then
           echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/mcp-web-img-production.env
-        elif [ "$BRANCH" == "develop" ] || [ "$BRANCH" == "MOC-FrontendImprovemnt" ]; then
+        elif [ "$BRANCH" == "develop" ]; then
           echo "versionName=$BRANCH.$BUILD_NUMBER" >> $JOB_STATE/mcp-web-img-staging.env
         fi
       fi
