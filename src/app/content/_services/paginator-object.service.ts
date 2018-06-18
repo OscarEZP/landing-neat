@@ -1,5 +1,3 @@
-import {Injectable} from '@angular/core';
-
 export class PaginatorObjectService {
     private _pageSize: number;
     private _pageSizeOptions: number[];
