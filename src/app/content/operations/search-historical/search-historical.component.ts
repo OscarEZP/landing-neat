@@ -133,6 +133,10 @@ export class SearchHistoricalComponent implements OnInit {
         return this._paginatorObject;
     }
 
+    set paginatorObject(value: PaginatorObjectService) {
+        this._paginatorObject = value;
+    }
+
     ngOnInit() {
         this.maxDate = new Date();
         this.minFrom = new Date();
@@ -140,6 +144,7 @@ export class SearchHistoricalComponent implements OnInit {
         this.searchForm = this._searchHistoricalService.searchForm;
         this.getAircraft();
         this.setMinDate();
+        this.paginatorObject = PaginatorObjectService.getInstance();
     }
 
     private setMinDate() {
