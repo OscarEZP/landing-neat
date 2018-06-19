@@ -32,7 +32,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private static MIN_LABEL_WIDTH = 62;
 
     private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
-    private static TASK_FROM_REPORT = '';
+    private static TASK_HISTORICAL_ENDPOINT = 'taskHistorical';
+    private static REPORT_CLOSE = 'CLOSE';
 
     @Output()
     onAnalyzedTaskSelected: EventEmitter<any> = new EventEmitter();
@@ -50,6 +51,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _analysis: Analysis;
     private _clickEvent: object;
     private _listSubscription: Subscription;
+    private _taskHistoricalSubscription: Subscription;
     private _dataSet: DataSet<object>;
     private _updatedByUser: boolean;
     private _timelineTaskSelected: object;
@@ -72,6 +74,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.taskList = [];
         this.analysis = Analysis.getInstance();
         this.listSubscription = null;
+        this.taskHistoricalSubscription = null;
         this.tasksFromReportSubs = null;
         this.updatedByUser = false;
         this.historicalReportRelated = null;
@@ -81,8 +84,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.timelineData = this.getTimelineInitData();
-        this.createTimeline(this.timelineData);
         this.clickEvent = null;
+        this.createTimeline(this.timelineData);
+         if (this.activeTask.timelineStatus ===  TimelineReportComponent.REPORT_CLOSE ) {
+            this.taskHistoricalSubscription = this.getTaskHistoricalSubscription(this.activeTask.barcode);
+        }
     }
 
     ngOnDestroy() {
@@ -91,6 +97,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         }
         if (this.listSubscription) {
             this.listSubscription.unsubscribe();
+        }
+        if ( this.taskHistoricalSubscription) {
+            this.taskHistoricalSubscription.unsubscribe();
         }
         this.timeline.destroy();
     }
@@ -233,6 +242,24 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         );
     }
 
+    /**
+     * Get Task Analysis Historical
+     * @param {string} barcode
+     * @returns {Subscription}
+     */
+    private getTaskHistoricalSubscription( barcode: string): Subscription {
+        this.loading = true;
+        return this._apiRestService
+            .getSingle<Task[]>(TimelineReportComponent.TASK_HISTORICAL_ENDPOINT, barcode)
+            .subscribe(
+                (list) => {
+                    this.taskList = list;
+                    this.loading = false;
+                    this.setRelatedTasks();
+                },
+                () => this.getError()
+            );
+    }
     /**
      * Process after update ATA
      * @param {boolean} result
@@ -537,5 +564,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     set tasksFromReportSubs(value: Subscription) {
         this._tasksFromReportSubs = value;
+    }
+
+    get taskHistoricalSubscription(): Subscription {
+        return this._taskHistoricalSubscription;
+    }
+
+    set taskHistoricalSubscription(value: Subscription) {
+        this._taskHistoricalSubscription = value;
     }
 }

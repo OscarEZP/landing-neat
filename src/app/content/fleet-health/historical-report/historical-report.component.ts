@@ -225,5 +225,8 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     get alertCode(): string {
         return this.task.alertCode;
     }
+    get isDisplayHistoricalReport(): boolean {
+        return (this.isCorrected || this.task.timelineStatus === 'CLOSE' );
+    }
 
 }

@@ -54,7 +54,7 @@
 
                 <!-- TIMELINE STATUS -->
                 <div fxFlex="7" fxLayoutAlign="start center">
-                    <span class="badge" *ngIf="task.timelineStatus" [ngClass]="{'open': task.timelineStatus==='OPEN'}">
+                    <span class="badge" *ngIf="task.timelineStatus" [ngClass]="{'open': task.timelineStatus==='OPEN', 'close': task.timelineStatus==='CLOSE'}">
                         {{ task.timelineStatus }}
                     </span>
                 </div>
@@ -69,7 +69,7 @@
         </div>
         <div id="container-historical-report">
             <h3>{{ 'FLEET_HEALTH.REPORT.HISTORICAL_REPORTS' | translate }}</h3>
-            <div *ngIf="isCorrected" fxLayout="row" fxLayoutGap="10px">
+            <div *ngIf="isDisplayHistoricalReport" fxLayout="row" fxLayoutGap="10px">
                 <lsl-historical-task [analyzedTask]="analyzedTask" fxFlex="50"></lsl-historical-task>
                 <div fxLayout="column" fxFlex="50">
                     <lsl-analysis-report></lsl-analysis-report>
@@ -85,7 +85,7 @@
                     </div>
                 </div>
             </div>
-            <lsl-ess *ngIf="!isCorrected" icon="assignment" message="FLEET_HEALTH.REPORT.START_NEW_PROJECT"></lsl-ess>
+            <lsl-ess *ngIf="!isDisplayHistoricalReport" icon="assignment" message="FLEET_HEALTH.REPORT.START_NEW_PROJECT"></lsl-ess>
         </div>
     </div>
 
