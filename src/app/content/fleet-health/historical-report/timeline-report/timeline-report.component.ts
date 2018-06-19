@@ -311,20 +311,14 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     public refreshOnApply(review: Review): void {
         const itemUpdated = this.timelineData
             .find(item => item.task.barcode === review.barcode);
+        this.timelineData.map(x => console.log(x.barcode));
         itemUpdated.apply = review.apply;
         itemUpdated.className = itemUpdated.generateClassName();
         this.timelineData = this.timelineData.map(v => v.barcode === itemUpdated.barcode ? itemUpdated : v );
         this.updatedByUser = true;
-
-        this.historicalReportRelated = this.validateHistoricalReport(itemUpdated);
-
         this.dataSet.update([itemUpdated.getJson()]);
-
         this.updateReview(review);
-
-        if (itemUpdated.hasHistorical && itemUpdated.barcode === this.historicalReportRelated.barcode) {
-            this.handleTasksFromReport(itemUpdated);
-        }
+        this.historicalReportRelated = this.validateHistoricalReport(itemUpdated);
     }
 
     private handleTasksFromReport(itemUpdated: TimelineTask) {
@@ -332,32 +326,30 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             this.tasksFromReportSubs = this.tasksFromReport$(itemUpdated.barcode).subscribe(t => {
                 this.tasksFromReport = t;
             });
-
             this.tasksReplacedByReport = this.timelineData
                 .filter(td => this.tasksFromReport.find(tfr => tfr.barcode === td.barcode));
-
             this.dataSet.remove(this.tasksReplacedByReport.map(tfr => tfr.getJson()));
-
-            this.refreshTimelineData(this.timelineData
-                .filter(tl => tl.barcode !== itemUpdated.barcode)
-                .concat(this.tasksFromReport));
+            this.timelineData = this.timelineData
+                .filter(tl => !this.tasksReplacedByReport.find(trr => trr.barcode === tl.barcode))
+                .concat(this.tasksFromReport);
+            this.dataSet.add(this.tasksFromReport.map(tl => tl.getJson()));
         } else {
             this.dataSet.remove(this.tasksFromReport.map(tfr => tfr.getJson()));
+            this.timelineData = this.timelineData
+                .filter(tl => !this.tasksFromReport.find(tfr => tl.barcode === tfr.barcode))
+                .concat(this.tasksReplacedByReport);
+            this.dataSet.add(this.tasksReplacedByReport.map(trr => trr.getJson()));
         }
-    }
-
-    private refreshTimelineData(data: TimelineTask[]) {
-        this.timelineData = data;
-        this.dataSet.update(this.timelineData.map(tl => tl.getJson()));
         this.tooltip = false;
     }
-
 
     private validateHistoricalReport(tlTask: TimelineTask): TimelineTask {
         if (tlTask.hasHistorical && tlTask.apply === true && !this.historicalReportRelated) {
             this.dataSet.update(this.getReportsNotSelected(tlTask, false));
+            this.handleTasksFromReport(tlTask);
             return tlTask;
         } else if (tlTask.hasHistorical && tlTask.apply === false && tlTask === this.historicalReportRelated) {
+            this.handleTasksFromReport(tlTask);
             this.dataSet.update(this.getReportsNotSelected(tlTask, true));
             return null;
         }
