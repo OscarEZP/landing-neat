@@ -91,11 +91,14 @@
             </div>
         </content>
     </div>
-    <mat-paginator #contPaginator [hidden]="!(list.length && !loading && !error)"
-           [length]="paginatorObjectService.length"
-           [pageSize]="paginatorObjectService.pageSize"
-           [pageSizeOptions]="paginatorObjectService.pageSizeOptions">
-    </mat-paginator>
+
+    <div [hidden]="!(list.length && !loading && !error)">
+        <mat-paginator #contPaginator
+                       [length]="paginatorObjectService.length"
+                       [pageSize]="paginatorObjectService.pageSize"
+                       [pageSizeOptions]="paginatorObjectService.pageSizeOptions">
+        </mat-paginator>
+    </div>
     <lsl-ess icon="location_off" message="ESS.STATIONS_WITHOUT_CONF" *ngIf="!haveStationsConf && !loading"></lsl-ess>
     <lsl-ess icon="filter_list" message="ESS.AUTHORITIES_WITHOUT_CONF" *ngIf="!haveAuthoritiesConf && haveStationsConf && !loading"></lsl-ess>
     <lsl-ess icon="flight_takeoff" message="ESS.NO_DEFERRALS_FOUND" *ngIf="haveStationsConf && haveAuthoritiesConf && list.length === 0 && !loading && !error"></lsl-ess>

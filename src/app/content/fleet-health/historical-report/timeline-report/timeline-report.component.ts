@@ -28,8 +28,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private static DAYS_FROM = 30;
     private static ZOOM_MIN_DAYS = 15;
-    private static ZOOM_MAX_MONTH = 12;
+    private static ZOOM_MAX_MONTH = 1.1;
     private static MIN_LABEL_WIDTH = 62;
+    private static MIN_ICON_WIDTH = 28;
 
     private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
     private static TASK_FROM_REPORT = '';
@@ -103,7 +104,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private getTimelineOptions(maxTime: moment.Moment): TimelineOptions {
         return new TimelineOptions(
             this.minDate.format('YYYY-MM-DD'),
-            maxTime.format('YYYY-MM-DD'),
+            null,
             TimelineReportComponent.ZOOM_MIN_DAYS,
             TimelineReportComponent.ZOOM_MAX_MONTH * 30,
             true
@@ -119,6 +120,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         data = data.map(task => task.getJson());
         const dataMinDate = this.taskList
             .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1).find(tl => !!tl);
+
         this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime)
             .utc()
             .subtract(TimelineReportComponent.DAYS_FROM, 'days');
@@ -158,7 +160,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         timeline.on('changed', () => {
             if (this.updatedByUser) {
                 const tlItems = timeline['itemSet']['items'];
-                const arrItems = this.addHideClass(tlItems);
+                let arrItems = this.addClass(tlItems, 'hide', TimelineReportComponent.MIN_LABEL_WIDTH);
+                arrItems = this.addClass(arrItems, 'hidden-icon', TimelineReportComponent.MIN_ICON_WIDTH);
                 this.dataSet.update(arrItems.map(i => i['data']));
                 this.updatedByUser = false;
             }
@@ -173,6 +176,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         const task = Task.getInstance();
         task.barcode = 'T00DV3KG';
         task.createDate.epochTime = 1529336412000;
+        task.hasHistorical = true;
         const tlData1 = new TimelineTask(task);
         tlData1.id = 12341234;
         tlData1.start = DateUtil.formatDate(task.createDate.epochTime, 'YYYY-MM-DD');
@@ -180,17 +184,17 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return Observable.of(arrTasks);
     }
 
-    private addHideClass(tlItems: object): object[] {
+    private addClass(tlItems: object, newClass: string, limit: number): object[] {
         const arrItems = Object
             .keys(tlItems)
             .map(i => {
                 const v = tlItems[i];
-                v.data.className = v.data.className.replace(' hide', '');
+                v.data.className = v.data.className.replace(' ' + newClass, '');
                 return v;
             });
         arrItems
-            .filter(i => i['data']['className'].search(' hide') === -1 && i['width'] < TimelineReportComponent.MIN_LABEL_WIDTH)
-            .map(i => i['data']['className'] += ' hide');
+            .filter(i => i['data']['className'].search(' ' + newClass) === -1 && i['width'] < limit)
+            .map(i => i['data']['className'] += ' ' + newClass);
         return arrItems;
     }
 
@@ -311,7 +315,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     public refreshOnApply(review: Review): void {
         const itemUpdated = this.timelineData
             .find(item => item.task.barcode === review.barcode);
-        this.timelineData.map(x => console.log(x.barcode));
         itemUpdated.apply = review.apply;
         itemUpdated.className = itemUpdated.generateClassName();
         this.timelineData = this.timelineData.map(v => v.barcode === itemUpdated.barcode ? itemUpdated : v );
@@ -345,8 +348,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private validateHistoricalReport(tlTask: TimelineTask): TimelineTask {
         if (tlTask.hasHistorical && tlTask.apply === true && !this.historicalReportRelated) {
-            this.dataSet.update(this.getReportsNotSelected(tlTask, false));
             this.handleTasksFromReport(tlTask);
+            this.dataSet.update(this.getReportsNotSelected(tlTask, false));
             return tlTask;
         } else if (tlTask.hasHistorical && tlTask.apply === false && tlTask === this.historicalReportRelated) {
             this.handleTasksFromReport(tlTask);
