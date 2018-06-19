@@ -14,6 +14,7 @@ export class HistoricalTask {
     private _correctiveActions: CorrectiveAction[];
     private _steps: Step[];
     private _parts: Part[];
+    private _report: string;
 
 
    private constructor() {
@@ -25,6 +26,7 @@ export class HistoricalTask {
         this._creationDate = TimeInstant.getInstance();
         this._faultName = '';
         this._parts = [];
+        this._report = '';
 
     }
 
@@ -97,6 +99,14 @@ export class HistoricalTask {
         this._parts = value ?  value.map(v =>
             Object.assign(Part.getInstance(), v )
         ) : [];
+    }
+
+    set report(value: string) {
+        this._report = value;
+    }
+
+    get report(): string {
+        return this._report;
     }
 }
 

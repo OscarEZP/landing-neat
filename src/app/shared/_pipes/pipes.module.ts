@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { UtcDatePipe } from './utcDatePipe.pipe';
 import { ObjNgForPipe } from './objNgForPipe.pipe';
 import { FilterPipe} from './filter.pipe';
+import { EscapeHtmlPipe } from './keepHtml.pipe';
 
 
 @NgModule({
@@ -11,12 +12,14 @@ import { FilterPipe} from './filter.pipe';
     declarations: [
         UtcDatePipe,
         ObjNgForPipe,
-        FilterPipe
+        FilterPipe,
+        EscapeHtmlPipe
     ],
     exports: [
         UtcDatePipe,
         ObjNgForPipe,
-        FilterPipe
+        FilterPipe,
+        EscapeHtmlPipe
     ]
 
 })

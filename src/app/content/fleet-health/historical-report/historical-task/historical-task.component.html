@@ -114,6 +114,34 @@
                 <mat-paginator [hidden]="tableData.length < pageSize" [pageSizeOptions]="[pageSize]" showFirstLastButtons></mat-paginator>
             </div>
         </div>
+        <div id="analysis-historical" *ngIf="historicalTask.report">
+            <hr class="segment">
+            <div fxLayout="row">
+                <div fxFlex="">
+                    <h2>{{'FLEET_HEALTH.REPORT.ANALYSIS' | translate}}</h2>
+                </div>
+                <header>
+                    <div fxFlexAlign="end center" fxLayout="row">
+                        <button [color]="primary" (click)="copyText()" mat-raised-button type="button">
+                            {{'FLEET_HEALTH.REPORT.COPY_TEXT' | translate}}
+                        </button>
+                    </div>
+                </header>
+            </div>
+
+            <div id="analysis-detail">
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{'FLEET_HEALTH.REPORT.DESCRIPTION' | translate}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div [innerHTML]="historicalTask.report | keepHtml"></div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </div>
     </div>
 </section>
 
