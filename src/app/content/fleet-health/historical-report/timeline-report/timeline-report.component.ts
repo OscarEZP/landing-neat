@@ -104,7 +104,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private getTimelineOptions(maxTime: moment.Moment): TimelineOptions {
         return new TimelineOptions(
             this.minDate.format('YYYY-MM-DD'),
-            null,
+            this.minDate.add(TimelineReportComponent.DAYS_FROM + 1, 'days'),
             TimelineReportComponent.ZOOM_MIN_DAYS,
             TimelineReportComponent.ZOOM_MAX_MONTH * 30,
             true

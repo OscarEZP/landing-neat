@@ -125,9 +125,17 @@ section {
     border-style: dashed;
   }
 
-  #analysis-historical {
+}
+
+/deep/
+#analysis-historical {
+  p {
     strong {
       font-weight: bold;
     }
+    u {
+      font-style: oblique;
+    }
   }
+
 }
