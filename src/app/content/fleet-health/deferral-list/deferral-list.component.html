@@ -21,7 +21,7 @@
                  [class.active]="task.barcode === selectedRegister.barcode"
                  class="contingency-item"
             >
-                <span fxFlex="95" [ngClass]="{'open-cursor': task.timelineStatus==='OPEN', 'close-cursor': task.timelineStatus==='CLOSE'}" (click)="setSelectedRegister(task)" fxLayoutGap="10px">
+                <span fxFlex="95" [ngClass]="{'open-cursor': 'true'}" (click)="setSelectedRegister(task)" fxLayoutGap="10px">
                     <!--TAIL/FLEET-->
                     <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
                         <span>{{ task.tail }}</span>
