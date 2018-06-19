@@ -1,28 +1,29 @@
-import {Injectable} from '@angular/core';
-
-@Injectable()
-export class InfiniteScrollService {
+export class PaginatorObjectService {
     private _pageSize: number;
     private _pageSizeOptions: number[];
     private _pageIndex: number;
     private _length: number;
     private _offset: number;
 
-    constructor() {
-        this.init();
-        this._pageSizeOptions = [1, 10, 25, 50, 100, 300];
+    constructor(pageIndex: number, pageSize: number, length: number, offset: number, pageSizeOptions: number[]) {
+        this._pageIndex = pageIndex;
+        this._pageSize = pageSize;
+        this._length = length;
+        this._offset = offset;
+        this._pageSizeOptions = pageSizeOptions;
     }
 
-    public init(): void {
-        this.pageIndex = 0;
-        this.pageSize = 10;
-        this.length = 0;
-        this._offset = 0;
+    static getInstance(): PaginatorObjectService {
+        return new PaginatorObjectService(0, 10, 0, 0, [1, 10, 25, 50, 100, 300]);
     }
 
     get viewedRecords(): number {
         const viewedRecords = this.pageSize * (this.pageIndex + 1);
-        return viewedRecords < this._length ? viewedRecords : this.length;
+        return viewedRecords < this.length ? viewedRecords : this.length;
+    }
+
+    set offset(value: number) {
+        this._offset = value;
     }
 
     get offset(): number {

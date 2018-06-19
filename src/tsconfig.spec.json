@@ -8,10 +8,12 @@
     "types": [
       "jasmine",
       "node"
-    ]
+    ],
+    "allowJs": true
   },
   "files": [
-    "test.ts"
+    "test.ts",
+    "polyfills.ts"
   ],
   "include": [
     "**/*.spec.ts",

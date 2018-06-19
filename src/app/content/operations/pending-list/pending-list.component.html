@@ -1,9 +1,9 @@
 <div class="counter-container" fxLayout="column" fxLayoutAlign="center" *ngIf="checkDataStatus()">
     <div>
         {{ 'OPERATIONS.SHOWING' | translate }}
-        {{infiniteScrollService.viewedRecords}}
+        {{paginatorObjectService.viewedRecords}}
         {{ 'OPERATIONS.OF' | translate }}
-        {{infiniteScrollService.length}}
+        {{paginatorObjectService.length}}
         {{ 'OPERATIONS.CONTINGENCIES_WITH_PENDINGS' | translate }}
     </div>
 </div>
@@ -101,9 +101,9 @@
     </content>
 </div>
 <mat-paginator #contPaginator [hidden]="!checkDataStatus()"
-       [length]="infiniteScrollService.length"
-       [pageSize]="infiniteScrollService.pageSize"
-       [pageSizeOptions]="infiniteScrollService.pageSizeOptions">
+       [length]="paginatorObjectService.length"
+       [pageSize]="paginatorObjectService.pageSize"
+       [pageSizeOptions]="paginatorObjectService.pageSizeOptions">
 </mat-paginator>
 <lsl-ess icon="flight_takeoff" message="ESS.NO_CONTINGENCIES_FOUND" *ngIf="contingencyService.contingencyList.length === 0 && !contingencyService.loading"></lsl-ess>
 <div class="loader-container" fxLayoutAlign="center center" *ngIf="contingencyService.loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>
