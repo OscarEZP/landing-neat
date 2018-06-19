@@ -32,6 +32,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private static MIN_LABEL_WIDTH = 62;
 
     private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
+    private static TASK_FROM_REPORT = '';
 
     @Output()
     onAnalyzedTaskSelected: EventEmitter<any> = new EventEmitter();
@@ -253,10 +254,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     private setRelatedTasks() {
-        this.timelineData = this.taskList.map(task => {
-            task.hasHistorical = true;
-            return new TimelineTask(task, task.id === this.activeTask.id, true, this.validateApply(task.review));
-        });
+        this.timelineData = this.taskList.map(task =>
+            new TimelineTask(task, task.id === this.activeTask.id, true, this.validateApply(task.review))
+        );
         const findTask = this.timelineData.find(value => value.barcode === this.activeTask.barcode);
         if (typeof findTask === 'undefined') {
             this.timelineData.push(new TimelineTask(this.activeTask, true, true));
