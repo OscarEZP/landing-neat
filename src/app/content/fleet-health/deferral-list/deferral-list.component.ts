@@ -240,19 +240,17 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @param task
      */
     public setSelectedRegister(register: Task) {
-        if (register.timelineStatus === 'OPEN') {
             this.selectedRegister = register;
             this.selectedRegisterPivot = register;
             this.openHistoricalReport(register);
             this.serviceTask = register;
             this.list = [];
             this.listSubscription.unsubscribe();
-        }
     }
 
     /**
-     * Method for open close contingency modal
-     * @param contingency
+     * Method for open Historical Task
+     * @param task
      */
     private openHistoricalReport(task: Task) {
         this._dialogService.openDialog(HistoricalReportComponent, {
