@@ -20,6 +20,10 @@ $timeline-label-height: 22px;
     padding: 10px;
   }
 
+  .vis-label .vis-inner {
+    min-height: 200px;
+  }
+
   .vis-item {
     margin: 0 0 0 13px;
     height: 20px;
@@ -54,11 +58,23 @@ $timeline-label-height: 22px;
       font-size: 15px;
       float: right;
       margin: -2px 0 0 0;
-      color: mat-color($foreground, disabled);
+      color: mat-color($foreground, secondary-text);
     }
   }
 
   .vis-item.full {
+    .material-icons {
+      color: mat-color($primary, default-contrast);
+    }
+  }
+
+  .vis-item.disabled {
+    .material-icons {
+      color: mat-color($foreground, disabled);
+    }
+  }
+
+  .vis-item.disabled.full {
     .material-icons {
       color: mat-color($primary, default-contrast);
     }

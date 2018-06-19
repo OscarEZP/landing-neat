@@ -12,6 +12,7 @@ export class TimelineTask {
     private static FULL_CLASS = 'full';
     private static RELATED_CLASS = 'related';
     private static DONT_APPLY_CLASS = 'dont-apply';
+    private static DISABLED_CLASS = 'disabled';
 
     private _id: number;
     private _content: string;
@@ -25,6 +26,7 @@ export class TimelineTask {
     private _group: string;
     private _subgroup: string;
     private _type: string;
+    private _historicalEnabled: boolean;
 
     static getInstance() {
         return new TimelineTask(Task.getInstance(), false, false);
@@ -42,6 +44,7 @@ export class TimelineTask {
         this._group = task.barcode;
         this._type = '';
         this._content = this.getContent();
+        this._historicalEnabled = true;
     }
 
     public generateClassName(): string {
@@ -59,6 +62,9 @@ export class TimelineTask {
             } else if (this.apply === false) {
                 arrStyles.push(TimelineTask.DONT_APPLY_CLASS);
             }
+            if (!this.historicalEnabled) {
+                arrStyles.push(TimelineTask.DISABLED_CLASS);
+            }
         }
         return arrStyles.join(' ');
     }
@@ -71,6 +77,7 @@ export class TimelineTask {
     }
 
     public getJson() {
+        this.className = this.generateClassName();
         return JSON.parse(JSON.stringify(this).replace(/\b[_]/g, ''));
     }
 
@@ -212,4 +219,15 @@ export class TimelineTask {
         this._className = value;
     }
 
+    get hasHistorical(): boolean {
+        return this.task.hasHistorical;
+    }
+
+    get historicalEnabled(): boolean {
+        return this._historicalEnabled;
+    }
+
+    set historicalEnabled(value: boolean) {
+        this._historicalEnabled = value;
+    }
 }
