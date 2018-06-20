@@ -33,7 +33,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
     private static TASK_HISTORICAL_ENDPOINT = 'taskHistorical';
     private static REPORT_CLOSE = 'CLOSE';
-    private static REPORT_OPEN = 'OPEN';
 
     @Output()
     onAnalyzedTaskSelected: EventEmitter<TimelineTask> = new EventEmitter();
