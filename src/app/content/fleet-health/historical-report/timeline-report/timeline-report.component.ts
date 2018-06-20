@@ -34,6 +34,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
     private static TASK_FROM_REPORT = '';
+    private static TIMELINE_DATE_FORMAT = 'YYYY-MM-DD';
 
     @Output()
     onAnalyzedTaskSelected: EventEmitter<any> = new EventEmitter();
@@ -103,8 +104,8 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private getTimelineOptions(maxTime: moment.Moment): TimelineOptions {
         return new TimelineOptions(
-            this.minDate.format('YYYY-MM-DD'),
-            this.minDate.add(TimelineReportComponent.DAYS_FROM + 1, 'days'),
+            this.minDate.format(TimelineReportComponent.TIMELINE_DATE_FORMAT),
+            this.minDate.add(TimelineReportComponent.DAYS_FROM + 1, 'days').format(TimelineReportComponent.TIMELINE_DATE_FORMAT),
             TimelineReportComponent.ZOOM_MIN_DAYS,
             TimelineReportComponent.ZOOM_MAX_MONTH * 30,
             true
