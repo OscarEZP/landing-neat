@@ -43,6 +43,7 @@ export const environment = {
         types: '/api/v1/configurations/types',
         taskRelationsSearch: '/api/v1/tasks/relations/_search',
         taskHistoricalReport: '/api/v1/tasks/analysis/historical',
+        taskHistorical : '/api/v1/tasks/historical',
         taskSaveAnalysis: '/api/v1/tasks/analysis',
         tasksFleethealthDone: '/api/v1/tasks/fleethealth/manualstate/_apply',
         tasksFleethealthSearch: '/api/v1/tasks/fleethealth/_search',

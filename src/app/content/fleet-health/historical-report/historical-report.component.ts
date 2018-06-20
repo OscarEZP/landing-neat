@@ -33,10 +33,10 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     private static REQUIRED_REPORT = 'FLEET_HEALTH.REPORT.ERROR.REQUIRED_REPORT';
     private static DEFAULT_ERROR = 'ERRORS.DEFAULT';
 
-
     private _task: Task;
     private _analyzedTask: TimelineTask;
     private _validations: Validation;
+    private _editorLoad: boolean;
 
     constructor(
         private _dialogService: DialogService,
@@ -54,6 +54,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.analyzedTask = TimelineTask.getInstance();
         this.task = this._historicalReportService.task;
+        this.editorLoad = false;
     }
 
     ngOnDestroy() {
@@ -95,6 +96,12 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     public setAnalizedTask(task: TimelineTask) {
         this.analyzedTask = task;
     }
+
+
+    public setEditorLoad(value: boolean) {
+        this.editorLoad = value;
+    }
+
 
     /**
      * Save form data and reload the deferral list
@@ -144,7 +151,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
             this.getTranslateString(HistoricalReportComponent.REQUIRED_REVIEWS);
             return false;
         }
-        if (!this.isCorrected) {
+        if (!this.isCorrected && this.task.timelineStatus === 'OPEN' ) {
             this.getTranslateString(HistoricalReportComponent.REQUIRED_ATA);
             return false;
         }
@@ -225,5 +232,15 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     get alertCode(): string {
         return this.task.alertCode;
     }
+    get isDisplayHistoricalReport(): boolean {
+        return (this.isCorrected || this.task.timelineStatus === 'CLOSE' );
+    }
 
+    get editorLoad(): boolean {
+        return this._editorLoad;
+    }
+
+    set editorLoad(value: boolean) {
+        this._editorLoad = value;
+    }
 }

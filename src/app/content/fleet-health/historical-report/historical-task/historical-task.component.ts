@@ -30,6 +30,7 @@ export class HistoricalTaskComponent implements OnInit {
     private _historicalTask: HistoricalTask;
     private _apiRestService: ApiRestService;
     private _analyzedTask: TimelineTask;
+    private _editorLoad: boolean;
     private _dataSource: MatTableDataSource<any>;
     private _displayedColumns: string[];
     private _tableData: PartInterface[];
@@ -47,10 +48,17 @@ export class HistoricalTaskComponent implements OnInit {
         }
     }
 
-    constructor(
-        httpClient: HttpClient,
-        private _historicalReportService: HistoricalReportService
-    ) {
+    @Input()
+    set editorLoad(value: boolean) {
+        this._editorLoad = value;
+    }
+
+    get editorLoad(): boolean {
+        return this._editorLoad;
+    }
+
+    constructor(httpClient: HttpClient,
+                private _historicalReportService: HistoricalReportService) {
         this.apiRestService = new ApiRestService(httpClient);
         this._analyzedTask = null;
         this._displayedColumns = ['description', 'partGroup', 'quantity', 'eta', 'status'];
@@ -61,6 +69,7 @@ export class HistoricalTaskComponent implements OnInit {
 
     ngOnInit() {
         this.historicalTask = HistoricalTask.getInstance();
+        this.editorLoad = false;
     }
 
     /**
@@ -73,6 +82,9 @@ export class HistoricalTaskComponent implements OnInit {
             .getSingle<HistoricalTask>(HistoricalTaskComponent.TASK_HISTORICAL_REPORT_ENDPOINT, barcode)
             .subscribe((response: HistoricalTask) => {
                 this.historicalTask = response;
+                if (this.editorLoad) {
+                    this.editorContent = this.historicalTask.report;
+                }
                 this.tableData = response.parts.map(p => {
                     const newPart: PartInterface = {
                         description: p.code,
