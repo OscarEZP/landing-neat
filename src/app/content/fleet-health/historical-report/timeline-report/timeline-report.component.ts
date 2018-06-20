@@ -11,11 +11,10 @@ import {Task} from '../../../../shared/_models/task/task';
 import {DateRange} from '../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
-import {Timeline, DataSet} from 'vis';
+import {DataSet, Timeline} from 'vis';
 import {Review} from '../../../../shared/_models/task/analysis/review';
 import {Analysis} from '../../../../shared/_models/task/analysis/analysis';
 import {TimelineOptions} from '../../../../shared/_models/task/timelineOptions';
-import {Time} from '@angular/common';
 import {Observable} from 'rxjs/Observable';
 import {DateUtil} from '../../../../shared/util/dateUtil';
 
@@ -36,10 +35,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private static REPORT_CLOSE = 'CLOSE';
 
     @Output()
-    onAnalyzedTaskSelected: EventEmitter<any> = new EventEmitter();
+    onAnalyzedTaskSelected: EventEmitter<TimelineTask> = new EventEmitter();
 
     @Output()
     onAtaCorrected: EventEmitter<any> = new EventEmitter();
+
+    @Output()
+    onEditorLoad: EventEmitter<boolean> = new EventEmitter();
 
     private _tooltip: boolean;
     private _tooltipStyle: Style;
@@ -62,12 +64,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private _tasksFromReportSubs: Subscription;
 
-    constructor(
-        private _translate: TranslateService,
-        private _element: ElementRef,
-        private _historicalReportService: HistoricalReportService,
-        private _apiRestService: ApiRestService
-    ) {
+    constructor(private _translate: TranslateService,
+                private _element: ElementRef,
+                private _historicalReportService: HistoricalReportService,
+                private _apiRestService: ApiRestService) {
         this._translate.setDefaultLang('en');
         this.tooltip = false;
         this.tooltipStyle = new Style();
@@ -86,7 +86,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.timelineData = this.getTimelineInitData();
         this.clickEvent = null;
         this.createTimeline(this.timelineData);
-         if (this.activeTask.timelineStatus ===  TimelineReportComponent.REPORT_CLOSE ) {
+        if (this.activeTask.timelineStatus === TimelineReportComponent.REPORT_CLOSE) {
             this.taskHistoricalSubscription = this.getTaskHistoricalSubscription(this.activeTask.barcode);
         }
     }
@@ -98,7 +98,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         if (this.listSubscription) {
             this.listSubscription.unsubscribe();
         }
-        if ( this.taskHistoricalSubscription) {
+        if (this.taskHistoricalSubscription) {
             this.taskHistoricalSubscription.unsubscribe();
         }
         this.timeline.destroy();
@@ -156,6 +156,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             if (event['what'] === 'item') {
                 this.showTooltip();
                 this.onAnalyzedTaskSelected.emit(this.timelineTaskSelected['data']);
+                this.onEditorLoad.emit(false);
             } else {
                 this.tooltip = false;
             }
@@ -232,14 +233,14 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.loading = true;
         return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature)
             .subscribe(
-            (list) => {
-                this.taskList = list;
-                this.loading = false;
-                this.setRelatedTasks();
-                this.onAtaCorrected.emit(true);
-            },
-            () => this.getError()
-        );
+                (list) => {
+                    this.taskList = list;
+                    this.loading = false;
+                    this.setRelatedTasks();
+                    this.onAtaCorrected.emit(true);
+                },
+                () => this.getError()
+            );
     }
 
     /**
@@ -247,7 +248,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @param {string} barcode
      * @returns {Subscription}
      */
-    private getTaskHistoricalSubscription( barcode: string): Subscription {
+    private getTaskHistoricalSubscription(barcode: string): Subscription {
         this.loading = true;
         return this._apiRestService
             .getSingle<Task[]>(TimelineReportComponent.TASK_HISTORICAL_ENDPOINT, barcode)
@@ -256,10 +257,14 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                     this.taskList = list;
                     this.loading = false;
                     this.setRelatedTasks();
+                    this.onAnalyzedTaskSelected.emit(new TimelineTask(this.activeTask, true, true));
+                    this.onEditorLoad.emit(true);
+
                 },
                 () => this.getError()
             );
     }
+
     /**
      * Process after update ATA
      * @param {boolean} result
@@ -338,13 +343,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     public refreshOnApply(review: Review): void {
         const itemUpdated = this.timelineData
             .find(item => item.task.barcode === review.barcode);
-        this.timelineData.map(x => console.log(x.barcode));
         itemUpdated.apply = review.apply;
         itemUpdated.className = itemUpdated.generateClassName();
-        this.timelineData = this.timelineData.map(v => v.barcode === itemUpdated.barcode ? itemUpdated : v );
+        this.timelineData = this.timelineData.map(v => v.barcode === itemUpdated.barcode ? itemUpdated : v);
         this.updatedByUser = true;
         this.dataSet.update([itemUpdated.getJson()]);
         this.updateReview(review);
+        this.tooltip = false;
         this.historicalReportRelated = this.validateHistoricalReport(itemUpdated);
     }
 
@@ -385,7 +390,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private getReportsNotSelected(tlTask: TimelineTask, enabled: boolean): object[] {
         return this.timelineData
-            .filter(i => i.task.hasHistorical && i.barcode !== tlTask.barcode )
+            .filter(i => i.task.hasHistorical && i.barcode !== tlTask.barcode)
             .map(i => {
                 i.historicalEnabled = enabled;
                 return i.getJson();
