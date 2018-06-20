@@ -64,6 +64,7 @@
       "COPY_TEXT": "Copy text",
       "DESCRIPTION": "Description",
       "FAULT_NAME": "Fault Name",
+      "ANALYSIS": "Historical Analysis",
       "ERROR": {
         "INVALID_ATA": "ATA is invalid",
         "REQUIRED_ATA": "ATA is required",

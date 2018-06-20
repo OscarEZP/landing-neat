@@ -7,6 +7,7 @@ export class TimelineOptions {
     private _start: string;
     private _zoomMax: number;
     private _zoomMin: number;
+    private _autoResize: boolean;
 
     constructor(start: string = '', end: string = '', zoomMin: number = 0, zoomMax: number = 0, stack: boolean = true) {
         this._start = start;
@@ -14,6 +15,7 @@ export class TimelineOptions {
         this.zoomMin = zoomMin;
         this.zoomMax = zoomMax;
         this._stack = stack;
+        this._autoResize = false;
     }
 
     public static getInstance() {
@@ -80,5 +82,13 @@ export class TimelineOptions {
 
     set stack(value: boolean) {
         this._stack = value;
+    }
+
+    get autoResize(): boolean {
+        return this._autoResize;
+    }
+
+    set autoResize(value: boolean) {
+        this._autoResize = value;
     }
 }
