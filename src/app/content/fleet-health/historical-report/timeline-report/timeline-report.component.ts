@@ -33,6 +33,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
     private static TASK_HISTORICAL_ENDPOINT = 'taskHistorical';
     private static REPORT_CLOSE = 'CLOSE';
+    private static REPORT_OPEN = 'OPEN';
 
     @Output()
     onAnalyzedTaskSelected: EventEmitter<TimelineTask> = new EventEmitter();
@@ -87,7 +88,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.clickEvent = null;
         this.createTimeline(this.timelineData);
         if (this.activeTask.timelineStatus === TimelineReportComponent.REPORT_CLOSE) {
-            this.taskHistoricalSubscription = this.getTaskHistoricalSubscription(this.activeTask.barcode);
+            this.taskHistoricalSubscription = this.getTaskHistoricalSubscription(this.activeTask);
         }
     }
 
@@ -248,16 +249,16 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @param {string} barcode
      * @returns {Subscription}
      */
-    private getTaskHistoricalSubscription(barcode: string): Subscription {
+    private getTaskHistoricalSubscription(task: Task): Subscription {
         this.loading = true;
         return this._apiRestService
-            .getSingle<Task[]>(TimelineReportComponent.TASK_HISTORICAL_ENDPOINT, barcode)
+            .getSingle<Task[]>(TimelineReportComponent.TASK_HISTORICAL_ENDPOINT, task.barcode)
             .subscribe(
                 (list) => {
                     this.taskList = list;
                     this.loading = false;
                     this.setRelatedTasks();
-                    this.onAnalyzedTaskSelected.emit(new TimelineTask(this.activeTask, true, true));
+                    this.onAnalyzedTaskSelected.emit(new TimelineTask(task, true, true));
                     this.onEditorLoad.emit(true);
 
                 },

@@ -131,7 +131,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     private getSignature(): Analysis {
         const analysis = Analysis.getInstance();
         analysis.barcode = this.task.barcode;
-        analysis.ata = this.newAta;
+        analysis.ata = this.task.timelineStatus === 'CLOSE' ? this.task.ata : this.newAta;
         analysis.reviews = this.reviews;
         analysis.username = this.user;
         analysis.alertCode = this.alertCode;
