@@ -13,6 +13,11 @@ export class TimelineTask {
     private static RELATED_CLASS = 'related';
     private static DONT_APPLY_CLASS = 'dont-apply';
     private static DISABLED_CLASS = 'disabled';
+    private static HIDE_CLASS = 'hide';
+    private static HIDDEN_ICON_CLASS = 'hidden-icon';
+
+    private static MIN_LABEL_WIDTH = 62;
+    private static MIN_ICON_WIDTH = 28;
 
     private _id: number;
     private _content: string;
@@ -27,6 +32,7 @@ export class TimelineTask {
     private _subgroup: string;
     private _type: string;
     private _historicalEnabled: boolean;
+    private _width: number;
 
     static getInstance() {
         return new TimelineTask(Task.getInstance(), false, false);
@@ -65,6 +71,12 @@ export class TimelineTask {
             if (!this.historicalEnabled) {
                 arrStyles.push(TimelineTask.DISABLED_CLASS);
             }
+        }
+        if (this.width <= TimelineTask.MIN_LABEL_WIDTH) {
+            arrStyles.push(TimelineTask.HIDE_CLASS);
+        }
+        if (this.width <= TimelineTask.MIN_ICON_WIDTH) {
+            arrStyles.push(TimelineTask.HIDDEN_ICON_CLASS);
         }
         return arrStyles.join(' ');
     }
@@ -145,7 +157,7 @@ export class TimelineTask {
         this._apply = value;
     }
 
-    get createDate(): TimeInstant{
+    get createDate(): TimeInstant {
         return this.task.createDate;
     }
 
@@ -161,7 +173,7 @@ export class TimelineTask {
         return this.task.extendedDueDate;
     }
 
-    get dueDate(): TimeInstant{
+    get dueDate(): TimeInstant {
         return this.task.dueDate;
     }
 
@@ -181,11 +193,11 @@ export class TimelineTask {
         this._type = value;
     }
 
-    get isOpen(): boolean{
+    get isOpen(): boolean {
         return this.task.isOpen;
 
     }
-    get isClose(): boolean{
+    get isClose(): boolean {
         return this.task.isClose;
     }
 
@@ -207,7 +219,7 @@ export class TimelineTask {
         return endDate;
     }
 
-    get startDateEpochTime(): number{
+    get startDateEpochTime(): number {
         return this.task.createDate.epochTime;
     }
 
@@ -229,5 +241,13 @@ export class TimelineTask {
 
     set historicalEnabled(value: boolean) {
         this._historicalEnabled = value;
+    }
+
+    get width(): number {
+        return this._width;
+    }
+
+    set width(value: number) {
+        this._width = value;
     }
 }
