@@ -173,11 +173,9 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             if (this.updatedByUser) {
                 this.timelineData.map(tl => {
                     tl.width = this.getTimelineItems().find(ti => ti.data.task.barcode === tl.barcode).width;
-                    console.log(tl.width, tl.generateClassName());
-                    return tl.getJson();
+                    return tl;
                 });
-                console.log(this.timelineData);
-                this.dataSet.update(this.timelineData);
+                this.dataSet.update(this.timelineData.map(tl => tl.getJson()));
                 this.updatedByUser = false;
             }
         });
