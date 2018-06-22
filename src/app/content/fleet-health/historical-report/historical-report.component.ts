@@ -97,11 +97,9 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         this.analyzedTask = task;
     }
 
-
     public setEditorLoad(value: boolean) {
         this.editorLoad = value;
     }
-
 
     /**
      * Save form data and reload the deferral list
@@ -131,7 +129,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     private getSignature(): Analysis {
         const analysis = Analysis.getInstance();
         analysis.barcode = this.task.barcode;
-        analysis.ata = this.newAta;
+        analysis.ata = this.task.timelineStatus === 'OPEN' ? this.newAta : this.task.ata;
         analysis.reviews = this.reviews;
         analysis.username = this.user;
         analysis.alertCode = this.alertCode;

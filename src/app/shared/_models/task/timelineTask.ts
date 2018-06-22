@@ -45,7 +45,7 @@ export class TimelineTask {
         this._id = task.id;
         this._active = active;
         this._corrected = corrected;
-        this._apply = apply;
+        this._apply = !apply && this.task.review ? this.task.review.apply : apply;
         this._className = this.generateClassName();
         this._group = task.barcode;
         this._type = '';
@@ -72,10 +72,10 @@ export class TimelineTask {
                 arrStyles.push(TimelineTask.DISABLED_CLASS);
             }
         }
-        if (this.width <= TimelineTask.MIN_LABEL_WIDTH) {
+        if (this.width < TimelineTask.MIN_LABEL_WIDTH) {
             arrStyles.push(TimelineTask.HIDE_CLASS);
         }
-        if (this.width <= TimelineTask.MIN_ICON_WIDTH) {
+        if (this.width < TimelineTask.MIN_ICON_WIDTH) {
             arrStyles.push(TimelineTask.HIDDEN_ICON_CLASS);
         }
         return arrStyles.join(' ');
