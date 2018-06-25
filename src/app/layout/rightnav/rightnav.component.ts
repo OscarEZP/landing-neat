@@ -36,6 +36,5 @@ export class RightnavComponent {
     public isDisabled(): boolean {
 
         return this._layoutService.disableRightNav;
-        //return this._contingencyService.contingencyList.length === 0;
     }
 }
