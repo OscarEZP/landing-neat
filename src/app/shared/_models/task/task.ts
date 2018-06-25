@@ -294,4 +294,5 @@ export class Task {
     set hasHistorical(value: boolean) {
         this._hasHistorical = value;
     }
+
 }

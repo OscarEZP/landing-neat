@@ -1,6 +1,7 @@
 import {Task} from './task';
 import {TimeInstant} from '../timeInstant';
 import {DateUtil} from '../../util/dateUtil';
+import {Review} from './analysis/review';
 
 export class TimelineTask {
 
@@ -31,8 +32,9 @@ export class TimelineTask {
     private _group: string;
     private _subgroup: string;
     private _type: string;
-    private _historicalEnabled: boolean;
+    private _isHistoricalEnabled: boolean;
     private _width: number;
+    private _isHistoricalChildren: boolean;
 
     static getInstance() {
         return new TimelineTask(Task.getInstance(), false, false);
@@ -45,14 +47,18 @@ export class TimelineTask {
         this._id = task.id;
         this._active = active;
         this._corrected = corrected;
-        this._apply = !apply && this.task.review ? this.task.review.apply : apply;
+        this._apply = apply; // !apply && this.task.review ? this.task.review.apply : apply;
         this._className = this.generateClassName();
         this._group = task.barcode;
         this._type = '';
         this._content = this.getContent();
-        this._historicalEnabled = true;
+        this._isHistoricalEnabled = true;
     }
 
+    /**
+     * Generate a string with classes by few rules
+     * @returns {string}
+     */
     public generateClassName(): string {
         const arrStyles = [];
         if (this.active) {
@@ -68,7 +74,7 @@ export class TimelineTask {
             } else if (this.apply === false) {
                 arrStyles.push(TimelineTask.DONT_APPLY_CLASS);
             }
-            if (!this.historicalEnabled) {
+            if (!this.isHistoricalEnabled) {
                 arrStyles.push(TimelineTask.DISABLED_CLASS);
             }
         }
@@ -81,6 +87,10 @@ export class TimelineTask {
         return arrStyles.join(' ');
     }
 
+    /**
+     * Generate a html text for showing it inside a TimelineTask
+     * @returns {string}
+     */
     public getContent(): string {
         const type = this.task.taskType ? this.task.taskType : TimelineTask.TASK_DEFAULT_TITLE;
         let html = '<h1>' + type.toUpperCase().substr(0, 3) + '</h1>';
@@ -88,6 +98,10 @@ export class TimelineTask {
         return html;
     }
 
+    /**
+     * Convert this instance into a JSON object
+     * @returns {any}
+     */
     public getJson() {
         this.className = this.generateClassName();
         return JSON.parse(JSON.stringify(this).replace(/\b[_]/g, ''));
@@ -235,12 +249,12 @@ export class TimelineTask {
         return this.task.hasHistorical;
     }
 
-    get historicalEnabled(): boolean {
-        return this._historicalEnabled;
+    get isHistoricalEnabled(): boolean {
+        return this._isHistoricalEnabled;
     }
 
-    set historicalEnabled(value: boolean) {
-        this._historicalEnabled = value;
+    set isHistoricalEnabled(value: boolean) {
+        this._isHistoricalEnabled = value;
     }
 
     get width(): number {
@@ -249,5 +263,17 @@ export class TimelineTask {
 
     set width(value: number) {
         this._width = value;
+    }
+
+    get isHistoricalChildren(): boolean {
+        return this._isHistoricalChildren;
+    }
+
+    set isHistoricalChildren(value: boolean) {
+        this._isHistoricalChildren = value;
+    }
+
+    get reviews(): Review[] {
+        return this.task.review.reviews;
     }
 }
