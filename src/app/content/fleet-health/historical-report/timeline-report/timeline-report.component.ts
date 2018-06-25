@@ -86,7 +86,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.createTimeline(this.timelineData);
         this.firstLoad = false;
         if (this.activeTask.timelineStatus === TimelineReportComponent.REPORT_CLOSE) {
-            this.taskHistoricalSubscription = this.getTaskHistoricalSubscription(this.activeTask.barcode);
+            this.taskHistoricalSubscription = this.getTaskHistoricalSubscription(this.activeTask);
         }
     }
 
@@ -235,16 +235,16 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * @param {string} barcode
      * @returns {Subscription}
      */
-    private getTaskHistoricalSubscription(barcode: string): Subscription {
+    private getTaskHistoricalSubscription(task: Task): Subscription {
         this.loading = true;
         return this._apiRestService
-            .getSingle<Task[]>(TimelineReportComponent.TASK_HISTORICAL_ENDPOINT, barcode)
+            .getSingle<Task[]>(TimelineReportComponent.TASK_HISTORICAL_ENDPOINT, task.barcode)
             .subscribe(
                 (list) => {
                     this.taskList = list;
                     this.loading = false;
                     this.setRelatedTasks();
-                    this.onAnalyzedTaskSelected.emit(new TimelineTask(this.activeTask, true, true));
+                    this.onAnalyzedTaskSelected.emit(new TimelineTask(task, true, true));
                     this.onEditorLoad.emit(true);
                     this.firstLoad = true;
                     const reportRelated = this.timelineData
