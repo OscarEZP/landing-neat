@@ -34,11 +34,12 @@ export class OperationsComponent implements OnInit, OnDestroy {
                 'link': '/operations/pendings',
             }
         ];
-        this.showAddButton = true;
-        this.showRightNav = true;
+
     }
 
     ngOnInit() {
+        this.showAddButton = true;
+        this.showRightNav = true;
     }
 
     ngOnDestroy() {

@@ -16,6 +16,7 @@ import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
 import {ResolvePendingComponent} from '../resolve-pending/resolve-pending.component';
+import {LayoutService} from '../../../layout/_services/layout.service';
 @Component({
     selector: 'lsl-pending-list',
     templateUrl: './pending-list.component.html',
@@ -46,7 +47,8 @@ export class PendingListComponent implements OnInit, OnDestroy {
         private _contingencyService: ContingencyService,
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
-        private _dialogService: DialogService
+        private _dialogService: DialogService,
+        private _layoutService: LayoutService
     ) {
     }
 
@@ -135,6 +137,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
             }
             this.subscribeTimer();
             this.contingencyService.loading = false;
+            this._layoutService.disableRightNav = (this._contingencyService.contingencyList.length === 0);
         });
     }
 

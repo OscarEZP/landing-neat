@@ -18,5 +18,5 @@
     </div>
     <lsl-rightnav *ngIf="layoutService.showRightNav"></lsl-rightnav>
   </section>
-  <button *ngIf="layoutService.showAddButton" (click)="openCreationContingency()" mat-icon-button id="btn-layout-add-contingency">+</button>
+  <button *ngIf="layoutService.showAddButton" (click)="openCreationContingency()" mat-icon-button id="btn-layout-add-contingency" [disabled]="layoutService.disableAddButton">+</button>
 </mat-sidenav-container>

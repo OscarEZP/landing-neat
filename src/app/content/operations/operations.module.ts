@@ -21,6 +21,7 @@ import {SearchHistoricalComponent} from './search-historical/search-historical.c
 import {MeetingComponent} from './meeting/meeting.component';
 import {PendingListComponent} from './pending-list/pending-list.component';
 import {ResolvePendingComponent} from './resolve-pending/resolve-pending.component';
+import { AogListComponent } from './aog-list/aog-list.component';
 
 @NgModule({
     imports: [
@@ -39,7 +40,8 @@ import {ResolvePendingComponent} from './resolve-pending/resolve-pending.compone
         PitStopListComponent,
         MeetingComponent,
         PendingListComponent,
-        ResolvePendingComponent
+        ResolvePendingComponent,
+        AogListComponent
     ],
     exports: [],
     providers: [
