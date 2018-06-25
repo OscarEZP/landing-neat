@@ -33,12 +33,20 @@ export class HistoricalReportService {
             .filter(data => data.active === false && !data.isHistoricalChildren)
             .map(data => {
                 const children = this.historicalReportRelated && data.barcode === this.historicalReportRelated.barcode ?
-                    this.timelineData
-                        .filter(tl => tl.isHistoricalChildren)
-                        .map(tl => new Review(tl.barcode, tl.apply)) :
+                    this.childrenReviews :
                     [];
                 return new Review(data.barcode, data.apply, children);
             });
+    }
+
+    /**
+     * Get reviews from historical reviews
+     * @returns {Review[]}
+     */
+    get childrenReviews(): Review[] {
+        return this.timelineData
+            .filter(tl => tl.isHistoricalChildren)
+            .map(tl => new Review(tl.barcode, tl.apply));
     }
 
     /**
