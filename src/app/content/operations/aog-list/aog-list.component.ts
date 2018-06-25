@@ -17,16 +17,17 @@ export class AogListComponent implements OnInit {
   constructor(private _translate: TranslateService,
               private _layout: LayoutService) {
 
-    this._layout.disableRightNav = true;
-    this._layout.disableAddButton = true;
-    this._layout.showAddButton = true;
-    this._layout.showRightNav = true;
+
 
   }
 
   ngOnInit() {
 
     this._translate.setDefaultLang('en');
+    this._layout.disableRightNav = true;
+    this._layout.disableAddButton = true;
+    this._layout.showAddButton = true;
+    this._layout.showRightNav = true;
 
     this.error = false;
 
