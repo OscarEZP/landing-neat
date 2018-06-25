@@ -1,0 +1,42 @@
+@import '../../../../assets/style/base.scss';
+
+/deep/
+#aog-list {
+
+  .aog-status {
+    width: 44px;
+    height: 16px;
+    border-radius: 2px;
+   }
+  .aog-etr {
+    background-color: mat-color($mat-palette-custom, tl-aog-etr);
+    color: mat-color($primary, default-contrast);
+  }
+
+  .aog-ni{
+    background-color: mat-color($mat-palette-custom, tl-aog-ni);
+    color: mat-color($primary, default-contrast);
+  }
+
+  .aog-warn-icon {
+    width: 13.9px;
+    height: 12px;
+    color: #ff1743;
+    font-size: 16px;
+  }
+  .active-aogs {
+    width: 126px;
+    height: 28px;
+    font-family: Roboto, "Noto Sans", Tahoma;
+    font-size: 17px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.65;
+    letter-spacing: normal;
+    color: #000000;
+  }
+
+
+
+}

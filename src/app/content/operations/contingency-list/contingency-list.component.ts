@@ -19,6 +19,7 @@ import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {MeetingComponent} from '../meeting/meeting.component';
 import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
 import {PaginatorObjectService} from '../../_services/paginator-object.service';
+import {LayoutService} from '../../../layout/_services/layout.service';
 
 
 @Component({
@@ -52,12 +53,15 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 private _historicalSearchService: HistoricalSearchService,
                 private _contingencyService: ContingencyService,
                 private _translate: TranslateService,
-                private _apiRestService: ApiRestService
+                private _apiRestService: ApiRestService,
+                private _layoutService: LayoutService
     ) {
         this._translate.setDefaultLang('en');
         this.selectedContingency = Contingency.getInstance();
         this.selectedContingencyPivot = Contingency.getInstance();
         this._intervalToRefresh = 0;
+        this._layoutService.disableAddButton = false;
+
     }
 
     ngOnInit() {
@@ -69,6 +73,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.paginatorObject = PaginatorObjectService.getInstance();
         this.getPaginationSubscription();
         this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
+
     }
 
     /**
@@ -187,6 +192,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 }
                 this.subscribeTimer();
                 this.contingencyService.loading = false;
+                this._layoutService.disableRightNav = (this._contingencyService.contingencyList.length === 0);
             });
         }
     }

@@ -5,6 +5,8 @@ export class LayoutService {
 
     private _showAddButton: boolean;
     private _showRightNav: boolean;
+    private _disableAddButton: boolean;
+    private _disableRightNav: boolean;
 
     constructor() {
         this.showAddButton = false;
@@ -25,5 +27,22 @@ export class LayoutService {
 
     set showRightNav(value: boolean) {
         this._showRightNav = value;
+    }
+
+
+    get disableAddButton(): boolean {
+        return this._disableAddButton;
+    }
+
+    set disableAddButton(value: boolean) {
+        this._disableAddButton = value;
+    }
+
+    get disableRightNav(): boolean {
+        return this._disableRightNav;
+    }
+
+    set disableRightNav(value: boolean) {
+        this._disableRightNav = value;
     }
 }

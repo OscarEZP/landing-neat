@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ContingencyService } from '../../content/_services/contingency.service';
 import { DetailsService } from '../../details/_services/details.service';
+import {LayoutService} from '../_services/layout.service';
 
 @Component({
     selector: 'lsl-rightnav',
@@ -11,7 +12,7 @@ export class RightnavComponent {
 
     private _activeSection: string;
 
-    constructor(private _detailsService: DetailsService, private _contingencyService: ContingencyService) {
+    constructor(private _detailsService: DetailsService, private _contingencyService: ContingencyService, private _layoutService: LayoutService) {
         this.activeSection = null;
     }
 
@@ -33,6 +34,8 @@ export class RightnavComponent {
     }
 
     public isDisabled(): boolean {
-        return this._contingencyService.contingencyList.length === 0;
+
+        return this._layoutService.disableRightNav;
+        //return this._contingencyService.contingencyList.length === 0;
     }
 }

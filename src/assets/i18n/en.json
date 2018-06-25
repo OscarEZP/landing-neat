@@ -41,6 +41,7 @@
   "ESS":{
     "NO_CONTINGENCIES_FOUND": "There are no contingencies. Have a nice day!",
     "NO_DEFERRALS_FOUND": "There are no deferrals. Have a nice day!",
+    "NO_AOGS_FOUND": "There are no AOGs. Have a nice day!",
     "NO_HISTORICAL_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters.",
     "STATIONS_WITHOUT_CONF":"Stations without configuration. Ask your system administrator.",
     "AUTHORITIES_WITHOUT_CONF":"Authorities without configuration. Ask your system administrator."
@@ -123,6 +124,19 @@
     },
     "USER_MANAGEMENT": "User Management"
   },
+  "AOG": {
+    "ACTIVE_AOGS": "Active AOG's",
+    "ACTIVE_AOG": "Active AOG",
+    "LIST": {
+      "TAILFLEET": "Tail / Fleet",
+      "OPERATOR": "Operator",
+      "BARCODE": "Barcode",
+      "REASON": "Reason",
+      "NEXTSTEP": "Next Step",
+      "STATUS": "Status",
+      "DURATION": "Duration"
+    }
+  },
   "MENU" : {
     "ATEC": "ATEC",
     "CONTINGENCIES": "Contingencies",
@@ -135,7 +149,8 @@
     "OPERATIONS": "Operations",
     "PENDINGS": "Pendings",
     "RULES": "Rules",
-    "USERS": "Users"
+    "USERS": "Users",
+    "AOGS": "AOGs"
   },
   "OPERATIONS": {
     "ALERT": "Alert",
