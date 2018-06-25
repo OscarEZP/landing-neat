@@ -1,10 +1,12 @@
 export class Review {
     private _barcode: string;
     private _apply: boolean | null;
+    private _reviews: Review[];
 
-    constructor(barcode: string = '', apply: boolean | null = null) {
-        this.barcode = barcode;
-        this.apply = apply;
+    constructor(barcode: string = '', apply: boolean = null, reviews: Review[] = [])  {
+        this._barcode = barcode;
+        this._apply = apply;
+        this._reviews = reviews;
     }
 
     public static getInstance() {
@@ -19,7 +21,6 @@ export class Review {
         this._barcode = value;
     }
 
-
     get apply(): boolean | null {
         return this._apply;
     }
@@ -28,4 +29,11 @@ export class Review {
         this._apply = value;
     }
 
+    get reviews(): Review[] {
+        return this._reviews;
+    }
+
+    set reviews(value: Review[]) {
+        this._reviews = value;
+    }
 }

@@ -30,7 +30,13 @@ $timeline-label-height: 22px;
   }
 
   .vis-item.hide {
-    div.vis-item-content > * {
+    div.vis-item-content > h1 {
+      display: none;
+    }
+  }
+
+  .vis-item.hidden-icon {
+    div.vis-item-content > .material-icons {
       display: none;
     }
   }
@@ -77,6 +83,7 @@ $timeline-label-height: 22px;
   .vis-item.disabled.full {
     .material-icons {
       color: mat-color($primary, default-contrast);
+      opacity: .5;
     }
   }
 

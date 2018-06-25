@@ -89,19 +89,6 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         return this.isCorrected || this.editorContent !== '' || this.analyzedList.length > 0;
     }
 
-    /**
-     * Set the analyzed task from subcomponents
-     * @param {TimelineTask} task
-     */
-    public setAnalizedTask(task: TimelineTask) {
-        this.analyzedTask = task;
-    }
-
-
-    public setEditorLoad(value: boolean) {
-        this.editorLoad = value;
-    }
-
 
     /**
      * Save form data and reload the deferral list
@@ -242,5 +229,17 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
 
     set editorLoad(value: boolean) {
         this._editorLoad = value;
+    }
+
+    /**
+     * Set the analyzed task from subcomponents
+     * @param {TimelineTask} task
+     */
+    public setAnalizedTask(task: TimelineTask) {
+        this.analyzedTask = task;
+    }
+
+    public setEditorLoad(value: boolean) {
+        this.editorLoad = value;
     }
 }

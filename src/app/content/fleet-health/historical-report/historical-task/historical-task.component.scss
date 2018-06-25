@@ -124,4 +124,18 @@ section {
   hr.segment {
     border-style: dashed;
   }
+
+}
+
+/deep/
+#analysis-historical {
+  p {
+    strong {
+      font-weight: bold;
+    }
+    u {
+      font-style: oblique;
+    }
+  }
+
 }

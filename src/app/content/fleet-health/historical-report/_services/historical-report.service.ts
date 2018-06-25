@@ -2,7 +2,7 @@ import {Task} from '../../../../shared/_models/task/task';
 import { Injectable } from '@angular/core';
 import {QuillEditorComponent} from 'ngx-quill';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
-import {Review} from '../../../../shared/_models/task/analysis/review';
+import { Review } from '../../../../shared/_models/task/analysis/review';
 
 @Injectable()
 export class HistoricalReportService {
@@ -13,13 +13,15 @@ export class HistoricalReportService {
     private _quillEditor: QuillEditorComponent;
     private _isAtaCorrected: boolean;
     private _timelineData: TimelineTask[];
+    private _historicalReportRelated: TimelineTask;
 
     constructor() {
-        this.task = Task.getInstance();
-        this.newAta = '';
-        this.editorContent = '';
-        this.isAtaCorrected = false;
-        this.timelineData = [];
+        this._task = Task.getInstance();
+        this._newAta = '';
+        this._editorContent = '';
+        this._isAtaCorrected = false;
+        this._timelineData = [];
+        this._historicalReportRelated = null;
     }
 
     /**
@@ -28,10 +30,23 @@ export class HistoricalReportService {
      */
     get reviews(): Review[] {
         return this.timelineData
-            .filter(data => data.active === false)
+            .filter(data => data.active === false && !data.isHistoricalChildren)
             .map(data => {
-                return new Review(data.barcode, data.apply);
+                const children = this.historicalReportRelated && data.barcode === this.historicalReportRelated.barcode ?
+                    this.childrenReviews :
+                    [];
+                return new Review(data.barcode, data.apply, children);
             });
+    }
+
+    /**
+     * Get reviews from historical reviews
+     * @returns {Review[]}
+     */
+    get childrenReviews(): Review[] {
+        return this.timelineData
+            .filter(tl => tl.isHistoricalChildren)
+            .map(tl => new Review(tl.barcode, tl.apply));
     }
 
     /**
@@ -114,5 +129,11 @@ export class HistoricalReportService {
         this._timelineData = value;
     }
 
+    get historicalReportRelated(): TimelineTask {
+        return this._historicalReportRelated;
+    }
 
+    set historicalReportRelated(value: TimelineTask) {
+        this._historicalReportRelated = value;
+    }
 }

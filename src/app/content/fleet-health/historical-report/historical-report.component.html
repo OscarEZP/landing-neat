@@ -1,5 +1,5 @@
 <form #formDir="ngForm" (ngSubmit)="submitForm()">
-    <div mat-dialog-title fxLayoutGap="30px" class="title-dialog-container" fxLayout="column">
+    <div mat-dialog-title class="title-dialog-container" fxLayout="column">
         <div fxLayout="row" fxFlex>
             <h1 class="title-dialog" fxFlex>{{ 'FLEET_HEALTH.LIST.ATA' | translate }} {{task.ata}} / {{task.fleet}} / {{task.barcode}}</h1>
             <button (click)="openCancelDialog()" id="btn-contingency-form-close-btn" type="button" class="close-btn" mat-icon-button fxFlexOffset="1">
