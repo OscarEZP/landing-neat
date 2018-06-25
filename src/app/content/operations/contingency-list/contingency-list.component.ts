@@ -60,8 +60,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.selectedContingency = Contingency.getInstance();
         this.selectedContingencyPivot = Contingency.getInstance();
         this._intervalToRefresh = 0;
-        this._layoutService.disableAddButton = false;
-
     }
 
     ngOnInit() {
@@ -73,7 +71,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.paginatorObject = PaginatorObjectService.getInstance();
         this.getPaginationSubscription();
         this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
-
+        this._layoutService.disableAddButton = false;
     }
 
     /**
