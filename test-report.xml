@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite id="0" name="/var/www/html/src/app/shared/_services/datetime.service.spec.ts" errors="0" package="/var/www/html/src/app/shared/_services/datetime.service.spec.ts" hostname="localhost" tests="2" failures="0" time="6.768" timestamp="2018-06-25T18:45:34">
+    <properties>
+    </properties>
+    <testcase classname="DateTime Service Test" name="Test to know if the module exist" time="0">
+    </testcase>
+    <testcase classname="DateTime Service Test" name="getTime$: should return actual time from API Service" time="0">
+    </testcase>
+    <system-out/>
+    <system-err/>
+  </testsuite>
+  <testsuite id="1" name="/var/www/html/src/app/content/operations/contingency-list/contingency-list.spec.ts" errors="0" package="/var/www/html/src/app/content/operations/contingency-list/contingency-list.spec.ts" hostname="localhost" tests="2" failures="2" time="21.967" timestamp="2018-06-25T18:45:34">
+    <properties>
+    </properties>
+    <testcase classname="Contingency List Test" name="Test to know if the module exist" time="0">
+      <failure message="Error: StaticInjectorError(DynamicTestModule)[ContingencyListComponent -&gt; LayoutService]: 
+  StaticInjectorError(Platform: core)[ContingencyListComponent -&gt; LayoutService]: 
+    NullInjectorError: No provider for LayoutService!
+    at _NullInjector.Object.&lt;anonymous&gt;._NullInjector.get (/var/www/html/node_modules/packages/core/esm5/src/di/injector.js:39:6)
+    at resolveToken (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:1339:24)
+    at tryResolveToken (/var/www/html/node_modules/packages/core/esm5/src/di/injector.js:350:14)
+    at StaticInjector.Object.&lt;anonymous&gt;.StaticInjector.get (/var/www/html/node_modules/packages/core/esm5/src/di/injector.js:185:17)
+    at resolveToken (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:1339:24)
+    at tryResolveToken (/var/www/html/node_modules/packages/core/esm5/src/di/injector.js:350:14)
+    at StaticInjector.Object.&lt;anonymous&gt;.StaticInjector.get (/var/www/html/node_modules/packages/core/esm5/src/di/injector.js:185:17)
+    at resolveNgModuleDep (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:10934:25)
+    at NgModuleRef_.Object.&lt;anonymous&gt;.NgModuleRef_.get (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:12167:16)
+    at resolveDep (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:12657:45)
+    at createClass (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:12527:32)
+    at createDirectiveInstance (/var/www/html/node_modules/packages/core/esm5/src/view/provider.js:169:37)
+    at createViewNodes (/var/www/html/node_modules/packages/core/esm5/src/view/view.js:331:49)
+    at createRootView (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:13711:5)
+    at callWithDebugContext (/var/www/html/node_modules/packages/core/esm5/src/view/services.js:864:6)
+    at Object.debugCreateRootView [as createRootView] (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:14419:12)
+    at ComponentFactory_.Object.&lt;anonymous&gt;.ComponentFactory_.create (/var/www/html/node_modules/packages/core/esm5/src/view/refs.js:121:44)
+    at initComponent (/var/www/html/node_modules/packages/core/esm5/testing/src/test_bed.js:569:24)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:392:26)
+    at ProxyZoneSpec.Object.&lt;anonymous&gt;.ProxyZoneSpec.onInvoke (/var/www/html/node_modules/zone.js/dist/proxy.js:79:39)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:391:32)
+    at Object.onInvoke (/var/www/html/node_modules/packages/core/esm5/src/zone/ng_zone.js:594:10)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:391:32)
+    at Zone.Object.&lt;anonymous&gt;.Zone.run (/var/www/html/node_modules/zone.js/dist/zone.js:142:43)
+    at NgZone.Object.&lt;anonymous&gt;.NgZone.run (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:4615:69)
+    at TestBed.Object.&lt;anonymous&gt;.TestBed.createComponent (/var/www/html/node_modules/packages/core/esm5/testing/src/test_bed.js:572:6)
+    at Function.Object.&lt;anonymous&gt;.TestBed.createComponent (/var/www/html/node_modules/@angular/core/bundles/core-testing.umd.js:871:29)
+    at /var/www/html/src/app/content/operations/contingency-list/contingency-list.spec.ts:130:37
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:392:26)
+    at ProxyZoneSpec.Object.&lt;anonymous&gt;.ProxyZoneSpec.onInvoke (/var/www/html/node_modules/zone.js/dist/proxy.js:79:39)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:391:32)
+    at Zone.Object.&lt;anonymous&gt;.Zone.run (/var/www/html/node_modules/zone.js/dist/zone.js:142:43)
+    at Object.testBody.length (/var/www/html/node_modules/jest-zone-patch/index.js:50:27)
+    at Object.asyncFn (/var/www/html/node_modules/jest-jasmine2/build/jasmine_async.js:51:37)
+    at resolve (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:52:12)
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:39:19)
+    at promise.then (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:73:82)
+    at &lt;anonymous&gt;
+    at process._tickCallback (internal/process/next_tick.js:182:7)" type="AssertionError">
+      </failure>
+      <failure message="Error: [2mexpect([22m[31mreceived[39m[2m).toBeDefined([22m[2m)[22m
+
+Expected value to be defined, instead received
+  [31mundefined[39m
+    at /var/www/html/src/app/content/operations/contingency-list/contingency-list.spec.ts:142:42
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:392:26)
+    at ProxyZoneSpec.Object.&lt;anonymous&gt;.ProxyZoneSpec.onInvoke (/var/www/html/node_modules/zone.js/dist/proxy.js:79:39)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:391:32)
+    at Zone.Object.&lt;anonymous&gt;.Zone.run (/var/www/html/node_modules/zone.js/dist/zone.js:142:43)
+    at Object.testBody.length (/var/www/html/node_modules/jest-zone-patch/index.js:50:27)
+    at Object.asyncFn (/var/www/html/node_modules/jest-jasmine2/build/jasmine_async.js:82:37)
+    at resolve (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:52:12)
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:39:19)
+    at promise.then (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:73:82)
+    at &lt;anonymous&gt;
+    at process._tickCallback (internal/process/next_tick.js:182:7)" type="AssertionError">
+      </failure>
+      <failure message="TypeError: Cannot read property &apos;ngOnDestroy&apos; of undefined
+    at /var/www/html/src/app/content/operations/contingency-list/contingency-list.spec.ts:134:34
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:392:26)
+    at ProxyZoneSpec.Object.&lt;anonymous&gt;.ProxyZoneSpec.onInvoke (/var/www/html/node_modules/zone.js/dist/proxy.js:79:39)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:391:32)
+    at Zone.Object.&lt;anonymous&gt;.Zone.run (/var/www/html/node_modules/zone.js/dist/zone.js:142:43)
+    at Object.testBody.length (/var/www/html/node_modules/jest-zone-patch/index.js:50:27)
+    at Object.asyncFn (/var/www/html/node_modules/jest-jasmine2/build/jasmine_async.js:51:37)
+    at resolve (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:52:12)
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:39:19)
+    at promise.then (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:73:82)
+    at &lt;anonymous&gt;
+    at process._tickCallback (internal/process/next_tick.js:182:7)" type="AssertionError">
+      </failure>
+    </testcase>
+    <testcase classname="Contingency List Test" name="$checkDataStatus method expect to be false at beginning" time="0">
+      <failure message="Error: StaticInjectorError(DynamicTestModule)[ContingencyListComponent -&gt; LayoutService]: 
+  StaticInjectorError(Platform: core)[ContingencyListComponent -&gt; LayoutService]: 
+    NullInjectorError: No provider for LayoutService!
+    at _NullInjector.Object.&lt;anonymous&gt;._NullInjector.get (/var/www/html/node_modules/packages/core/esm5/src/di/injector.js:39:6)
+    at resolveToken (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:1339:24)
+    at tryResolveToken (/var/www/html/node_modules/packages/core/esm5/src/di/injector.js:350:14)
+    at StaticInjector.Object.&lt;anonymous&gt;.StaticInjector.get (/var/www/html/node_modules/packages/core/esm5/src/di/injector.js:185:17)
+    at resolveToken (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:1339:24)
+    at tryResolveToken (/var/www/html/node_modules/packages/core/esm5/src/di/injector.js:350:14)
+    at StaticInjector.Object.&lt;anonymous&gt;.StaticInjector.get (/var/www/html/node_modules/packages/core/esm5/src/di/injector.js:185:17)
+    at resolveNgModuleDep (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:10934:25)
+    at NgModuleRef_.Object.&lt;anonymous&gt;.NgModuleRef_.get (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:12167:16)
+    at resolveDep (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:12657:45)
+    at createClass (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:12527:32)
+    at createDirectiveInstance (/var/www/html/node_modules/packages/core/esm5/src/view/provider.js:169:37)
+    at createViewNodes (/var/www/html/node_modules/packages/core/esm5/src/view/view.js:331:49)
+    at createRootView (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:13711:5)
+    at callWithDebugContext (/var/www/html/node_modules/packages/core/esm5/src/view/services.js:864:6)
+    at Object.debugCreateRootView [as createRootView] (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:14419:12)
+    at ComponentFactory_.Object.&lt;anonymous&gt;.ComponentFactory_.create (/var/www/html/node_modules/packages/core/esm5/src/view/refs.js:121:44)
+    at initComponent (/var/www/html/node_modules/packages/core/esm5/testing/src/test_bed.js:569:24)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:392:26)
+    at ProxyZoneSpec.Object.&lt;anonymous&gt;.ProxyZoneSpec.onInvoke (/var/www/html/node_modules/zone.js/dist/proxy.js:79:39)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:391:32)
+    at Object.onInvoke (/var/www/html/node_modules/packages/core/esm5/src/zone/ng_zone.js:594:10)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:391:32)
+    at Zone.Object.&lt;anonymous&gt;.Zone.run (/var/www/html/node_modules/zone.js/dist/zone.js:142:43)
+    at NgZone.Object.&lt;anonymous&gt;.NgZone.run (/var/www/html/node_modules/@angular/core/bundles/core.umd.js:4615:69)
+    at TestBed.Object.&lt;anonymous&gt;.TestBed.createComponent (/var/www/html/node_modules/packages/core/esm5/testing/src/test_bed.js:572:6)
+    at Function.Object.&lt;anonymous&gt;.TestBed.createComponent (/var/www/html/node_modules/@angular/core/bundles/core-testing.umd.js:871:29)
+    at /var/www/html/src/app/content/operations/contingency-list/contingency-list.spec.ts:130:37
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:392:26)
+    at ProxyZoneSpec.Object.&lt;anonymous&gt;.ProxyZoneSpec.onInvoke (/var/www/html/node_modules/zone.js/dist/proxy.js:79:39)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:391:32)
+    at Zone.Object.&lt;anonymous&gt;.Zone.run (/var/www/html/node_modules/zone.js/dist/zone.js:142:43)
+    at Object.testBody.length (/var/www/html/node_modules/jest-zone-patch/index.js:50:27)
+    at Object.asyncFn (/var/www/html/node_modules/jest-jasmine2/build/jasmine_async.js:51:37)
+    at resolve (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:52:12)
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:39:19)
+    at promise.then (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:73:82)
+    at &lt;anonymous&gt;
+    at process._tickCallback (internal/process/next_tick.js:182:7)" type="AssertionError">
+      </failure>
+      <failure message="TypeError: Cannot read property &apos;checkDataStatus&apos; of undefined
+    at /var/www/html/src/app/content/operations/contingency-list/contingency-list.spec.ts:145:41
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:392:26)
+    at ProxyZoneSpec.Object.&lt;anonymous&gt;.ProxyZoneSpec.onInvoke (/var/www/html/node_modules/zone.js/dist/proxy.js:79:39)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:391:32)
+    at Zone.Object.&lt;anonymous&gt;.Zone.run (/var/www/html/node_modules/zone.js/dist/zone.js:142:43)
+    at Object.testBody.length (/var/www/html/node_modules/jest-zone-patch/index.js:50:27)
+    at Object.asyncFn (/var/www/html/node_modules/jest-jasmine2/build/jasmine_async.js:82:37)
+    at resolve (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:52:12)
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:39:19)
+    at promise.then (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:73:82)
+    at &lt;anonymous&gt;
+    at process._tickCallback (internal/process/next_tick.js:182:7)" type="AssertionError">
+      </failure>
+      <failure message="TypeError: Cannot read property &apos;ngOnDestroy&apos; of undefined
+    at /var/www/html/src/app/content/operations/contingency-list/contingency-list.spec.ts:134:34
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:392:26)
+    at ProxyZoneSpec.Object.&lt;anonymous&gt;.ProxyZoneSpec.onInvoke (/var/www/html/node_modules/zone.js/dist/proxy.js:79:39)
+    at ZoneDelegate.Object.&lt;anonymous&gt;.ZoneDelegate.invoke (/var/www/html/node_modules/zone.js/dist/zone.js:391:32)
+    at Zone.Object.&lt;anonymous&gt;.Zone.run (/var/www/html/node_modules/zone.js/dist/zone.js:142:43)
+    at Object.testBody.length (/var/www/html/node_modules/jest-zone-patch/index.js:50:27)
+    at Object.asyncFn (/var/www/html/node_modules/jest-jasmine2/build/jasmine_async.js:51:37)
+    at resolve (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:52:12)
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:39:19)
+    at promise.then (/var/www/html/node_modules/jest-jasmine2/build/queue_runner.js:73:82)
+    at &lt;anonymous&gt;
+    at process._tickCallback (internal/process/next_tick.js:182:7)" type="AssertionError">
+      </failure>
+    </testcase>
+    <system-out/>
+    <system-err/>
+  </testsuite>
+</testsuites>
