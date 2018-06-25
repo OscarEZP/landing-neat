@@ -11,8 +11,8 @@ export class RoutingService {
         this.arrMenu = [
             new Menu('MENU.OPERATIONS', 'build', '/operations/', false, [
                 new Menu('MENU.CONTINGENCIES', '', '/operations/contingencies', false),
-                new Menu('MENU.AOGS', '', '/operations/aog', false),
-                new Menu('MENU.PENDINGS', '', '/operations/pendings', false)
+                new Menu('MENU.PENDINGS', '', '/operations/pendings', false),
+                new Menu('MENU.AOG', '', '/operations/aog', false)
             ]),
             new Menu('MENU.FLEET_HEALTH', 'airplanemode_active', '/fleet-health/', false, [
                 new Menu('MENU.DEFERRALS', '', '/fleet-health/deferrals', false)
