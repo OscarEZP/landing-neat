@@ -11,3 +11,4 @@ docker/dev/.bash_history
 coverage
 documentation
 package-lock.json
+test-report.xml
