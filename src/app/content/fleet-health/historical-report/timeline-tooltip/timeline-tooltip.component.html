@@ -7,7 +7,7 @@
     {{(task.faultName && task.faultName.length > 65) ? (task.faultName | slice:0:65) + '...' : task.faultName }}
 </p>
 <footer>
-    <mat-radio-group [disabled]="timelineTask.isHistoricalChildren && timelineTask.apply" (change)="checkStatus()" [(ngModel)]="apply">
+    <mat-radio-group [disabled]="timelineTask.isHistoricalChildren && task.review.apply" (change)="checkStatus()" [(ngModel)]="apply">
         <mat-radio-button value='true' ngDefaultControl>Apply</mat-radio-button>
         <mat-radio-button value='false' ngDefaultControl>Don't Apply</mat-radio-button>
     </mat-radio-group>
