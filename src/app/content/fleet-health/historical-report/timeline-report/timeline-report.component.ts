@@ -251,7 +251,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                         .find(tl => tl.reviews.length > 0);
                     this.historicalReportRelated = reportRelated ? reportRelated : this.historicalReportRelated;
                     this.timelineData
-                        .filter(tl => tl.hasHistorical && tl.barcode !== this.historicalReportRelated.barcode)
+                        .filter(tl => tl.hasHistorical && this.historicalReportRelated && tl.barcode !== this.historicalReportRelated.barcode)
                         .map(tl => {
                             tl.isHistoricalEnabled = false;
                             return tl;
