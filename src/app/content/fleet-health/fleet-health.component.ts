@@ -23,6 +23,7 @@ export class FleetHealthComponent implements OnInit {
     }
 
     ngOnInit() {
+
     }
 
     set moduleTitle(value: string) {

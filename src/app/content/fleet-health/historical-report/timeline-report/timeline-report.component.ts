@@ -26,6 +26,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private static DAYS_FROM = 30;
     private static ZOOM_MIN_DAYS = 15;
     private static ZOOM_MAX_MONTH = 3;
+    private static ACTIVE_TASK_DAYS = 4;
 
     private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
     private static TASK_HISTORICAL_ENDPOINT = 'taskHistorical';
@@ -105,13 +106,16 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     /**
      * Get options for Timeline creation by a Moment object
-     * @param {moment.Moment} maxTime
      * @returns {TimelineOptions}
      */
-    private getTimelineOptions(maxTime: moment.Moment): TimelineOptions {
+    private getTimelineOptions(): TimelineOptions {
+        const maxDate = moment(this.activeTask.createEpochTime)
+            .utc()
+            .add(TimelineReportComponent.ACTIVE_TASK_DAYS, 'days')
+            .format(TimelineReportComponent.TIMELINE_DATE_FORMAT);
         return new TimelineOptions(
             this.minDate.format(TimelineReportComponent.TIMELINE_DATE_FORMAT),
-            this.minDate.add(TimelineReportComponent.DAYS_FROM + 2, 'days').format(TimelineReportComponent.TIMELINE_DATE_FORMAT),
+            maxDate,
             TimelineReportComponent.ZOOM_MIN_DAYS,
             TimelineReportComponent.ZOOM_MAX_MONTH * 30,
             true
@@ -125,13 +129,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private createTimeline(data: TimelineTask[]) {
         data = data.map(task => task.getJson());
-        const dataMinDate = this.taskList
-            .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1).find(tl => !!tl);
-        this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime)
-            .utc()
-            .subtract(TimelineReportComponent.DAYS_FROM, 'days');
+        const dataMinDate = this.timelineData
+            .sort((a, b) => a.createDate.epochTime > b.createDate.epochTime ? 1 : -1).find(tl => !!tl);
+        this.minDate = moment(dataMinDate ? dataMinDate.createDate.epochTime : this.activeTask.createEpochTime).utc();
+
         if (this.timeline) {
             this.tooltip = false;
+            this.timeline.setOptions(this.getTimelineOptions().getJson());
             this.dataSet.update(data);
         } else {
             this.dataSet = new DataSet(data);
@@ -146,8 +150,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private getNewTimeline(items: DataSet<object>): Timeline {
 
-        const maxTime = moment(this.activeTask.dueDateEpochTime).utc();
-        const options = this.getTimelineOptions(maxTime).getJson();
+        const options = this.getTimelineOptions().getJson();
         const timeline = new Timeline(this.element.nativeElement, items, options);
 
         timeline.on('click', (event: object) => {
@@ -257,7 +260,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                             return tl;
                         });
                     if (this.historicalReportRelated) {
-                        this.getHistoricalReportTasksSubs();
+                        this.tasksFromReportSubs = this.getHistoricalReportTasksSubs();
                     } else {
                         this.createTimeline(this.timelineData);
                     }
@@ -279,6 +282,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                     ft.review = review;
                     return ft;
                 }));
+                this.createTimeline(this.timelineData);
             });
     }
 
@@ -390,7 +394,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             .filter(tl => !this.tasksReplacedByReport.find(trr => trr.barcode === tl.barcode))
             .concat(this.tasksFromReport);
         this.addTimelineTask(this.tasksFromReport);
-        this.dataSet.update(this.timelineData.map(tl => tl.getJson()));
+        this.createTimeline(this.timelineData);
     }
 
     /**
@@ -402,7 +406,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             .filter(tl => !this.tasksFromReport.find(tfr => tl.barcode === tfr.barcode))
             .concat(this.tasksReplacedByReport);
         this.addTimelineTask(this.tasksReplacedByReport);
-        this.dataSet.update(this.timelineData.map(tl => tl.getJson()));
+        this.createTimeline(this.timelineData);
     }
 
     /**
