@@ -17,6 +17,7 @@
     <div id="deferral-list" class="reg-list">
         <header fxLayout="row" class="" fxLayoutGap="10px">
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
+            <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPERATOR' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
@@ -31,6 +32,8 @@
             <div fxLayout="row" class="contingency-item" fxLayoutGap="10px">
                 <!--TAIL/FLEET-->
                 <div fxFlex="7" fxLayout="column" fxLayoutAlign="center"><span>{{ task.tail }}</span><span>{{ task.fleet }}</span></div>
+                <!-- OPERATOR -->
+                <div fxFlex="5" fxLayoutAlign="start center">{{ task.authority }}</div>
                 <!-- BARCODE -->
                 <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">{{ task.barcode | uppercase }}</div>
                 <!-- OPENING DATE -->
