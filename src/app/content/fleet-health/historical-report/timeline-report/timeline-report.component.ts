@@ -351,11 +351,15 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         itemUpdated.className = itemUpdated.generateClassName();
         this.timelineData.map(v => v.barcode === itemUpdated.barcode ? itemUpdated : v);
         this.dataSet.update([itemUpdated.getJson()]);
-        this.tooltip = false;
-        this.historicalReportRelated = this.validateHistoricalReport(itemUpdated);
-        if (this.historicalReportRelated === itemUpdated || !this.historicalReportRelated) {
+
+        if (itemUpdated.hasHistorical && (!this.historicalReportRelated || this.historicalReportRelated === itemUpdated)) {
+            this.historicalReportRelated = itemUpdated.apply ? itemUpdated : null;
+            this.updatedByUser = true;
+            this.dataSet.update(this.getReportsNotSelected(itemUpdated, !itemUpdated.apply));
             this.handleTasksFromReport(itemUpdated);
         }
+
+        this.tooltip = false;
     }
 
     /**
@@ -417,28 +421,28 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             this.tasksFromReportSubs = this.tasksFromReport$(itemUpdated.barcode)
                 .subscribe(tasks => this.handleAddedTasks(tasks));
         } else {
-           this.handleDeletedTasks();
+            this.handleDeletedTasks();
         }
-        this.tooltip = false;
     }
 
-    /**
+   /* /!**
      * Validation for get just one historical report
      * @param {TimelineTask} tlTask
      * @returns {TimelineTask}
-     */
-    private validateHistoricalReport(tlTask: TimelineTask): TimelineTask {
+     *!/
+    private validateHistoricalReport(tlTask: TimelineTask): boolean {
         if (tlTask.hasHistorical && tlTask.apply === true && !this.historicalReportRelated) {
-            this.updatedByUser = true;
-            this.dataSet.update(this.getReportsNotSelected(tlTask, false));
-            return tlTask;
+            // this.updatedByUser = true;
+            // this.dataSet.update(this.getReportsNotSelected(tlTask, false));
+            return true;
         } else if (tlTask.hasHistorical && tlTask.apply === false && tlTask === this.historicalReportRelated) {
-            this.updatedByUser = true;
-            this.dataSet.update(this.getReportsNotSelected(tlTask, true));
-            return null;
+            // this.updatedByUser = true;
+            // this.dataSet.update(this.getReportsNotSelected(tlTask, true));
+            return false;
         }
-        return this.historicalReportRelated;
-    }
+        return false;
+        // return this.historicalReportRelated;
+    }*/
 
     /**
      * Get unselected reports
