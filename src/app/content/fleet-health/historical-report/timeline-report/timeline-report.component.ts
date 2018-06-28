@@ -268,6 +268,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             );
     }
 
+    private getReviewByBarcode(barcode: string): Review {
+        return this.historicalReportRelated.reviews.find(r => r.barcode === barcode);
+    }
+
     /**
      * Subscription for handle historical reports
      * @returns {Subscription}
@@ -275,12 +279,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private getHistoricalReportTasksSubs(): Subscription {
         return this.tasksFromReport$(this.historicalReportRelated.barcode)
             .subscribe(tasks => {
-                const filteredTasks = tasks.filter(t => !!this.historicalReportRelated.reviews.find(r => r.barcode === t.barcode));
-                this.handleAddedTasks(filteredTasks.map(ft => {
-                    const review = this.historicalReportRelated.reviews.find(r => r.barcode === ft.barcode);
-                    ft.review = review;
-                    return ft;
-                }));
+                const filteredTasks = tasks
+                    .filter(t => !!this.getReviewByBarcode(t.barcode))
+                    .map(t => new TimelineTask(t, false, true, this.getReviewByBarcode(t.barcode).apply))
+                ;
+                this.handleAddedTasks(filteredTasks);
                 this.createTimeline(this.timelineData);
             });
     }
@@ -384,11 +387,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * Set new TimelineTaks from historical reports
      * @param {Task[]} tasks
      */
-    private handleAddedTasks(tasks: Task[]) {
-        this.tasksFromReport = tasks.map(t => {
-            const tlt = new TimelineTask(t, false, true, t.review.apply);
-            tlt.isHistoricalChildren = true;
-            return tlt;
+    private handleAddedTasks(timelineTasks: TimelineTask[]) {
+        this.tasksFromReport = timelineTasks.map(tl => {
+            tl.isHistoricalChildren = true;
+            return tl;
         });
         this.tasksReplacedByReport = this.timelineData
             .filter(td => this.tasksFromReport.find(tfr => tfr.barcode === td.barcode));
@@ -419,7 +421,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private handleTasksFromReport(itemUpdated: TimelineTask) {
         if (itemUpdated.apply) {
             this.tasksFromReportSubs = this.tasksFromReport$(itemUpdated.barcode)
-                .subscribe(tasks => this.handleAddedTasks(tasks));
+                .subscribe(tasks => this.handleAddedTasks(tasks.map(t => new TimelineTask(t, false, true, t.review.apply))));
         } else {
             this.handleDeletedTasks();
         }
