@@ -425,25 +425,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         }
     }
 
-   /* /!**
-     * Validation for get just one historical report
-     * @param {TimelineTask} tlTask
-     * @returns {TimelineTask}
-     *!/
-    private validateHistoricalReport(tlTask: TimelineTask): boolean {
-        if (tlTask.hasHistorical && tlTask.apply === true && !this.historicalReportRelated) {
-            // this.updatedByUser = true;
-            // this.dataSet.update(this.getReportsNotSelected(tlTask, false));
-            return true;
-        } else if (tlTask.hasHistorical && tlTask.apply === false && tlTask === this.historicalReportRelated) {
-            // this.updatedByUser = true;
-            // this.dataSet.update(this.getReportsNotSelected(tlTask, true));
-            return false;
-        }
-        return false;
-        // return this.historicalReportRelated;
-    }*/
-
     /**
      * Get unselected reports
      * @param {TimelineTask} tlTask
