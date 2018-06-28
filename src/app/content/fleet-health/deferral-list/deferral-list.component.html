@@ -3,6 +3,7 @@
         <header fxLayout="row">
             <span fxLayoutGap="10px" fxFlex="95">
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
+                <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPERATOR' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
@@ -26,6 +27,10 @@
                     <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
                         <span>{{ task.tail }}</span>
                         <span>{{ task.fleet }}</span>
+                    </div>
+                    <!-- OPERATOR -->
+                    <div fxFlex="5" fxLayoutAlign="start center">
+                    {{ task.authority }}
                     </div>
 
                     <!-- BARCODE -->

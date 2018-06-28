@@ -59,7 +59,8 @@
       "DUE_DATE": "Due Date",
       "OPENING_DATE": "Opening Date",
       "TAIL_FLEET": "Tail/Fleet",
-      "TIMELINE_STATUS": "Timeline Status"
+      "TIMELINE_STATUS": "Timeline Status",
+      "OPERATOR": "Operator"
     },
     "REPORT": {
       "COPY_TEXT": "Copy text",
