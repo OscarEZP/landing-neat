@@ -9,8 +9,10 @@ export class LayoutService {
     private _disableRightNav: boolean;
 
     constructor() {
-        this.showAddButton = false;
-        this.showRightNav = true;
+        this._showAddButton = false;
+        this._showRightNav = true;
+        this._disableAddButton = false;
+        this._disableRightNav = false;
     }
 
     get showAddButton(): boolean {

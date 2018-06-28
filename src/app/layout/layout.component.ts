@@ -22,13 +22,6 @@ import {LayoutService} from './_services/layout.service';
 export class LayoutComponent implements OnInit, OnDestroy {
     @ViewChild('sidenav') public sidenav: MatSidenav;
     @ViewChild('details') public details: MatSidenav;
-    private _messageDataSubscription: Subscription;
-    private _errorDataSubscription: Subscription;
-    private _handleErrorSubscription: Subscription;
-
-    public loading: boolean;
-    public mode: string;
-    public value: number;
 
     private static SESSION_ERROR = {code: 472, message: 'ERRORS.SESSION'};
     private static BAD_REQUEST_ERROR = {code: 400, message: 'ERRORS.BAD_REQUEST'};
@@ -36,8 +29,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private static NOT_FOUND_ERROR = {code: 404, message: 'ERRORS.NOT_FOUND'};
     private static TIMEOUT_ERROR = {code: 408, message: 'ERRORS.TIMEOUT'};
     private static CUSTOM_ERROR = {code: 500, message: ''};
-
     private static DEFAULT_ERROR = 'ERRORS.DEFAULT';
+
+    private _messageDataSubscription: Subscription;
+    private _errorDataSubscription: Subscription;
+    private _handleErrorSubscription: Subscription;
+
+    private _loading: boolean;
+    private _mode: string;
+    private _value: number;
 
     constructor(
         private _sidenavService: SidenavService,
@@ -51,9 +51,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
         private _router: Router,
         private _layoutService: LayoutService
     ) {
-        this.loading = true;
-        this.mode = 'determinate';
-        this.value = 100;
+        this._loading = true;
+        this._mode = 'determinate';
+        this._value = 100;
     }
 
     public ngOnInit() {
@@ -157,5 +157,29 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     get layoutService(): LayoutService {
         return this._layoutService;
+    }
+
+    get loading(): boolean {
+        return this._loading;
+    }
+
+    set loading(value: boolean) {
+        this._loading = value;
+    }
+
+    get mode(): string {
+        return this._mode;
+    }
+
+    set mode(value: string) {
+        this._mode = value;
+    }
+
+    get value(): number {
+        return this._value;
+    }
+
+    set value(value: number) {
+        this._value = value;
     }
 }

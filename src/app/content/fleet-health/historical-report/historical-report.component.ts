@@ -33,7 +33,6 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     private static REQUIRED_REPORT = 'FLEET_HEALTH.REPORT.ERROR.REQUIRED_REPORT';
     private static DEFAULT_ERROR = 'ERRORS.DEFAULT';
 
-    private _task: Task;
     private _analyzedTask: TimelineTask;
     private _validations: Validation;
     private _editorLoad: boolean;
@@ -53,7 +52,6 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.analyzedTask = TimelineTask.getInstance();
-        this.task = this._historicalReportService.task;
         this.editorLoad = false;
     }
 
@@ -86,7 +84,11 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
      * @returns {boolean}
      */
     private validateFilledItems(): boolean {
-        return this.isCorrected || this.editorContent !== '' || this.analyzedList.length > 0;
+        if (this.task.timelineStatus === Task.OPEN_STATUS) {
+            return this.isCorrected || this.editorContent !== '' || this.analyzedList.length > 0;
+        } else {
+            return false;
+        }
     }
 
 
@@ -118,7 +120,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     private getSignature(): Analysis {
         const analysis = Analysis.getInstance();
         analysis.barcode = this.task.barcode;
-        analysis.ata = this.task.timelineStatus === 'CLOSE' ? this.task.ata : this.newAta;
+        analysis.ata = this.task.timelineStatus === Task.CLOSE_STATUS ? this.task.ata : this.newAta;
         analysis.reviews = this.reviews;
         analysis.username = this.user;
         analysis.alertCode = this.alertCode;
@@ -138,7 +140,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
             this.getTranslateString(HistoricalReportComponent.REQUIRED_REVIEWS);
             return false;
         }
-        if (!this.isCorrected && this.task.timelineStatus === 'OPEN' ) {
+        if (!this.isCorrected && this.task.timelineStatus === Task.OPEN_STATUS) {
             this.getTranslateString(HistoricalReportComponent.REQUIRED_ATA);
             return false;
         }
@@ -154,18 +156,18 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
      * @param {string} toTranslate
      * @returns {Subscription}
      */
-    private getTranslateString(toTranslate: string): Subscription {
-        return this._translate.get(toTranslate).subscribe((res: string) => {
+    private getTranslateString(toTranslate: string): Promise<void> {
+        return this._translate.get(toTranslate).toPromise().then((res: string) => {
             this._messageService.openSnackBar(res, 2500);
         });
     }
 
     get task(): Task {
-        return this._task;
+        return this._historicalReportService.task;
     }
 
     set task(value: Task) {
-        this._task = value;
+        this._historicalReportService.task = value;
     }
 
     set analyzedTask(value: TimelineTask) {
@@ -220,7 +222,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         return this.task.alertCode;
     }
     get isDisplayHistoricalReport(): boolean {
-        return (this.isCorrected || this.task.timelineStatus === 'CLOSE' );
+        return (this.isCorrected || this.task.timelineStatus === Task.CLOSE_STATUS);
     }
 
     get editorLoad(): boolean {

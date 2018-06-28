@@ -36,7 +36,6 @@ export class HistoricalTaskComponent implements OnInit {
     private _tableData: PartInterface[];
     private _pageSize: number;
     private _dateFormat: string;
-    private _hourFormat: string;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -118,8 +117,8 @@ export class HistoricalTaskComponent implements OnInit {
     private addHeader() {
         if (this.editorContent.indexOf(this.header) === -1) {
             const init = this.editorContent.length > 0 ? this.quillEditor.getText().length : 0;
-            this.quillEditor.insertText(init, this.taskType.toUpperCase(), 'bold', true);
-            this.quillEditor.insertText(this.quillEditor.getText().length, this.header, 'bold', true);
+            const insertText = this.editorContent.length > 0 ? '\r' + this.header : this.header;
+            this.quillEditor.insertText(init, insertText, 'bold', true);
         }
     }
 
@@ -138,7 +137,7 @@ export class HistoricalTaskComponent implements OnInit {
     }
 
     get header(): string {
-        return this.analyzedTask.task.ata + ' / ' + this.analyzedTask.task.barcode;
+        return this.taskType.toUpperCase() + ' | ' + this.analyzedTask.task.ata + ' / ' + this.analyzedTask.task.barcode;
     }
 
     get historicalTask(): HistoricalTask {
