@@ -3,6 +3,9 @@ import {EvaluationCategory} from './fleethealth/evaluationCategory';
 import {Review} from './analysis/review';
 
 export class Task {
+    public static OPEN_STATUS = 'OPEN';
+    public static CLOSE_STATUS = 'CLOSE';
+
     private _ata: string;
     private _barcode: string;
     private _clazz: string;

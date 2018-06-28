@@ -30,7 +30,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
     private static TASK_HISTORICAL_ENDPOINT = 'taskHistorical';
-    private static REPORT_CLOSE = 'CLOSE';
     private static TIMELINE_DATE_FORMAT = 'YYYY-MM-DD';
 
     @Output()
@@ -86,7 +85,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.clickEvent = null;
         this.createTimeline(this.timelineData);
         this.firstLoad = false;
-        if (this.activeTask.timelineStatus === TimelineReportComponent.REPORT_CLOSE) {
+        if (this.activeTask.timelineStatus === Task.CLOSE_STATUS) {
             this.taskHistoricalSubscription = this.getTaskHistoricalSubscription(this.activeTask);
         }
     }
