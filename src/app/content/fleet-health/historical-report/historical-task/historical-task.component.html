@@ -9,7 +9,7 @@
         </div>
         <div fxLayout="row">
             <div fxFlex="">
-                <h1>{{ historicalTask.ata }} / {{ historicalTask.barcode }}</h1>
+                <h1>{{ historicalTask.ata }} / {{ historicalTask.barcode }} / {{ historicalTask.creationDate.epochTime | utcDate | date: dateFormat.split(' ')[0]}}</h1>
             </div>
             <div fxFlexAlign="end center" fxLayout="row" >
                 <button [color]="primary" (click)="copyText()" mat-raised-button type="button">{{'FLEET_HEALTH.REPORT.COPY_TEXT' | translate}}</button>
@@ -69,7 +69,7 @@
                     <div [innerHtml]="step.description"></div>
                     <ol *ngIf="step.stepLabours.length > 0">
                         <li *ngFor="let labour of step.stepLabours">
-                            <span>Id: {{labour.labourId}} | Creation: {{labour.createDate.epochTime | utcDate | date: dateFormat}} | Update: {{labour.reviseDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</span>
+                            <span>Id: {{labour.labourId}} | Creation: {{labour.createDate.epochTime | utcDate | date: dateFormat}} | Update: {{labour.reviseDate.epochTime | utcDate | date: dateFormat}}</span>
                             <div [innerHtml]="labour.notes"></div>
                         </li>
                     </ol>
