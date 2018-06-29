@@ -92,6 +92,9 @@
       "STATUS": "Status"
     }
   },
+  "LAYOUT": {
+    "UTC": "UTC"
+  },
   "MANAGEMENT": {
     "ATEC_FILTER": {
       "CONFIGURATION_SAVED": "Configuration Saved",
