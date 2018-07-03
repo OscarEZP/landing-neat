@@ -23,40 +23,42 @@ export class RecoverPasswordComponent implements OnInit {
     confirmPasswordFormControl = new FormControl('', [
         Validators.required
     ]);
+
     matcher = new MyErrorStateMatcher();
     recoverPasswordForm: FormGroup;
-    destination: string;
+    private _destination: string;
     private _hideCp: boolean;
     private _hidePw: boolean;
-    private _recoverPasswordService: RecoverPasswordService;
-    private _storageService: StorageService;
+    public data = {username: '', password: '', confirmPassword: '', verificationCode: '', destination: '' };
 
     constructor(
         private messageService: MessageService,
         private router: Router,
-        private fb: FormBuilder,
-        private _translate: TranslateService
+        private _fb: FormBuilder,
+        private _translate: TranslateService,
+        private _storageService: StorageService,
+        private _recoverPasswordService: RecoverPasswordService
     ) {
-        this.destination = '';
+        this._destination = '';
         this._translate.setDefaultLang('en');
-    }
 
-    ngOnInit() {
-        this.destination = this._storageService.getRecoverDestination();
-        this.recoverPasswordForm = this.fb.group({
+        this.recoverPasswordForm = _fb.group({
             'verificationCodeFormControl': this.verificationCodeFormControl,
             'passwordFormControl': this.passwordFormControl,
             'confirmPasswordFormControl': this.confirmPasswordFormControl
         });
     }
 
+    ngOnInit() {
+        this.destination = this._storageService.getRecoverDestination();
+    }
+
     changePassword(form: FormGroup) {
         if (form.valid) {
-            const data: { password: string, confirmPassword: string, verificationCode: string } = this._recoverPasswordService.getData();
-            if (data.password === data.confirmPassword) {
+            if (this.data.password === this.data.confirmPassword) {
                 this._recoverPasswordService.changePassword(this._storageService
-                    .getRecoverAccount(), data.password, data.verificationCode)
-                    .then(value => {
+                    .getRecoverAccount(), this.data.password, this.data.verificationCode)
+                    .then(() => {
                         this._storageService.removeRecoverPassword();
                         this.router.navigate([this._recoverPasswordService.getRedirectUrl()]);
                 }).catch(reason => {
@@ -97,20 +99,20 @@ export class RecoverPasswordComponent implements OnInit {
         this._hidePw = value;
     }
 
-    get recoverPasswordService(): RecoverPasswordService {
-        return this._recoverPasswordService;
-    }
-
-    set recoverPasswordService(value: RecoverPasswordService) {
-        this._recoverPasswordService = value;
-    }
-
     get storageService(): StorageService {
         return this._storageService;
     }
 
     set storageService(value: StorageService) {
         this._storageService = value;
+    }
+
+    get destination(): string {
+        return this._destination;
+    }
+
+    set destination(value: string) {
+        this._destination = value;
     }
 }
 
