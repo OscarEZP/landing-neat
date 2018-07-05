@@ -26,21 +26,10 @@ export class AogListComponent implements OnInit {
             showAddButton: true,
             loading: true
         };
-
-        // this._layoutService.disableRightNav = true;
-        // this._layout.disableRightNav = true;
-        // this._layout.disableAddButton = true;
-        // this._layoutService.showAddButton = true;
-        // this._layout.showRightNav = true;
     }
 
     ngOnInit() {
-        // this._layoutService.layout$.subscribe(x => console.log(x));
-
-        // this._layout.disableAddButton = false;
-
         this.error = false;
-
         this.aogList = new Array(2);
         const aogEtr: Aog = new Aog();
         const aogNi: Aog = new Aog();
@@ -84,7 +73,6 @@ export class AogListComponent implements OnInit {
     set aogList(value: Aog[]) {
         this._aogList = value;
     }
-
 
     get error(): boolean {
         return this._error;

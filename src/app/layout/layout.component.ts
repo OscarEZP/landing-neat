@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatProgressBar, MatSidenav} from '@angular/material';
 import { SidenavService } from './_services/sidenav.service';
 import { DataService } from '../shared/_services/data.service';
@@ -196,11 +196,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
 
     get loading(): boolean {
-        return this._loading;
+        return this.layout.loading;
     }
 
     set loading(value: boolean) {
-        this._loading = value;
+        this.layout.loading = value;
     }
 
     get mode(): 'determinate' | 'indeterminate' | 'buffer' | 'query' {
