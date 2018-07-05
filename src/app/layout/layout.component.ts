@@ -72,9 +72,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     private getLayoutSubs(): Subscription {
         return this._layoutService.layout$
-            .subscribe(v => {
-                this.layout = v;
-            });
+            .subscribe(v => this.layout = v);
     }
 
     private getLoadingSubs(): Subscription {

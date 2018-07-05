@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {tap} from 'rxjs/operators';
 
 export interface Layout {
-    showAddButton?: boolean;
-    showRightNav?: boolean;
-    disableAddButton?: boolean;
-    disableRightNav?: boolean;
+    showAddButton: boolean;
+    showRightNav: boolean;
+    disableAddButton: boolean;
+    disableRightNav: boolean;
+    loading: boolean;
 }
 
 @Injectable()
@@ -20,11 +20,10 @@ export class LayoutService {
             showAddButton: false,
             showRightNav: false,
             disableAddButton: false,
-            disableRightNav: false
+            disableRightNav: false,
+            loading: true
         });
-        this._layout$ = this._layout
-            .asObservable()
-            .pipe(tap(v => Object.assign({}, v)));
+        this._layout$ = this._layout.asObservable();
     }
 
     get layout$(): Observable<Layout> {
@@ -53,5 +52,9 @@ export class LayoutService {
 
     set disableRightNav(value: boolean) {
         this.getLayout().disableRightNav = value;
+    }
+
+    set loading(value: boolean) {
+        this.getLayout().loading = value;
     }
 }

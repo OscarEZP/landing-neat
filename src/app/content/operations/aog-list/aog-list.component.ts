@@ -23,7 +23,8 @@ export class AogListComponent implements OnInit {
             disableAddButton: false,
             disableRightNav: true,
             showRightNav: true,
-            showAddButton: true
+            showAddButton: true,
+            loading: true
         };
 
         // this._layoutService.disableRightNav = true;
