@@ -1,50 +1,57 @@
 import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {tap} from 'rxjs/operators';
+
+export interface Layout {
+    showAddButton?: boolean;
+    showRightNav?: boolean;
+    disableAddButton?: boolean;
+    disableRightNav?: boolean;
+}
 
 @Injectable()
 export class LayoutService {
-
-    private _showAddButton: boolean;
-    private _showRightNav: boolean;
-    private _disableAddButton: boolean;
-    private _disableRightNav: boolean;
+    private _layout: BehaviorSubject<Layout>;
+    private _layout$: Observable<Layout>;
 
     constructor() {
-        this._showAddButton = false;
-        this._showRightNav = true;
-        this._disableAddButton = false;
-        this._disableRightNav = false;
+        this._layout = new BehaviorSubject<Layout>({
+            showAddButton: false,
+            showRightNav: false,
+            disableAddButton: false,
+            disableRightNav: false
+        });
+        this._layout$ = this._layout
+            .asObservable()
+            .pipe(tap(v => Object.assign({}, v)));
     }
 
-    get showAddButton(): boolean {
-        return this._showAddButton;
+    get layout$(): Observable<Layout> {
+        return this._layout$;
+    }
+
+    set layout(value: Layout) {
+        this._layout.next(value);
+    }
+
+    private getLayout(): Layout {
+        return this._layout.getValue();
     }
 
     set showAddButton(value: boolean) {
-        this._showAddButton = value;
-    }
-
-    get showRightNav(): boolean {
-        return this._showRightNav;
+        this.getLayout().showAddButton = value;
     }
 
     set showRightNav(value: boolean) {
-        this._showRightNav = value;
-    }
-
-
-    get disableAddButton(): boolean {
-        return this._disableAddButton;
+        this.getLayout().showRightNav = value;
     }
 
     set disableAddButton(value: boolean) {
-        this._disableAddButton = value;
-    }
-
-    get disableRightNav(): boolean {
-        return this._disableRightNav;
+        this.getLayout().disableAddButton = value;
     }
 
     set disableRightNav(value: boolean) {
-        this._disableRightNav = value;
+        this.getLayout().disableRightNav = value;
     }
 }

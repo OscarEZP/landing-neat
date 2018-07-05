@@ -190,7 +190,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 }
                 this.subscribeTimer();
                 this.contingencyService.loading = false;
-                this._layoutService.disableRightNav = (this._contingencyService.contingencyList.length === 0);
+                this._layoutService.disableRightNav = this._contingencyService.contingencyList.length === 0;
             });
         }
     }

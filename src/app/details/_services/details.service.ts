@@ -12,7 +12,7 @@ export class DetailsService {
     private _selectedContingency: Contingency;
     private _section: string;
     private _scrollToConfig: ScrollToConfigOptions;
-    private _isOpen: boolean;
+    // private _isOpen: boolean;
 
     private _sidenavVisibilityChange: Subject<boolean> = new Subject<boolean>();
     private _selectedContingencyChange: Subject<Contingency> = new Subject<Contingency>();
@@ -28,12 +28,12 @@ export class DetailsService {
         };
 
         this.selectedContingency = Contingency.getInstance();
-        this.isOpen = false;
+        // this.isOpen = false;
         this.activeTitle = 'Follow Up';
 
-        this.sidenavVisibilityChange.subscribe((value: boolean) => {
-            this.isOpen = value;
-        });
+        // this.sidenavVisibilityChange.subscribe((value: boolean) => {
+        //     this.isOpen = value;
+        // });
     }
 
     public activeContingencyChanged(contingency: Contingency) {
@@ -137,12 +137,13 @@ export class DetailsService {
     }
 
     get isOpen(): boolean {
-        return this._isOpen;
+        return this.sidenav.opened;
+        // return this._isOpen;
     }
 
-    set isOpen(value: boolean) {
-        this._isOpen = value;
-    }
+    // set isOpen(value: boolean) {
+    //     this._isOpen = value;
+    // }
 
     get sidenavVisibilityChange(): Subject<boolean> {
         return this._sidenavVisibilityChange;

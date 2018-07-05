@@ -1,4 +1,4 @@
-<mat-progress-bar id="progress-bar" [mode]="mode" [value]="value" *ngIf="loading"></mat-progress-bar>
+<mat-progress-bar #progressBar id="progress-bar" *ngIf="loading"></mat-progress-bar>
 <mat-sidenav-container id="nav-drawer-container">
   <mat-sidenav #sidenav>
     <lsl-sidenav>
@@ -7,8 +7,8 @@
 
   <lsl-toolbar></lsl-toolbar>
 
-  <section id="main-container" [ngClass]="{'expanded': detailsService.sidenav && detailsService.sidenav.opened }">
-    <div id="main-panel" [ngClass]="{'expanded': !layoutService.showRightNav }">
+  <section id="main-container" [ngClass]="{'expanded': !!detailsSidenav && isDetailsOpen }">
+    <div id="main-panel" [ngClass]="{'expanded': !showRightNav }">
       <mat-sidenav-container id="nav-details-container" >
         <router-outlet></router-outlet>
         <mat-sidenav align="end" id="details" #details mode="side">
@@ -16,7 +16,7 @@
         </mat-sidenav>
       </mat-sidenav-container>
     </div>
-    <lsl-rightnav *ngIf="layoutService.showRightNav"></lsl-rightnav>
+    <lsl-rightnav *ngIf="showRightNav"></lsl-rightnav>
   </section>
-  <button *ngIf="layoutService.showAddButton" (click)="openCreationContingency()" mat-icon-button id="btn-layout-add-contingency" [disabled]="layoutService.disableAddButton">+</button>
+  <button *ngIf="showAddButton" (click)="openCreationContingency()" mat-icon-button id="btn-layout-add-contingency" [disabled]="disableAddButton">+</button>
 </mat-sidenav-container>
