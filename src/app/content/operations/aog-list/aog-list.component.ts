@@ -1,15 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Aog} from '../../../shared/_models/aog/aog';
 import {TranslateService} from '@ngx-translate/core';
 import {Layout, LayoutService} from '../../../layout/_services/layout.service';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
+import {AogFormComponent} from '../aog-form/aog-form.component';
 
 @Component({
     selector: 'lsl-aog-list',
     templateUrl: './aog-list.component.html',
     styleUrls: ['./aog-list.component.scss']
 })
-export class AogListComponent implements OnInit {
+export class AogListComponent implements OnInit, OnDestroy {
 
     private _aogList: Aog[];
     private _error: boolean;
@@ -24,7 +25,8 @@ export class AogListComponent implements OnInit {
             disableRightNav: true,
             showRightNav: true,
             showAddButton: true,
-            loading: true
+            loading: true,
+            formComponent: AogFormComponent
         };
     }
 
@@ -60,6 +62,9 @@ export class AogListComponent implements OnInit {
 
         this.aogList[0] = aogEtr;
         this.aogList[1] = aogNi;
+    }
+
+    ngOnDestroy() {
     }
 
     set layout(value: Layout) {

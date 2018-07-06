@@ -8,6 +8,7 @@ export interface Layout {
     disableAddButton: boolean;
     disableRightNav: boolean;
     loading: boolean;
+    formComponent: object;
 }
 
 @Injectable()
@@ -16,14 +17,23 @@ export class LayoutService {
     private _layout$: Observable<Layout>;
 
     constructor() {
-        this._layout = new BehaviorSubject<Layout>({
+        this._layout = new BehaviorSubject<Layout>(this.newLayout);
+        this._layout$ = this._layout.asObservable();
+    }
+
+    private get newLayout(): Layout {
+        return {
             showAddButton: false,
             showRightNav: false,
             disableAddButton: false,
             disableRightNav: false,
-            loading: true
-        });
-        this._layout$ = this._layout.asObservable();
+            loading: true,
+            formComponent: null
+        };
+    }
+
+    public reset() {
+        this.layout = this.newLayout;
     }
 
     get layout$(): Observable<Layout> {
@@ -56,5 +66,9 @@ export class LayoutService {
 
     set loading(value: boolean) {
         this.getLayout().loading = value;
+    }
+
+    set formComponent(value: object) {
+        this.getLayout().formComponent = value;
     }
 }

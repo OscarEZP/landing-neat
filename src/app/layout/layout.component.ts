@@ -3,7 +3,6 @@ import {MatProgressBar, MatSidenav} from '@angular/material';
 import { SidenavService } from './_services/sidenav.service';
 import { DataService } from '../shared/_services/data.service';
 import { Subscription } from 'rxjs/Subscription';
-import { ContingencyFormComponent } from '../content/operations/create-contingency/create-contingency.component';
 import { DialogService } from '../content/_services/dialog.service';
 import { DetailsService } from '../details/_services/details.service';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -13,6 +12,7 @@ import {StorageService} from '../shared/_services/storage.service';
 import {Router} from '@angular/router';
 import {AuthService} from '../auth/_services/auth.service';
 import {Layout, LayoutService} from './_services/layout.service';
+import {Routing, RoutingService} from '../shared/_services/routing.service';
 
 @Component({
     selector: 'lsl-layout',
@@ -34,10 +34,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     private _messageDataSubscription: Subscription;
     private _errorDataSubscription: Subscription;
+
     private _layoutSubs: Subscription;
     private _layout: Layout;
 
-    private _loading: boolean;
+    private _routingSubs: Subscription;
+    private _routing: Routing;
 
     constructor(
         private _sidenavService: SidenavService,
@@ -49,12 +51,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
         private _storageService: StorageService,
         private _authService: AuthService,
         private _router: Router,
-        private _layoutService: LayoutService
+        private _layoutService: LayoutService,
+        private _routingService: RoutingService
     ) {
-        this._loading = true;
         this._messageDataSubscription = this.getLoadingSubs();
         this._errorDataSubscription = this.getErrorSubs();
         this._layoutSubs = this.getLayoutSubs();
+        this._routingSubs = this.getRoutingSubs();
     }
 
     public ngOnInit() {
@@ -68,11 +71,21 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this._messageDataSubscription.unsubscribe();
         this._errorDataSubscription.unsubscribe();
         this._layoutSubs.unsubscribe();
+        this._routingSubs.unsubscribe();
+    }
+
+    private getRoutingSubs(): Subscription {
+        return this._routingService.routing$
+            .subscribe(v => {
+                this.routing = v;
+            });
     }
 
     private getLayoutSubs(): Subscription {
         return this._layoutService.layout$
-            .subscribe(v => this.layout = v);
+            .subscribe(v => {
+                this.layout = v;
+            });
     }
 
     private getLoadingSubs(): Subscription {
@@ -150,8 +163,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
         }
     }
 
-    public openCreationContingency() {
-        this._dialogService.openDialog(ContingencyFormComponent, {
+    public openCreationForm() {
+        // let component: object;
+        // switch (this.routing.activeMenu.link) {
+        //     case '/operations/aog': component = AogFormComponent; break;
+        //     default: component = ContingencyFormComponent; break;
+        // }
+        this._dialogService.openDialog(this.layout.formComponent, {
             maxWidth: '100vw',
             width: '100%',
             height: '100%',
@@ -221,5 +239,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (this.progressBar) {
             this.progressBar.value = value;
         }
+    }
+
+    get routing(): Routing {
+        return this._routing;
+    }
+
+    set routing(value: Routing) {
+        this._routing = value;
     }
 }

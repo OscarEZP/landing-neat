@@ -33,9 +33,9 @@ export class OperationsComponent implements OnInit, OnDestroy {
                 'link': '/operations/pendings',
             }
         ];
-        this.showAddButton = true;
-        this.showRightNav = true;
-        this.moduleTitle = 'Operations Module';
+        // this.showAddButton = true;
+        // this.showRightNav = true;
+        // this.moduleTitle = 'Operations Module';
     }
 
     ngOnInit() {

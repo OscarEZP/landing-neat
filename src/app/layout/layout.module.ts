@@ -12,6 +12,7 @@ import {RightnavComponent} from './rightnav/rightnav.component';
 import {DetailsService} from '../details/_services/details.service';
 import {ContingencyFormComponent} from '../content/operations/create-contingency/create-contingency.component';
 import {LayoutService} from './_services/layout.service';
+import {AogFormComponent} from '../content/operations/aog-form/aog-form.component';
 
 @NgModule({
     imports: [
@@ -38,7 +39,8 @@ import {LayoutService} from './_services/layout.service';
         LayoutService
     ],
     entryComponents: [
-        ContingencyFormComponent
+        ContingencyFormComponent,
+        AogFormComponent
     ]
 })
 export class LayoutModule {

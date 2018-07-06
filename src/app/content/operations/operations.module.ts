@@ -22,6 +22,7 @@ import {MeetingComponent} from './meeting/meeting.component';
 import {PendingListComponent} from './pending-list/pending-list.component';
 import {ResolvePendingComponent} from './resolve-pending/resolve-pending.component';
 import { AogListComponent } from './aog-list/aog-list.component';
+import { AogFormComponent } from './aog-form/aog-form.component';
 
 @NgModule({
     imports: [
@@ -41,7 +42,8 @@ import { AogListComponent } from './aog-list/aog-list.component';
         MeetingComponent,
         PendingListComponent,
         ResolvePendingComponent,
-        AogListComponent
+        AogListComponent,
+        AogFormComponent
     ],
     exports: [],
     providers: [
@@ -50,7 +52,6 @@ import { AogListComponent } from './aog-list/aog-list.component';
         LogService,
         ClockService,
         ApiRestService,
-        // PaginatorObjectService,
         HistoricalSearchService,
         {provide: MAT_DATE_LOCALE, useValue: 'es-CL'},
         DateUtil
