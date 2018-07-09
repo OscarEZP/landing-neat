@@ -36,7 +36,7 @@
                         </mat-error>
                         <mat-autocomplete #ac="matAutocomplete"
                                           (optionSelected)="onSelectAircraft(searchAircraft.value)">
-                            <mat-option *ngFor="let ac of observableAircraftList | async" [value]="ac.tail">
+                            <mat-option *ngFor="let ac of aircraftList$ | async" [value]="ac.tail">
                                 {{ ac.tail }}
                             </mat-option>
                         </mat-autocomplete>
@@ -130,9 +130,9 @@
 
             <div fxFlex="33.3" fxLayout="column" fxLayoutGap="20px">
                 <div class="title-section" fxLayout="row" fxLayoutGap="20px">{{'AOG.AOG_FORM.MAINTENANCE_INFO'|translate}}</div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                <label fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
                     AOG Type*
-                </div>
+                </label>
                 <mat-radio-group fxLayout="column" id="rad-aog-form-contingency-type"
                                  fxLayoutGap="10px" [formControl]="aogForm.controls['contingencyType']">
                     <mat-radio-button labelPosition="after"
@@ -140,9 +140,9 @@
                                       value="{{ ct.code }}">{{ ct.description }}
                     </mat-radio-button>
                 </mat-radio-group>
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                <label fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
                     Failure Type*
-                </div>
+                </label>
                 <mat-radio-group fxLayout="column" id="rad-aog-form-failure-type"
                                  fxLayoutGap="10px" [formControl]="aogForm.controls['failure']">
                     <mat-radio-button labelPosition="after"
@@ -189,9 +189,9 @@
 
                 <div fxLayout="row">
                     <div fxLayout="column" fxFlex="150px" fxLayoutGap="20px">
-                        <div fxLayout="row">
+                        <label fxLayout="row">
                             Tipology*:
-                        </div>
+                        </label>
                         <mat-radio-group fxLayout="row" id="rad-aog-form-tipology"
                                          fxLayoutGap="10px" [formControl]="aogForm.controls['tipology']">
                             <!--<mat-radio-button fxFlex="50" labelPosition="after"-->
@@ -206,9 +206,9 @@
                         </mat-error>
                     </div>
                     <div fxLayout="column" fxFlex="80px">
-                        <div fxLayout="row">
+                        <label fxLayout="row">
                             Duration*:
-                        </div>
+                        </label>
                         <mat-form-field id="form-field-duration">
                             <input id="in-aog-form-duration"
                                    matInput

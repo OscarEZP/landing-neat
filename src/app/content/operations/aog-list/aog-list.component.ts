@@ -58,7 +58,7 @@ export class AogListComponent implements OnInit, OnDestroy {
         aogEtr.isSafetyEvent = true;
         aogEtr.openAogDate = new TimeInstant(Date.now(), null);
         aogEtr.openStatusDate = new TimeInstant(Date.now(), null);
-        aogEtr.durationAog = 1800000;
+        aogEtr.durationAog = '1800000';
         aogEtr.durationStatus = 1800000;
 
         aogNi.tail = 'PT-MZU';
@@ -70,7 +70,7 @@ export class AogListComponent implements OnInit, OnDestroy {
         aogNi.isSafetyEvent = false;
         aogNi.openAogDate = new TimeInstant(Date.now(), null);
         aogNi.openStatusDate = new TimeInstant(Date.now(), null);
-        aogNi.durationAog = 1800000;
+        aogNi.durationAog = '1800000';
         aogNi.durationStatus = 1800000;
         aogList.push(aogEtr);
         aogList.push(aogNi);

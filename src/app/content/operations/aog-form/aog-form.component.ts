@@ -12,6 +12,11 @@ import {Types} from '../../../shared/_models/configuration/types';
 import {Location} from '../../../shared/_models/configuration/location';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
+import {Flight} from '../../../shared/_models/flight';
+import {map, startWith} from 'rxjs/operators';
+import {AircraftSearch} from '../../../shared/_models/configuration/aircraftSearch';
+import {FlightSearch} from '../../../shared/_models/configuration/flightSearch';
+import {ContingencyFormComponent} from '../create-contingency/create-contingency.component';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -21,6 +26,10 @@ import {ApiRestService} from '../../../shared/_services/apiRest.service';
 export class AogFormComponent implements OnInit, OnDestroy {
 
     private static TYPES_LIST_ENDPOINT = 'types';
+    private static AIRCRAFTS_SEARCH_ENDPOINT = 'aircraftsSearch';
+    private static OPERATOR_LIST_ENDPOINT = 'operator';
+    // private static FLIGTHS_ENDPOINT = 'flights';
+    private static LOCATIONS_ENDPOINT = 'locations';
 
     private _utcModel: TimeInstant;
     private _aogForm: FormGroup;
@@ -28,16 +37,24 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _aircraftList: Aircraft[];
     private _operatorList: Types[];
     private _groupTypeList: GroupTypes[];
+    private _locationList: Location[];
+    // private _flightList: Flight[];
 
     private _alive: boolean;
     private _interval: number;
 
     private _locationList$: Observable<Location[]>;
+    // private _flightList$: Observable<Flight[]>;
+    private _aircraftList$: Observable<Aircraft[]>;
+    private _operatorList$: Observable<Types[]>;
 
     private _timerSubs: Subscription;
     private _datetimeSubs: Subscription;
-    private _failureType: Types[];
+    private _aircraftSubs: Subscription;
+    private _operatorSubs: Subscription;
+    private _locationSubs: Subscription;
 
+    private _failureType: Types[];
 
     constructor(
         private _dialogService: DialogService,
@@ -82,15 +99,173 @@ export class AogFormComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this._aircraftSubs = this.getAircraftList();
+        this._operatorSubs = this.getOperatorList();
+        this._locationSubs = this.getLocationList();
 
     }
 
     ngOnDestroy() {
         this._timerSubs.unsubscribe();
+        this._locationSubs.unsubscribe();
         if (this._datetimeSubs) {
             this._datetimeSubs.unsubscribe();
         }
+        this._aircraftSubs.unsubscribe();
     }
+
+    /**
+     * Get aircraft list and create an observable list of fligths will be consumed in the view
+     * @return {Subscription}
+     */
+    private getAircraftList(): Subscription {
+        return this._apiRestService
+            .search<Aircraft[]>(AogFormComponent.AIRCRAFTS_SEARCH_ENDPOINT, new AircraftSearch(1))
+            .subscribe((response: Aircraft[]) => {
+                this.aircraftList = response;
+                this.aircraftList$ = this.aogForm
+                    .controls['tail']
+                    .valueChanges
+                    .pipe(
+                        startWith(''),
+                        map(val => this.aircraftFilter(val))
+                    );
+            });
+    }
+
+    /**
+     * Get operator list configuration
+     * @return {Subscription}
+     */
+    private getOperatorList(): Subscription {
+        return this._apiRestService
+            .getAll<Types[]>(AogFormComponent.OPERATOR_LIST_ENDPOINT)
+            .subscribe(response => {
+                this.operatorList = response;
+                this.operatorList$ = this.aogForm
+                    .controls['operator']
+                    .valueChanges
+                    .pipe(
+                        startWith(''),
+                        map(val => this.operatorFilter(val))
+                    );
+            });
+    }
+
+    /**
+     * Get the location list from server
+     * @return {Subscription}
+     */
+    private getLocationList(): Subscription {
+        return this._apiRestService
+            .getAll<Location[]>(AogFormComponent.LOCATIONS_ENDPOINT)
+            .subscribe((response: Location[]) => {
+                this.locationList = response;
+                this.locationList$ = this.aogForm
+                    .controls['station']
+                    .valueChanges
+                    .pipe(
+                        startWith(''),
+                        map(val => this.locationFilter(val))
+                    );
+            });
+    }
+
+    /**
+     * Filter for location observable list in view
+     * @param {string} val
+     * @return {Location[]}
+     */
+    private locationFilter(val: string): Location[] {
+        if (val !== null) {
+            return this.locationList.filter(location =>
+                location.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+        }
+    }
+
+    /**
+     * Filter for operatorList observable list in view
+     * @param {string} val
+     * @return {Types[]}
+     */
+    private operatorFilter(val: string): Types[] {
+        return this.operatorList.filter(operator =>
+            operator.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+    }
+
+    /**
+     * Filter for aircraft observable list in view
+     * @param {string} val
+     * @return {Aircraft[]}
+     */
+    private aircraftFilter(val: string): Aircraft[] {
+        return this.aircraftList.filter(aircraft =>
+            aircraft.tail.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+    }
+
+    /**
+     * Filter for flights observable list in view
+     * @param {string} val
+     * @return {Flight[]}
+     */
+    // private flightFilter(val: string): Flight[] {
+    //     return this.flightList.filter(flight =>
+    //         flight.flightNumber.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+    // }
+
+    /**
+     * Method triggered when aircraft tail is selected, populate the fields and the model in contingency aircraft & flight
+     * Also force selection of first flight in the form and recalculate the flight etd
+     * @param {string} selectedOption
+     */
+    public onSelectAircraft(selectedOption: string): void {
+        this.aircraftList
+            .filter(a => a.tail === selectedOption)
+            .forEach(a => {
+                this.aog.tail = a.tail;
+                this.aog.fleet = a.fleet;
+                this.aog.operator = a.operator;
+            });
+
+        this.aogForm.get('operator').setValue(this.aog.operator);
+        this.aogForm.get('operator').updateValueAndValidity();
+        this.aogForm.get('fleet').setValue(this.aog.fleet);
+        this.aogForm.get('fleet').updateValueAndValidity();
+        // const flightSearch = new FlightSearch(selectedOption, 0, 8);
+        // this.flightList = [];
+        /*
+        this._apiRestService
+            .search<Flight[]>(AogFormComponent.FLIGTHS_ENDPOINT, flightSearch)
+            .subscribe((response: Flight[]) => {
+                this.aircraftList
+                    .filter(a => a.tail === selectedOption)
+                    .forEach(a => {
+                        this.aog.tail = a.tail;
+                        this.aog.fleet = a.fleet;
+                        this.aog.operator = a.operator;
+                    });
+
+                this.aogForm.get('operator').setValue(this.aog.operator);
+                this.aogForm.get('operator').updateValueAndValidity();
+                this.aogForm.get('fleet').setValue(this.aog.fleet);
+                this.aogForm.get('fleet').updateValueAndValidity();
+            });
+        */
+    }
+
+    /**
+     * Get an observable for flight list
+     * @returns {Observable<Flight[]>}
+     */
+    // private getObservableFlightList(): Observable<Flight[]> {
+    //     return this.aogForm
+    //         .controls['flightNumber']
+    //         .valueChanges
+    //         .pipe(
+    //             startWith(''),
+    //             map(val => this.flightFilter(val))
+    //         );
+    // }
 
     /**
      * Get all group types
@@ -251,6 +426,30 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._locationList$ = value;
     }
 
+    // get flightList$(): Observable<Flight[]> {
+    //     return this._flightList$;
+    // }
+    //
+    // set flightList$(value: Observable<Flight[]>) {
+    //     this._flightList$ = value;
+    // }
+
+    get aircraftList$(): Observable<Aircraft[]> {
+        return this._aircraftList$;
+    }
+
+    set aircraftList$(value: Observable<Aircraft[]>) {
+        this._aircraftList$ = value;
+    }
+
+    get operatorList$(): Observable<Types[]> {
+        return this._operatorList$;
+    }
+
+    set operatorList$(value: Observable<Types[]>) {
+        this._operatorList$ = value;
+    }
+
     get groupTypeList(): GroupTypes[] {
         return this._groupTypeList;
     }
@@ -258,4 +457,20 @@ export class AogFormComponent implements OnInit, OnDestroy {
     set groupTypeList(value: GroupTypes[]) {
         this._groupTypeList = value;
     }
+
+    get locationList(): Location[] {
+        return this._locationList;
+    }
+
+    set locationList(value: Location[]) {
+        this._locationList = value;
+    }
+
+    // get flightList(): Flight[] {
+    //     return this._flightList;
+    // }
+    //
+    // set flightList(value: Flight[]) {
+    //     this._flightList = value;
+    // }
 }

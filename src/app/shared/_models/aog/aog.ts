@@ -9,7 +9,7 @@ export class Aog {
     private _status: string;
     private _isSafetyEvent: boolean;
     private _openAogDate: TimeInstant;
-    private _durationAog: number;
+    private _durationAog: string;
     private _openStatusDate: TimeInstant;
     private _durationStatus: number;
 
@@ -22,7 +22,7 @@ export class Aog {
         this._status = '';
         this._isSafetyEvent = false;
         this._openAogDate = TimeInstant.getInstance();
-        this._durationAog = 0;
+        this._durationAog = '00:00';
         this._openStatusDate = TimeInstant.getInstance();
         this._durationStatus = 0;
     }
@@ -91,11 +91,11 @@ export class Aog {
         this._openAogDate = value;
     }
 
-    get durationAog(): number {
+    get durationAog(): string {
         return this._durationAog;
     }
 
-    set durationAog(value: number) {
+    set durationAog(value: string) {
         this._durationAog = value;
     }
 
