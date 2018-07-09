@@ -13,6 +13,20 @@ export class Aog {
     private _openStatusDate: TimeInstant;
     private _durationStatus: number;
 
+    constructor() {
+        this._tail = '';
+        this._fleet = '';
+        this._operator = '';
+        this._barcode = '';
+        this._reason = '';
+        this._status = '';
+        this._isSafetyEvent = false;
+        this._openAogDate = TimeInstant.getInstance();
+        this._durationAog = 0;
+        this._openStatusDate = TimeInstant.getInstance();
+        this._durationStatus = 0;
+    }
+
     get tail(): string {
         return this._tail;
     }

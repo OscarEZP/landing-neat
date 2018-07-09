@@ -3,7 +3,6 @@ import {Menu} from '../_models/menu';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import {Router} from '@angular/router';
-import {tap} from 'rxjs/operators';
 
 export interface Routing {
     moduleTitle: string;
@@ -47,7 +46,8 @@ export class RoutingService {
                 new Menu('MENU.LOG_OUT', 'power_settings_new', '/logout'),
             ]
         });
-        this._routing$ = this._routing.asObservable().pipe(tap(v => v.activeMenu = this.getActiveMenu(v.arrMenu)));
+        this._routing$ = this._routing.asObservable();
+            // .pipe(tap(v => v.activeMenu = this.getActiveMenu(v.arrMenu)));
     }
 
     get routing$(): Observable<Routing> {
@@ -66,11 +66,12 @@ export class RoutingService {
         this.routing.arrMenu = value;
     }
 
-    public getActiveMenu(arrMenu: Menu[]): Menu {
-        let result = arrMenu ? arrMenu.find(m => m.link === this._route.url) : null;
-        if (!result && arrMenu) {
-            result = this.getActiveMenu(arrMenu.find(m => !!this.getActiveMenu(m.submenu) && !!this.getActiveMenu(m.submenu)).submenu);
-        }
-        return result;
-    }
+    // public getActiveMenu(arrMenu: Menu[]): Menu {
+    //     let result = arrMenu ? arrMenu.find(m => m.link === this._route.url) : null;
+    //     if (!result && arrMenu) {
+    //         const subMenu = arrMenu.find(m => !!this.getActiveMenu(m.submenu));
+    //         result = subMenu ? this.getActiveMenu(subMenu.submenu) : null;
+    //     }
+    //     return result;
+    // }
 }

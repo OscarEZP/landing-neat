@@ -4,6 +4,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {Layout, LayoutService} from '../../../layout/_services/layout.service';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
 import {AogFormComponent} from '../aog-form/aog-form.component';
+import {Subscription} from 'rxjs/Subscription';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
     selector: 'lsl-aog-list',
@@ -14,28 +16,39 @@ export class AogListComponent implements OnInit, OnDestroy {
 
     private _aogList: Aog[];
     private _error: boolean;
+    private _aogListSubs: Subscription;
 
     constructor(
         private _translateService: TranslateService,
         private _layoutService: LayoutService
     ) {
         this._translateService.setDefaultLang('en');
+        this._error = false;
+        this._aogList = [];
         this.layout = {
             disableAddButton: false,
             disableRightNav: true,
             showRightNav: true,
             showAddButton: true,
-            loading: true,
+            loading: false,
             formComponent: AogFormComponent
         };
+        this._aogListSubs = this.getAogListSubs();
     }
 
     ngOnInit() {
-        this.error = false;
-        this.aogList = new Array(2);
+
+    }
+
+    ngOnDestroy() {
+        this._aogListSubs.unsubscribe();
+        this._layoutService.reset();
+    }
+
+    private get aogList$(): Observable<Aog[]> {
+        const aogList = [];
         const aogEtr: Aog = new Aog();
         const aogNi: Aog = new Aog();
-
         aogEtr.tail = 'PT-MZU';
         aogEtr.fleet = 'A320';
         aogEtr.operator = 'LA';
@@ -59,12 +72,13 @@ export class AogListComponent implements OnInit, OnDestroy {
         aogNi.openStatusDate = new TimeInstant(Date.now(), null);
         aogNi.durationAog = 1800000;
         aogNi.durationStatus = 1800000;
-
-        this.aogList[0] = aogEtr;
-        this.aogList[1] = aogNi;
+        aogList.push(aogEtr);
+        aogList.push(aogNi);
+        return Observable.of(aogList);
     }
 
-    ngOnDestroy() {
+    private getAogListSubs(): Subscription {
+        return this.aogList$.subscribe(v => this.aogList = v);
     }
 
     set layout(value: Layout) {
