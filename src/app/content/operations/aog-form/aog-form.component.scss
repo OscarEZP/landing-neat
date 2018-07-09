@@ -37,6 +37,7 @@ $font-size: 16px;
     font-style: italic;
     color: mat-color($foreground, secondary-text);
     @include gen-component-font-size($font-size);
+    font-weight: 400;
 
   }
 }
@@ -45,6 +46,7 @@ $font-size: 16px;
   div.title-dialog {
     color: mat-color($primary);
     margin-bottom: 4px;
+    @include gen-component-font-size($font-size, 1);
   }
 
   .sections-content {
