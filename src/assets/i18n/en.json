@@ -13,11 +13,30 @@
     },
     "AOG_FORM": {
       "AC": "A / C",
+      "AIRCRAFT": "Aircraft",
       "AOG_CREATION": "AOG Creation",
       "AOG_INFORMATION": "AOG Information",
-      "OPERATION_INFO": "Operation Info",
+      "AOG_TYPE": "AOG Type",
+      "BARCODE": "Barcode",
+      "DURATION": "Duration",
+      "ERROR": {
+        "AOG_TYPE_REQUIRED": "AOG Type is required",
+        "BARCODE_REQUIRED": "Barcode is required",
+        "FAILURE_REQUIRED": "Failure Type is required",
+        "TIPOLOGY_REQUIRED": "Tipology is required"
+      },
+      "FAILURE_TYPE": "Failure Type",
+      "FLEET": "Fleet",
       "MAINTENANCE_INFO": "Maintenance Info",
-      "SAFETY_EVENT_INFO": "Safety Event Info"
+      "OBSERVATIONS": "Observations",
+      "OPERATOR": "Operator",
+      "OPERATION_INFO": "Operation Info",
+      "REASON": "Reason",
+      "SAFETY_EVENT": "Safety Event",
+      "SAFETY_EVENT_INFO": "Safety Event Info",
+      "STATION": "Station",
+      "TECHNICAL_TYPE": "Technical Station",
+      "TIPOLOGY": "Tipology"
     }
   },
   "AUTHENTICATION": {
@@ -66,6 +85,10 @@
     "NO_HISTORICAL_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters.",
     "STATIONS_WITHOUT_CONF": "Stations without configuration. Ask your system administrator.",
     "AUTHORITIES_WITHOUT_CONF": "Authorities without configuration. Ask your system administrator."
+  },
+  "FORM": {
+    "IS_REQUIRED": "{{value}} is required",
+    "REQUIRE_FIELDS": "All fields with (*) are required"
   },
   "FLEET_HEALTH": {
     "LIST": {

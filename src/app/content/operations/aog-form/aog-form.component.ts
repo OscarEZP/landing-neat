@@ -12,11 +12,10 @@ import {Types} from '../../../shared/_models/configuration/types';
 import {Location} from '../../../shared/_models/configuration/location';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
-import {Flight} from '../../../shared/_models/flight';
 import {map, startWith} from 'rxjs/operators';
 import {AircraftSearch} from '../../../shared/_models/configuration/aircraftSearch';
-import {FlightSearch} from '../../../shared/_models/configuration/flightSearch';
-import {ContingencyFormComponent} from '../create-contingency/create-contingency.component';
+import {Safety} from '../../../shared/_models/safety';
+import {MessageService} from '../../../shared/_services/message.service';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -28,8 +27,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static TYPES_LIST_ENDPOINT = 'types';
     private static AIRCRAFTS_SEARCH_ENDPOINT = 'aircraftsSearch';
     private static OPERATOR_LIST_ENDPOINT = 'operator';
-    // private static FLIGTHS_ENDPOINT = 'flights';
+    private static SAFETY_EVENT_LIST_ENDPOINT = 'safetyEvent';
     private static LOCATIONS_ENDPOINT = 'locations';
+
+    private static DATE_FORMAT = 'dd MMM yyyy ';
+    private static HOUR_FORMAT = 'HH:mm:ss';
 
     private _utcModel: TimeInstant;
     private _aogForm: FormGroup;
@@ -38,13 +40,13 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _operatorList: Types[];
     private _groupTypeList: GroupTypes[];
     private _locationList: Location[];
-    // private _flightList: Flight[];
+    private _safetyEventList: Safety[];
 
     private _alive: boolean;
     private _interval: number;
+    private _timeClock: Date;
 
     private _locationList$: Observable<Location[]>;
-    // private _flightList$: Observable<Flight[]>;
     private _aircraftList$: Observable<Aircraft[]>;
     private _operatorList$: Observable<Types[]>;
 
@@ -53,6 +55,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _aircraftSubs: Subscription;
     private _operatorSubs: Subscription;
     private _locationSubs: Subscription;
+    private _safetyEventSubs: Subscription;
 
     private _failureType: Types[];
 
@@ -60,33 +63,23 @@ export class AogFormComponent implements OnInit, OnDestroy {
         private _dialogService: DialogService,
         private _fb: FormBuilder,
         private _datetimeService: DatetimeService,
-        private _apiRestService: ApiRestService
+        private _apiRestService: ApiRestService,
+        private _messageService: MessageService
     ) {
         this.utcModel = new TimeInstant(new Date().getTime(), null);
         this.alive = true;
         this.interval = 1000 * 60;
 
-        this._timerSubs = this.getTimerSubs();
         this._aog = new Aog();
         this._aogForm = _fb.group({
             'tail': [this.aog.tail, Validators.required, this.tailDomainValidator.bind(this)],
             'fleet': [this.aog.fleet, Validators.required],
             'operator': [this.aog.operator, Validators.required, this.operatorDomainValidator.bind(this)],
-            // 'isBackup': [false, this.contingency.isBackup],
             'station': ['', Validators.required],
-            // 'slotTm': [this.contingencyDateModel[1].timeString],
-            // 'slotDate': [this.contingencyDateModel[1].dateString],
-            // 'flightNumber': [this.contingency.flight.flightNumber, Validators.required],
-            // 'origin': [this.contingency.flight.origin, Validators.required],
-            // 'destination': [this.contingency.flight.destination, Validators.required],
-            // 'tm': [this.contingencyDateModel[0].timeString, Validators.required],
-            // 'dt': [this.contingencyDateModel[0].dateString, Validators.required],
-            // 'informer': [this.contingency.informer, Validators.required],
             'safety': [false, Validators.required],
-            // 'showBarcode': [false],
-            'barcode': [this.aog.barcode, [Validators.pattern('^[a-zA-Z0-9]+\\S$'), Validators.maxLength(80)]],
+            'barcode': [this.aog.barcode, [Validators.pattern('^([a-zA-Z0-9])+'), Validators.maxLength(80)]],
             'safetyEventCode': [''],
-            'contingencyType': ['', Validators.required],
+            'aogType': ['', Validators.required],
             'failure': ['', Validators.required],
             'observation': ['', [Validators.required, Validators.maxLength(400)]],
             'reason': [this.aog.reason, [Validators.required, Validators.maxLength(400)]],
@@ -102,16 +95,40 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._aircraftSubs = this.getAircraftList();
         this._operatorSubs = this.getOperatorList();
         this._locationSubs = this.getLocationList();
-
+        this._safetyEventSubs = this.getSafetyEventList();
+        this._timerSubs = this.getTimerSubs();
     }
 
     ngOnDestroy() {
-        this._timerSubs.unsubscribe();
+        this._aircraftSubs.unsubscribe();
+        this._operatorSubs.unsubscribe();
         this._locationSubs.unsubscribe();
+        this._safetyEventSubs.unsubscribe();
+        this._timerSubs.unsubscribe();
         if (this._datetimeSubs) {
             this._datetimeSubs.unsubscribe();
         }
-        this._aircraftSubs.unsubscribe();
+    }
+
+    public submitForm() {
+        console.log('submit!');
+        if (this.aogForm.valid) {
+
+        }
+    }
+
+    /**
+     * Get Safety Event List Configuration
+     * @return {Subscription}
+     */
+
+    private getSafetyEventList(): Subscription {
+        return this._apiRestService
+            .getAll<Safety[]>(AogFormComponent.SAFETY_EVENT_LIST_ENDPOINT)
+            .subscribe(
+                data => this.safetyEventList = data,
+                error => () => this._messageService.openSnackBar(error.message)
+            );
     }
 
     /**
@@ -204,16 +221,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Filter for flights observable list in view
-     * @param {string} val
-     * @return {Flight[]}
-     */
-    // private flightFilter(val: string): Flight[] {
-    //     return this.flightList.filter(flight =>
-    //         flight.flightNumber.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
-    // }
-
-    /**
      * Method triggered when aircraft tail is selected, populate the fields and the model in contingency aircraft & flight
      * Also force selection of first flight in the form and recalculate the flight etd
      * @param {string} selectedOption
@@ -231,41 +238,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.aogForm.get('operator').updateValueAndValidity();
         this.aogForm.get('fleet').setValue(this.aog.fleet);
         this.aogForm.get('fleet').updateValueAndValidity();
-        // const flightSearch = new FlightSearch(selectedOption, 0, 8);
-        // this.flightList = [];
-        /*
-        this._apiRestService
-            .search<Flight[]>(AogFormComponent.FLIGTHS_ENDPOINT, flightSearch)
-            .subscribe((response: Flight[]) => {
-                this.aircraftList
-                    .filter(a => a.tail === selectedOption)
-                    .forEach(a => {
-                        this.aog.tail = a.tail;
-                        this.aog.fleet = a.fleet;
-                        this.aog.operator = a.operator;
-                    });
-
-                this.aogForm.get('operator').setValue(this.aog.operator);
-                this.aogForm.get('operator').updateValueAndValidity();
-                this.aogForm.get('fleet').setValue(this.aog.fleet);
-                this.aogForm.get('fleet').updateValueAndValidity();
-            });
-        */
     }
-
-    /**
-     * Get an observable for flight list
-     * @returns {Observable<Flight[]>}
-     */
-    // private getObservableFlightList(): Observable<Flight[]> {
-    //     return this.aogForm
-    //         .controls['flightNumber']
-    //         .valueChanges
-    //         .pipe(
-    //             startWith(''),
-    //             map(val => this.flightFilter(val))
-    //         );
-    // }
 
     /**
      * Get all group types
@@ -426,14 +399,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._locationList$ = value;
     }
 
-    // get flightList$(): Observable<Flight[]> {
-    //     return this._flightList$;
-    // }
-    //
-    // set flightList$(value: Observable<Flight[]>) {
-    //     this._flightList$ = value;
-    // }
-
     get aircraftList$(): Observable<Aircraft[]> {
         return this._aircraftList$;
     }
@@ -466,11 +431,27 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._locationList = value;
     }
 
-    // get flightList(): Flight[] {
-    //     return this._flightList;
-    // }
-    //
-    // set flightList(value: Flight[]) {
-    //     this._flightList = value;
-    // }
+    get safetyEventList(): Safety[] {
+        return this._safetyEventList;
+    }
+
+    set safetyEventList(value: Safety[]) {
+        this._safetyEventList = value;
+    }
+
+    get dateFormat(): string {
+        return AogFormComponent.DATE_FORMAT;
+    }
+
+    get hourFormat(): string {
+        return AogFormComponent.HOUR_FORMAT;
+    }
+
+    get timeClock(): Date {
+        return this._timeClock;
+    }
+
+    set timeClock(value: Date) {
+        this._timeClock = value;
+    }
 }

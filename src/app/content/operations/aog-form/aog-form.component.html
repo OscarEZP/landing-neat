@@ -2,15 +2,13 @@
     <div mat-dialog-title  class="title-dialog-container" fxLayout="column">
         <div fxLayout="row" fxFlex>
             <span class="title-dialog" fxFlex>{{'AOG.AOG_FORM.AOG_CREATION' | translate}}</span>
-            <span class="date-title-dialog">{{ utcModel.label | utcDate | date: dateFormat}} | {{ timeClock | utcDate | date: hourFormat }} {{'OPERATIONS.CONTINGENCY_FORM.UTC'| translate}}</span>
+            <span class="date-title-dialog">{{ utcModel.label | utcDate | date: dateFormat}} | {{ timeClock | utcDate | date: hourFormat }} {{'LAYOUT.UTC'| translate}}</span>
             <button id="btn-aog-form-close-btn" type="button" class="close-btn" mat-icon-button
                     fxFlexOffset="1">
-                <mat-icon aria-label="Example icon-button" class="material-icons close-dialog"
-                          (click)="openCancelDialog()">{{ 'OPERATIONS.CONTINGENCY_FORM.CLOSE' | translate }}
-                </mat-icon>
+                <mat-icon aria-label="Example icon-button" class="material-icons close-dialog" (click)="openCancelDialog()">close</mat-icon>
             </button>
         </div>
-        <span class="msg-required-dialog" fxFlex>{{'OPERATIONS.CONTINGENCY_FORM.REQUIRE_FIELDS'| translate}}</span>
+        <span class="msg-required-dialog" fxFlex>{{'FORM.REQUIRE_FIELDS'| translate}}</span>
     </div>
 
     <div mat-dialog-content class="content-dialog-container">
@@ -23,7 +21,7 @@
                 <div class="title-section" fxLayout="row" fxLayoutGap="20px">{{'AOG.AOG_FORM.OPERATION_INFO'|translate}}</div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
                     <mat-form-field fxFlex="30">
-                        <input id="in-aog-form-search-aircraft"
+                        <input required id="in-aog-form-search-aircraft"
                                #searchAircraft type="text"
                                placeholder="{{ 'AOG.AOG_FORM.AC' | translate }}" matInput
                                [formControl]="aogForm.controls['tail']" [matAutocomplete]="ac">
@@ -43,8 +41,8 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="30">
-                        <input id="in-aog-form-fleet" matInput
-                               placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.FLEET' | translate }}"
+                        <input required id="in-aog-form-fleet" matInput
+                               placeholder="{{ 'AOG.AOG_FORM.FLEET' | translate }}"
                                [formControl]="aogForm.controls['fleet']"
                                name="fleet" readonly>
                         <mat-error
@@ -54,9 +52,9 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="30">
-                        <input id="in-aog-form-operator"
+                        <input required id="in-aog-form-operator"
                                #searchOperator type="text"
-                               placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.OPERATOR' | translate }}" matInput
+                               placeholder="{{ 'AOG.AOG_FORM.OPERATOR' | translate }}" matInput
                                [formControl]="aogForm.controls['operator']" [matAutocomplete]="operatorString">
                         <mat-error
                                 *ngIf="aogForm.controls['operator'].hasError('required') && aogForm.controls['operator'].touched">
@@ -77,9 +75,9 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
                     <mat-form-field fxFlex="25">
-                        <input id="in-aog-form-backup-station"
+                        <input required id="in-aog-form-backup-station"
                                #searchStation type="text"
-                               placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.STATION' | translate }}" matInput
+                               placeholder="{{ 'AOG.AOG_FORM.STATION' | translate }}" matInput
                                [formControl]="aogForm.controls['station']" [matAutocomplete]="stationString">
                         <mat-error
                                 *ngIf="aogForm.controls['station'].hasError('required') && aogForm.controls['station'].touched">
@@ -93,13 +91,15 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="30">
-                        <input id="in-aog-form-barcode" matInput placeholder="{{'OPERATIONS.CONTINGENCY_FORM.BARCODE'|translate}}"
+                        <input required id="in-aog-form-barcode" matInput placeholder="{{'AOG.AOG_FORM.BARCODE'|translate}}"
                                [formControl]="aogForm.controls['barcode']" [(ngModel)]="aog.barcode">
-                        <mat-error *ngIf="aogForm.controls['barcode'].hasError('pattern') && formDir.submitted">
+                        <mat-error *ngIf="aogForm.controls['barcode'].hasError('pattern') && aogForm.controls['barcode'].touched">
                             {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_PATTERN'|translate}}
                         </mat-error>
-                        <mat-error
-                                *ngIf="aogForm.controls['barcode'].hasError('maxlenght') && formDir.submitted">
+                        <mat-error *ngIf="aogForm.controls['barcode'].hasError('required') && aogForm.controls['barcode'].touched">
+                            {{'AOG.AOG_FORM.ERROR.BARCODE_REQUIRED'|translate}}
+                        </mat-error>
+                        <mat-error *ngIf="aogForm.controls['barcode'].hasError('maxlenght') && aogForm.controls['barcode'].touched">
                             {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_MAX'|translate}}
                         </mat-error>
                     </mat-form-field>
@@ -112,14 +112,14 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
                     <mat-checkbox id="chk-aog-form-safety-event" labelPosition="after" fxFlex="20"
-                                  [formControl]="aogForm.controls['safety']">{{'OPERATIONS.CONTINGENCY_FORM.SAFETY_EVENT'|translate}}
+                                  [formControl]="aogForm.controls['safety']">{{'AOG.AOG_FORM.SAFETY_EVENT'|translate}}
                     </mat-checkbox>
                 </div>
                 <div fxLayout="row" *ngIf="aogForm.controls['safety'].value">
                     <mat-form-field fxFlex="70">
                         <mat-select
                                 id="sel-aog-form-technical-type"
-                                placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.TECHNICAL_TYPE_PLACEHOLDER' | translate }}"
+                                placeholder="{{ 'AOG.AOG_FORM.TECHNICAL_TYPE' | translate }}"
                                 [formControl]="aogForm.controls['safetyEventCode']">
                             <mat-option *ngFor="let safety of safetyEventList" [value]="safety.code">{{ safety.description }}
                             </mat-option>
@@ -130,31 +130,41 @@
 
             <div fxFlex="33.3" fxLayout="column" fxLayoutGap="20px">
                 <div class="title-section" fxLayout="row" fxLayoutGap="20px">{{'AOG.AOG_FORM.MAINTENANCE_INFO'|translate}}</div>
-                <label fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-                    AOG Type*
+                <label [ngClass]="{ 'invalid': formDir.submitted && aogForm.controls['aogType'].hasError('required') }" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                    {{'AOG.AOG_FORM.AOG_TYPE'|translate}} *
                 </label>
-                <mat-radio-group fxLayout="column" id="rad-aog-form-contingency-type"
-                                 fxLayoutGap="10px" [formControl]="aogForm.controls['contingencyType']">
+                <mat-radio-group required fxLayout="column" id="rad-aog-form-contingency-type"
+                                 fxLayoutGap="10px" [formControl]="aogForm.controls['aogType']">
                     <mat-radio-button labelPosition="after"
-                                      *ngFor="let ct of contingencyType"
-                                      value="{{ ct.code }}">{{ ct.description }}
-                    </mat-radio-button>
-                </mat-radio-group>
-                <label fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-                    Failure Type*
-                </label>
-                <mat-radio-group fxLayout="column" id="rad-aog-form-failure-type"
-                                 fxLayoutGap="10px" [formControl]="aogForm.controls['failure']">
-                    <mat-radio-button labelPosition="after"
-                                      *ngFor="let ct of failureType"
+                                      *ngFor="let ct of aogType"
                                       value="{{ ct.code }}">{{ ct.description }}
                     </mat-radio-button>
                 </mat-radio-group>
 
+                <mat-error *ngIf="aogForm.controls['aogType'].hasError('required') && formDir.submitted">
+                    {{'AOG.AOG_FORM.ERROR.AOG_TYPE_REQUIRED'|translate}}
+                </mat-error>
+
+                <label [ngClass]="{ 'invalid': formDir.submitted && aogForm.controls['failure'].hasError('required') }" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                    {{'AOG.AOG_FORM.FAILURE_TYPE'|translate}} *
+                </label>
+
+                <mat-radio-group required fxLayout="column" id="rad-aog-form-failure-type"
+                                 fxLayoutGap="10px" [formControl]="aogForm.controls['failure']">
+                    <mat-radio-button labelPosition="after"
+                                      *ngFor="let ct of aogFailureType"
+                                      value="{{ ct.code }}">{{ ct.description }}
+                    </mat-radio-button>
+                </mat-radio-group>
+
+                <mat-error *ngIf="aogForm.controls['failure'].hasError('required') && formDir.submitted">
+                    {{'AOG.AOG_FORM.ERROR.FAILURE_REQUIRED'|translate}}
+                </mat-error>
+
                 <mat-form-field class="full-width">
-                    <textarea matInput
+                    <textarea required matInput
                               id="txt-aog-form-reason"
-                              placeholder="{{'OPERATIONS.CONTINGENCY_FORM.REASON_PLACEHOLDER' | translate}}"
+                              placeholder="{{'AOG.AOG_FORM.REASON' | translate}}"
                               [formControl]="aogForm.controls['reason']"
                               #reason>
                     </textarea>
@@ -170,9 +180,9 @@
                 </mat-form-field>
 
                 <mat-form-field class="full-width">
-                    <textarea matInput
+                    <textarea required matInput
                               id="txt-aog-form-observation"
-                              placeholder="{{'OPERATIONS.CONTINGENCY_FORM.OBSERVATIONS_PLACEHOLDER' | translate}}"
+                              placeholder="{{'AOG.AOG_FORM.OBSERVATIONS' | translate}}"
                               [formControl]="aogForm.controls['observation']"
                               #observation>
                     </textarea>
@@ -189,10 +199,11 @@
 
                 <div fxLayout="row">
                     <div fxLayout="column" fxFlex="150px" fxLayoutGap="20px">
-                        <label fxLayout="row">
-                            Tipology*:
+
+                        <label fxLayout="row" [ngClass]="{ 'invalid': formDir.submitted && aogForm.controls['tipology'].hasError('required') }">
+                            {{'AOG.AOG_FORM.TIPOLOGY'|translate}} *:
                         </label>
-                        <mat-radio-group fxLayout="row" id="rad-aog-form-tipology"
+                        <mat-radio-group required fxLayout="row" id="rad-aog-form-tipology"
                                          fxLayoutGap="10px" [formControl]="aogForm.controls['tipology']">
                             <!--<mat-radio-button fxFlex="50" labelPosition="after"-->
                                               <!--*ngFor="let ct of failureType"-->
@@ -201,22 +212,22 @@
                             <mat-radio-button>NI</mat-radio-button>
                             <mat-radio-button>ETR</mat-radio-button>
                         </mat-radio-group>
-                        <mat-error *ngIf="aogForm.controls['tipology'].hasError('required')">
-                            {{'OPERATIONS.CONTINGENCY_FORM.FLEET_REQUIRED'|translate}}
+                        <mat-error *ngIf="aogForm.controls['tipology'].hasError('required') && formDir.submitted">
+                            {{'AOG.AOG_FORM.ERROR.TIPOLOGY_REQUIRED'|translate}}
                         </mat-error>
                     </div>
                     <div fxLayout="column" fxFlex="80px">
-                        <label fxLayout="row">
-                            Duration*:
+                        <label fxLayout="row" [ngClass]="{ 'invalid': formDir.submitted && aogForm.controls['tipology'].hasError('required') }">
+                            {{'AOG.AOG_FORM.DURATION'|translate}} *:
                         </label>
                         <mat-form-field id="form-field-duration">
-                            <input id="in-aog-form-duration"
+                            <input required id="in-aog-form-duration"
                                    matInput
                                    type="time"
                                    [formControl]="aogForm.controls['duration']"
-                                   name="fleet">
+                                   name="duration">
                             <mat-error
-                                    *ngIf="aogForm.controls['duration'].hasError('required') && aogForm.controls['fleet'].touched">
+                                    *ngIf="aogForm.controls['duration'].hasError('required') && aogForm.controls['duration'].touched">
                                 {{'OPERATIONS.CONTINGENCY_FORM.FLEET_REQUIRED'|translate}}
                             </mat-error>
                         </mat-form-field>
@@ -230,10 +241,10 @@
 
     <div mat-dialog-actions fxLayoutAlign="end">
         <button id="btn-aog-form-cancel" type="button" mat-button (click)="openCancelDialog()">
-            {{'OPERATIONS.CONTINGENCY_FORM.CANCEL_LABEL'|translate}}
+            {{'BUTTONS.CANCEL'|translate}}
         </button>
         <button id="btn-aog-form-submit" type="submit" mat-button mat-raised-button color="primary">
-            {{'OPERATIONS.CONTINGENCY_FORM.CREATE_LABEL'|translate}}
+            {{'BUTTONS.CREATE'|translate}}
         </button>
     </div>
 </form>
