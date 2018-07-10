@@ -3,6 +3,8 @@ import {Aog} from '../../../shared/_models/aog/aog';
 import {TranslateService} from '@ngx-translate/core';
 import {Layout, LayoutService} from '../../../layout/_services/layout.service';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
+import {StatusAog} from '../../../shared/_models/aog/statusAog';
+import {Interval} from '../../../shared/_models/interval';
 import {AogFormComponent} from '../aog-form/aog-form.component';
 import {Subscription} from 'rxjs/Subscription';
 import {Observable} from 'rxjs/Observable';
