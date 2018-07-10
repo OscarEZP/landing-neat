@@ -70,7 +70,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.alive = true;
         this.interval = 1000 * 60;
 
-        this._aog = new Aog();
+        this._aog = Aog.getInstance();
         this._aogForm = _fb.group({
             'tail': [this.aog.tail, Validators.required, this.tailDomainValidator.bind(this)],
             'fleet': [this.aog.fleet, Validators.required],
@@ -274,9 +274,9 @@ export class AogFormComponent implements OnInit, OnDestroy {
                     .subscribe((data) => {
                         this.utcModel = new TimeInstant(data.currentTimeLong, data.currentTime);
                         // this.newMessage();
-                        // this.initDateModels(this.utcModel.epochTime);
+                        // this.initDateModels(this.utcMode                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             zl.epochTime);
                         // this._clockService.setClock(this.utcModel.epochTime);
-                        this.aog.openAogDate = new TimeInstant(data.currentTimeLong, data.currentTime);
+                        // this.aog.openAogDate = new TimeInstant(data.currentTimeLong, data.currentTime);
                     });
             });
     }

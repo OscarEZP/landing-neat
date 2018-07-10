@@ -11,49 +11,30 @@ export class Aog {
     private _maintenance: string;
     private _failure: string;
     private _reason: string;
-    private _status: string;
-    private _isSafetyEvent: boolean;
-    private _openAogDate: TimeInstant;
-    private _durationAog: string;
-    private _openStatusDate: TimeInstant;
-    private _durationStatus: number;
+    // private _openAogDate: TimeInstant;
+    // private _openStatusDate: TimeInstant;
+    // private _durationStatus: number;
     private _status: StatusAog;
     private _username: string;
     private _creationDate: TimeInstant;
 
     private constructor() {
-
-    this.tail = '';
-    this.fleet = '';
-    this.operator = '';
-    this.barcode = '';
-    this.station = '';
-    this.safety = '';
-    this.maintenance = '';
-    this.failure = '';
-    this.reason = '';
-    this.status = StatusAog.getInstance();
-    this.username = '';
-    this.creationDate = TimeInstant.getInstance();
-
+        this.tail = '';
+        this.fleet = '';
+        this.operator = '';
+        this.barcode = '';
+        this.station = '';
+        this.safety = '';
+        this.maintenance = '';
+        this.failure = '';
+        this.reason = '';
+        this.status = StatusAog.getInstance();
+        this.username = '';
+        this.creationDate = TimeInstant.getInstance();
     }
 
     public static getInstance() {
         return new Aog();
-    }
-
-    constructor() {
-        this._tail = '';
-        this._fleet = '';
-        this._operator = '';
-        this._barcode = '';
-        this._reason = '';
-        this._status = '';
-        this._isSafetyEvent = false;
-        this._openAogDate = TimeInstant.getInstance();
-        this._durationAog = '00:00';
-        this._openStatusDate = TimeInstant.getInstance();
-        this._durationStatus = 0;
     }
 
     get tail(): string {
@@ -151,4 +132,14 @@ export class Aog {
     set creationDate(value: TimeInstant) {
         this._creationDate = value;
     }
+
+    get durationAog(): number {
+        return this.status.realInterval.duration;
+    }
+
+    set durationAog(value: number) {
+        this.status.realInterval.duration = value;
+    }
+
+
 }

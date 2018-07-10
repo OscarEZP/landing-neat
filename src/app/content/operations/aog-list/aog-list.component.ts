@@ -49,31 +49,31 @@ export class AogListComponent implements OnInit, OnDestroy {
 
     private get aogList$(): Observable<Aog[]> {
         const aogList = [];
-        const aogEtr: Aog = new Aog();
-        const aogNi: Aog = new Aog();
+        const aogEtr: Aog = Aog.getInstance();
+        const aogNi: Aog = Aog.getInstance();
         aogEtr.tail = 'PT-MZU';
         aogEtr.fleet = 'A320';
         aogEtr.operator = 'LA';
         aogEtr.barcode = 'TOO3LUTQ';
         aogEtr.reason = 'HOUVE COLISÃO DA ACFT COM FINGER, AFETANDO A PARTE SUPERIOR DO PYLON';
-        aogEtr.status = 'ETR';
-        aogEtr.isSafetyEvent = true;
-        aogEtr.openAogDate = new TimeInstant(Date.now(), null);
-        aogEtr.openStatusDate = new TimeInstant(Date.now(), null);
-        aogEtr.durationAog = '1800000';
-        aogEtr.durationStatus = 1800000;
+        // aogEtr.status = 'ETR';
+        // aogEtr.isSafetyEvent = true;
+        // aogEtr.openAogDate = new TimeInstant(Date.now(), null);
+        // aogEtr.openStatusDate = new TimeInstant(Date.now(), null);
+        aogEtr.durationAog = 1800000;
+        // aogEtr.durationStatus = 1800000;
 
         aogNi.tail = 'PT-MZU';
         aogNi.fleet = 'A320';
         aogNi.operator = 'LA';
         aogNi.barcode = 'TOO3LUTT';
         aogNi.reason = 'HOUVE COLISÃO DA ACFT COM FINGER, AFETANDO A PARTE SUPERIOR DO PYLON';
-        aogNi.status = 'NI';
-        aogNi.isSafetyEvent = false;
-        aogNi.openAogDate = new TimeInstant(Date.now(), null);
-        aogNi.openStatusDate = new TimeInstant(Date.now(), null);
-        aogNi.durationAog = '1800000';
-        aogNi.durationStatus = 1800000;
+        // aogNi.status = 'NI';
+        // aogNi.isSafetyEvent = false;
+        // aogNi.openAogDate = new TimeInstant(Date.now(), null);
+        // aogNi.openStatusDate = new TimeInstant(Date.now(), null);
+        aogNi.durationAog = 1800000;
+        // aogNi.durationStatus = 1800000;
         aogList.push(aogEtr);
         aogList.push(aogNi);
         return Observable.of(aogList);
