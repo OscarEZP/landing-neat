@@ -107,16 +107,16 @@
                 </div>
             </div>
 
-            <div fxFlex="33.3" fxLayout="column" fxLayoutGap="20px">
-                <div class="title-section" fxLayout="row" fxLayoutGap="20px">{{'AOG.AOG_FORM.SAFETY_EVENT_INFO'|translate}}</div>
+            <div fxFlex="33.3" fxLayout="column">
+                <div class="title-section" fxLayout="row" >{{'AOG.AOG_FORM.SAFETY_EVENT_INFO'|translate}}</div>
 
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlexOffset="20px" fxLayoutGap="20px">
                     <mat-checkbox id="chk-aog-form-safety-event" labelPosition="after" fxFlex="20"
                                   [formControl]="aogForm.controls['safety']">{{'AOG.AOG_FORM.SAFETY_EVENT'|translate}}
                     </mat-checkbox>
                 </div>
                 <div fxLayout="row" *ngIf="aogForm.controls['safety'].value">
-                    <mat-form-field fxFlex="70">
+                    <mat-form-field>
                         <mat-select
                                 id="sel-aog-form-technical-type"
                                 placeholder="{{ 'AOG.AOG_FORM.TECHNICAL_TYPE' | translate }}"
@@ -125,6 +125,11 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
+                </div>
+                <div fxLayout="row">
+                    <mat-error *ngIf="aogForm.controls['safety'].hasError('isSafety') && formDir.submitted">
+                        {{'AOG.AOG_FORM.ERROR.SAFETY_EVENT_REQUIRED'|translate}}
+                    </mat-error>
                 </div>
             </div>
 

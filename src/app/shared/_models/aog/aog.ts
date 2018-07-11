@@ -11,9 +11,6 @@ export class Aog {
     private _maintenance: string;
     private _failure: string;
     private _reason: string;
-    // private _openAogDate: TimeInstant;
-    // private _openStatusDate: TimeInstant;
-    // private _durationStatus: number;
     private _status: StatusAog;
     private _username: string;
     private _creationDate: TimeInstant;

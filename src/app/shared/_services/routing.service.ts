@@ -47,7 +47,6 @@ export class RoutingService {
             ]
         });
         this._routing$ = this._routing.asObservable();
-            // .pipe(tap(v => v.activeMenu = this.getActiveMenu(v.arrMenu)));
     }
 
     get routing$(): Observable<Routing> {
@@ -66,12 +65,4 @@ export class RoutingService {
         this.routing.arrMenu = value;
     }
 
-    // public getActiveMenu(arrMenu: Menu[]): Menu {
-    //     let result = arrMenu ? arrMenu.find(m => m.link === this._route.url) : null;
-    //     if (!result && arrMenu) {
-    //         const subMenu = arrMenu.find(m => !!this.getActiveMenu(m.submenu));
-    //         result = subMenu ? this.getActiveMenu(subMenu.submenu) : null;
-    //     }
-    //     return result;
-    // }
 }

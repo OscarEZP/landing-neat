@@ -23,7 +23,8 @@
         "AOG_TYPE_REQUIRED": "AOG Type is required",
         "BARCODE_REQUIRED": "Barcode is required",
         "FAILURE_REQUIRED": "Failure Type is required",
-        "TIPOLOGY_REQUIRED": "Tipology is required"
+        "TIPOLOGY_REQUIRED": "Tipology is required",
+        "SAFETY_EVENT_REQUIRED": "Safety Event is required"
       },
       "FAILURE_TYPE": "Failure Type",
       "FLEET": "Fleet",

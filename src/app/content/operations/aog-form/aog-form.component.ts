@@ -45,6 +45,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _alive: boolean;
     private _interval: number;
     private _timeClock: Date;
+    private _isSafety: boolean;
 
     private _locationList$: Observable<Location[]>;
     private _aircraftList$: Observable<Aircraft[]>;
@@ -56,8 +57,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _operatorSubs: Subscription;
     private _locationSubs: Subscription;
     private _safetyEventSubs: Subscription;
-
-    private _failureType: Types[];
+    private _safetyCheckSubs: Subscription;
 
     constructor(
         private _dialogService: DialogService,
@@ -76,7 +76,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
             'fleet': [this.aog.fleet, Validators.required],
             'operator': [this.aog.operator, Validators.required, this.operatorDomainValidator.bind(this)],
             'station': ['', Validators.required],
-            'safety': [false, Validators.required],
+            'safety': [false, Validators.required, this.safetyEventValidator.bind(this)],
             'barcode': [this.aog.barcode, [Validators.pattern('^([a-zA-Z0-9])+'), Validators.maxLength(80)]],
             'safetyEventCode': [''],
             'aogType': ['', Validators.required],
@@ -92,11 +92,12 @@ export class AogFormComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this._aircraftSubs = this.getAircraftList();
-        this._operatorSubs = this.getOperatorList();
-        this._locationSubs = this.getLocationList();
-        this._safetyEventSubs = this.getSafetyEventList();
+        this._aircraftSubs = this.getAircraftSubs();
+        this._operatorSubs = this.getOperatorSubs();
+        this._locationSubs = this.getLocationSubs();
+        this._safetyEventSubs = this.getSafetyEventSubs();
         this._timerSubs = this.getTimerSubs();
+        this._safetyCheckSubs = this.getSafetyCheckSubs();
     }
 
     ngOnDestroy() {
@@ -108,12 +109,30 @@ export class AogFormComponent implements OnInit, OnDestroy {
         if (this._datetimeSubs) {
             this._datetimeSubs.unsubscribe();
         }
+        this._safetyCheckSubs.unsubscribe();
+    }
+
+    private getSafetyCheckSubs(): Subscription {
+        return this.aogForm.controls['safety']
+            .valueChanges
+            .subscribe(v => this.isSafety = v);
+    }
+
+    public safetyEventValidator(control: FormControl) {
+        const isSafety = control.value;
+        return Observable.of(
+            isSafety && !this.aog.safety ?
+                {isSafety: true} :
+                null
+        );
     }
 
     public submitForm() {
         console.log('submit!');
         if (this.aogForm.valid) {
 
+        } else {
+            console.log(this.aogForm);
         }
     }
 
@@ -121,8 +140,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * Get Safety Event List Configuration
      * @return {Subscription}
      */
-
-    private getSafetyEventList(): Subscription {
+    private getSafetyEventSubs(): Subscription {
         return this._apiRestService
             .getAll<Safety[]>(AogFormComponent.SAFETY_EVENT_LIST_ENDPOINT)
             .subscribe(
@@ -135,7 +153,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * Get aircraft list and create an observable list of fligths will be consumed in the view
      * @return {Subscription}
      */
-    private getAircraftList(): Subscription {
+    private getAircraftSubs(): Subscription {
         return this._apiRestService
             .search<Aircraft[]>(AogFormComponent.AIRCRAFTS_SEARCH_ENDPOINT, new AircraftSearch(1))
             .subscribe((response: Aircraft[]) => {
@@ -154,7 +172,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * Get operator list configuration
      * @return {Subscription}
      */
-    private getOperatorList(): Subscription {
+    private getOperatorSubs(): Subscription {
         return this._apiRestService
             .getAll<Types[]>(AogFormComponent.OPERATOR_LIST_ENDPOINT)
             .subscribe(response => {
@@ -173,7 +191,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * Get the location list from server
      * @return {Subscription}
      */
-    private getLocationList(): Subscription {
+    private getLocationSubs(): Subscription {
         return this._apiRestService
             .getAll<Location[]>(AogFormComponent.LOCATIONS_ENDPOINT)
             .subscribe((response: Location[]) => {
@@ -276,7 +294,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
                         // this.newMessage();
                         // this.initDateModels(this.utcMode                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             zl.epochTime);
                         // this._clockService.setClock(this.utcModel.epochTime);
-                        // this.aog.openAogDate = new TimeInstant(data.currentTimeLong, data.currentTime);
                     });
             });
     }
@@ -317,15 +334,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
                 operatorDomain: true
             };
         });
-    }
-
-
-    get failureType(): Types[] {
-        return this._failureType;
-    }
-
-    set failureType(value: Types[]) {
-        this._failureType = value;
     }
 
     /**
@@ -453,5 +461,13 @@ export class AogFormComponent implements OnInit, OnDestroy {
 
     set timeClock(value: Date) {
         this._timeClock = value;
+    }
+
+    get isSafety(): boolean {
+        return this._isSafety;
+    }
+
+    set isSafety(value: boolean) {
+        this._isSafety = value;
     }
 }

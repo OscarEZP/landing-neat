@@ -76,16 +76,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     private getRoutingSubs(): Subscription {
         return this._routingService.routing$
-            .subscribe(v => {
-                this.routing = v;
-            });
+            .subscribe(v => this.routing = v);
     }
 
     private getLayoutSubs(): Subscription {
         return this._layoutService.layout$
-            .subscribe(v => {
-                this.layout = v;
-            });
+            .subscribe(v => this.layout = v);
     }
 
     private getLoadingSubs(): Subscription {
@@ -164,11 +160,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
 
     public openCreationForm() {
-        // let component: object;
-        // switch (this.routing.activeMenu.link) {
-        //     case '/operations/aog': component = AogFormComponent; break;
-        //     default: component = ContingencyFormComponent; break;
-        // }
         this._dialogService.openDialog(this.layout.formComponent, {
             maxWidth: '100vw',
             width: '100%',
