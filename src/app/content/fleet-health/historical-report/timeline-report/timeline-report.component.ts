@@ -24,19 +24,16 @@ import {Observable} from 'rxjs/Observable';
 export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private static DAYS_FROM = 30;
+    private static DAYS_FROM_CHRONIC = 90;
     private static ZOOM_MIN_DAYS = 15;
     private static ZOOM_MAX_MONTH = 3;
     private static ACTIVE_TASK_DAYS = 4;
-
-    private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
+    private static  RELATED_TASK_SEARCH_ENDPOINT = 'relatedTaskSearch';
     private static TASK_HISTORICAL_ENDPOINT = 'taskHistorical';
     private static TIMELINE_DATE_FORMAT = 'YYYY-MM-DD';
 
     @Output()
     onAnalyzedTaskSelected: EventEmitter<TimelineTask> = new EventEmitter();
-
-    @Output()
-    onAtaCorrected: EventEmitter<any> = new EventEmitter();
 
     @Output()
     onEditorLoad: EventEmitter<boolean> = new EventEmitter();
@@ -61,12 +58,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private _tasksFromReportSubs: Subscription;
 
-    constructor(
-        private _translate: TranslateService,
-        private _element: ElementRef,
-        private _historicalReportService: HistoricalReportService,
-        private _apiRestService: ApiRestService
-    ) {
+    constructor(private _translate: TranslateService,
+                private _element: ElementRef,
+                private _historicalReportService: HistoricalReportService,
+                private _apiRestService: ApiRestService) {
         this._translate.setDefaultLang('en');
     }
 
@@ -85,8 +80,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.clickEvent = null;
         this.createTimeline(this.timelineData);
         this.firstLoad = false;
-        if (this.activeTask.timelineStatus === Task.CLOSE_STATUS) {
+
+        if (this.isCloseTimeline) {
             this.taskHistoricalSubscription = this.getTaskHistoricalSubscription(this.activeTask);
+        } else if (this.hasChronic) {
+            this.listSubscription = this.relatedTaskSearch();
         }
     }
 
@@ -219,13 +217,16 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private getListSubscription(signature: RelationedTaskSearch): Subscription {
         this.loading = true;
-        return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature)
+        return this._apiRestService.search<Task[]>(TimelineReportComponent.RELATED_TASK_SEARCH_ENDPOINT, signature)
             .subscribe(
                 (list) => {
                     this.taskList = list;
                     this.loading = false;
                     this.setRelatedTasks();
-                    this.onAtaCorrected.emit(true);
+                    if (this._historicalReportService.hasChronic) {
+                        this.onAnalyzedTaskSelected.emit(new TimelineTask(this.activeTask, true, true));
+                        this.onEditorLoad.emit(true);
+                    }
                     this.createTimeline(this.timelineData);
                 },
                 () => this.getError()
@@ -268,6 +269,27 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             );
     }
 
+    /**
+     * Related Tasks Search associated of the deferral item
+     * @returns {Subscription}
+     */
+    private relatedTaskSearch(): Subscription {
+        const signature: RelationedTaskSearch = RelationedTaskSearch.getInstance();
+        let days = 0;
+        if (!this.hasChronic) {
+            signature.tail = this.activeTask.tail;
+            signature.ataGroup = this.activeTask.ata;
+            days = TimelineReportComponent.DAYS_FROM;
+        } else {
+            days = TimelineReportComponent.DAYS_FROM_CHRONIC;
+        }
+        signature.barcode = this.activeTask.barcode;
+        const endDate = this.activeTask.createEpochTime;
+        const initDate = moment(endDate).utc().subtract(days, 'days').valueOf();
+        signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
+        return this.getListSubscription(signature);
+    }
+
     private getReviewByBarcode(barcode: string): Review {
         return this.historicalReportRelated.reviews.find(r => r.barcode === barcode);
     }
@@ -295,14 +317,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     public checkCorrectedATA(result: boolean) {
         if (result) {
             this.updatedByUser = true;
-            const signature: RelationedTaskSearch = RelationedTaskSearch.getInstance();
-            signature.tail = this.activeTask.tail;
-            signature.ataGroup = this.activeTask.ata;
-            signature.barcode = this.activeTask.barcode;
-            const endDate = this.activeTask.createEpochTime;
-            const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
-            signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
-            this.listSubscription = this.getListSubscription(signature);
+            this.relatedTaskSearch();
         }
     }
 
@@ -613,5 +628,18 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     set firstLoad(value: boolean) {
         this._firstLoad = value;
+    }
+
+    get isDisplayedCorrectedAta(): boolean {
+        return this._historicalReportService.isDisplayedCorrectedAta;
+    }
+
+    get isCloseTimeline(): boolean {
+        return this._historicalReportService.isCloseTimeline;
+    }
+
+
+    get hasChronic(): boolean {
+        return this._historicalReportService.hasChronic;
     }
 }

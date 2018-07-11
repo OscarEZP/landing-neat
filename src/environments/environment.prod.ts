@@ -36,6 +36,7 @@ export const environment = {
         pendingResolve: '/api/v1/contingencies/pendings/_resolve',
         pendingSearch: '/api/v1/contingencies/pendings/_search',
         plannedFlights: '/api/v1/configurations/planned-flights/_search',
+        relatedTaskSearch: '/api/v1/tasks/fleethealth/related-tasks/_search',
         safetyEvent: '/api/v1/configurations/safetyEvents',
         tasks: '/api/v1/tasks/',
         tasksSearch: '/api/v1/tasks/_search',

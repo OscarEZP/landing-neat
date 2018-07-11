@@ -120,7 +120,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     private getSignature(): Analysis {
         const analysis = Analysis.getInstance();
         analysis.barcode = this.task.barcode;
-        analysis.ata = this.task.timelineStatus === Task.CLOSE_STATUS ? this.task.ata : this.newAta;
+        analysis.ata = this._historicalReportService.validationAta;
         analysis.reviews = this.reviews;
         analysis.username = this.user;
         analysis.alertCode = this.alertCode;
@@ -140,7 +140,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
             this.getTranslateString(HistoricalReportComponent.REQUIRED_REVIEWS);
             return false;
         }
-        if (!this.isCorrected && this.task.timelineStatus === Task.OPEN_STATUS) {
+        if (!this.isCorrected && this._historicalReportService.isDisplayedCorrectedAta) {
             this.getTranslateString(HistoricalReportComponent.REQUIRED_ATA);
             return false;
         }
@@ -221,8 +221,8 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     get alertCode(): string {
         return this.task.alertCode;
     }
-    get isDisplayHistoricalReport(): boolean {
-        return (this.isCorrected || this.task.timelineStatus === Task.CLOSE_STATUS);
+    get isDisplayedDetailTask(): boolean {
+        return this._historicalReportService.isDisplayedDetailTask;
     }
 
     get editorLoad(): boolean {

@@ -1,6 +1,7 @@
 import {TimeInstant} from '../timeInstant';
 import {EvaluationCategory} from './fleethealth/evaluationCategory';
 import {Review} from './analysis/review';
+import {Chronic} from './fleethealth/chronic';
 
 export class Task {
     public static OPEN_STATUS = 'OPEN';
@@ -33,6 +34,7 @@ export class Task {
     private _taskType: string;
     private _authority: string;
     private _hasHistorical: boolean;
+    private _chronic: Chronic;
 
     private constructor() {
         this.id = null;
@@ -60,6 +62,7 @@ export class Task {
         this.review = Review.getInstance();
         this.taskType = '';
         this.authority = '';
+        this.chronic = Chronic.getInstance();
     }
 
     public static getInstance() {
@@ -298,4 +301,11 @@ export class Task {
         this._hasHistorical = value;
     }
 
+    get chronic(): Chronic {
+        return this._chronic;
+    }
+
+    set chronic(value: Chronic) {
+        this._chronic = value;
+    }
 }

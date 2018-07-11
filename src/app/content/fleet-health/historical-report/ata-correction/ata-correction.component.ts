@@ -6,7 +6,6 @@ import {ApiRestService} from '../../../../shared/_services/apiRest.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {map} from 'rxjs/operators/map';
 import {Observable} from 'rxjs/Observable';
-import {StorageService} from '../../../../shared/_services/storage.service';
 import {TranslateService} from '@ngx-translate/core';
 import {MessageService} from '../../../../shared/_services/message.service';
 
@@ -37,7 +36,6 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
         private _historicalReportService: HistoricalReportService,
         private _apiRestService: ApiRestService,
         private _fb: FormBuilder,
-        private _storageService: StorageService,
         private _translateService: TranslateService,
         private _messageService: MessageService
     ) {
