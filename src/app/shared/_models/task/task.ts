@@ -1,6 +1,6 @@
 import {TimeInstant} from '../timeInstant';
 import {EvaluationCategory} from './fleethealth/evaluationCategory';
-import {Review} from './analysis/review';
+import {Review} from './fleethealth/analysis/review';
 import {Chronic} from './fleethealth/chronic';
 
 export class Task {

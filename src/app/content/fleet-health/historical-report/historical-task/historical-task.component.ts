@@ -1,13 +1,13 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {HistoricalTask} from '../../../../shared/_models/task/historical/historicalTask';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiRestService} from '../../../../shared/_services/apiRest.service';
 import {HistoricalReportService} from '../_services/historical-report.service';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
-import {PartGroup} from '../../../../shared/_models/task/historical/partGroup';
+import {PartGroup} from '../../../../shared/_models/task/detail/partGroup';
 import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {DateUtil} from '../../../../shared/util/dateUtil';
+import {DetailTask} from '../../../../shared/_models/task/detail/detailTask';
 
 export interface PartInterface {
     description: string;
@@ -24,11 +24,11 @@ export interface PartInterface {
 })
 export class HistoricalTaskComponent implements OnInit {
 
-    private static TASK_HISTORICAL_REPORT_ENDPOINT = 'taskHistoricalReport';
+    private static TASK_DETAIL_ENDPOINT = 'taskDetail';
     private static DATE_FORMAT = 'dd-MM-yyyy HH:mm';
     private static MOMENT_DATE_FORMAT = 'DD-MM-YYYY';
 
-    private _historicalTask: HistoricalTask;
+    private _detailTask: DetailTask;
     private _analyzedTask: TimelineTask;
     private _editorLoad: boolean;
     private _dataSource: MatTableDataSource<any>;
@@ -41,7 +41,7 @@ export class HistoricalTaskComponent implements OnInit {
     @Input()
     set analyzedTask(value: TimelineTask) {
         if (value && value.task.barcode) {
-            this.getHistoricalTask(value.task.barcode);
+            this.getDetailTask(value.task.barcode);
             this._analyzedTask = value;
         }
     }
@@ -66,22 +66,22 @@ export class HistoricalTaskComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.historicalTask = HistoricalTask.getInstance();
+        this.detailTask = DetailTask.getInstance();
         this.editorLoad = false;
     }
 
     /**
-     * Get the historical task by a barcode
+     * Get the Detail task by Barcode (Parts, Accions, Step)
      * @param {string} barcode
      * @returns {Subscription}
      */
-    public getHistoricalTask(barcode: string): Subscription {
+    public getDetailTask(barcode: string): Subscription {
         return this._apiRestService
-            .getSingle<HistoricalTask>(HistoricalTaskComponent.TASK_HISTORICAL_REPORT_ENDPOINT, barcode)
-            .subscribe((response: HistoricalTask) => {
-                this.historicalTask = response;
+            .getSingle<DetailTask>(HistoricalTaskComponent.TASK_DETAIL_ENDPOINT, barcode)
+            .subscribe((response: DetailTask) => {
+                this.detailTask = response;
                 if (this.editorLoad) {
-                    this.editorContent = this.historicalTask.report;
+                    this.editorContent = this.detailTask.report;
                 }
                 this.tableData = response.parts.map(p => {
                     const newPart: PartInterface = {
@@ -140,17 +140,17 @@ export class HistoricalTaskComponent implements OnInit {
             this.taskType.toUpperCase(),
             this.analyzedTask.task.ata,
             this.analyzedTask.task.barcode,
-            DateUtil.formatDate(this.historicalTask.creationDate.epochTime, HistoricalTaskComponent.MOMENT_DATE_FORMAT)
+            DateUtil.formatDate(this.detailTask.creationDate.epochTime, HistoricalTaskComponent.MOMENT_DATE_FORMAT)
         ];
         return arrHeader.join(' / ');
     }
 
-    get historicalTask(): HistoricalTask {
-        return this._historicalTask;
+    get detailTask(): DetailTask {
+        return this._detailTask;
     }
 
-    set historicalTask(value: HistoricalTask) {
-        this._historicalTask = value;
+    set detailTask(value: DetailTask) {
+        this._detailTask = value;
     }
 
     set editorContent(value: string) {

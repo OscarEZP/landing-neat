@@ -12,7 +12,7 @@ import {DateRange} from '../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 import {DataSet, Timeline} from 'vis';
-import {Review} from '../../../../shared/_models/task/analysis/review';
+import {Review} from '../../../../shared/_models/task/fleethealth/analysis/review';
 import {TimelineOptions} from '../../../../shared/_models/task/timelineOptions';
 import {Observable} from 'rxjs/Observable';
 

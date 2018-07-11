@@ -38,6 +38,7 @@ export const environment = {
         plannedFlights: '/api/v1/configurations/planned-flights/_search',
         safetyEvent: '/api/v1/configurations/safetyEvents',
         types: '/api/v1/configurations/types',
+        taskDetail: '/api/v1/tasks/_detail',
         tasksFleethealthRelatedSearch: '/api/v1/tasks/fleethealth/related-tasks/_search',
         tasksFleethealthAnalysis: '/api/v1/tasks/fleethealth/analysis',
         tasksFleethealthDone: '/api/v1/tasks/fleethealth/manualstate/_apply',
@@ -49,10 +50,6 @@ export const environment = {
         technicalDefaultConfig: '/api/v1/management/default-tech-analysis',
         technicalNotConfiguredAuthoritySearch: '/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: '/api/v1/management/tech-station/_search',
-
-        taskRelationsSearch: '/api/v1/tasks/relations/_search',
-        taskHistoricalReport: '/api/v1/tasks/analysis/historical',
         taskHistorical : '/api/v1/tasks/historical',
-        taskSaveAnalysis: '/api/v1/tasks/analysis',
     }
 };

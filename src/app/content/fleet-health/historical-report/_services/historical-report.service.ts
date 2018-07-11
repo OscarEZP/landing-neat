@@ -2,7 +2,7 @@ import {Task} from '../../../../shared/_models/task/task';
 import {Injectable} from '@angular/core';
 import {QuillEditorComponent} from 'ngx-quill';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
-import {Review} from '../../../../shared/_models/task/analysis/review';
+import {Review} from '../../../../shared/_models/task/fleethealth/analysis/review';
 
 @Injectable()
 export class HistoricalReportService {
