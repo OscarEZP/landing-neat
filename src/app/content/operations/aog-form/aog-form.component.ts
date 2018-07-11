@@ -17,6 +17,7 @@ import {AircraftSearch} from '../../../shared/_models/configuration/aircraftSear
 import {Safety} from '../../../shared/_models/safety';
 import {MessageService} from '../../../shared/_services/message.service';
 import {ClockService} from '../../../shared/_services/clock.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -30,9 +31,12 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static OPERATOR_LIST_ENDPOINT = 'operator';
     private static SAFETY_EVENT_LIST_ENDPOINT = 'safetyEvent';
     private static LOCATIONS_ENDPOINT = 'locations';
+    private static AOG_ENDPOINT = 'locations';
 
     private static DATE_FORMAT = 'dd MMM yyyy ';
     private static HOUR_FORMAT = 'HH:mm:ss';
+
+    private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
 
     private _utcModel: TimeInstant;
     private _aogForm: FormGroup;
@@ -67,7 +71,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
         private _datetimeService: DatetimeService,
         private _apiRestService: ApiRestService,
         private _messageService: MessageService,
-        private _clockService: ClockService
+        private _clockService: ClockService,
+        private _translate: TranslateService
     ) {
         this.utcModel = new TimeInstant(new Date().getTime(), null);
         this.alive = true;
@@ -137,12 +142,22 @@ export class AogFormComponent implements OnInit, OnDestroy {
     }
 
     public submitForm() {
-        console.log('submit!');
         if (this.aogForm.valid) {
-
+            this.postAog();
         } else {
-            console.log(this.aogForm);
+            this.getTranslateString(AogFormComponent.VALIDATION_ERROR_MESSAGE);
+            // this.validations.isSending = false;
         }
+    }
+
+    private postAog() {
+        // this._apiRestService.search(AogFormComponent.AOG_ENDPOINT);
+    }
+
+    private getTranslateString(toTranslate: string) {
+        this._translate.get(toTranslate)
+            .toPromise()
+            .then((res: string) => this._messageService.openSnackBar(res));
     }
 
     /**
