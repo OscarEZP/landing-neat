@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output, OnDestroy, OnInit} from '@angular/core';
-import {Review} from '../../../../shared/_models/task/analysis/review';
+import {Review} from '../../../../shared/_models/task/fleethealth/analysis/review';
 import {Task} from '../../../../shared/_models/task/task';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 

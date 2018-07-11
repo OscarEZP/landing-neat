@@ -21,4 +21,7 @@
   .close-cursor {
     cursor: default;
   }
+  .chronic-icon{
+    color: mat-color($foreground,icon);
+  }
 }
