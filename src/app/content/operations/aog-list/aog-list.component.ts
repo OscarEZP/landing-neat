@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {Aog} from '../../../shared/_models/aog/aog';
 import {TranslateService} from '@ngx-translate/core';
 import {LayoutService} from '../../../layout/_services/layout.service';

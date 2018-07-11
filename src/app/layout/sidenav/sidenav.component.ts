@@ -1,25 +1,29 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {User} from '../../shared/_models/user/user';
 import {SidenavService} from '../_services/sidenav.service';
 import {StorageService} from '../../shared/_services/storage.service';
 import {Menu} from '../../shared/_models/menu';
-import {RoutingService} from '../../shared/_services/routing.service';
+import {Routing, RoutingService} from '../../shared/_services/routing.service';
 import {TranslateService} from '@ngx-translate/core';
 import {AuthService} from '../../auth/_services/auth.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
     selector: 'lsl-sidenav',
     templateUrl: './sidenav.component.html',
     styleUrls: ['./sidenav.component.scss']
 })
-export class SidenavComponent implements OnInit {
+export class SidenavComponent implements OnInit, OnDestroy {
 
     private static LOGOUT_ENDPOINT = 'logout';
     private static MANAGEMENT_ENDPOINT = 'management';
 
-    private user: User;
-    public userArray: { username: string, name: string, email: string };
+    private _user: User;
+    private _userArray: { username: string, name: string, email: string };
     private _arrMenu: Menu[];
+
+    private _routingSubs: Subscription;
+    private _routing: Routing;
 
     constructor(
         private _translate: TranslateService,
@@ -28,16 +32,25 @@ export class SidenavComponent implements OnInit {
         private _routingService: RoutingService,
         private _authService: AuthService
     ) {
-        this.userArray = {username: '', name: '', email: ''};
-        this.user = this._storageService.getCurrentUser();
-        this.userArray.username = this.user.username;
-        this.userArray.email = this.user.email;
-        this.userArray.name = this.user.firstName + ' ' + this.user.lastName;
+        this._userArray = {username: '', name: '', email: ''};
+        this._user = this._storageService.getCurrentUser();
+        this._userArray.username = this._user.username;
+        this._userArray.email = this._user.email;
+        this._userArray.name = this._user.firstName + ' ' + this._user.lastName;
+        this._routingSubs = this.getRoutingSubs();
     }
 
-
     ngOnInit() {
-        this.arrMenu = this.filterMenu(this._routingService.arrMenu);
+        this.arrMenu = this.filterMenu(this.routing.arrMenu);
+    }
+
+    ngOnDestroy() {
+        this._routingSubs.unsubscribe();
+    }
+
+    private getRoutingSubs(): Subscription {
+        return this._routingService.routing$
+            .subscribe(v => this.routing = v);
     }
 
     /**
@@ -67,5 +80,21 @@ export class SidenavComponent implements OnInit {
 
     set arrMenu(value: Menu[]) {
         this._arrMenu = value;
+    }
+
+    get routing(): Routing {
+        return this._routing;
+    }
+
+    set routing(value: Routing) {
+        this._routing = value;
+    }
+
+    get userArray(): { username: string; name: string; email: string } {
+        return this._userArray;
+    }
+
+    set userArray(value: { username: string; name: string; email: string }) {
+        this._userArray = value;
     }
 }

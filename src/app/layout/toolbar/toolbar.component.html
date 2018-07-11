@@ -4,10 +4,10 @@
     </button>
     <figure id="logo">
     </figure>
-    <h1 [innerHtml]="routingService.moduleTitle"></h1>
+    <h1 [innerHtml]="moduleTitle"></h1>
     <aside>
         <nav>
-            <span *ngIf="display" id="datetime">{{ currentDateString | utcDate | date: 'dd MMM yyyy'}} | {{ time | utcDate | date: 'HH:mm:ss' }} UTC</span>
+            <span *ngIf="display" id="datetime">{{ currentDateString | utcDate | date: dateFormat}} | {{ time | utcDate | date: hourFormat }} {{ 'LAYOUT.UTC' | translate }}</span>
             <mat-form-field class="mat-form-field" *ngIf="false">
                 <input matInput type="text">
             </mat-form-field>

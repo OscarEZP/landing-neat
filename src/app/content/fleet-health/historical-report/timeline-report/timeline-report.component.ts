@@ -268,6 +268,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             );
     }
 
+    private getReviewByBarcode(barcode: string): Review {
+        return this.historicalReportRelated.reviews.find(r => r.barcode === barcode);
+    }
+
     /**
      * Subscription for handle historical reports
      * @returns {Subscription}
@@ -275,12 +279,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private getHistoricalReportTasksSubs(): Subscription {
         return this.tasksFromReport$(this.historicalReportRelated.barcode)
             .subscribe(tasks => {
-                const filteredTasks = tasks.filter(t => !!this.historicalReportRelated.reviews.find(r => r.barcode === t.barcode));
-                this.handleAddedTasks(filteredTasks.map(ft => {
-                    const review = this.historicalReportRelated.reviews.find(r => r.barcode === ft.barcode);
-                    ft.review = review;
-                    return ft;
-                }));
+                const filteredTasks = tasks
+                    .filter(t => !!this.getReviewByBarcode(t.barcode))
+                    .map(t => new TimelineTask(t, false, true, this.getReviewByBarcode(t.barcode).apply))
+                ;
+                this.handleAddedTasks(filteredTasks);
                 this.createTimeline(this.timelineData);
             });
     }
@@ -351,11 +354,15 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         itemUpdated.className = itemUpdated.generateClassName();
         this.timelineData.map(v => v.barcode === itemUpdated.barcode ? itemUpdated : v);
         this.dataSet.update([itemUpdated.getJson()]);
-        this.tooltip = false;
-        this.historicalReportRelated = this.validateHistoricalReport(itemUpdated);
-        if (this.historicalReportRelated === itemUpdated || !this.historicalReportRelated) {
+
+        if (itemUpdated.hasHistorical && (!this.historicalReportRelated || this.historicalReportRelated === itemUpdated)) {
+            this.historicalReportRelated = itemUpdated.apply ? itemUpdated : null;
+            this.updatedByUser = true;
+            this.dataSet.update(this.getReportsNotSelected(itemUpdated, !itemUpdated.apply));
             this.handleTasksFromReport(itemUpdated);
         }
+
+        this.tooltip = false;
     }
 
     /**
@@ -380,11 +387,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * Set new TimelineTaks from historical reports
      * @param {Task[]} tasks
      */
-    private handleAddedTasks(tasks: Task[]) {
-        this.tasksFromReport = tasks.map(t => {
-            const tlt = new TimelineTask(t, false, true, t.review.apply);
-            tlt.isHistoricalChildren = true;
-            return tlt;
+    private handleAddedTasks(timelineTasks: TimelineTask[]) {
+        this.tasksFromReport = timelineTasks.map(tl => {
+            tl.isHistoricalChildren = true;
+            return tl;
         });
         this.tasksReplacedByReport = this.timelineData
             .filter(td => this.tasksFromReport.find(tfr => tfr.barcode === td.barcode));
@@ -415,29 +421,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private handleTasksFromReport(itemUpdated: TimelineTask) {
         if (itemUpdated.apply) {
             this.tasksFromReportSubs = this.tasksFromReport$(itemUpdated.barcode)
-                .subscribe(tasks => this.handleAddedTasks(tasks));
+                .subscribe(tasks => this.handleAddedTasks(tasks.map(t => new TimelineTask(t, false, true, t.review.apply))));
         } else {
-           this.handleDeletedTasks();
+            this.handleDeletedTasks();
         }
-        this.tooltip = false;
-    }
-
-    /**
-     * Validation for get just one historical report
-     * @param {TimelineTask} tlTask
-     * @returns {TimelineTask}
-     */
-    private validateHistoricalReport(tlTask: TimelineTask): TimelineTask {
-        if (tlTask.hasHistorical && tlTask.apply === true && !this.historicalReportRelated) {
-            this.updatedByUser = true;
-            this.dataSet.update(this.getReportsNotSelected(tlTask, false));
-            return tlTask;
-        } else if (tlTask.hasHistorical && tlTask.apply === false && tlTask === this.historicalReportRelated) {
-            this.updatedByUser = true;
-            this.dataSet.update(this.getReportsNotSelected(tlTask, true));
-            return null;
-        }
-        return this.historicalReportRelated;
     }
 
     /**

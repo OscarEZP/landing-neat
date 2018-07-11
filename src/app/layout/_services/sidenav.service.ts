@@ -4,22 +4,22 @@ import {MatSidenav} from '@angular/material';
 @Injectable()
 export class SidenavService {
 
-    private sidenav: MatSidenav;
+    private _sidenav: MatSidenav;
 
-    public setSidenav(sidenav: MatSidenav) {
-        this.sidenav = sidenav;
+    set sidenav(value: MatSidenav) {
+        this._sidenav = value;
     }
 
     public openSidenav(): Promise<void> {
-        return this.sidenav.open();
+        return this._sidenav.open();
     }
 
     public closeSidenav(): Promise<void> {
-        return this.sidenav.close();
+        return this._sidenav.close();
     }
 
     public toggleSidenav(isOpen?: boolean): Promise<void> {
-        return this.sidenav.toggle(isOpen);
+        return this._sidenav.toggle(isOpen);
     }
 
 }

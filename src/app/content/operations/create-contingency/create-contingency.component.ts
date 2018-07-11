@@ -383,7 +383,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                 return m[1].toUpperCase();
             });
             this[variableName] = value.types;
-
         }, this);
     }
 

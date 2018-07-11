@@ -19,8 +19,8 @@ import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {MeetingComponent} from '../meeting/meeting.component';
 import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
 import {PaginatorObjectService} from '../../_services/paginator-object.service';
-import {LayoutService} from '../../../layout/_services/layout.service';
-
+import {Layout, LayoutService} from '../../../layout/_services/layout.service';
+import {ContingencyFormComponent} from '../create-contingency/create-contingency.component';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -60,6 +60,14 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.selectedContingency = Contingency.getInstance();
         this.selectedContingencyPivot = Contingency.getInstance();
         this._intervalToRefresh = 0;
+        this.layout = {
+            disableAddButton: false,
+            disableRightNav: true,
+            showRightNav: true,
+            showAddButton: true,
+            loading: false,
+            formComponent: ContingencyFormComponent
+        };
     }
 
     ngOnInit() {
@@ -71,7 +79,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.paginatorObject = PaginatorObjectService.getInstance();
         this.getPaginationSubscription();
         this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
-        this._layoutService.disableAddButton = false;
     }
 
     /**
@@ -99,6 +106,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         if (this.historicalSubscription) {
             this.historicalSubscription.unsubscribe();
         }
+        this._layoutService.reset();
     }
 
     private getPaginationSubscription(): Subscription {
@@ -190,7 +198,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 }
                 this.subscribeTimer();
                 this.contingencyService.loading = false;
-                this._layoutService.disableRightNav = (this._contingencyService.contingencyList.length === 0);
+                this.disableRightNav = this._contingencyService.contingencyList.length === 0;
             });
         }
     }
@@ -233,6 +241,14 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         }
 
         return remain ? warning : average;
+    }
+
+    set disableRightNav(value: boolean) {
+        this._layoutService.disableRightNav = value;
+    }
+
+    set layout(value: Layout) {
+        this._layoutService.layout = value;
     }
 
     get currentUTCTime(): number {

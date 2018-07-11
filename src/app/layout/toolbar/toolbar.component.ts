@@ -17,47 +17,48 @@ import { RoutingService } from '../../shared/_services/routing.service';
 })
 export class ToolbarComponent implements OnInit, OnDestroy {
 
-    private _messageDataSubscription: Subscription;
-    private data: ActualTimeModel;
-    public display: boolean;
-    private alive: boolean;
-    private interval: number;
-    public currentDateLong: number;
-    public currentDateString: string;
-    public time: Date;
-    public moduleTitle: string;
+    private static DATE_FORMAT = 'dd MMM yyyy';
+    private static HOUR_FORMAT = 'HH:mm:ss';
 
-    constructor(private datetimeService: DatetimeService,
-                private messageData: DataService,
-                private clockService: ClockService,
-                private sidenavService: SidenavService,
-                public routingService: RoutingService) {
-        this.display = true;
-        this.alive = true;
-        this.interval = 60000;
-        this.currentDateLong = 0;
-        this.currentDateString = '';
-        this.moduleTitle = '';
+    private _messageDataSubscription: Subscription;
+    private _data: ActualTimeModel;
+    private _display: boolean;
+    private _alive: boolean;
+    private _interval: number;
+    private _currentDateLong: number;
+    private _currentDateString: string;
+    private _time: Date;
+
+    constructor(private _datetimeService: DatetimeService,
+                private _messageData: DataService,
+                private _clockService: ClockService,
+                private _sidenavService: SidenavService,
+                private _routingService: RoutingService) {
+        this._display = true;
+        this._alive = true;
+        this._interval = 60000;
+        this._currentDateLong = 0;
+        this._currentDateString = '';
     }
 
     ngOnInit() {
-        this._messageDataSubscription = this.messageData.currentNumberMessage.subscribe(message => this.currentDateLong = message);
+        this._messageDataSubscription = this._messageData.currentNumberMessage.subscribe(message => this.currentDateLong = message);
         TimerObservable.create(0, this.interval)
-            .takeWhile(() => this.alive)
+            .takeWhile(() => this._alive)
             .subscribe(() => {
-                this.datetimeService.getTime()
+                this._datetimeService.getTime()
                     .subscribe((data) => {
                         this.data = data;
                         this.currentDateLong = this.data.currentTimeLong;
                         this.currentDateString = this.data.currentTime;
                         this.newMessage();
-                        this.clockService.setClock(this.currentDateLong);
+                        this._clockService.setClock(this.currentDateLong);
                         if (!this.display) {
                             this.display = true;
                         }
                     });
             });
-        this.clockService.getClock().subscribe(time => this.time = time);
+        this._clockService.getClock().subscribe(time => this.time = time);
     }
 
     ngOnDestroy() {
@@ -66,10 +67,79 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     }
 
     newMessage() {
-        this.messageData.changeTimeUTCMessage(this.currentDateLong);
+        this._messageData.changeTimeUTCMessage(this.currentDateLong);
     }
 
     toggleSidenav() {
-        this.sidenavService.toggleSidenav().then();
+        this._sidenavService.toggleSidenav().then();
     }
+
+    get data(): ActualTimeModel {
+        return this._data;
+    }
+
+    set data(value: ActualTimeModel) {
+        this._data = value;
+    }
+
+    get display(): boolean {
+        return this._display;
+    }
+
+    set display(value: boolean) {
+        this._display = value;
+    }
+
+    get alive(): boolean {
+        return this._alive;
+    }
+
+    set alive(value: boolean) {
+        this._alive = value;
+    }
+
+    get interval(): number {
+        return this._interval;
+    }
+
+    set interval(value: number) {
+        this._interval = value;
+    }
+
+    get currentDateLong(): number {
+        return this._currentDateLong;
+    }
+
+    set currentDateLong(value: number) {
+        this._currentDateLong = value;
+    }
+
+    get currentDateString(): string {
+        return this._currentDateString;
+    }
+
+    set currentDateString(value: string) {
+        this._currentDateString = value;
+    }
+
+    get time(): Date {
+        return this._time;
+    }
+
+    set time(value: Date) {
+        this._time = value;
+    }
+
+    get moduleTitle() {
+        return this._routingService.moduleTitle;
+    }
+
+    get hourFormat(): string {
+        return ToolbarComponent.HOUR_FORMAT;
+    }
+
+    get dateFormat(): string {
+        return ToolbarComponent.DATE_FORMAT;
+    }
+
 }

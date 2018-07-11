@@ -6,9 +6,10 @@ import { MessageService } from '../../shared/_services/message.service';
 import { StorageService } from '../../shared/_services/storage.service';
 import { AuthService } from '../_services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
-import {RoutingService} from '../../shared/_services/routing.service';
+import {Routing, RoutingService} from '../../shared/_services/routing.service';
 import {ManagementUser} from '../../shared/_models/management/managementUser';
 import { Access } from '../../shared/_models/management/access';
+import {Subscription} from 'rxjs/Subscription';
 
 
 @Component({
@@ -42,6 +43,9 @@ export class LoginComponent implements OnInit {
 
     loginForm: FormGroup;
 
+    private _routing: Routing;
+    private _routingSubs: Subscription;
+
     constructor(
         protected _authService: AuthService,
         private _storageService: StorageService,
@@ -56,6 +60,8 @@ export class LoginComponent implements OnInit {
     }
 
     ngOnInit() {
+        this._routingSubs = this.getRoutingSubs();
+
         this.registerView = false;
         this.disableButton = false;
         this.activateLoadingBar(false);
@@ -73,6 +79,11 @@ export class LoginComponent implements OnInit {
                 this.router.navigate([this._authService.getRedirectUrl()]);
             }
         });
+    }
+
+    private getRoutingSubs(): Subscription {
+        return this._routingService.routing$
+            .subscribe(v => this.routing = v);
     }
 
     /**
@@ -105,7 +116,7 @@ export class LoginComponent implements OnInit {
     private redirect(username: string) {
         this._authService.getAccess(username).then(
         res => {
-            const role = this._routingService.arrMenu.find(menu => {
+            const role = this.routing.arrMenu.find(menu => {
                 const moduleConfig = this._authService.modulesConfig.filter(
                     mod => this.authModule(res).find(mu => mu.module === mod.code)
                 );
@@ -148,8 +159,16 @@ export class LoginComponent implements OnInit {
         return this._authService.data;
     }
 
-    set data(value: { username: string, password: string }){
+    set data(value: { username: string, password: string }) {
         this._authService.data = value;
+    }
+
+    get routing(): Routing {
+        return this._routing;
+    }
+
+    set routing(value: Routing) {
+        this._routing = value;
     }
 }
 
