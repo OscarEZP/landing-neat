@@ -55,5 +55,7 @@ export const environment = {
         technicalDefaultConfig: ':9015/api/v1/management/default-tech-analysis',
         technicalNotConfiguredAuthoritySearch: ':9015/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: ':9015/api/v1/management/tech-station/_search',
+        aircraftOnGroundSearch: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_search',
+        aircraftOnGroundCount: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_count',
     }
 };
