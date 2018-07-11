@@ -28,7 +28,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private static ZOOM_MIN_DAYS = 15;
     private static ZOOM_MAX_MONTH = 3;
     private static ACTIVE_TASK_DAYS = 4;
-    private static  RELATED_TASK_SEARCH_ENDPOINT = 'relatedTaskSearch';
+    private static  RELATED_TASK_SEARCH_ENDPOINT = 'tasksFleethealthRelatedSearch';
     private static TASK_HISTORICAL_ENDPOINT = 'taskHistorical';
     private static TIMELINE_DATE_FORMAT = 'YYYY-MM-DD';
 

@@ -36,13 +36,10 @@ export const environment = {
         pendingResolve: ':9002/api/v1/contingencies/pendings/_resolve',
         pendingSearch: ':9002/api/v1/contingencies/pendings/_search',
         plannedFlights: '9002/api/v1/configurations/planned-flights/_search',
-        relatedTaskSearch: ':9006/api/v1/tasks/fleethealth/related-tasks/_search',
         safetyEvent: ':9005/api/v1/configurations/safetyEvents',
         types: ':9005/api/v1/configurations/types',
-        taskRelationsSearch: ':9006/api/v1/tasks/relations/_search',
-        taskHistoricalReport: ':9006/api/v1/tasks/analysis/historical',
-        taskHistorical : '9006/api/v1/tasks/historical',
-        taskSaveAnalysis: ':9006/api/v1/tasks/analysis',
+        tasksFleethealthRelatedSearch: ':9006/api/v1/tasks/fleethealth/related-tasks/_search',
+        tasksFleethealthAnalysis: ':9006/api/v1/tasks/fleethealth/analysis',
         tasksFleethealthDone: ':9006/api/v1/tasks/fleethealth/manualstate/_apply',
         tasksFleethealthSearchCount: ':9006/api/v1/tasks/fleethealth/_search/count',
         tasksFleethealthSearch: ':9006/api/v1/tasks/fleethealth/_search',
@@ -53,5 +50,10 @@ export const environment = {
         technicalDefaultConfig: ':9015/api/v1/management/default-tech-analysis',
         technicalNotConfiguredAuthoritySearch: ':9015/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: ':9015/api/v1/management/tech-station/_search',
+
+        taskRelationsSearch: ':9006/api/v1/tasks/relations/_search',
+        taskHistoricalReport: ':9006/api/v1/tasks/analysis/historical',
+        taskHistorical : ':9006/api/v1/tasks/historical',
+        taskSaveAnalysis: ':9006/api/v1/tasks/analysis',
     }
 };

@@ -25,7 +25,7 @@ import {Subscription} from 'rxjs/Subscription';
 })
 export class HistoricalReportComponent implements OnInit, OnDestroy {
 
-    private static TASK_SAVE_ANALYSIS_ENDPOINT = 'taskSaveAnalysis';
+    private static TASK_SAVE_ANALYSIS_ENDPOINT = 'tasksFleethealthAnalysis';
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
     private static SAVED_ANALYSIS = 'FLEET_HEALTH.REPORT.MSG.SAVED_ANALYSIS';
     private static REQUIRED_REVIEWS = 'FLEET_HEALTH.REPORT.ERROR.REQUIRED_REVIEWS';
