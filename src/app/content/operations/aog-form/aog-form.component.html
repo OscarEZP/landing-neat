@@ -210,19 +210,17 @@
                         </label>
                         <mat-radio-group required fxLayout="row" id="rad-aog-form-tipology"
                                          fxLayoutGap="10px" [formControl]="aogForm.controls['tipology']">
-                            <!--<mat-radio-button fxFlex="50" labelPosition="after"-->
-                                              <!--*ngFor="let ct of failureType"-->
-                                              <!--value="{{ ct.code }}">{{ ct.description }}-->
-                            <!--</mat-radio-button>-->
-                            <mat-radio-button>NI</mat-radio-button>
-                            <mat-radio-button>ETR</mat-radio-button>
+                            <mat-radio-button fxFlex="50" labelPosition="after"
+                                              *ngFor="let ct of aogStatus"
+                                              value="{{ ct.code }}">{{ ct.code }}
+                            </mat-radio-button>
                         </mat-radio-group>
                         <mat-error *ngIf="aogForm.controls['tipology'].hasError('required') && formDir.submitted">
                             {{'AOG.AOG_FORM.ERROR.TIPOLOGY_REQUIRED'|translate}}
                         </mat-error>
                     </div>
                     <div fxLayout="column" fxFlex="80px">
-                        <label fxLayout="row" [ngClass]="{ 'invalid': formDir.submitted && aogForm.controls['tipology'].hasError('required') }">
+                        <label fxLayout="row" [ngClass]="{ 'invalid': formDir.submitted && aogForm.controls['duration'].hasError('required') }">
                             {{'AOG.AOG_FORM.DURATION'|translate}} *:
                         </label>
                         <mat-form-field id="form-field-duration">

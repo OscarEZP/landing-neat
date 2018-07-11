@@ -16,6 +16,7 @@ import {map, startWith} from 'rxjs/operators';
 import {AircraftSearch} from '../../../shared/_models/configuration/aircraftSearch';
 import {Safety} from '../../../shared/_models/safety';
 import {MessageService} from '../../../shared/_services/message.service';
+import {ClockService} from '../../../shared/_services/clock.service';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -58,13 +59,15 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _locationSubs: Subscription;
     private _safetyEventSubs: Subscription;
     private _safetyCheckSubs: Subscription;
+    private _clockSubs: Subscription;
 
     constructor(
         private _dialogService: DialogService,
         private _fb: FormBuilder,
         private _datetimeService: DatetimeService,
         private _apiRestService: ApiRestService,
-        private _messageService: MessageService
+        private _messageService: MessageService,
+        private _clockService: ClockService
     ) {
         this.utcModel = new TimeInstant(new Date().getTime(), null);
         this.alive = true;
@@ -98,6 +101,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._safetyEventSubs = this.getSafetyEventSubs();
         this._timerSubs = this.getTimerSubs();
         this._safetyCheckSubs = this.getSafetyCheckSubs();
+        this._clockSubs = this.getClockSubscription();
     }
 
     ngOnDestroy() {
@@ -110,6 +114,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
             this._datetimeSubs.unsubscribe();
         }
         this._safetyCheckSubs.unsubscribe();
+        this._clockSubs.unsubscribe();
+    }
+
+    private getClockSubscription(): Subscription {
+        return this._clockService.getClock().subscribe(time => this.timeClock = time);
     }
 
     private getSafetyCheckSubs(): Subscription {
