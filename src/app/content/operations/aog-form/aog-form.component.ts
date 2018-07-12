@@ -157,7 +157,13 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private getSafetyCheckSubs(): Subscription {
         return this.aogForm.controls['safety']
             .valueChanges
-            .subscribe(v => this.isSafety = v);
+            .subscribe(v => {
+                this.isSafety = v;
+                this.aogForm.controls['safetyEventCode'].setErrors(this.safetyEventValidator(this.aogForm.controls['safetyEventCode']));
+                if (!v) {
+                    this.aogForm.controls['safety'].markAsPristine();
+                }
+            });
     }
 
     private safetyEventValidator(control: AbstractControl): object {
@@ -347,9 +353,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
                 this._datetimeSubs = this._datetimeService.getTime()
                     .subscribe((data) => {
                         this.utcModel = new TimeInstant(data.currentTimeLong, data.currentTime);
-                        // this.newMessage();
-                        // this.initDateModels(this.utcMode                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             zl.epochTime);
-                        // this._clockService.setClock(this.utcModel.epochTime);
                     });
             });
     }
