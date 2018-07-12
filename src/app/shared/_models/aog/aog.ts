@@ -1,17 +1,38 @@
 import {TimeInstant} from '../timeInstant';
+import {StatusAog} from './statusAog';
 export class Aog {
 
     private _tail: string;
     private _fleet: string;
     private _operator: string;
     private _barcode: string;
+    private _station: string;
+    private _safety: string;
+    private _maintenance: string;
+    private _failure: string;
     private _reason: string;
-    private _status: string;
-    private _isSafetyEvent: boolean;
-    private _openAogDate: TimeInstant;
-    private _durationAog: number;
-    private _openStatusDate: TimeInstant;
-    private _durationStatus: number;
+    private _status: StatusAog;
+    private _username: string;
+    private _creationDate: TimeInstant;
+
+    private constructor() {
+        this.tail = '';
+        this.fleet = '';
+        this.operator = '';
+        this.station = '';
+        this.barcode = '';
+        this.safety = '';
+        this.maintenance = '';
+        this.failure = '';
+        this.reason = '';
+        this.status = StatusAog.getInstance();
+        this.username = '';
+        this.creationDate = TimeInstant.getInstance();
+    }
+
+    public static getInstance() {
+        return new Aog();
+    }
 
     get tail(): string {
         return this._tail;
@@ -45,6 +66,38 @@ export class Aog {
         this._barcode = value;
     }
 
+    get station(): string {
+        return this._station;
+    }
+
+    set station(value: string) {
+        this._station = value;
+    }
+
+    get safety(): string {
+        return this._safety;
+    }
+
+    set safety(value: string) {
+        this._safety = value;
+    }
+
+    get maintenance(): string {
+        return this._maintenance;
+    }
+
+    set maintenance(value: string) {
+        this._maintenance = value;
+    }
+
+    get failure(): string {
+        return this._failure;
+    }
+
+    set failure(value: string) {
+        this._failure = value;
+    }
+
     get reason(): string {
         return this._reason;
     }
@@ -53,51 +106,52 @@ export class Aog {
         this._reason = value;
     }
 
-    get status(): string {
+    get status(): StatusAog {
         return this._status;
     }
 
-    set status(value: string) {
+    set status(value: StatusAog) {
         this._status = value;
     }
 
-    get isSafetyEvent(): boolean {
-        return this._isSafetyEvent;
+    get username(): string {
+        return this._username;
     }
 
-    set isSafetyEvent(value: boolean) {
-        this._isSafetyEvent = value;
+    set username(value: string) {
+        this._username = value;
     }
 
-    get openAogDate(): TimeInstant {
-        return this._openAogDate;
+    get creationDate(): TimeInstant {
+        return this._creationDate;
     }
 
-    set openAogDate(value: TimeInstant) {
-        this._openAogDate = value;
+    set creationDate(value: TimeInstant) {
+        this._creationDate = value;
     }
 
     get durationAog(): number {
-        return this._durationAog;
+        return this.status.requestedInterval.duration;
     }
 
     set durationAog(value: number) {
-        this._durationAog = value;
+        this.status.requestedInterval.duration = value;
     }
 
-    get openStatusDate(): TimeInstant {
-        return this._openStatusDate;
+    get observation(): string {
+        return this.status.observation;
     }
 
-    set openStatusDate(value: TimeInstant) {
-        this._openStatusDate = value;
+    set observation(value: string) {
+        this.status.observation = value;
     }
 
-    get durationStatus(): number {
-        return this._durationStatus;
+    get code(): string {
+        return this.status.code;
     }
 
-    set durationStatus(value: number) {
-        this._durationStatus = value;
+    set code(value: string) {
+        this.status.code = value;
     }
+
 }

@@ -16,7 +16,8 @@ import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
 import {ResolvePendingComponent} from '../resolve-pending/resolve-pending.component';
-import {LayoutService} from '../../../layout/_services/layout.service';
+import {Layout, LayoutService} from '../../../layout/_services/layout.service';
+import {ContingencyFormComponent} from '../create-contingency/create-contingency.component';
 @Component({
     selector: 'lsl-pending-list',
     templateUrl: './pending-list.component.html',
@@ -50,6 +51,14 @@ export class PendingListComponent implements OnInit, OnDestroy {
         private _dialogService: DialogService,
         private _layoutService: LayoutService
     ) {
+        this.layout = {
+            disableAddButton: false,
+            disableRightNav: true,
+            showRightNav: true,
+            showAddButton: true,
+            loading: false,
+            formComponent: ContingencyFormComponent
+        };
     }
 
     ngOnInit() {
@@ -137,7 +146,7 @@ export class PendingListComponent implements OnInit, OnDestroy {
             }
             this.subscribeTimer();
             this.contingencyService.loading = false;
-            this._layoutService.disableRightNav = (this._contingencyService.contingencyList.length === 0);
+            this._layoutService.disableRightNav = this._contingencyService.contingencyList.length === 0;
         });
     }
 
@@ -248,6 +257,10 @@ export class PendingListComponent implements OnInit, OnDestroy {
      */
     public checkDataStatus(): boolean {
         return this.contingencyService.contingencyList.length > 0 && !this.contingencyService.loading;
+    }
+
+    set layout(value: Layout) {
+        this._layoutService.layout = value;
     }
 
     get historicalSearchService(): HistoricalSearchService {

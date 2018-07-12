@@ -85,7 +85,8 @@ describe('Contingency List Test', () => {
 
     const MockLayoutService = {
         showAddButton: () => false,
-        showRightNav: () => true
+        showRightNav: () => true,
+        reset: () => {}
     };
 
     class FakeLoader implements TranslateLoader {

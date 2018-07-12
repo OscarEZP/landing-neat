@@ -1,27 +1,40 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { ContingencyService } from '../../content/_services/contingency.service';
 import { DetailsService } from '../../details/_services/details.service';
-import {LayoutService} from '../_services/layout.service';
+import {Layout, LayoutService} from '../_services/layout.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
     selector: 'lsl-rightnav',
     templateUrl: './rightnav.component.html',
     styleUrls: ['./rightnav.component.scss']
 })
-export class RightnavComponent {
+export class RightnavComponent implements OnInit, OnDestroy {
 
     private _activeSection: string;
+    private _layoutSubs: Subscription;
+    private _layout: Layout;
 
-    constructor(private _detailsService: DetailsService, private _contingencyService: ContingencyService, private _layoutService: LayoutService) {
-        this.activeSection = null;
+    constructor(
+        private _detailsService: DetailsService,
+        private _contingencyService: ContingencyService,
+        private _layoutService: LayoutService
+    ) {
+        this._activeSection = null;
+        this._layout = null;
     }
 
-    get activeSection(): string {
-        return this._activeSection;
+    ngOnInit(): void {
+        this._layoutSubs = this.getLayoutSubs();
     }
 
-    set activeSection(value: string) {
-        this._activeSection = value;
+    ngOnDestroy(): void {
+        this._layoutSubs.unsubscribe();
+    }
+
+    private getLayoutSubs() {
+        return this._layoutService.layout$
+            .subscribe(v => this.layout = v);
     }
 
     public openDetails(section: string = 'information') {
@@ -34,7 +47,22 @@ export class RightnavComponent {
     }
 
     public isDisabled(): boolean {
+        return this.layout.disableRightNav;
+    }
 
-        return this._layoutService.disableRightNav;
+    get activeSection(): string {
+        return this._activeSection;
+    }
+
+    set activeSection(value: string) {
+        this._activeSection = value;
+    }
+
+    get layout(): Layout {
+        return this._layout;
+    }
+
+    set layout(value: Layout) {
+        this._layout = value;
     }
 }

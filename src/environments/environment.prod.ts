@@ -7,6 +7,9 @@ export const environment = {
         enabled: true
     },
     paths: {
+        aircraftOnGround: '/api/aircraft-on-ground/v1/aircraft-on-ground',
+        aircraftOnGroundSearch: '/api/aircraft-on-ground/v1/aircraft-on-ground/_search',
+        aircraftOnGroundCount: '/api/aircraft-on-ground/v1/aircraft-on-ground/_count',
         aircrafts: '/api/v1/configurations/aircrafts',
         aircraftsSearch: '/api/v1/configurations/aircrafts/_search',
         areas: '/api/v1/contingencies/pendings/areas',
@@ -37,8 +40,8 @@ export const environment = {
         pendingSearch: '/api/v1/contingencies/pendings/_search',
         plannedFlights: '/api/v1/configurations/planned-flights/_search',
         safetyEvent: '/api/v1/configurations/safetyEvents',
-        types: '/api/v1/configurations/types',
         taskDetail: '/api/v1/tasks/_detail',
+        taskHistorical : '/api/v1/tasks/historical',
         tasksFleethealthRelatedSearch: '/api/v1/tasks/fleethealth/related-tasks/_search',
         tasksFleethealthAnalysis: '/api/v1/tasks/fleethealth/analysis',
         tasksFleethealthDone: '/api/v1/tasks/fleethealth/manualstate/_apply',
@@ -50,6 +53,6 @@ export const environment = {
         technicalDefaultConfig: '/api/v1/management/default-tech-analysis',
         technicalNotConfiguredAuthoritySearch: '/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: '/api/v1/management/tech-station/_search',
-        taskHistorical : '/api/v1/tasks/historical',
+        types: '/api/v1/configurations/types'
     }
 };

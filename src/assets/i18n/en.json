@@ -1,5 +1,49 @@
 {
-  "AUTHENTICATION":{
+  "AOG": {
+    "ACTIVE_AOGS": "Active AOG's",
+    "ACTIVE_AOG": "Active AOG",
+    "LIST": {
+      "TAILFLEET": "Tail / Fleet",
+      "OPERATOR": "Operator",
+      "BARCODE": "Barcode",
+      "REASON": "Reason",
+      "NEXTSTEP": "Next Step",
+      "STATUS": "Status",
+      "DURATION": "Duration"
+    },
+    "AOG_FORM": {
+      "AC": "A / C",
+      "AIRCRAFT": "Aircraft",
+      "AOG_CREATION": "AOG Creation",
+      "AOG_INFORMATION": "AOG Information",
+      "AOG_TYPE": "AOG Type",
+      "BARCODE": "Barcode",
+      "DURATION": "Duration",
+      "ERROR": {
+        "AOG_TYPE_REQUIRED": "AOG Type is required",
+        "BARCODE_REQUIRED": "Barcode is required",
+        "FAILURE_REQUIRED": "Failure Type is required",
+        "TIPOLOGY_REQUIRED": "Tipology is required",
+        "SAFETY_EVENT_REQUIRED": "Safety Event is required"
+      },
+      "FAILURE_TYPE": "Failure Type",
+      "FLEET": "Fleet",
+      "MAINTENANCE_INFO": "Maintenance Info",
+      "MESSAGE": {
+        "SUCCESS": "AOG has been created successfully"
+      },
+      "OBSERVATIONS": "Observations",
+      "OPERATOR": "Operator",
+      "OPERATION_INFO": "Operation Info",
+      "REASON": "Reason",
+      "SAFETY_EVENT": "Safety Event",
+      "SAFETY_EVENT_INFO": "Safety Event Info",
+      "STATION": "Station",
+      "TECHNICAL_TYPE": "Technical Station",
+      "TIPOLOGY": "Tipology"
+    }
+  },
+  "AUTHENTICATION": {
     "CHANGE_PASSWORD": "Change Password",
     "CHECK_YOUR_EMAIL": "Please check your email",
     "ENTER_YOUR_CODE": "Please enter your Verification Code",
@@ -30,7 +74,7 @@
       "DONE": "Done"
     }
   },
-  "ERRORS":{
+  "ERRORS": {
     "BAD_REQUEST": "Your request is invalid, please check it and try again",
     "DEFAULT": "Ooops, something went wrong",
     "NOT_FOUND": "Your request was not found. Please, try again in few minutes",
@@ -38,17 +82,20 @@
     "UNAUTHORIZED": "You don't have permissions to access this content",
     "TIMEOUT": "Please, reload this content"
   },
-  "ESS":{
+  "ESS": {
     "NO_CONTINGENCIES_FOUND": "There are no contingencies. Have a nice day!",
     "NO_DEFERRALS_FOUND": "There are no deferrals. Have a nice day!",
     "NO_AOGS_FOUND": "There are no AOGs. Have a nice day!",
     "NO_HISTORICAL_CONTINGENCIES_FOUND": "Contingencies not found. Change your settings or filters.",
-    "STATIONS_WITHOUT_CONF":"Stations without configuration. Ask your system administrator.",
-    "AUTHORITIES_WITHOUT_CONF":"Authorities without configuration. Ask your system administrator."
-
+    "STATIONS_WITHOUT_CONF": "Stations without configuration. Ask your system administrator.",
+    "AUTHORITIES_WITHOUT_CONF": "Authorities without configuration. Ask your system administrator."
+  },
+  "FORM": {
+    "IS_REQUIRED": "{{value}} is required",
+    "REQUIRE_FIELDS": "All fields with (*) are required"
   },
   "FLEET_HEALTH": {
-    "LIST" : {
+    "LIST": {
       "ATA": "ATA",
       "ALERT": "Alert",
       "BARCODE": "Barcode",
@@ -128,20 +175,8 @@
     },
     "USER_MANAGEMENT": "User Management"
   },
-  "AOG": {
-    "ACTIVE_AOGS": "Active AOG's",
-    "ACTIVE_AOG": "Active AOG",
-    "LIST": {
-      "TAILFLEET": "Tail / Fleet",
-      "OPERATOR": "Operator",
-      "BARCODE": "Barcode",
-      "REASON": "Reason",
-      "NEXTSTEP": "Next Step",
-      "STATUS": "Status",
-      "DURATION": "Duration"
-    }
-  },
-  "MENU" : {
+
+  "MENU": {
     "ATEC": "ATEC",
     "CONTINGENCIES": "Contingencies",
     "DEFERRALS": "Deferrals",
@@ -189,8 +224,8 @@
     "CLOSURE_DATE_HOUR": "Closure Date - Hour",
     "ACTIVE_CONTINGENCIES": "Active Contingencies",
     "ACTIVE_CONTINGENCY": "Active Contingency",
-    "PENDING_CONTINGENCIES":"Contingencies",
-    "PENDING_CONTINGENCY":"Contingency",
+    "PENDING_CONTINGENCIES": "Contingencies",
+    "PENDING_CONTINGENCY": "Contingency",
     "CONTINGENCY_DETAILS": {
       "FOLLOW_UP": {
         "CONTINGENCY_TYPE_REQUIRED": "Contingency type is required",
@@ -299,7 +334,7 @@
       "ADD_ASSISTANT_MAIL": "Assistant e-mail",
       "ADD_ASSISTANT": "ADD",
       "ASSISTANT_REQUIRED": "Assistant is required",
-      "VALID_MAIL":"Format mail is invalid"
+      "VALID_MAIL": "Format mail is invalid"
     },
     "OPERATOR": "Operator",
     "OF": "of",
@@ -307,7 +342,7 @@
     "PENDINGS": "Pendings",
     "PROGRESS": "Progress",
     "SAFETY_EVENT": "Safety Event",
-    "TOTAL_PENDINGS":"Pendings",
+    "TOTAL_PENDINGS": "Pendings",
     "SEARCH_HISTORICAL": {
       "CLEAR": "CLEAR",
       "FILTER": "FILTER",

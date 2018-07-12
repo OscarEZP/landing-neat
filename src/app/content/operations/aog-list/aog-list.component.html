@@ -32,12 +32,12 @@
       </div>
       <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center"></div>
       <div fxFlex="15" fxLayout="row" fxLayoutAlign="start center">
-        <div  fxLayout="column"  *ngIf="aog.status=='ETR'" fxLayoutAlign="center center" class="aog-status aog-etr">{{aog.status}}</div>
-        <div  fxLayout="column"  *ngIf="aog.status=='NI'" fxLayoutAlign="center center" class="aog-status aog-ni">{{aog.status}}</div>
-        <div fxFlex="10" *ngIf="aog.isSafetyEvent" fxLayout="column" fxLayoutAlign="center center"><mat-icon class="aog-warn-icon">warning</mat-icon> </div>
-        <div fxFlex="10" *ngIf="!aog.isSafetyEvent" fxLayout="column" fxLayoutAlign="center center"></div>
+        <div  fxLayout="column"  *ngIf="aog.status.code=='ETR'" fxLayoutAlign="center center" class="aog-status aog-etr">{{aog.status.code}}</div>
+        <div  fxLayout="column"  *ngIf="aog.status.code=='NI'" fxLayoutAlign="center center" class="aog-status aog-ni">{{aog.status.code}}</div>
+        <div fxFlex="10" *ngIf="aog.safety !== null" fxLayout="column" fxLayoutAlign="center center"><mat-icon class="aog-warn-icon">warning</mat-icon> </div>
+        <div fxFlex="10" *ngIf="aog.safety == null" fxLayout="column" fxLayoutAlign="center center"></div>
         <div  fxLayout="column" fxLayoutAlign="center center">
-          <lsl-countdown [creationTime]="aog.openStatusDate.epochTime" [duration]="aog.durationStatus" [threshold]="5"></lsl-countdown>
+          <lsl-countdown [creationTime]="aog.status.requestedInterval.dt.epochTime" [duration]="aog.status.requestedInterval.duration" [threshold]="5"></lsl-countdown>
         </div>
       </div>
       <div fxFlex="15" fxLayout="row" fxLayoutAlign="start center">
@@ -45,7 +45,7 @@
           <mat-icon class="mat-icon-adj">timer</mat-icon>
         </div>
         <div fxLayout="column" fxLayoutAlign="start center">
-          <lsl-countdown [creationTime]="aog.openAogDate.epochTime" [duration]="aog.durationAog" [threshold]="5"></lsl-countdown>
+          <lsl-countdown [creationTime]="aog.status.requestedInterval.dt.epochTime" [duration]="aog.status.requestedInterval.duration" [threshold]="5"></lsl-countdown>
 
         </div>
       </div>
@@ -57,5 +57,13 @@
     </div>
    </content>
 </div>
+<div [hidden]="!(aogList.length  && !error)">
+  <mat-paginator #contPaginator
+                 [length]="paginatorObjectService.length"
+                 [pageSize]="paginatorObjectService.pageSize"
+                 [pageSizeOptions]="paginatorObjectService.pageSizeOptions">
+  </mat-paginator>
+</div>
 <lsl-ess icon="flight_takeoff" message="ESS.NO_AOGS_FOUND" *ngIf="aogList.length === 0 && !error"></lsl-ess>
 <lsl-ess icon="error" message="ERRORS.DEFAULT" *ngIf="error"></lsl-ess>
+<div class="loader-container" fxLayoutAlign="center center" *ngIf="loading"><mat-progress-spinner [diameter]="50" mode="indeterminate"></mat-progress-spinner></div>
