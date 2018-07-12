@@ -1,8 +1,8 @@
 import {Task} from '../../../../shared/_models/task/task';
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {QuillEditorComponent} from 'ngx-quill';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
-import { Review } from '../../../../shared/_models/task/analysis/review';
+import {Review} from '../../../../shared/_models/task/fleethealth/analysis/review';
 
 @Injectable()
 export class HistoricalReportService {
@@ -75,6 +75,40 @@ export class HistoricalReportService {
     get analyzedList(): TimelineTask[] {
         return this.timelineData
             .filter(data => data.apply !== null && data.active === false);
+    }
+
+    /**
+     * Validation if the task information is displayed (Parts, Step, Description,Actions)
+     * @returns {boolean}
+     */
+    get isDisplayedDetailTask(): boolean {
+        return (this.isAtaCorrected || this.isCloseTimeline || this.hasChronic);
+    }
+
+    /**
+     * Validation which ata is sent to the service
+     * @returns {string}
+     */
+    get validationAta(): string {
+        return (this.isCloseTimeline || this.hasChronic) ? this.task.ata : this.newAta;
+    }
+
+    /**
+     *Validation if the correction option ata is displayed
+     * @returns {boolean}
+     */
+    get isDisplayedCorrectedAta(): boolean {
+        return this.isOpenTimeline && !this.hasChronic;
+    }
+
+    get hasChronic(): boolean {
+        return this.task.chronic.hasChronic;
+    }
+    get isOpenTimeline(): boolean {
+        return this.task.timelineStatus === Task.OPEN_STATUS;
+    }
+    get isCloseTimeline(): boolean {
+        return this.task.timelineStatus === Task.CLOSE_STATUS;
     }
 
     get task(): Task {

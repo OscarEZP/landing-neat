@@ -1,107 +1,220 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {Aog} from '../../../shared/_models/aog/aog';
 import {TranslateService} from '@ngx-translate/core';
-import {Layout, LayoutService} from '../../../layout/_services/layout.service';
+import {LayoutService} from '../../../layout/_services/layout.service';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
 import {StatusAog} from '../../../shared/_models/aog/statusAog';
 import {Interval} from '../../../shared/_models/interval';
-import {AogFormComponent} from '../aog-form/aog-form.component';
+import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {Subscription} from 'rxjs/Subscription';
-import {Observable} from 'rxjs/Observable';
+import {PaginatorObjectService} from '../../_services/paginator-object.service';
+import {MatPaginator} from '@angular/material';
+import {Pagination} from '../../../shared/_models/common/pagination';
+import {AogSearch} from '../../../shared/_models/aog/aogSearch';
+
 
 @Component({
-    selector: 'lsl-aog-list',
-    templateUrl: './aog-list.component.html',
-    styleUrls: ['./aog-list.component.scss']
+  selector: 'lsl-aog-list',
+  templateUrl: './aog-list.component.html',
+  styleUrls: ['./aog-list.component.scss']
 })
-export class AogListComponent implements OnInit, OnDestroy {
+export class AogListComponent implements OnInit {
 
-    private _aogList: Aog[];
-    private _error: boolean;
-    private _aogListSubs: Subscription;
+  @ViewChild('contPaginator') public paginator: MatPaginator;
 
-    constructor(
-        private _translateService: TranslateService,
-        private _layoutService: LayoutService
-    ) {
-        this._translateService.setDefaultLang('en');
-        this._error = false;
-        this._aogList = [];
-        this.layout = {
-            disableAddButton: false,
-            disableRightNav: true,
-            showRightNav: true,
-            showAddButton: true,
-            loading: false,
-            formComponent: AogFormComponent
-        };
-        this._aogListSubs = this.getAogListSubs();
-    }
+  private static AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT = 'aircraftOnGroundSearch';
+  private static AIRCRAFT_ON_GROUND_COUNT_ENDPOINT = 'aircraftOnGroundCount';
 
-    ngOnInit() {
+  private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
+  private static DEFAULT_INTERVAL = 30;
 
-    }
+  private _aogList: Aog[];
+  private _error: boolean;
+  private _loading: boolean;
+  private _paginatorObject: PaginatorObjectService;
+  private _paginatorSubscription: Subscription;
+  private _listSubscription: Subscription;
+  private _intervalRefreshSubscription: Subscription;
+  private _intervalToRefresh: number;
 
-    ngOnDestroy() {
-        this._aogListSubs.unsubscribe();
-        this._layoutService.reset();
-    }
-
-    private get aogList$(): Observable<Aog[]> {
-        const aogList = [];
-        const aogEtr: Aog = Aog.getInstance();
-        const aogNi: Aog = Aog.getInstance();
-        aogEtr.tail = 'PT-MZU';
-        aogEtr.fleet = 'A320';
-        aogEtr.operator = 'LA';
-        aogEtr.barcode = 'TOO3LUTQ';
-        aogEtr.reason = 'HOUVE COLISÃO DA ACFT COM FINGER, AFETANDO A PARTE SUPERIOR DO PYLON';
-        // aogEtr.status = 'ETR';
-        // aogEtr.isSafetyEvent = true;
-        // aogEtr.openAogDate = new TimeInstant(Date.now(), null);
-        // aogEtr.openStatusDate = new TimeInstant(Date.now(), null);
-        aogEtr.durationAog = 1800000;
-        // aogEtr.durationStatus = 1800000;
-
-        aogNi.tail = 'PT-MZU';
-        aogNi.fleet = 'A320';
-        aogNi.operator = 'LA';
-        aogNi.barcode = 'TOO3LUTT';
-        aogNi.reason = 'HOUVE COLISÃO DA ACFT COM FINGER, AFETANDO A PARTE SUPERIOR DO PYLON';
-        // aogNi.status = 'NI';
-        // aogNi.isSafetyEvent = false;
-        // aogNi.openAogDate = new TimeInstant(Date.now(), null);
-        // aogNi.openStatusDate = new TimeInstant(Date.now(), null);
-        aogNi.durationAog = 1800000;
-        // aogNi.durationStatus = 1800000;
-        aogList.push(aogEtr);
-        aogList.push(aogNi);
-        return Observable.of(aogList);
-    }
-
-    private getAogListSubs(): Subscription {
-        return this.aogList$.subscribe(v => this.aogList = v);
-    }
-
-    set layout(value: Layout) {
-        this._layoutService.layout = value;
-    }
-
-    get aogList(): Aog[] {
-        return this._aogList;
-    }
-
-    set aogList(value: Aog[]) {
-        this._aogList = value;
-    }
-
-    get error(): boolean {
-        return this._error;
-    }
-
-    set error(value: boolean) {
-        this._error = value;
-    }
+  constructor(private _translate: TranslateService,
+              private _apiRestService: ApiRestService,
+              private _layout: LayoutService) {
 
 
+
+  }
+
+  ngOnInit() {
+
+    this._translate.setDefaultLang('en');
+    this._layout.disableRightNav = true;
+    this._layout.disableAddButton = true;
+    this._layout.showAddButton = true;
+    this._layout.showRightNav = true;
+
+    this.error = false;
+
+    this.aogList = [];
+
+    this.paginatorObjectService = PaginatorObjectService.getInstance();
+
+    this.paginatorSubscription = this.getPaginationSubscription();
+    //this.getList();
+
+  }
+
+  /**
+   * Returns a subscription for pagination page event. Show loader and set pagination attributes in page change.
+   * @return {Subscription}
+   */
+  public getPaginationSubscription(): Subscription {
+    return this.paginator.page.subscribe((page) => {
+      console.log('getPaginationSubscription');
+      console.log(page);
+      this.paginatorObjectService.pageSize = page.pageSize;
+      this.paginatorObjectService.pageIndex = page.pageIndex;
+      this.getList();
+    });
+  }
+
+  /**
+   * Method for get a search signature for get data
+   * @return {SearchAog}
+   */
+  private getSearchSignature(): AogSearch {
+    const signature: AogSearch = AogSearch.getInstance();
+
+    signature.pagination = new Pagination(this.paginatorObjectService.offset, this.paginatorObjectService.pageSize);
+
+    return signature;
+  }
+  /**
+   * Set a subscription for get total amount of records and data list.
+   */
+  private getList(): void {
+    const signature = this.getSearchSignature();
+    this.listSubscription = this.getListSubscription(signature);
+  }
+  /**
+   * Subscription for get the data list
+   * @param signature
+   * @return {Subscription}
+   */
+  private getListSubscription(signature: AogSearch): Subscription {
+    this.loading = true;
+    this.error = false;
+
+    return this._apiRestService.search<Aog[]>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT, signature).subscribe(
+          (response) => {
+
+
+     /*       this.subscribeTimer();*/
+      console.log(response);
+            this.aogList = response;
+            this.getCountSubscription();
+            this.loading = false;
+          },
+          () => {
+            this.getError();
+            //this.subscribeTimer();
+          });
+
+
+  }
+
+  private getCountSubscription(): Subscription {
+
+    return this._apiRestService.search<number>(AogListComponent.AIRCRAFT_ON_GROUND_COUNT_ENDPOINT, null).subscribe(
+        (response) => {
+
+         this.paginatorObjectService.length = response;
+     },
+        () => {
+          this.getError();
+
+        });
+
+
+  }
+
+  /**
+   * Handler for error process on api request
+   * @return {boolean}
+   */
+  private getError(): boolean {
+    this.paginatorObjectService.length = 0;
+    this.loading = false;
+    return this.error = true;
+  }
+
+  get aogList(): Aog[] {
+    return this._aogList;
+  }
+
+  set aogList(value: Aog[]) {
+    this._aogList = value;
+  }
+
+
+  get error(): boolean {
+    return this._error;
+  }
+
+  set error(value: boolean) {
+    this._error = value;
+  }
+
+
+  get paginatorObjectService(): PaginatorObjectService {
+    return this._paginatorObject;
+  }
+
+  set paginatorObjectService(value: PaginatorObjectService) {
+    this._paginatorObject = value;
+  }
+
+
+  get paginatorSubscription(): Subscription {
+    return this._paginatorSubscription;
+  }
+
+  set paginatorSubscription(value: Subscription) {
+    this._paginatorSubscription = value;
+  }
+
+
+  get listSubscription(): Subscription {
+    return this._listSubscription;
+  }
+
+  set listSubscription(value: Subscription) {
+    this._listSubscription = value;
+  }
+
+
+  get loading(): boolean {
+    return this._loading;
+  }
+
+  set loading(value: boolean) {
+    this._loading = value;
+  }
+
+
+  get intervalRefreshSubscr iption(): Subscription {
+    return this._intervalRefreshSubscription;
+  }
+
+  set intervalRefreshSubscription(value: Subscription) {
+    this._intervalRefreshSubscription = value;
+  }
+
+  get intervalToRefresh(): number {
+    return this._intervalToRefresh;
+  }
+
+  set intervalToRefresh(value: number) {
+    this._intervalToRefresh = value;
+  }
 }

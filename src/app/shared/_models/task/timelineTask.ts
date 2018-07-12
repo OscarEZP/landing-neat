@@ -1,7 +1,7 @@
 import {Task} from './task';
 import {TimeInstant} from '../timeInstant';
 import {DateUtil} from '../../util/dateUtil';
-import {Review} from './analysis/review';
+import {Review} from './fleethealth/analysis/review';
 
 export class TimelineTask {
 
