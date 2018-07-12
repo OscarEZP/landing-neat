@@ -11,12 +11,11 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
     constructor(
         private _authService: AuthService,
         private _router: Router,
-        private _storageService: StorageService,
+        private _storageService: StorageService
     ) {
 
     }
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-
         if (!!this._storageService.getCurrentUser().groupList &&
             !!this._storageService.getCurrentUser()
                 .groupList
