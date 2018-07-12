@@ -29,6 +29,9 @@
       "FAILURE_TYPE": "Failure Type",
       "FLEET": "Fleet",
       "MAINTENANCE_INFO": "Maintenance Info",
+      "MESSAGE": {
+        "SUCCESS": "AOG has been created successfully"
+      },
       "OBSERVATIONS": "Observations",
       "OPERATOR": "Operator",
       "OPERATION_INFO": "Operation Info",

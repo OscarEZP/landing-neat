@@ -10,7 +10,15 @@ export class StatusAog {
     private _username: string;
     private _creationDate: TimeInstant;
 
-    constructor(code: string, aogId: number, creationDate: TimeInstant, observation: string, realInterval: Interval, requestedInterval: Interval, username: string) {
+    constructor(
+        code: string,
+        aogId: number,
+        creationDate: TimeInstant,
+        observation: string,
+        realInterval: Interval,
+        requestedInterval: Interval,
+        username: string
+    ) {
         this._code = code;
         this._aogId = aogId;
         this._creationDate = creationDate != null ? creationDate : TimeInstant.getInstance();

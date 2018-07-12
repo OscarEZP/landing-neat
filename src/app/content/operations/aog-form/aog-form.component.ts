@@ -18,6 +18,7 @@ import {Safety} from '../../../shared/_models/safety';
 import {MessageService} from '../../../shared/_services/message.service';
 import {ClockService} from '../../../shared/_services/clock.service';
 import {TranslateService} from '@ngx-translate/core';
+import {StorageService} from '../../../shared/_services/storage.service';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -31,7 +32,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static OPERATOR_LIST_ENDPOINT = 'operator';
     private static SAFETY_EVENT_LIST_ENDPOINT = 'safetyEvent';
     private static LOCATIONS_ENDPOINT = 'locations';
-    private static AOG_ENDPOINT = 'locations';
+    private static AOG_ENDPOINT = 'aircraftOnGround';
 
     private static DATE_FORMAT = 'dd MMM yyyy ';
     private static HOUR_FORMAT = 'HH:mm:ss';
@@ -64,6 +65,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _safetyEventSubs: Subscription;
     private _safetyCheckSubs: Subscription;
     private _clockSubs: Subscription;
+    private _formSubs: Subscription;
+    private _groupTypesSubs: Subscription;
 
     constructor(
         private _dialogService: DialogService,
@@ -72,7 +75,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
         private _apiRestService: ApiRestService,
         private _messageService: MessageService,
         private _clockService: ClockService,
-        private _translate: TranslateService
+        private _translate: TranslateService,
+        private _storageService: StorageService
     ) {
         this.utcModel = new TimeInstant(new Date().getTime(), null);
         this.alive = true;
@@ -83,23 +87,23 @@ export class AogFormComponent implements OnInit, OnDestroy {
             'tail': [this.aog.tail, Validators.required, this.tailDomainValidator.bind(this)],
             'fleet': [this.aog.fleet, Validators.required],
             'operator': [this.aog.operator, Validators.required, this.operatorDomainValidator.bind(this)],
-            'station': ['', Validators.required],
-            'safety': [false, Validators.required, this.safetyEventValidator.bind(this)],
+            'station': [this.aog.station, Validators.required],
+            'safety': [!!this.aog.safety, Validators.required, this.safetyEventValidator.bind(this)],
             'barcode': [this.aog.barcode, [Validators.pattern('^([a-zA-Z0-9])+'), Validators.maxLength(80)]],
-            'safetyEventCode': [''],
-            'aogType': ['', Validators.required],
-            'failure': ['', Validators.required],
-            'observation': ['', [Validators.required, Validators.maxLength(400)]],
+            'safetyEventCode': [this.aog.safety],
+            'aogType': [this.aog.maintenance, Validators.required],
+            'failure': [this.aog.failure, Validators.required],
+            'observation': [this.aog.observation, [Validators.required, Validators.maxLength(400)]],
             'reason': [this.aog.reason, [Validators.required, Validators.maxLength(400)]],
             'statusCode': [this.aog.status, Validators.required],
             'duration': [this.aog.durationAog, Validators.required],
-            'tipology': ['']
+            'tipology': [this.aog.code]
         });
-
-        this.getGroupTypes();
+        this.username = this._storageService.getCurrentUser().username;
     }
 
     ngOnInit() {
+        this._groupTypesSubs = this.getGroupTypes();
         this._aircraftSubs = this.getAircraftSubs();
         this._operatorSubs = this.getOperatorSubs();
         this._locationSubs = this.getLocationSubs();
@@ -107,6 +111,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._timerSubs = this.getTimerSubs();
         this._safetyCheckSubs = this.getSafetyCheckSubs();
         this._clockSubs = this.getClockSubscription();
+        this._formSubs = this.getFormSubs();
     }
 
     ngOnDestroy() {
@@ -120,6 +125,24 @@ export class AogFormComponent implements OnInit, OnDestroy {
         }
         this._safetyCheckSubs.unsubscribe();
         this._clockSubs.unsubscribe();
+        this._formSubs.unsubscribe();
+
+    }
+
+    private getFormSubs(): Subscription {
+        return this.aogForm.valueChanges.subscribe(v => {
+            this.aog.station = v.station;
+            this.aog.safety = v.safety;
+            this.aog.barcode = v.barcode;
+            this.aog.maintenance = v.aogType;
+            this.aog.failure = v.failure;
+            this.aog.observation = v.observation;
+            this.aog.reason = v.reason;
+            this.aog.status = v.statusCode;
+            this.aog.durationAog = v.duration ?
+                v.duration.split(':').reduce((ant, act, i) => parseInt(act) + parseInt(ant) * (i * 60)) : 0;
+            this.aog.code = v.tipology;
+        });
     }
 
     private getClockSubscription(): Subscription {
@@ -146,12 +169,16 @@ export class AogFormComponent implements OnInit, OnDestroy {
             this.postAog();
         } else {
             this.getTranslateString(AogFormComponent.VALIDATION_ERROR_MESSAGE);
-            // this.validations.isSending = false;
         }
     }
 
-    private postAog() {
-        // this._apiRestService.search(AogFormComponent.AOG_ENDPOINT);
+    private postAog(): Promise<void> {
+        return this._apiRestService
+            .search(AogFormComponent.AOG_ENDPOINT, this.aog)
+            .toPromise()
+            .then(r => this.getTranslateString('AOG.AOG_FORM.MESSAGE.SUCCESS'))
+            .catch( e => console.log(e))
+            ;
     }
 
     private getTranslateString(toTranslate: string) {
@@ -365,6 +392,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
      */
     public openCancelDialog(): void {
         this._dialogService.closeAllDialogs();
+    }
+
+    set username(value: string) {
+        this.aog.username = value;
+        this.aog.status.username = value;
     }
 
     get utcModel(): TimeInstant {

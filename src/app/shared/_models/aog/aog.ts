@@ -19,8 +19,8 @@ export class Aog {
         this.tail = '';
         this.fleet = '';
         this.operator = '';
-        this.barcode = '';
         this.station = '';
+        this.barcode = '';
         this.safety = '';
         this.maintenance = '';
         this.failure = '';
@@ -131,12 +131,27 @@ export class Aog {
     }
 
     get durationAog(): number {
-        return this.status.realInterval.duration;
+        return this.status.requestedInterval.duration;
     }
 
     set durationAog(value: number) {
-        this.status.realInterval.duration = value;
+        this.status.requestedInterval.duration = value;
     }
 
+    get observation(): string {
+        return this.status.observation;
+    }
+
+    set observation(value: string) {
+        this.status.observation = value;
+    }
+
+    get code(): string {
+        return this.status.code;
+    }
+
+    set code(value: string) {
+        this.status.code = value;
+    }
 
 }

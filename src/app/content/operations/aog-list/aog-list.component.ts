@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Aog} from '../../../shared/_models/aog/aog';
 import {TranslateService} from '@ngx-translate/core';
-import {LayoutService} from '../../../layout/_services/layout.service';
+import {Layout, LayoutService} from '../../../layout/_services/layout.service';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
 import {StatusAog} from '../../../shared/_models/aog/statusAog';
 import {Interval} from '../../../shared/_models/interval';
@@ -11,6 +11,7 @@ import {PaginatorObjectService} from '../../_services/paginator-object.service';
 import {MatPaginator} from '@angular/material';
 import {Pagination} from '../../../shared/_models/common/pagination';
 import {AogSearch} from '../../../shared/_models/aog/aogSearch';
+import {AogFormComponent} from '../aog-form/aog-form.component';
 
 
 @Component({
@@ -37,21 +38,27 @@ export class AogListComponent implements OnInit {
   private _intervalRefreshSubscription: Subscription;
   private _intervalToRefresh: number;
 
-  constructor(private _translate: TranslateService,
-              private _apiRestService: ApiRestService,
-              private _layout: LayoutService) {
-
-
-
+  constructor(
+      private _translate: TranslateService,
+      private _apiRestService: ApiRestService,
+      private _layoutService: LayoutService
+  ) {
+      this._translate.setDefaultLang('en');
+      this._error = false;
+      this._aogList = [];
+      this.layout = {
+          disableAddButton: false,
+          disableRightNav: true,
+          showRightNav: true,
+          showAddButton: true,
+          loading: false,
+          formComponent: AogFormComponent
+      };
   }
 
   ngOnInit() {
 
-    this._translate.setDefaultLang('en');
-    this._layout.disableRightNav = true;
-    this._layout.disableAddButton = true;
-    this._layout.showAddButton = true;
-    this._layout.showRightNav = true;
+
 
     this.error = false;
 
@@ -202,7 +209,7 @@ export class AogListComponent implements OnInit {
   }
 
 
-  get intervalRefreshSubscr iption(): Subscription {
+  get intervalRefreshSubscription(): Subscription {
     return this._intervalRefreshSubscription;
   }
 
@@ -217,4 +224,11 @@ export class AogListComponent implements OnInit {
   set intervalToRefresh(value: number) {
     this._intervalToRefresh = value;
   }
+
+
+    set layout(value: Layout) {
+        this._layoutService.layout = value;
+    }
+
+
 }

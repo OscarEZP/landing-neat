@@ -7,6 +7,9 @@ export const environment = {
         enabled: false
     },
     paths: {
+        aircraftOnGround: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground',
+        aircraftOnGroundSearch: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_search',
+        aircraftOnGroundCount: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_count',
         aircrafts: ':9002/api/v1/contingencies/configurations/aircrafts',
         aircraftsSearch: ':9005/api/v1/configurations/aircrafts/_search',
         areas: ':9002/api/v1/contingencies/pendings/areas',
@@ -37,8 +40,8 @@ export const environment = {
         pendingSearch: ':9002/api/v1/contingencies/pendings/_search',
         plannedFlights: '9002/api/v1/configurations/planned-flights/_search',
         safetyEvent: ':9005/api/v1/configurations/safetyEvents',
-        types: ':9005/api/v1/configurations/types',
         taskDetail: ':9006/api/v1/tasks/_detail',
+        taskHistorical : ':9006/api/v1/tasks/historical',
         tasksFleethealthRelatedSearch: ':9006/api/v1/tasks/fleethealth/related-tasks/_search',
         tasksFleethealthAnalysis: ':9006/api/v1/tasks/fleethealth/analysis',
         tasksFleethealthDone: ':9006/api/v1/tasks/fleethealth/manualstate/_apply',
@@ -51,7 +54,6 @@ export const environment = {
         technicalDefaultConfig: ':9015/api/v1/management/default-tech-analysis',
         technicalNotConfiguredAuthoritySearch: ':9015/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: ':9015/api/v1/management/tech-station/_search',
-        aircraftOnGroundSearch: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_search',
-        aircraftOnGroundCount: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_count',
+        types: ':9005/api/v1/configurations/types'
     }
 };
