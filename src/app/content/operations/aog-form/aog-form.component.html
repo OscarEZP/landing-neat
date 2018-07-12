@@ -115,7 +115,7 @@
                                   [formControl]="aogForm.controls['safety']">{{'AOG.AOG_FORM.SAFETY_EVENT'|translate}}
                     </mat-checkbox>
                 </div>
-                <div fxLayout="row" *ngIf="aogForm.controls['safety'].value">
+                <div fxLayout="row" *ngIf="isSafety">
                     <mat-form-field>
                         <mat-select
                                 id="sel-aog-form-technical-type"
@@ -127,7 +127,7 @@
                     </mat-form-field>
                 </div>
                 <div fxLayout="row">
-                    <mat-error *ngIf="aogForm.controls['safety'].hasError('isSafety') && formDir.submitted">
+                    <mat-error *ngIf="aogForm.controls['safetyEventCode'].hasError('isSafety') && formDir.submitted">
                         {{'AOG.AOG_FORM.ERROR.SAFETY_EVENT_REQUIRED'|translate}}
                     </mat-error>
                 </div>

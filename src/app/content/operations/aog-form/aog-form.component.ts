@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DialogService} from '../../_services/dialog.service';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs/Subscription';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {Aog} from '../../../shared/_models/aog/aog';
@@ -12,13 +12,14 @@ import {Types} from '../../../shared/_models/configuration/types';
 import {Location} from '../../../shared/_models/configuration/location';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
-import {map, startWith} from 'rxjs/operators';
+import {map, startWith, tap} from 'rxjs/operators';
 import {AircraftSearch} from '../../../shared/_models/configuration/aircraftSearch';
 import {Safety} from '../../../shared/_models/safety';
 import {MessageService} from '../../../shared/_services/message.service';
 import {ClockService} from '../../../shared/_services/clock.service';
 import {TranslateService} from '@ngx-translate/core';
 import {StorageService} from '../../../shared/_services/storage.service';
+import {DataService} from '../../../shared/_services/data.service';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -76,7 +77,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
         private _messageService: MessageService,
         private _clockService: ClockService,
         private _translate: TranslateService,
-        private _storageService: StorageService
+        private _storageService: StorageService,
+        private _messageData: DataService
     ) {
         this.utcModel = new TimeInstant(new Date().getTime(), null);
         this.alive = true;
@@ -88,7 +90,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
             'fleet': [this.aog.fleet, Validators.required],
             'operator': [this.aog.operator, Validators.required, this.operatorDomainValidator.bind(this)],
             'station': [this.aog.station, Validators.required],
-            'safety': [!!this.aog.safety, Validators.required, this.safetyEventValidator.bind(this)],
+            'safety': [!!this.aog.safety, Validators.required],
             'barcode': [this.aog.barcode, [Validators.pattern('^([a-zA-Z0-9])+'), Validators.maxLength(80)]],
             'safetyEventCode': [this.aog.safety],
             'aogType': [this.aog.maintenance, Validators.required],
@@ -132,7 +134,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private getFormSubs(): Subscription {
         return this.aogForm.valueChanges.subscribe(v => {
             this.aog.station = v.station;
-            this.aog.safety = v.safety;
+            this.aog.safety = this.isSafety ? v.safetyEventCode : '';
             this.aog.barcode = v.barcode;
             this.aog.maintenance = v.aogType;
             this.aog.failure = v.failure;
@@ -155,16 +157,12 @@ export class AogFormComponent implements OnInit, OnDestroy {
             .subscribe(v => this.isSafety = v);
     }
 
-    public safetyEventValidator(control: FormControl) {
-        const isSafety = control.value;
-        return Observable.of(
-            isSafety && !this.aog.safety ?
-                {isSafety: true} :
-                null
-        );
+    private safetyEventValidator(control: AbstractControl): object {
+        return !control.value && this.isSafety ? { isSafety: true } : null;
     }
 
     public submitForm() {
+        this.aogForm.controls['safetyEventCode'].setErrors(this.safetyEventValidator(this.aogForm.controls['safetyEventCode']));
         if (this.aogForm.valid) {
             this.postAog();
         } else {
@@ -176,7 +174,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
         return this._apiRestService
             .search(AogFormComponent.AOG_ENDPOINT, this.aog)
             .toPromise()
-            .then(r => this.getTranslateString('AOG.AOG_FORM.MESSAGE.SUCCESS'))
+            .then(r => {
+                this.getTranslateString('AOG.AOG_FORM.MESSAGE.SUCCESS');
+                this._dialogService.closeAllDialogs();
+                this._messageData.stringMessage('reload');
+            })
             .catch( e => console.log(e))
             ;
     }
