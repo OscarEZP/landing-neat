@@ -1,25 +1,24 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Aog} from '../../../shared/_models/aog/aog';
 import {TranslateService} from '@ngx-translate/core';
-import {Layout, LayoutService} from '../../../layout/_services/layout.service';
-import {TimeInstant} from '../../../shared/_models/timeInstant';
-import {StatusAog} from '../../../shared/_models/aog/statusAog';
-import {Interval} from '../../../shared/_models/interval';
+import {LayoutService} from '../../../layout/_services/layout.service';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {Subscription} from 'rxjs/Subscription';
 import {PaginatorObjectService} from '../../_services/paginator-object.service';
 import {MatPaginator} from '@angular/material';
 import {Pagination} from '../../../shared/_models/common/pagination';
 import {AogSearch} from '../../../shared/_models/aog/aogSearch';
+import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
+import {DataService} from '../../../shared/_services/data.service';
+import {Observable} from 'rxjs/Observable';
 import {AogFormComponent} from '../aog-form/aog-form.component';
-
 
 @Component({
   selector: 'lsl-aog-list',
   templateUrl: './aog-list.component.html',
   styleUrls: ['./aog-list.component.scss']
 })
-export class AogListComponent implements OnInit {
+export class AogListComponent implements OnInit, OnDestroy {
 
   @ViewChild('contPaginator') public paginator: MatPaginator;
 
@@ -36,13 +35,16 @@ export class AogListComponent implements OnInit {
   private _paginatorSubscription: Subscription;
   private _listSubscription: Subscription;
   private _intervalRefreshSubscription: Subscription;
+  private _reloadSubscription: Subscription;
+  private _timerSubscription: Subscription;
   private _intervalToRefresh: number;
 
-  constructor(
-      private _translate: TranslateService,
-      private _apiRestService: ApiRestService,
-      private _layoutService: LayoutService
-  ) {
+  constructor(private _messageData: DataService,
+              private _translate: TranslateService,
+              private _apiRestService: ApiRestService,
+              private _layoutService: LayoutService) {
+
+
       this._translate.setDefaultLang('en');
       this._error = false;
       this._aogList = [];
@@ -57,18 +59,26 @@ export class AogListComponent implements OnInit {
   }
 
   ngOnInit() {
-
-
-
-    this.error = false;
-
-    this.aogList = [];
-
+    this.intervalToRefresh = AogListComponent.DEFAULT_INTERVAL;
     this.paginatorObjectService = PaginatorObjectService.getInstance();
-
+    this.reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
+    this.intervalRefreshSubscription = this.getIntervalToRefresh();
     this.paginatorSubscription = this.getPaginationSubscription();
-    //this.getList();
+  }
 
+  /**
+   * Event when component is destroyed. Unsubscribe general subscriptions.
+   */
+  public ngOnDestroy() {
+    this.reloadSubscription.unsubscribe();
+    this.intervalRefreshSubscription.unsubscribe();
+    this.paginatorSubscription.unsubscribe();
+    if (this.listSubscription) {
+      this.listSubscription.unsubscribe();
+    }
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
   }
 
   /**
@@ -115,19 +125,29 @@ export class AogListComponent implements OnInit {
     return this._apiRestService.search<Aog[]>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT, signature).subscribe(
           (response) => {
 
-
-     /*       this.subscribeTimer();*/
-      console.log(response);
-            this.aogList = response;
+           this.subscribeTimer();
+           this.aogList = response;
             this.getCountSubscription();
             this.loading = false;
           },
           () => {
             this.getError();
-            //this.subscribeTimer();
+            this.subscribeTimer();
           });
 
 
+  }
+
+  /**
+   * Set a subscription for data list reload.
+   */
+  private subscribeTimer(): void {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
+    this.timerSubscription = Observable.timer(this.intervalToRefresh).first().subscribe(() => {
+      this.getList();
+    });
   }
 
   private getCountSubscription(): Subscription {
@@ -146,6 +166,29 @@ export class AogListComponent implements OnInit {
   }
 
   /**
+   * Subscription for get the time for reload data
+   * @return {Subscription}
+   */
+  private getIntervalToRefresh(): Subscription {
+    this.loading = true;
+    this.error = false;
+    return this._apiRestService.getSingle('configTypes', AogListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(
+        rs => {
+          const res = rs as GroupTypes;
+          this.intervalToRefresh = Number(res.types[0].code ? res.types[0].code : AogListComponent.DEFAULT_INTERVAL) * 1000;
+          this.loading = false;
+        },
+        () => {
+          this.loading = false;
+          this.intervalToRefresh = AogListComponent.DEFAULT_INTERVAL * 1000;
+          this.getList();
+        }, () => {
+          this.getList();
+        }
+    );
+  }
+
+  /**
    * Handler for error process on api request
    * @return {boolean}
    */
@@ -153,6 +196,17 @@ export class AogListComponent implements OnInit {
     this.paginatorObjectService.length = 0;
     this.loading = false;
     return this.error = true;
+  }
+
+  /**
+   * Method for reload list by an event
+   * @param message
+   */
+  public reloadList(message) {
+    if (message === 'reload') {
+      this.getList();
+      this._messageData.stringMessage(null);
+    }
   }
 
   get aogList(): Aog[] {
@@ -223,6 +277,33 @@ export class AogListComponent implements OnInit {
 
   set intervalToRefresh(value: number) {
     this._intervalToRefresh = value;
+  }
+
+
+  get reloadSubscription(): Subscription {
+    return this._reloadSubscription;
+  }
+
+  set reloadSubscription(value: Subscription) {
+    this._reloadSubscription = value;
+  }
+
+
+  get paginatorObject(): PaginatorObjectService {
+    return this._paginatorObject;
+  }
+
+  set paginatorObject(value: PaginatorObjectService) {
+    this._paginatorObject = value;
+  }
+
+
+  get timerSubscription(): Subscription {
+    return this._timerSubscription;
+  }
+
+  set timerSubscription(value: Subscription) {
+    this._timerSubscription = value;
   }
 
 
