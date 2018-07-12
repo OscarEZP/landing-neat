@@ -20,6 +20,8 @@ import {ClockService} from '../../../shared/_services/clock.service';
 import {TranslateService} from '@ngx-translate/core';
 import {StorageService} from '../../../shared/_services/storage.service';
 import {DataService} from '../../../shared/_services/data.service';
+import {CancelComponent} from '../cancel/cancel.component';
+import {ContingencyFormComponent} from '../create-contingency/create-contingency.component';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -39,6 +41,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static HOUR_FORMAT = 'HH:mm:ss';
 
     private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
+    private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
 
     private _utcModel: TimeInstant;
     private _aogForm: FormGroup;
@@ -393,7 +396,19 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * Open a cancel message if there is a filled item
      */
     public openCancelDialog(): void {
-        this._dialogService.closeAllDialogs();
+        if (this.aogForm.pristine) {
+            this._dialogService.closeAllDialogs();
+        } else {
+            this._translate.get(AogFormComponent.CANCEL_COMPONENT_MESSAGE)
+                .toPromise()
+                .then((res: string) => {
+                    this._messageService.openFromComponent(CancelComponent, {
+                        data: {message: res},
+                        horizontalPosition: 'center',
+                        verticalPosition: 'top'
+                    });
+                });
+        }
     }
 
     set username(value: string) {
