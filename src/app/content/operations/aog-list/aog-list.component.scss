@@ -2,7 +2,6 @@
 
 /deep/
 #aog-list {
-
   .aog-status {
     width: 44px;
     height: 16px;
@@ -21,8 +20,9 @@
   .aog-warn-icon {
     width: 13.9px;
     height: 12px;
-    color: #ff1743;
+    color: mat-color($warn);
     font-size: 16px;
+    margin: -5px 0 0 0;
   }
   .active-aogs {
     width: 126px;
@@ -36,7 +36,10 @@
     letter-spacing: normal;
     color: #000000;
   }
-
-
-
 }
+
+/deep/
+.loader-container{
+  height: 75vh;
+}
+

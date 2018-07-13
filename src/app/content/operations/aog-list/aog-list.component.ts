@@ -87,8 +87,6 @@ export class AogListComponent implements OnInit, OnDestroy {
      */
     public getPaginationSubscription(): Subscription {
         return this.paginator.page.subscribe((page) => {
-            console.log('getPaginationSubscription');
-            console.log(page);
             this.paginatorObjectService.pageSize = page.pageSize;
             this.paginatorObjectService.pageIndex = page.pageIndex;
             this.getList();
@@ -101,9 +99,7 @@ export class AogListComponent implements OnInit, OnDestroy {
      */
     private getSearchSignature(): AogSearch {
         const signature: AogSearch = AogSearch.getInstance();
-
         signature.pagination = new Pagination(this.paginatorObjectService.offset, this.paginatorObjectService.pageSize);
-
         return signature;
     }
 
@@ -123,10 +119,8 @@ export class AogListComponent implements OnInit, OnDestroy {
     private getListSubscription(signature: AogSearch): Subscription {
         this.loading = true;
         this.error = false;
-
         return this._apiRestService.search<Aog[]>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT, signature).subscribe(
             (response) => {
-
                 this.subscribeTimer();
                 this.aogList = response;
                 this.getCountSubscription();
@@ -136,8 +130,6 @@ export class AogListComponent implements OnInit, OnDestroy {
                 this.getError();
                 this.subscribeTimer();
             });
-
-
     }
 
     /**
@@ -153,18 +145,12 @@ export class AogListComponent implements OnInit, OnDestroy {
     }
 
     private getCountSubscription(): Subscription {
-
-        return this._apiRestService.search<number>(AogListComponent.AIRCRAFT_ON_GROUND_COUNT_ENDPOINT, null).subscribe(
-            (response) => {
-
-                this.paginatorObjectService.length = response;
-            },
-            () => {
-                this.getError();
-
-            });
-
-
+        return this._apiRestService
+            .search<number>(AogListComponent.AIRCRAFT_ON_GROUND_COUNT_ENDPOINT, null)
+            .subscribe(
+            (response) => this.paginatorObjectService.length = response,
+            () => this.getError()
+        );
     }
 
     /**
@@ -174,17 +160,17 @@ export class AogListComponent implements OnInit, OnDestroy {
     private getIntervalToRefresh(): Subscription {
         this.loading = true;
         this.error = false;
-        return this._apiRestService.getSingle('configTypes', AogListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(
+        return this._apiRestService.getSingle('configTypes', AogListComponent.CONTINGENCY_UPDATE_INTERVAL)
+            .subscribe(
             rs => {
                 const res = rs as GroupTypes;
                 this.intervalToRefresh = Number(res.types[0].code ? res.types[0].code : AogListComponent.DEFAULT_INTERVAL) * 1000;
                 this.loading = false;
+                this.getList();
             },
             () => {
                 this.loading = false;
                 this.intervalToRefresh = AogListComponent.DEFAULT_INTERVAL * 1000;
-                this.getList();
-            }, () => {
                 this.getList();
             }
         );
@@ -219,7 +205,6 @@ export class AogListComponent implements OnInit, OnDestroy {
         this._aogList = value;
     }
 
-
     get error(): boolean {
         return this._error;
     }
@@ -227,7 +212,6 @@ export class AogListComponent implements OnInit, OnDestroy {
     set error(value: boolean) {
         this._error = value;
     }
-
 
     get paginatorObjectService(): PaginatorObjectService {
         return this._paginatorObject;
@@ -237,7 +221,6 @@ export class AogListComponent implements OnInit, OnDestroy {
         this._paginatorObject = value;
     }
 
-
     get paginatorSubscription(): Subscription {
         return this._paginatorSubscription;
     }
@@ -245,7 +228,6 @@ export class AogListComponent implements OnInit, OnDestroy {
     set paginatorSubscription(value: Subscription) {
         this._paginatorSubscription = value;
     }
-
 
     get listSubscription(): Subscription {
         return this._listSubscription;
@@ -255,7 +237,6 @@ export class AogListComponent implements OnInit, OnDestroy {
         this._listSubscription = value;
     }
 
-
     get loading(): boolean {
         return this._loading;
     }
@@ -263,7 +244,6 @@ export class AogListComponent implements OnInit, OnDestroy {
     set loading(value: boolean) {
         this._loading = value;
     }
-
 
     get intervalRefreshSubscription(): Subscription {
         return this._intervalRefreshSubscription;
@@ -281,7 +261,6 @@ export class AogListComponent implements OnInit, OnDestroy {
         this._intervalToRefresh = value;
     }
 
-
     get reloadSubscription(): Subscription {
         return this._reloadSubscription;
     }
@@ -290,7 +269,6 @@ export class AogListComponent implements OnInit, OnDestroy {
         this._reloadSubscription = value;
     }
 
-
     get paginatorObject(): PaginatorObjectService {
         return this._paginatorObject;
     }
@@ -298,7 +276,6 @@ export class AogListComponent implements OnInit, OnDestroy {
     set paginatorObject(value: PaginatorObjectService) {
         this._paginatorObject = value;
     }
-
 
     get timerSubscription(): Subscription {
         return this._timerSubscription;
