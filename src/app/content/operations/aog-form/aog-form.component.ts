@@ -22,6 +22,9 @@ import {StorageService} from '../../../shared/_services/storage.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {CancelComponent} from '../cancel/cancel.component';
 import {ContingencyFormComponent} from '../create-contingency/create-contingency.component';
+import {ContingencyService} from '../../_services/contingency.service';
+import {Contingency} from '../../../shared/_models/contingency/contingency';
+import {MatSnackBarRef} from '@angular/material/snack-bar/typings/snack-bar-ref';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -36,12 +39,18 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static SAFETY_EVENT_LIST_ENDPOINT = 'safetyEvent';
     private static LOCATIONS_ENDPOINT = 'locations';
     private static AOG_ENDPOINT = 'aircraftOnGround';
+    private static CONTINGENCY_SEARCH_ENDPOINT = 'contingencySearch';
+
 
     private static DATE_FORMAT = 'dd MMM yyyy ';
     private static HOUR_FORMAT = 'HH:mm:ss';
 
+    private static CLOSE_CONTINGENCY_ERROR_MESSAGE = 'AOG.AOG_FORM.ERROR.CLOSE_CONTINGENCY';
     private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
+    private static CONTINGENCY_MESSAGE = 'AOG.AOG_FORM.MESSAGE.CONTINGENCY_DATA';
+
+    private static DEFAULT_DURATION = '01:00';
 
     private _utcModel: TimeInstant;
     private _aogForm: FormGroup;
@@ -56,6 +65,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _interval: number;
     private _timeClock: Date;
     private _isSafety: boolean;
+    private _contingency: Contingency;
 
     private _locationList$: Observable<Location[]>;
     private _aircraftList$: Observable<Aircraft[]>;
@@ -71,6 +81,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _clockSubs: Subscription;
     private _formSubs: Subscription;
     private _groupTypesSubs: Subscription;
+    private _contingencySubs: Subscription;
 
     constructor(
         private _dialogService: DialogService,
@@ -81,12 +92,13 @@ export class AogFormComponent implements OnInit, OnDestroy {
         private _clockService: ClockService,
         private _translate: TranslateService,
         private _storageService: StorageService,
-        private _messageData: DataService
+        private _messageData: DataService,
+        private _contingencyService: ContingencyService
     ) {
-        this.utcModel = new TimeInstant(new Date().getTime(), null);
-        this.alive = true;
-        this.interval = 1000 * 60;
-
+        this._utcModel = new TimeInstant(new Date().getTime(), null);
+        this._alive = true;
+        this._interval = 1000 * 60;
+        this._contingency = null;
         this._aog = Aog.getInstance();
         this._aogForm = _fb.group({
             'tail': [this.aog.tail, Validators.required, this.tailDomainValidator.bind(this)],
@@ -95,14 +107,14 @@ export class AogFormComponent implements OnInit, OnDestroy {
             'station': [this.aog.station, Validators.required],
             'safety': [!!this.aog.safety, Validators.required],
             'barcode': [this.aog.barcode, [Validators.pattern('^([a-zA-Z0-9])+'), Validators.maxLength(80)]],
-            'safetyEventCode': [this.aog.safety],
+            'safetyEventCode': [this.aog.safety, this.safetyEventValidator.bind(this)],
             'aogType': [this.aog.maintenance, Validators.required],
             'failure': [this.aog.failure, Validators.required],
             'observation': [this.aog.observation, [Validators.required, Validators.maxLength(400)]],
             'reason': [this.aog.reason, [Validators.required, Validators.maxLength(400)]],
-            'statusCode': [this.aog.status, Validators.required],
-            'duration': [this.aog.durationAog, Validators.required],
-            'tipology': [this.aog.code]
+            'duration': [AogFormComponent.DEFAULT_DURATION, Validators.required],
+            'tipology': [this.aog.code],
+            'closeObservation': ['']
         });
         this.username = this._storageService.getCurrentUser().username;
     }
@@ -114,9 +126,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._locationSubs = this.getLocationSubs();
         this._safetyEventSubs = this.getSafetyEventSubs();
         this._timerSubs = this.getTimerSubs();
+        this._datetimeSubs = new Subscription();
         this._safetyCheckSubs = this.getSafetyCheckSubs();
         this._clockSubs = this.getClockSubscription();
         this._formSubs = this.getFormSubs();
+        this._contingencySubs = new Subscription();
     }
 
     ngOnDestroy() {
@@ -125,13 +139,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._locationSubs.unsubscribe();
         this._safetyEventSubs.unsubscribe();
         this._timerSubs.unsubscribe();
-        if (this._datetimeSubs) {
-            this._datetimeSubs.unsubscribe();
-        }
+        this._datetimeSubs.unsubscribe();
         this._safetyCheckSubs.unsubscribe();
         this._clockSubs.unsubscribe();
         this._formSubs.unsubscribe();
-
+        this._contingencySubs.unsubscribe();
     }
 
     private getFormSubs(): Subscription {
@@ -143,10 +155,15 @@ export class AogFormComponent implements OnInit, OnDestroy {
             this.aog.failure = v.failure;
             this.aog.observation = v.observation;
             this.aog.reason = v.reason;
-            this.aog.status = v.statusCode;
             this.aog.durationAog = v.duration ?
                 v.duration.split(':').reduce((ant, act, i) => parseInt(act) + parseInt(ant) * (i * 60)) : 0;
             this.aog.code = v.tipology;
+            if (this.contingency) {
+                this.contingency.close.id = this.contingency.id;
+                this.contingency.close.username = this.aog.username;
+                this.contingency.close.type = 'AOG';
+                this.contingency.close.observation = v.closeObservation;
+            }
         });
     }
 
@@ -159,21 +176,24 @@ export class AogFormComponent implements OnInit, OnDestroy {
             .valueChanges
             .subscribe(v => {
                 this.isSafety = v;
-                this.aogForm.controls['safetyEventCode'].setErrors(this.safetyEventValidator(this.aogForm.controls['safetyEventCode']));
                 if (!v) {
+                    this.aogForm.controls['safetyEventCode'].setValue('');
                     this.aogForm.controls['safety'].markAsPristine();
                 }
             });
     }
 
-    private safetyEventValidator(control: AbstractControl): object {
+    private safetyEventValidator(control: FormControl): object {
         return !control.value && this.isSafety ? { isSafety: true } : null;
     }
 
     public submitForm() {
-        this.aogForm.controls['safetyEventCode'].setErrors(this.safetyEventValidator(this.aogForm.controls['safetyEventCode']));
         if (this.aogForm.valid) {
-            this.postAog();
+            if (this.contingency) {
+                this.postCloseContingency();
+            } else {
+                this.postAog();
+            }
         } else {
             this.getTranslateString(AogFormComponent.VALIDATION_ERROR_MESSAGE);
         }
@@ -188,7 +208,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
                 this._dialogService.closeAllDialogs();
                 this._messageData.stringMessage('reload');
             })
-            .catch( e => console.log(e))
             ;
     }
 
@@ -287,7 +306,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      */
     private operatorFilter(val: string): Types[] {
         return this.operatorList.filter(operator =>
-            operator.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+            operator.code.toLocaleLowerCase().search(val ? val.toLocaleLowerCase() : '') !== -1);
     }
 
     /**
@@ -297,7 +316,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      */
     private aircraftFilter(val: string): Aircraft[] {
         return this.aircraftList.filter(aircraft =>
-            aircraft.tail.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
+            aircraft.tail.toLocaleLowerCase().search(val ? val.toLocaleLowerCase() : '') !== -1);
     }
 
     /**
@@ -318,6 +337,71 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.aogForm.get('operator').updateValueAndValidity();
         this.aogForm.get('fleet').setValue(this.aog.fleet);
         this.aogForm.get('fleet').updateValueAndValidity();
+
+        this._contingencySubs = this.getContingencySubs();
+    }
+
+    private postCloseContingency(): Promise<void> {
+        return this._contingencyService.closeContingency(this.contingency.close)
+            .toPromise()
+            .then(() => this.postAog())
+            .catch( () => this.getTranslateString(AogFormComponent.CLOSE_CONTINGENCY_ERROR_MESSAGE));
+    }
+
+    private getContingencySubs(): Subscription {
+        return this._apiRestService.search<Contingency[]>(AogFormComponent.CONTINGENCY_SEARCH_ENDPOINT, this.getContingencySignature())
+            .subscribe(v => {
+                this.contingency = v.length > 0 ? v.shift() : null;
+                if (this.contingency) {
+                    this.showContingencyConfirm();
+                }
+            });
+    }
+
+    private showContingencyConfirm() {
+        this._translate.get(AogFormComponent.CONTINGENCY_MESSAGE, {value: this.aog.tail})
+            .toPromise()
+            .then((res: string) => {
+                const ref = this._messageService.openFromComponent(CancelComponent, {
+                    data: {message: res, closeAll: false},
+                    horizontalPosition: 'center',
+                    verticalPosition: 'top'
+                });
+                this.handleContingencyConfirm(ref);
+            });
+    }
+
+    private handleContingencyConfirm(ref: MatSnackBarRef<any>): Promise<void> {
+        return ref.afterDismissed()
+            .toPromise()
+            .then(() => {
+                if (ref.instance.response === CancelComponent.ACCEPT) {
+                    this.aogForm.setValue({
+                        'tail': this.aog.tail,
+                        'fleet': this.aog.fleet,
+                        'operator': this.aog.operator,
+                        'barcode': this.contingency.barcode,
+                        'station': this.contingency.flight.origin,
+                        'safety': !!this.contingency.safetyEvent.code,
+                        'safetyEventCode': this.contingency.safetyEvent.code,
+                        'aogType': this.contingency.type,
+                        'failure': this.contingency.failure,
+                        'reason': this.contingency.reason,
+                        'observation': this.aog.observation,
+                        'duration': this.aogForm.controls['duration'].value,
+                        'tipology': this.aog.code,
+                        'closeObservation': ''
+                    });
+                    this.aogForm.controls['closeObservation'].setValidators(Validators.required);
+                } else {
+                    this.aogForm.reset();
+                    this.contingency = null;
+                }
+            });
+    }
+
+    private getContingencySignature(): {isClose: boolean, tails: string[]} {
+        return { isClose: false, tails : [this.aogForm.controls['tail'].value] };
     }
 
     /**
@@ -545,5 +629,13 @@ export class AogFormComponent implements OnInit, OnDestroy {
 
     set isSafety(value: boolean) {
         this._isSafety = value;
+    }
+
+    get contingency(): Contingency {
+        return this._contingency;
+    }
+
+    set contingency(value: Contingency) {
+        this._contingency = value;
     }
 }

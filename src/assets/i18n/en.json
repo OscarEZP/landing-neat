@@ -18,18 +18,22 @@
       "AOG_INFORMATION": "AOG Information",
       "AOG_TYPE": "AOG Type",
       "BARCODE": "Barcode",
+      "CLOSE_OBSERVATION": "Observations for the AOG declaration",
       "DURATION": "Duration",
       "ERROR": {
         "AOG_TYPE_REQUIRED": "AOG Type is required",
         "BARCODE_REQUIRED": "Barcode is required",
+        "CLOSE_CONTINGENCY": "Ooops, something went wrong",
+        "DURATION_REUIRED": "Duration is required",
         "FAILURE_REQUIRED": "Failure Type is required",
-        "TIPOLOGY_REQUIRED": "Tipology is required",
-        "SAFETY_EVENT_REQUIRED": "Safety Event is required"
+        "SAFETY_EVENT_REQUIRED": "Safety Event is required",
+        "TIPOLOGY_REQUIRED": "Tipology is required"
       },
       "FAILURE_TYPE": "Failure Type",
       "FLEET": "Fleet",
       "MAINTENANCE_INFO": "Maintenance Info",
       "MESSAGE": {
+        "CONTINGENCY_DATA": "There is an Active Contingency for the Tail {{value}}. Do you want to Close the Contingency and Declare the Aircraft with an AOG status?",
         "SUCCESS": "AOG has been created successfully"
       },
       "OBSERVATIONS": "Observations",

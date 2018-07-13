@@ -64,9 +64,8 @@
                                 *ngIf="aogForm.controls['operator'].hasError('operatorDomain') && aogForm.controls['operator'].touched">
                             {{'OPERATIONS.CONTINGENCY_FORM.OPERATOR_OUT_DOMAIN'|translate}}
                         </mat-error>
-                        <mat-autocomplete #operatorString="matAutocomplete"
-                                          (optionSelected)="contingency.aircraft.operator = searchOperator.value">
-                            <mat-option *ngFor="let op of observableOperatorList | async" [value]="op.code">
+                        <mat-autocomplete #operatorString="matAutocomplete">
+                            <mat-option *ngFor="let op of operatorList$ | async" [value]="op.code">
                                 {{ op.code }}
                             </mat-option>
                         </mat-autocomplete>
@@ -126,8 +125,8 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div fxLayout="row">
-                    <mat-error *ngIf="aogForm.controls['safetyEventCode'].hasError('isSafety') && formDir.submitted">
+                <div [hidden]="!(isSafety && formDir.submitted && aogForm.controls['safetyEventCode'].hasError('isSafety'))">
+                    <mat-error >
                         {{'AOG.AOG_FORM.ERROR.SAFETY_EVENT_REQUIRED'|translate}}
                     </mat-error>
                 </div>
@@ -141,7 +140,7 @@
                 <mat-radio-group required fxLayout="column" id="rad-aog-form-contingency-type"
                                  fxLayoutGap="10px" [formControl]="aogForm.controls['aogType']">
                     <mat-radio-button labelPosition="after"
-                                      *ngFor="let ct of aogType"
+                                      *ngFor="let ct of contingencyType"
                                       value="{{ ct.code }}">{{ ct.description }}
                     </mat-radio-button>
                 </mat-radio-group>
@@ -157,7 +156,7 @@
                 <mat-radio-group required fxLayout="column" id="rad-aog-form-failure-type"
                                  fxLayoutGap="10px" [formControl]="aogForm.controls['failure']">
                     <mat-radio-button labelPosition="after"
-                                      *ngFor="let ct of aogFailureType"
+                                      *ngFor="let ct of failureType"
                                       value="{{ ct.code }}">{{ ct.description }}
                     </mat-radio-button>
                 </mat-radio-group>
@@ -180,6 +179,24 @@
                     </mat-error>
                     <mat-error
                             *ngIf="aogForm.controls['reason'].hasError('maxlength') && aogForm.controls['reason'].touched">
+                        {{'OPERATIONS.CONTINGENCY_FORM.MAX_LENGTH_VALIDATION' | translate}}
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="full-width" *ngIf="contingency">
+                    <textarea required matInput
+                              id="txt-aog-form-close-observation"
+                              placeholder="{{'AOG.AOG_FORM.CLOSE_OBSERVATION' | translate}}"
+                              [formControl]="aogForm.controls['closeObservation']"
+                              #closeObservation>
+                    </textarea>
+                    <mat-hint align="end">{{closeObservation.value.length}} / 400</mat-hint>
+                    <mat-error
+                            *ngIf="aogForm.controls['closeObservation'].hasError('required') && aogForm.controls['closeObservation'].touched">
+                        {{'OPERATIONS.CONTINGENCY_FORM.CLOSE_OBSERVARION_REQUIRED_VALIDATION' | translate}}
+                    </mat-error>
+                    <mat-error
+                            *ngIf="aogForm.controls['closeObservation'].hasError('maxlength') && aogForm.controls['closeObservation'].touched">
                         {{'OPERATIONS.CONTINGENCY_FORM.MAX_LENGTH_VALIDATION' | translate}}
                     </mat-error>
                 </mat-form-field>
@@ -231,7 +248,7 @@
                                    name="duration">
                             <mat-error
                                     *ngIf="aogForm.controls['duration'].hasError('required') && aogForm.controls['duration'].touched">
-                                {{'OPERATIONS.CONTINGENCY_FORM.FLEET_REQUIRED'|translate}}
+                                {{'OPERATIONS.CONTINGENCY_FORM.DURATION_REQUIRED'|translate}}
                             </mat-error>
                         </mat-form-field>
                     </div>
