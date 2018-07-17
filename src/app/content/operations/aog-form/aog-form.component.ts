@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DialogService} from '../../_services/dialog.service';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs/Subscription';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {Aog} from '../../../shared/_models/aog/aog';
@@ -12,7 +12,7 @@ import {Types} from '../../../shared/_models/configuration/types';
 import {Location} from '../../../shared/_models/configuration/location';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
-import {map, startWith, tap} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 import {AircraftSearch} from '../../../shared/_models/configuration/aircraftSearch';
 import {Safety} from '../../../shared/_models/safety';
 import {MessageService} from '../../../shared/_services/message.service';
@@ -21,7 +21,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {StorageService} from '../../../shared/_services/storage.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {CancelComponent} from '../cancel/cancel.component';
-import {ContingencyFormComponent} from '../create-contingency/create-contingency.component';
 import {ContingencyService} from '../../_services/contingency.service';
 import {Contingency} from '../../../shared/_models/contingency/contingency';
 import {MatSnackBarRef} from '@angular/material/snack-bar/typings/snack-bar-ref';
@@ -41,7 +40,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static AOG_ENDPOINT = 'aircraftOnGround';
     private static CONTINGENCY_SEARCH_ENDPOINT = 'contingencySearch';
 
-
     private static DATE_FORMAT = 'dd MMM yyyy ';
     private static HOUR_FORMAT = 'HH:mm:ss';
 
@@ -50,7 +48,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
     private static CONTINGENCY_MESSAGE = 'AOG.AOG_FORM.MESSAGE.CONTINGENCY_DATA';
 
-    private static DEFAULT_DURATION = '01:00';
+    private static DEFAULT_DURATION = 60;
+    private static AOG_TYPE = 'AOG';
 
     private _utcModel: TimeInstant;
     private _aogForm: FormGroup;
@@ -60,6 +59,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _groupTypeList: GroupTypes[];
     private _locationList: Location[];
     private _safetyEventList: Safety[];
+    private _arrDuration: Array<number>;
 
     private _alive: boolean;
     private _interval: number;
@@ -116,7 +116,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
             'tipology': [this.aog.code],
             'closeObservation': ['']
         });
-        this.username = this._storageService.getCurrentUser().username;
+        this._arrDuration = this.getDurationIntervals();
     }
 
     ngOnInit() {
@@ -131,6 +131,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._clockSubs = this.getClockSubscription();
         this._formSubs = this.getFormSubs();
         this._contingencySubs = new Subscription();
+        this.username = this._storageService.getCurrentUser().username;
     }
 
     ngOnDestroy() {
@@ -146,6 +147,22 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._contingencySubs.unsubscribe();
     }
 
+    /**
+     * Array with 30 minutes intervals
+     * @returns {number[]}
+     */
+    private getDurationIntervals(): number[] {
+        const res = [];
+        for (let i = 1; i * 30 <= 180; i++) {
+            res.push(i * 30);
+        }
+        return res;
+    }
+
+    /**
+     * Subscription to get data from AOG form
+     * @returns {Subscription}
+     */
     private getFormSubs(): Subscription {
         return this.aogForm.valueChanges.subscribe(v => {
             this.aog.station = v.station;
@@ -155,22 +172,29 @@ export class AogFormComponent implements OnInit, OnDestroy {
             this.aog.failure = v.failure;
             this.aog.observation = v.observation;
             this.aog.reason = v.reason;
-            this.aog.durationAog = v.duration ?
-                v.duration.split(':').reduce((ant, act, i) => parseInt(act) + parseInt(ant) * (i * 60)) : 0;
+            this.aog.durationAog = v.duration;
             this.aog.code = v.tipology;
             if (this.contingency) {
                 this.contingency.close.id = this.contingency.id;
                 this.contingency.close.username = this.aog.username;
-                this.contingency.close.type = 'AOG';
+                this.contingency.close.type = AogFormComponent.AOG_TYPE;
                 this.contingency.close.observation = v.closeObservation;
             }
         });
     }
 
+    /**
+     * Subscription to set time
+     * @returns {Subscription}
+     */
     private getClockSubscription(): Subscription {
         return this._clockService.getClock().subscribe(time => this.timeClock = time);
     }
 
+    /**
+     * Subscription to get the safety checkbox status
+     * @returns {Subscription}
+     */
     private getSafetyCheckSubs(): Subscription {
         return this.aogForm.controls['safety']
             .valueChanges
@@ -183,11 +207,19 @@ export class AogFormComponent implements OnInit, OnDestroy {
             });
     }
 
+    /**
+     * Validator to safety event data
+     * @param {FormControl} control
+     * @returns {object}
+     */
     private safetyEventValidator(control: FormControl): object {
         return !control.value && this.isSafety ? { isSafety: true } : null;
     }
 
-    public submitForm() {
+    /**
+     * Event to submit data
+     */
+    public submitForm(): void {
         if (this.aogForm.valid) {
             if (this.contingency) {
                 this.postCloseContingency();
@@ -199,6 +231,10 @@ export class AogFormComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Promise to send data
+     * @returns {Promise<void>}
+     */
     private postAog(): Promise<void> {
         return this._apiRestService
             .search(AogFormComponent.AOG_ENDPOINT, this.aog)
@@ -211,8 +247,13 @@ export class AogFormComponent implements OnInit, OnDestroy {
             ;
     }
 
-    private getTranslateString(toTranslate: string) {
-        this._translate.get(toTranslate)
+    /**
+     * Promise to translate and display messages
+     * @param {string} toTranslate
+     * @returns {Promise}
+     */
+    private getTranslateString(toTranslate: string): Promise<void> {
+        return this._translate.get(toTranslate)
             .toPromise()
             .then((res: string) => this._messageService.openSnackBar(res));
     }
@@ -341,6 +382,10 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._contingencySubs = this.getContingencySubs();
     }
 
+    /**
+     * Promise to close a current contingency with the same barcode as the new AOG
+     * @returns {Promise<void>}
+     */
     private postCloseContingency(): Promise<void> {
         return this._contingencyService.closeContingency(this.contingency.close)
             .toPromise()
@@ -348,6 +393,10 @@ export class AogFormComponent implements OnInit, OnDestroy {
             .catch( () => this.getTranslateString(AogFormComponent.CLOSE_CONTINGENCY_ERROR_MESSAGE));
     }
 
+    /**
+     * Subscription to get a contingency
+     * @returns {Subscription}
+     */
     private getContingencySubs(): Subscription {
         return this._apiRestService.search<Contingency[]>(AogFormComponent.CONTINGENCY_SEARCH_ENDPOINT, this.getContingencySignature())
             .subscribe(v => {
@@ -358,8 +407,12 @@ export class AogFormComponent implements OnInit, OnDestroy {
             });
     }
 
-    private showContingencyConfirm() {
-        this._translate.get(AogFormComponent.CONTINGENCY_MESSAGE, {value: this.aog.tail})
+    /**
+     * Promise to show a confirm message when there is a Contingency
+     * @returns {Promise<void>}
+     */
+    private showContingencyConfirm(): Promise<void> {
+        return this._translate.get(AogFormComponent.CONTINGENCY_MESSAGE, {value: this.aog.tail})
             .toPromise()
             .then((res: string) => {
                 const ref = this._messageService.openFromComponent(CancelComponent, {
@@ -371,6 +424,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
             });
     }
 
+    /**
+     * Handler after dismiss the confirm message
+     * @param {MatSnackBarRef<any>} ref
+     * @returns {Promise<void>}
+     */
     private handleContingencyConfirm(ref: MatSnackBarRef<any>): Promise<void> {
         return ref.afterDismissed()
             .toPromise()
@@ -400,6 +458,10 @@ export class AogFormComponent implements OnInit, OnDestroy {
             });
     }
 
+    /**
+     * Signature to search a contingency before to save an AOG
+     * @returns {{isClose: boolean; tails: string[]}}
+     */
     private getContingencySignature(): {isClose: boolean, tails: string[]} {
         return { isClose: false, tails : [this.aogForm.controls['tail'].value] };
     }
@@ -430,6 +492,10 @@ export class AogFormComponent implements OnInit, OnDestroy {
         }, this);
     }
 
+    /**
+     * Subscription for get a timer
+     * @returns {Subscription}
+     */
     private getTimerSubs(): Subscription {
         return TimerObservable.create(0, this.interval)
             .takeWhile(() => this.alive)
@@ -498,6 +564,10 @@ export class AogFormComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Set an username in the AOG instance
+     * @param {string} value
+     */
     set username(value: string) {
         this.aog.username = value;
         this.aog.status.username = value;
@@ -637,5 +707,13 @@ export class AogFormComponent implements OnInit, OnDestroy {
 
     set contingency(value: Contingency) {
         this._contingency = value;
+    }
+
+    get arrDuration(): Array<number> {
+        return this._arrDuration;
+    }
+
+    set arrDuration(value: Array<number>) {
+        this._arrDuration = value;
     }
 }
