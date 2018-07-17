@@ -1,9 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import { MatSidenav } from '@angular/material';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MatProgressBar, MatSidenav} from '@angular/material';
 import { SidenavService } from './_services/sidenav.service';
 import { DataService } from '../shared/_services/data.service';
 import { Subscription } from 'rxjs/Subscription';
-import { ContingencyFormComponent } from '../content/operations/create-contingency/create-contingency.component';
 import { DialogService } from '../content/_services/dialog.service';
 import { DetailsService } from '../details/_services/details.service';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -12,7 +11,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {StorageService} from '../shared/_services/storage.service';
 import {Router} from '@angular/router';
 import {AuthService} from '../auth/_services/auth.service';
-import {LayoutService} from './_services/layout.service';
+import {Layout, LayoutService} from './_services/layout.service';
+import {Routing, RoutingService} from '../shared/_services/routing.service';
 
 @Component({
     selector: 'lsl-layout',
@@ -22,13 +22,7 @@ import {LayoutService} from './_services/layout.service';
 export class LayoutComponent implements OnInit, OnDestroy {
     @ViewChild('sidenav') public sidenav: MatSidenav;
     @ViewChild('details') public details: MatSidenav;
-    private _messageDataSubscription: Subscription;
-    private _errorDataSubscription: Subscription;
-    private _handleErrorSubscription: Subscription;
-
-    public loading: boolean;
-    public mode: string;
-    public value: number;
+    @ViewChild('progressBar') public progressBar: MatProgressBar;
 
     private static SESSION_ERROR = {code: 472, message: 'ERRORS.SESSION'};
     private static BAD_REQUEST_ERROR = {code: 400, message: 'ERRORS.BAD_REQUEST'};
@@ -36,94 +30,121 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private static NOT_FOUND_ERROR = {code: 404, message: 'ERRORS.NOT_FOUND'};
     private static TIMEOUT_ERROR = {code: 408, message: 'ERRORS.TIMEOUT'};
     private static CUSTOM_ERROR = {code: 500, message: ''};
-
     private static DEFAULT_ERROR = 'ERRORS.DEFAULT';
+
+    private _messageDataSubscription: Subscription;
+    private _errorDataSubscription: Subscription;
+
+    private _layoutSubs: Subscription;
+    private _layout: Layout;
+
+    private _routingSubs: Subscription;
+    private _routing: Routing;
 
     constructor(
         private _sidenavService: SidenavService,
         private _detailsService: DetailsService,
-        private messageData: DataService,
+        private _messageData: DataService,
         private _messageService: MessageService,
         private _translate: TranslateService,
         private _dialogService: DialogService,
         private _storageService: StorageService,
         private _authService: AuthService,
         private _router: Router,
-        private _layoutService: LayoutService
+        private _layoutService: LayoutService,
+        private _routingService: RoutingService
     ) {
-        this.loading = true;
-        this.mode = 'determinate';
-        this.value = 100;
+        this._messageDataSubscription = this.getLoadingSubs();
+        this._errorDataSubscription = this.getErrorSubs();
+        this._layoutSubs = this.getLayoutSubs();
+        this._routingSubs = this.getRoutingSubs();
     }
 
     public ngOnInit() {
-        this.sidenavService.setSidenav(this.sidenav);
-        this.detailsService.sidenav = this.details;
-        this._messageDataSubscription = this.messageData
-            .currentStringMessage
-            .subscribe(message => setTimeout(() => this.activateLoadingBar(message), 0));
-        this._errorDataSubscription = this.messageData
-            .currentError
-            .subscribe(error => {
-                if (error) {
-                    this.loading = false;
-                    this._handleErrorSubscription = this.handleError(error);
-                }
-            });
+        this.leftSidenav = this.sidenav;
+        this.detailsSidenav = this.details;
+        this.mode = 'determinate';
+        this.value = 100;
     }
 
     public ngOnDestroy() {
         this._messageDataSubscription.unsubscribe();
         this._errorDataSubscription.unsubscribe();
-        if (this._handleErrorSubscription) {
-            this._handleErrorSubscription.unsubscribe();
-        }
+        this._layoutSubs.unsubscribe();
+        this._routingSubs.unsubscribe();
     }
 
-    private handleError(error: HttpErrorResponse): Subscription {
-        let subscription: Subscription;
+    private getRoutingSubs(): Subscription {
+        return this._routingService.routing$
+            .subscribe(v => this.routing = v);
+    }
+
+    private getLayoutSubs(): Subscription {
+        return this._layoutService.layout$
+            .subscribe(v => this.layout = v);
+    }
+
+    private getLoadingSubs(): Subscription {
+        return this._messageData
+            .currentStringMessage
+            .subscribe(message => setTimeout(() => this.activateLoadingBar(message), 0));
+    }
+
+    private getErrorSubs(): Subscription {
+        return this._messageData
+            .currentError
+            .subscribe(error => {
+                if (error) {
+                    this.loading = false;
+                    this.handleError(error).catch();
+                }
+            });
+    }
+
+    private handleError(error: HttpErrorResponse): Promise<void> {
+        let result: Promise<void>;
         switch (error.status) {
             case LayoutComponent.SESSION_ERROR.code: {
                 this._storageService.removeCurrentUser();
                 this._router.navigate([this._authService.getLoginUrl()]);
                 this._dialogService.closeAllDialogs();
-                subscription = this.showMessage(LayoutComponent.SESSION_ERROR.message);
+                result = this.showMessage(LayoutComponent.SESSION_ERROR.message);
                 break;
             }
             case LayoutComponent.BAD_REQUEST_ERROR.code: {
-                subscription = this.showMessage(LayoutComponent.BAD_REQUEST_ERROR.message);
+                result = this.showMessage(LayoutComponent.BAD_REQUEST_ERROR.message);
                 break;
             }
             case LayoutComponent.UNAUTHORIZED_ERROR.code: {
-                subscription = this.showMessage(LayoutComponent.UNAUTHORIZED_ERROR.message);
+                result = this.showMessage(LayoutComponent.UNAUTHORIZED_ERROR.message);
                 break;
             }
             case LayoutComponent.NOT_FOUND_ERROR.code: {
-                subscription = this.showMessage(LayoutComponent.NOT_FOUND_ERROR.message);
+                result = this.showMessage(LayoutComponent.NOT_FOUND_ERROR.message);
                 break;
             }
             case LayoutComponent.TIMEOUT_ERROR.code: {
-                subscription = this.showMessage(LayoutComponent.TIMEOUT_ERROR.message);
+                result = this.showMessage(LayoutComponent.TIMEOUT_ERROR.message);
                 break;
             }
             case LayoutComponent.CUSTOM_ERROR.code: {
                 if (typeof error.error !== 'undefined' && typeof error.error.message !== 'undefined' && error.error.message !== '') {
-                    subscription = this.showMessage(error.error.message);
+                    result = this.showMessage(error.error.message);
                 }
                 break;
             }
             default: {
-                subscription = this.showMessage(LayoutComponent.DEFAULT_ERROR);
+                result = this.showMessage(LayoutComponent.DEFAULT_ERROR);
                 break;
             }
         }
-        return subscription;
+        return result;
     }
 
-    public showMessage(message: string): Subscription {
-        return this._translate.get(message).subscribe((res: string) => {
-            this._messageService.openSnackBar(res);
-        });
+    public showMessage(message: string): Promise<void> {
+        return this._translate.get(message)
+            .toPromise()
+            .then(res => this._messageService.openSnackBar(res));
     }
 
     public activateLoadingBar(message: string) {
@@ -138,8 +159,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
         }
     }
 
-    public openCreationContingency() {
-        this._dialogService.openDialog(ContingencyFormComponent, {
+    public openCreationForm() {
+        this._dialogService.openDialog(this.layout.formComponent, {
             maxWidth: '100vw',
             width: '100%',
             height: '100%',
@@ -147,15 +168,75 @@ export class LayoutComponent implements OnInit, OnDestroy {
         });
     }
 
-    get sidenavService(): SidenavService {
-        return this._sidenavService;
+    get detailsSidenav(): MatSidenav {
+        return this._detailsService.sidenav;
     }
 
-    get detailsService(): DetailsService {
-        return this._detailsService;
+    set detailsSidenav(value: MatSidenav) {
+        this._detailsService.sidenav = value;
     }
 
-    get layoutService(): LayoutService {
-        return this._layoutService;
+    get isDetailsOpen(): boolean {
+        return this._detailsService.isOpen;
+    }
+
+    set leftSidenav(value: MatSidenav) {
+        this._sidenavService.sidenav = value;
+    }
+
+    get showRightNav(): boolean {
+        return this.layout.showRightNav;
+    }
+
+    private get layout(): Layout {
+        return this._layout;
+    }
+
+    private set layout(value: Layout) {
+        this._layout = value;
+    }
+
+    get showAddButton() {
+        return this.layout.showAddButton;
+    }
+
+    get disableAddButton() {
+        return this.layout.disableAddButton;
+    }
+
+    get loading(): boolean {
+        return this.layout.loading;
+    }
+
+    set loading(value: boolean) {
+        this.layout.loading = value;
+    }
+
+    get mode(): 'determinate' | 'indeterminate' | 'buffer' | 'query' {
+        return this.progressBar ? this.progressBar.mode : null;
+    }
+
+    set mode(value: 'determinate' | 'indeterminate' | 'buffer' | 'query') {
+        if (this.progressBar) {
+            this.progressBar.mode = value;
+        }
+    }
+
+    get value(): number {
+        return this.progressBar ? this.progressBar.value : null;
+    }
+
+    set value(value: number) {
+        if (this.progressBar) {
+            this.progressBar.value = value;
+        }
+    }
+
+    get routing(): Routing {
+        return this._routing;
+    }
+
+    set routing(value: Routing) {
+        this._routing = value;
     }
 }

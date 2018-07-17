@@ -17,6 +17,7 @@
     <div id="deferral-list" class="reg-list">
         <header fxLayout="row" class="" fxLayoutGap="10px">
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
+            <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPERATOR' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
@@ -31,6 +32,8 @@
             <div fxLayout="row" class="contingency-item" fxLayoutGap="10px">
                 <!--TAIL/FLEET-->
                 <div fxFlex="7" fxLayout="column" fxLayoutAlign="center"><span>{{ task.tail }}</span><span>{{ task.fleet }}</span></div>
+                <!-- OPERATOR -->
+                <div fxFlex="5" fxLayoutAlign="start center">{{ task.authority }}</div>
                 <!-- BARCODE -->
                 <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">{{ task.barcode | uppercase }}</div>
                 <!-- OPENING DATE -->
@@ -69,7 +72,7 @@
         </div>
         <div id="container-historical-report">
             <h3>{{ 'FLEET_HEALTH.REPORT.HISTORICAL_REPORTS' | translate }}</h3>
-            <div *ngIf="isDisplayHistoricalReport" fxLayout="row" fxLayoutGap="10px">
+            <div *ngIf="isDisplayedDetailTask" fxLayout="row" fxLayoutGap="10px">
                 <lsl-historical-task [editorLoad]="editorLoad" [analyzedTask]="analyzedTask" fxFlex="50"></lsl-historical-task>
                 <div fxLayout="column" fxFlex="50">
                     <lsl-analysis-report></lsl-analysis-report>
@@ -85,7 +88,7 @@
                     </div>
                 </div>
             </div>
-            <lsl-ess *ngIf="!isDisplayHistoricalReport" icon="assignment" message="FLEET_HEALTH.REPORT.START_NEW_PROJECT"></lsl-ess>
+            <lsl-ess *ngIf="!isDisplayedDetailTask" icon="assignment" message="FLEET_HEALTH.REPORT.START_NEW_PROJECT"></lsl-ess>
         </div>
     </div>
 

@@ -32,8 +32,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     private static TASK_FLEETHEALTH_ENDPOINT = 'tasksFleethealthSearch';
 
-    private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
-    private static DEFAULT_INTERVAL = 30;
+    private static DEFERRAL_UPDATE_INTERVAL = 'DEFERRAL_UPDATE_INTERVAL';
+    private static DEFAULT_INTERVAL = 120;
 
     private _listSubscription: Subscription;
     private _reloadSubscription: Subscription;
@@ -208,10 +208,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private getIntervalToRefresh(): Subscription {
         this.loading = true;
         this.error = false;
-        return this._apiRestService.getSingle('configTypes', DeferralListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(
+        return this._apiRestService.getSingle('configTypes', DeferralListComponent.DEFERRAL_UPDATE_INTERVAL).subscribe(
             rs => {
                 const res = rs as GroupTypes;
-                this.intervalToRefresh = Number(res.types[0].code) * 1000;
+                this.intervalToRefresh = Number(res.types[0].code ? res.types[0].code : DeferralListComponent.DEFAULT_INTERVAL) * 1000;
                 this.loading = false;
             },
             () => {

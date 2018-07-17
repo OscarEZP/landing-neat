@@ -3,6 +3,7 @@
         <header fxLayout="row">
             <span fxLayoutGap="10px" fxFlex="95">
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
+                <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPERATOR' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
@@ -26,6 +27,10 @@
                     <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
                         <span>{{ task.tail }}</span>
                         <span>{{ task.fleet }}</span>
+                    </div>
+                    <!-- OPERATOR -->
+                    <div fxFlex="5" fxLayoutAlign="start center">
+                    {{ task.authority }}
                     </div>
 
                     <!-- BARCODE -->
@@ -78,10 +83,13 @@
                     </div>
                 </span>
 
-                <div fxFlex="11" fxLayoutAlign="end end" >
+                <div fxFlex="11" fxLayoutAlign="end center" >
+
+                    <mat-icon class="chronic-icon" *ngIf="task.chronic.hasNotAnalyzedYet">chrome_reader_mode</mat-icon>
                     <button id="btn-fleet-health-list-{{ task.barcode }}" mat-icon-button [matMenuTriggerFor]="menu">
                         <mat-icon aria-label="options">more_vert</mat-icon>
                     </button>
+
                     <mat-menu #menu="matMenu">
                         <button mat-menu-item (click)="markAsDone(task.barcode)" id="doneBtn_{{task.barcode}}">
                             <span>{{ 'BUTTONS.SUB_MENUS.DONE' | translate }}</span>

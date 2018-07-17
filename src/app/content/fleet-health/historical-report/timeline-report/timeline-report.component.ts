@@ -12,7 +12,7 @@ import {DateRange} from '../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 import {DataSet, Timeline} from 'vis';
-import {Review} from '../../../../shared/_models/task/analysis/review';
+import {Review} from '../../../../shared/_models/task/fleethealth/analysis/review';
 import {TimelineOptions} from '../../../../shared/_models/task/timelineOptions';
 import {Observable} from 'rxjs/Observable';
 
@@ -24,19 +24,16 @@ import {Observable} from 'rxjs/Observable';
 export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private static DAYS_FROM = 30;
+    private static DAYS_FROM_CHRONIC = 90;
     private static ZOOM_MIN_DAYS = 15;
     private static ZOOM_MAX_MONTH = 3;
-
-    private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
+    private static ACTIVE_TASK_DAYS = 4;
+    private static  RELATED_TASK_SEARCH_ENDPOINT = 'tasksFleethealthRelatedSearch';
     private static TASK_HISTORICAL_ENDPOINT = 'taskHistorical';
-    private static REPORT_CLOSE = 'CLOSE';
     private static TIMELINE_DATE_FORMAT = 'YYYY-MM-DD';
 
     @Output()
     onAnalyzedTaskSelected: EventEmitter<TimelineTask> = new EventEmitter();
-
-    @Output()
-    onAtaCorrected: EventEmitter<any> = new EventEmitter();
 
     @Output()
     onEditorLoad: EventEmitter<boolean> = new EventEmitter();
@@ -61,12 +58,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private _tasksFromReportSubs: Subscription;
 
-    constructor(
-        private _translate: TranslateService,
-        private _element: ElementRef,
-        private _historicalReportService: HistoricalReportService,
-        private _apiRestService: ApiRestService
-    ) {
+    constructor(private _translate: TranslateService,
+                private _element: ElementRef,
+                private _historicalReportService: HistoricalReportService,
+                private _apiRestService: ApiRestService) {
         this._translate.setDefaultLang('en');
     }
 
@@ -85,8 +80,11 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         this.clickEvent = null;
         this.createTimeline(this.timelineData);
         this.firstLoad = false;
-        if (this.activeTask.timelineStatus === TimelineReportComponent.REPORT_CLOSE) {
+
+        if (this.isCloseTimeline) {
             this.taskHistoricalSubscription = this.getTaskHistoricalSubscription(this.activeTask);
+        } else if (this.hasChronic) {
+            this.listSubscription = this.relatedTaskSearch();
         }
     }
 
@@ -105,13 +103,16 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     /**
      * Get options for Timeline creation by a Moment object
-     * @param {moment.Moment} maxTime
      * @returns {TimelineOptions}
      */
-    private getTimelineOptions(maxTime: moment.Moment): TimelineOptions {
+    private getTimelineOptions(): TimelineOptions {
+        const maxDate = moment(this.activeTask.createEpochTime)
+            .utc()
+            .add(TimelineReportComponent.ACTIVE_TASK_DAYS, 'days')
+            .format(TimelineReportComponent.TIMELINE_DATE_FORMAT);
         return new TimelineOptions(
             this.minDate.format(TimelineReportComponent.TIMELINE_DATE_FORMAT),
-            this.minDate.add(TimelineReportComponent.DAYS_FROM + 2, 'days').format(TimelineReportComponent.TIMELINE_DATE_FORMAT),
+            maxDate,
             TimelineReportComponent.ZOOM_MIN_DAYS,
             TimelineReportComponent.ZOOM_MAX_MONTH * 30,
             true
@@ -125,13 +126,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private createTimeline(data: TimelineTask[]) {
         data = data.map(task => task.getJson());
-        const dataMinDate = this.taskList
-            .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1).find(tl => !!tl);
-        this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime)
-            .utc()
-            .subtract(TimelineReportComponent.DAYS_FROM, 'days');
+        const dataMinDate = this.timelineData
+            .sort((a, b) => a.createDate.epochTime > b.createDate.epochTime ? 1 : -1).find(tl => !!tl);
+        this.minDate = moment(dataMinDate ? dataMinDate.createDate.epochTime : this.activeTask.createEpochTime).utc();
+
         if (this.timeline) {
             this.tooltip = false;
+            this.timeline.setOptions(this.getTimelineOptions().getJson());
             this.dataSet.update(data);
         } else {
             this.dataSet = new DataSet(data);
@@ -146,8 +147,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private getNewTimeline(items: DataSet<object>): Timeline {
 
-        const maxTime = moment(this.activeTask.dueDateEpochTime).utc();
-        const options = this.getTimelineOptions(maxTime).getJson();
+        const options = this.getTimelineOptions().getJson();
         const timeline = new Timeline(this.element.nativeElement, items, options);
 
         timeline.on('click', (event: object) => {
@@ -217,13 +217,16 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private getListSubscription(signature: RelationedTaskSearch): Subscription {
         this.loading = true;
-        return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature)
+        return this._apiRestService.search<Task[]>(TimelineReportComponent.RELATED_TASK_SEARCH_ENDPOINT, signature)
             .subscribe(
                 (list) => {
                     this.taskList = list;
                     this.loading = false;
                     this.setRelatedTasks();
-                    this.onAtaCorrected.emit(true);
+                    if (this._historicalReportService.hasChronic) {
+                        this.onAnalyzedTaskSelected.emit(new TimelineTask(this.activeTask, true, true));
+                        this.onEditorLoad.emit(true);
+                    }
                     this.createTimeline(this.timelineData);
                 },
                 () => this.getError()
@@ -250,8 +253,14 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                     const reportRelated = this.timelineData
                         .find(tl => tl.reviews.length > 0);
                     this.historicalReportRelated = reportRelated ? reportRelated : this.historicalReportRelated;
+                    this.timelineData
+                        .filter(tl => tl.hasHistorical && this.historicalReportRelated && tl.barcode !== this.historicalReportRelated.barcode)
+                        .map(tl => {
+                            tl.isHistoricalEnabled = false;
+                            return tl;
+                        });
                     if (this.historicalReportRelated) {
-                        this.getHistoricalReportTasksSubs();
+                        this.tasksFromReportSubs = this.getHistoricalReportTasksSubs();
                     } else {
                         this.createTimeline(this.timelineData);
                     }
@@ -261,18 +270,43 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Related Tasks Search associated of the deferral item
+     * @returns {Subscription}
+     */
+    private relatedTaskSearch(): Subscription {
+        const signature: RelationedTaskSearch = RelationedTaskSearch.getInstance();
+        let days = 0;
+        if (!this.hasChronic) {
+            signature.tail = this.activeTask.tail;
+            signature.ataGroup = this.activeTask.ata;
+            days = TimelineReportComponent.DAYS_FROM;
+        } else {
+            days = TimelineReportComponent.DAYS_FROM_CHRONIC;
+        }
+        signature.barcode = this.activeTask.barcode;
+        const endDate = this.activeTask.createEpochTime;
+        const initDate = moment(endDate).utc().subtract(days, 'days').valueOf();
+        signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
+        return this.getListSubscription(signature);
+    }
+
+    private getReviewByBarcode(barcode: string): Review {
+        return this.historicalReportRelated.reviews.find(r => r.barcode === barcode);
+    }
+
+    /**
      * Subscription for handle historical reports
      * @returns {Subscription}
      */
     private getHistoricalReportTasksSubs(): Subscription {
         return this.tasksFromReport$(this.historicalReportRelated.barcode)
             .subscribe(tasks => {
-                const filteredTasks = tasks.filter(t => !!this.historicalReportRelated.reviews.find(r => r.barcode === t.barcode));
-                this.handleAddedTasks(filteredTasks.map(ft => {
-                    const review = this.historicalReportRelated.reviews.find(r => r.barcode === ft.barcode);
-                    ft.review = review;
-                    return ft;
-                }));
+                const filteredTasks = tasks
+                    .filter(t => !!this.getReviewByBarcode(t.barcode))
+                    .map(t => new TimelineTask(t, false, true, this.getReviewByBarcode(t.barcode).apply))
+                ;
+                this.handleAddedTasks(filteredTasks);
+                this.createTimeline(this.timelineData);
             });
     }
 
@@ -283,14 +317,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     public checkCorrectedATA(result: boolean) {
         if (result) {
             this.updatedByUser = true;
-            const signature: RelationedTaskSearch = RelationedTaskSearch.getInstance();
-            signature.tail = this.activeTask.tail;
-            signature.ataGroup = this.activeTask.ata;
-            signature.barcode = this.activeTask.barcode;
-            const endDate = this.activeTask.createEpochTime;
-            const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
-            signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
-            this.listSubscription = this.getListSubscription(signature);
+            this.relatedTaskSearch();
         }
     }
 
@@ -342,11 +369,15 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         itemUpdated.className = itemUpdated.generateClassName();
         this.timelineData.map(v => v.barcode === itemUpdated.barcode ? itemUpdated : v);
         this.dataSet.update([itemUpdated.getJson()]);
-        this.tooltip = false;
-        this.historicalReportRelated = this.validateHistoricalReport(itemUpdated);
-        if (this.historicalReportRelated === itemUpdated || !this.historicalReportRelated) {
+
+        if (itemUpdated.hasHistorical && (!this.historicalReportRelated || this.historicalReportRelated === itemUpdated)) {
+            this.historicalReportRelated = itemUpdated.apply ? itemUpdated : null;
+            this.updatedByUser = true;
+            this.dataSet.update(this.getReportsNotSelected(itemUpdated, !itemUpdated.apply));
             this.handleTasksFromReport(itemUpdated);
         }
+
+        this.tooltip = false;
     }
 
     /**
@@ -371,11 +402,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      * Set new TimelineTaks from historical reports
      * @param {Task[]} tasks
      */
-    private handleAddedTasks(tasks: Task[]) {
-        this.tasksFromReport = tasks.map(t => {
-            const tlt = new TimelineTask(t, false, true, t.review.apply);
-            tlt.isHistoricalChildren = true;
-            return tlt;
+    private handleAddedTasks(timelineTasks: TimelineTask[]) {
+        this.tasksFromReport = timelineTasks.map(tl => {
+            tl.isHistoricalChildren = true;
+            return tl;
         });
         this.tasksReplacedByReport = this.timelineData
             .filter(td => this.tasksFromReport.find(tfr => tfr.barcode === td.barcode));
@@ -384,7 +414,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             .filter(tl => !this.tasksReplacedByReport.find(trr => trr.barcode === tl.barcode))
             .concat(this.tasksFromReport);
         this.addTimelineTask(this.tasksFromReport);
-        this.dataSet.update(this.timelineData.map(tl => tl.getJson()));
+        this.createTimeline(this.timelineData);
     }
 
     /**
@@ -396,7 +426,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             .filter(tl => !this.tasksFromReport.find(tfr => tl.barcode === tfr.barcode))
             .concat(this.tasksReplacedByReport);
         this.addTimelineTask(this.tasksReplacedByReport);
-        this.dataSet.update(this.timelineData.map(tl => tl.getJson()));
+        this.createTimeline(this.timelineData);
     }
 
     /**
@@ -406,29 +436,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private handleTasksFromReport(itemUpdated: TimelineTask) {
         if (itemUpdated.apply) {
             this.tasksFromReportSubs = this.tasksFromReport$(itemUpdated.barcode)
-                .subscribe(tasks => this.handleAddedTasks(tasks));
+                .subscribe(tasks => this.handleAddedTasks(tasks.map(t => new TimelineTask(t, false, true, t.review.apply))));
         } else {
-           this.handleDeletedTasks();
+            this.handleDeletedTasks();
         }
-        this.tooltip = false;
-    }
-
-    /**
-     * Validation for get just one historical report
-     * @param {TimelineTask} tlTask
-     * @returns {TimelineTask}
-     */
-    private validateHistoricalReport(tlTask: TimelineTask): TimelineTask {
-        if (tlTask.hasHistorical && tlTask.apply === true && !this.historicalReportRelated) {
-            this.updatedByUser = true;
-            this.dataSet.update(this.getReportsNotSelected(tlTask, false));
-            return tlTask;
-        } else if (tlTask.hasHistorical && tlTask.apply === false && tlTask === this.historicalReportRelated) {
-            this.updatedByUser = true;
-            this.dataSet.update(this.getReportsNotSelected(tlTask, true));
-            return null;
-        }
-        return this.historicalReportRelated;
     }
 
     /**
@@ -617,5 +628,18 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     set firstLoad(value: boolean) {
         this._firstLoad = value;
+    }
+
+    get isDisplayedCorrectedAta(): boolean {
+        return this._historicalReportService.isDisplayedCorrectedAta;
+    }
+
+    get isCloseTimeline(): boolean {
+        return this._historicalReportService.isCloseTimeline;
+    }
+
+
+    get hasChronic(): boolean {
+        return this._historicalReportService.hasChronic;
     }
 }

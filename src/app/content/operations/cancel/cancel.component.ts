@@ -3,6 +3,7 @@ import { MAT_SNACK_BAR_DATA } from '@angular/material';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
 import { TranslateService } from '@ngx-translate/core';
+import {isUndefined} from 'util';
 
 @Component({
     selector: 'lsl-cancel',
@@ -15,27 +16,31 @@ export class CancelComponent implements OnInit {
     public static CANCEL = 'cancel';
 
     private _response: string;
+    private _closeAll: boolean;
 
     constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
                 private _messageService: MessageService,
                 private _dialogService: DialogService,
                 private _translate: TranslateService) {
         this._translate.setDefaultLang('en');
-        this.response = null;
+        this._response = null;
+        this._closeAll = !isUndefined(data.closeAll) ? data.closeAll : true;
     }
 
     ngOnInit() {
     }
 
-    closeCancelDialog() {
+    cancel() {
         this._messageService.dismissSnackBar();
-        this.response = this.response === null ? CancelComponent.CANCEL : this.response;
+        this.response = CancelComponent.CANCEL;
     }
 
-    closeContingencyForm() {
+    accept() {
         this.response = CancelComponent.ACCEPT;
-        this._dialogService.closeAllDialogs();
-        this.closeCancelDialog();
+        if (this.closeAll) {
+            this._dialogService.closeAllDialogs();
+        }
+        this._messageService.dismissSnackBar();
     }
 
     get response(): string {
@@ -44,5 +49,13 @@ export class CancelComponent implements OnInit {
 
     set response(value: string) {
         this._response = value;
+    }
+
+    get closeAll(): boolean {
+        return this._closeAll;
+    }
+
+    set closeAll(value: boolean) {
+        this._closeAll = value;
     }
 }

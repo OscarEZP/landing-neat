@@ -13,7 +13,7 @@ import {DetailsService} from '../../details/_services/details.service';
 
 export class OperationsComponent implements OnInit, OnDestroy {
 
-    public arrMenu: { label: string, link: string }[];
+    private _arrMenu: { label: string, link: string }[];
 
     constructor(
         private translate: TranslateService,
@@ -23,7 +23,6 @@ export class OperationsComponent implements OnInit, OnDestroy {
         private _detailsService: DetailsService
     ) {
         this.translate.setDefaultLang('en');
-        this.moduleTitle = 'Operations Module';
         this.arrMenu = [
             {
                 'label': 'OPERATIONS.CONTINGENCY',
@@ -34,11 +33,13 @@ export class OperationsComponent implements OnInit, OnDestroy {
                 'link': '/operations/pendings',
             }
         ];
-        this.showAddButton = true;
-        this.showRightNav = true;
+        // this.showAddButton = true;
+        // this.showRightNav = true;
+        // this.moduleTitle = 'Operations Module';
     }
 
     ngOnInit() {
+
     }
 
     ngOnDestroy() {
@@ -55,5 +56,13 @@ export class OperationsComponent implements OnInit, OnDestroy {
 
     set showRightNav(value: boolean) {
         this._layoutService.showRightNav = value;
+    }
+
+    get arrMenu(): { label: string; link: string }[] {
+        return this._arrMenu;
+    }
+
+    set arrMenu(value: { label: string; link: string }[]) {
+        this._arrMenu = value;
     }
 }

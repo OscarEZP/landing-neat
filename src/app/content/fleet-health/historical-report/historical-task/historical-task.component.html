@@ -9,7 +9,7 @@
         </div>
         <div fxLayout="row">
             <div fxFlex="">
-                <h1>{{ historicalTask.ata }} / {{ historicalTask.barcode }}</h1>
+                <h1>{{ detailTask.ata }} / {{ detailTask.barcode }} / {{ detailTask.creationDate.epochTime | utcDate | date: dateFormat.split(' ')[0]}}</h1>
             </div>
             <div fxFlexAlign="end center" fxLayout="row" >
                 <button [color]="primary" (click)="copyText()" mat-raised-button type="button">{{'FLEET_HEALTH.REPORT.COPY_TEXT' | translate}}</button>
@@ -20,7 +20,7 @@
     <div class="content">
         <div id="fault-name">
             <h2>{{'FLEET_HEALTH.REPORT.FAULT_NAME' | translate}}</h2>
-            <p>{{historicalTask.faultName}}</p>
+            <p>{{detailTask.faultName}}</p>
         </div>
         <div id="description">
             <mat-accordion>
@@ -30,15 +30,15 @@
                             {{'FLEET_HEALTH.REPORT.DESCRIPTION' | translate}}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <div [innerHtml]="historicalTask.description?historicalTask.description:'-'"></div>
+                    <div [innerHtml]="detailTask.description?detailTask.description:'-'"></div>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
-        <div id="maintenance-actions" *ngIf="historicalTask.correctiveActions.length > 0">
+        <div id="maintenance-actions" *ngIf="detailTask.correctiveActions.length > 0">
             <hr class="segment">
             <h2>{{'FLEET_HEALTH.REPORT.MAINTENANCE_ACTIONS' | translate}}</h2>
             <mat-accordion>
-                <mat-expansion-panel *ngFor="let action of historicalTask.correctiveActions; let i = index" [expanded]="i === 0">
+                <mat-expansion-panel *ngFor="let action of detailTask.correctiveActions; let i = index" [expanded]="i === 0">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             {{'FLEET_HEALTH.REPORT.MAINTENANCE_ACTION' | translate}} {{i+1}}
@@ -53,11 +53,11 @@
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
-        <div id="job-steps" *ngIf="historicalTask.steps.length > 0">
+        <div id="job-steps" *ngIf="detailTask.steps.length > 0">
             <hr class="segment">
             <h2>{{'FLEET_HEALTH.REPORT.JOB_STEPS' | translate}}</h2>
             <mat-accordion>
-                <mat-expansion-panel *ngFor="let step of historicalTask.steps; let i = index" [expanded]="i === 0">
+                <mat-expansion-panel *ngFor="let step of detailTask.steps; let i = index" [expanded]="i === 0">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             {{'FLEET_HEALTH.REPORT.JOB_STEP' | translate}} {{step.ord}} | {{step.status}}
@@ -69,7 +69,7 @@
                     <div [innerHtml]="step.description"></div>
                     <ol *ngIf="step.stepLabours.length > 0">
                         <li *ngFor="let labour of step.stepLabours">
-                            <span>Id: {{labour.labourId}} | Creation: {{labour.createDate.epochTime | utcDate | date: dateFormat}} | Update: {{labour.reviseDate.epochTime | utcDate | date: 'dd-MM-yyyy HH:mm'}}</span>
+                            <span>Id: {{labour.labourId}} | Creation: {{labour.createDate.epochTime | utcDate | date: dateFormat}} | Update: {{labour.reviseDate.epochTime | utcDate | date: dateFormat}}</span>
                             <div [innerHtml]="labour.notes"></div>
                         </li>
                     </ol>
@@ -114,7 +114,7 @@
                 <mat-paginator [hidden]="tableData.length < pageSize" [pageSizeOptions]="[pageSize]" showFirstLastButtons></mat-paginator>
             </div>
         </div>
-        <div id="analysis-historical" *ngIf="historicalTask.report">
+        <div id="analysis-historical" *ngIf="detailTask.report">
             <hr class="segment">
             <div fxLayout="row">
                 <div fxFlex="">
@@ -137,7 +137,7 @@
                                 {{'FLEET_HEALTH.REPORT.DESCRIPTION' | translate}}
                             </mat-panel-title>
                         </mat-expansion-panel-header>
-                        <div [innerHTML]="historicalTask.report | keepHtml"></div>
+                        <div [innerHTML]="detailTask.report | keepHtml"></div>
                     </mat-expansion-panel>
                 </mat-accordion>
             </div>

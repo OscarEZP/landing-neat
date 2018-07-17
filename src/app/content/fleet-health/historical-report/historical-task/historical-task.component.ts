@@ -1,13 +1,13 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {HistoricalTask} from '../../../../shared/_models/task/historical/historicalTask';
 import {Subscription} from 'rxjs/Subscription';
 import {ApiRestService} from '../../../../shared/_services/apiRest.service';
-import {HttpClient} from '@angular/common/http';
 import {HistoricalReportService} from '../_services/historical-report.service';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
-import {PartGroup} from '../../../../shared/_models/task/historical/partGroup';
+import {PartGroup} from '../../../../shared/_models/task/detail/partGroup';
 import {TimeInstant} from '../../../../shared/_models/timeInstant';
+import {DateUtil} from '../../../../shared/util/dateUtil';
+import {DetailTask} from '../../../../shared/_models/task/detail/detailTask';
 
 export interface PartInterface {
     description: string;
@@ -24,26 +24,24 @@ export interface PartInterface {
 })
 export class HistoricalTaskComponent implements OnInit {
 
+    private static TASK_DETAIL_ENDPOINT = 'taskDetail';
+    private static DATE_FORMAT = 'dd-MM-yyyy HH:mm';
+    private static MOMENT_DATE_FORMAT = 'DD-MM-YYYY';
 
-    private static TASK_HISTORICAL_REPORT_ENDPOINT = 'taskHistoricalReport';
-
-    private _historicalTask: HistoricalTask;
-    private _apiRestService: ApiRestService;
+    private _detailTask: DetailTask;
     private _analyzedTask: TimelineTask;
     private _editorLoad: boolean;
     private _dataSource: MatTableDataSource<any>;
     private _displayedColumns: string[];
     private _tableData: PartInterface[];
     private _pageSize: number;
-    private _dateFormat: string;
-    private _hourFormat: string;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     @Input()
     set analyzedTask(value: TimelineTask) {
         if (value && value.task.barcode) {
-            this.getHistoricalTask(value.task.barcode);
+            this.getDetailTask(value.task.barcode);
             this._analyzedTask = value;
         }
     }
@@ -57,33 +55,33 @@ export class HistoricalTaskComponent implements OnInit {
         return this._editorLoad;
     }
 
-    constructor(httpClient: HttpClient,
-                private _historicalReportService: HistoricalReportService) {
-        this.apiRestService = new ApiRestService(httpClient);
+    constructor(
+        private _historicalReportService: HistoricalReportService,
+        private _apiRestService: ApiRestService
+    ) {
         this._analyzedTask = null;
         this._displayedColumns = ['description', 'partGroup', 'quantity', 'eta', 'status'];
         this._tableData = [];
         this._pageSize = 5;
-        this._dateFormat = 'dd-MM-yyyy HH:mm';
     }
 
     ngOnInit() {
-        this.historicalTask = HistoricalTask.getInstance();
+        this.detailTask = DetailTask.getInstance();
         this.editorLoad = false;
     }
 
     /**
-     * Get the historical task by a barcode
+     * Get the Detail task by Barcode (Parts, Accions, Step)
      * @param {string} barcode
      * @returns {Subscription}
      */
-    public getHistoricalTask(barcode: string): Subscription {
-        return this.apiRestService
-            .getSingle<HistoricalTask>(HistoricalTaskComponent.TASK_HISTORICAL_REPORT_ENDPOINT, barcode)
-            .subscribe((response: HistoricalTask) => {
-                this.historicalTask = response;
+    public getDetailTask(barcode: string): Subscription {
+        return this._apiRestService
+            .getSingle<DetailTask>(HistoricalTaskComponent.TASK_DETAIL_ENDPOINT, barcode)
+            .subscribe((response: DetailTask) => {
+                this.detailTask = response;
                 if (this.editorLoad) {
-                    this.editorContent = this.historicalTask.report;
+                    this.editorContent = this.detailTask.report;
                 }
                 this.tableData = response.parts.map(p => {
                     const newPart: PartInterface = {
@@ -118,8 +116,8 @@ export class HistoricalTaskComponent implements OnInit {
     private addHeader() {
         if (this.editorContent.indexOf(this.header) === -1) {
             const init = this.editorContent.length > 0 ? this.quillEditor.getText().length : 0;
-            this.quillEditor.insertText(init, this.taskType.toUpperCase(), 'bold', true);
-            this.quillEditor.insertText(this.quillEditor.getText().length, this.header, 'bold', true);
+            const insertText = this.editorContent.length > 0 ? '\r' + this.header : this.header;
+            this.quillEditor.insertText(init, insertText, 'bold', true);
         }
     }
 
@@ -138,23 +136,21 @@ export class HistoricalTaskComponent implements OnInit {
     }
 
     get header(): string {
-        return this.analyzedTask.task.ata + ' / ' + this.analyzedTask.task.barcode;
+        const arrHeader = [
+            this.taskType.toUpperCase(),
+            this.analyzedTask.task.ata,
+            this.analyzedTask.task.barcode,
+            DateUtil.formatDate(this.detailTask.creationDate.epochTime, HistoricalTaskComponent.MOMENT_DATE_FORMAT)
+        ];
+        return arrHeader.join(' / ');
     }
 
-    get historicalTask(): HistoricalTask {
-        return this._historicalTask;
+    get detailTask(): DetailTask {
+        return this._detailTask;
     }
 
-    set historicalTask(value: HistoricalTask) {
-        this._historicalTask = value;
-    }
-
-    get apiRestService(): ApiRestService {
-        return this._apiRestService;
-    }
-
-    set apiRestService(value: ApiRestService) {
-        this._apiRestService = value;
+    set detailTask(value: DetailTask) {
+        this._detailTask = value;
     }
 
     set editorContent(value: string) {
@@ -214,10 +210,7 @@ export class HistoricalTaskComponent implements OnInit {
     }
 
     get dateFormat(): string {
-        return this._dateFormat;
+        return HistoricalTaskComponent.DATE_FORMAT;
     }
 
-    set dateFormat(value: string) {
-        this._dateFormat = value;
-    }
 }

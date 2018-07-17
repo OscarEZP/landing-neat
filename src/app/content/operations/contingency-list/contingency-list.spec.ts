@@ -22,6 +22,7 @@ import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {Types} from '../../../shared/_models/configuration/types';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
 import {LogService} from '../../_services/log.service';
+import {LayoutService} from '../../../layout/_services/layout.service';
 
 jest.mock('../../../details/_services/details.service');
 jest.mock('../../_services/dialog.service');
@@ -31,6 +32,7 @@ jest.mock('../../../shared/_services/data.service');
 jest.mock('../../../shared/_services/apiRest.service');
 jest.mock('../../../shared/_services/storage.service');
 jest.mock('../../../shared/_services/message.service');
+jest.mock('../../../layout/_services/layout.service');
 
 describe('Contingency List Test', () => {
 
@@ -81,6 +83,12 @@ describe('Contingency List Test', () => {
         getSingle: () => Observable.of(fakeGroupTypeRS)
     };
 
+    const MockLayoutService = {
+        showAddButton: () => false,
+        showRightNav: () => true,
+        reset: () => {}
+    };
+
     class FakeLoader implements TranslateLoader {
         getTranslation(lang: string): Observable<any> {
             return Observable.of(translations);
@@ -89,7 +97,6 @@ describe('Contingency List Test', () => {
 
     const fakeActivatedRoute = {
         data: Observable.of({})
-        // subscribe: (fn: (value: boolean) => void) => fn(true)
     } as ActivatedRoute;
 
     beforeEach(() => {
@@ -112,7 +119,6 @@ describe('Contingency List Test', () => {
                 DialogService,
                 DetailsService,
                 HistoricalSearchService,
-                // ContingencyService,
                 {provide: ContingencyService, useValue: MockContingencyList},
                 StorageService,
                 MessageService,
@@ -120,7 +126,8 @@ describe('Contingency List Test', () => {
                 {
                     provide: ActivatedRoute,
                     useValue: fakeActivatedRoute
-                }
+                },
+                {provide: LayoutService, useValue: MockLayoutService}
             ],
             declarations: [
                 ContingencyListComponent
@@ -132,7 +139,6 @@ describe('Contingency List Test', () => {
     beforeEach(() => {
         inject([ContingencyService, HttpTestingController, LogService], (_contingencyService, _httpMock, _logService) => {
             contigencyService = new ContingencyService(_httpMock, _logService);
-            // httpMock = _httpMock;
         });
 
         fixture = TestBed.createComponent(ContingencyListComponent);
@@ -145,11 +151,6 @@ describe('Contingency List Test', () => {
 
 
     it('Test to know if the module exist', () => {
-        /*
-        injector = getTestBed();
-        translate = injector.get(TranslateService);
-        translate.use('en');
-        */
         expect(contingencyListComponent).toBeDefined();
     });
 

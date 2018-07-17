@@ -18,6 +18,7 @@ import {UserManagementComponent} from './content/management/mng-general/user-man
 import {BulkLoadComponent} from './content/management/mng-general/user-management/bulk-load/bulk-load.component';
 import {UserListComponent} from './content/management/mng-general/user-management/user-list/user-list.component';
 import {AtecFilterComponent} from './content/management/mng-fleet-health/atec-filter/atec-filter.component';
+import {AogListComponent} from './content/operations/aog-list/aog-list.component';
 
 const ROUTES: Routes = [
     {
@@ -55,12 +56,18 @@ const ROUTES: Routes = [
                         canActivate: [AuthGuardService],
                         data: { historical: true },
                     },
+
                     {
                         path: 'pendings',
                         component: PendingListComponent,
                         canActivate: [AuthGuardService],
                     }
                 ]
+            },
+            {
+                path: 'operations/aog',
+                component: AogListComponent,
+                canActivate: [AuthGuardService],
             },
             {
                 path: 'fleet-health',

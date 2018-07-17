@@ -1,13 +1,14 @@
 export class Remark {
-    private _header:string;
-    private _body:string;
-    private _order:number;
+    private _header: string;
+    private _body: string;
+    private _order: number;
 
     private constructor() {
         this._header = '';
         this._body = '';
-        this._order=null;
+        this._order = null;
     }
+
     public static getInstance() {
         return new Remark();
     }

@@ -14,6 +14,7 @@ import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 import { TimeInstant } from '../../../shared/_models/timeInstant';
 import { SearchContingency } from '../../../shared/_models/contingency/searchContingency';
 import {Subscription} from 'rxjs/Subscription';
+import {LayoutService} from '../../../layout/_services/layout.service';
 
 @Component({
     selector: 'lsl-search-historical',
@@ -44,7 +45,8 @@ export class SearchHistoricalComponent implements OnInit {
         private _router: Router,
         private _route: ActivatedRoute,
         private _contingencyService: ContingencyService,
-        private _searchHistoricalService: HistoricalSearchService
+        private _searchHistoricalService: HistoricalSearchService,
+        private _layoutService: LayoutService
     ) {
         this._translate.setDefaultLang('en');
         this._searchHistoricalService.initForm(
@@ -200,6 +202,7 @@ export class SearchHistoricalComponent implements OnInit {
             this._contingencyService.loading = true;
             this._contingencyService.postHistoricalSearch(search).subscribe(() => {
                 this._contingencyService.loading = false;
+                this._layoutService.disableRightNav = this._contingencyService.contingencyList.length === 0;
             });
             this._contingencyService.getTotalRecords(search).subscribe((count) => {
                 this.paginatorObject.length = count.items;
