@@ -5,6 +5,7 @@ import {SharedModule} from '../../shared/shared.module';
 import {RouterModule} from '@angular/router';
 import {UserManagementModule} from './mng-general/user-management/user-management.module';
 import {AtecFilterComponent} from './mng-fleet-health/atec-filter/atec-filter.component';
+import {EmailMaintainerComponent} from './mng-operations/email-maintainer/email-maintainer.component';
 
 @NgModule({
     imports: [
@@ -15,7 +16,8 @@ import {AtecFilterComponent} from './mng-fleet-health/atec-filter/atec-filter.co
     ],
     declarations: [
         ManagementComponent,
-        AtecFilterComponent
+        AtecFilterComponent,
+        EmailMaintainerComponent
     ]
 })
 export class ManagementModule {

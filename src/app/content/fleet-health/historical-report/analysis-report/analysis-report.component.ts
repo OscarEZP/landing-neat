@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {HistoricalReportService} from '../_services/historical-report.service';
 import {QuillEditorComponent} from 'ngx-quill';
+import {QuillConfiguration} from '../../../../shared/_models/components/quillConfiguration';
 
 @Component({
     selector: 'lsl-analysis-report',
@@ -9,45 +10,26 @@ import {QuillEditorComponent} from 'ngx-quill';
 })
 export class AnalysisReportComponent implements OnInit {
 
-    private _editorConfig: object;
+    private _editorConfig: QuillConfiguration;
 
     @ViewChild('quill')
     set quillEditor(qe: QuillEditorComponent) {
         this._historicalReportService.quillEditor = qe;
     }
 
-    constructor(
-        private _historicalReportService: HistoricalReportService
-    ) {
+    constructor(private _historicalReportService: HistoricalReportService) {
     }
 
     ngOnInit() {
         this.editorContent = '';
-        this.editorConfig = {
-            'style': {'height': '250px'},
-            'placeholder': 'Enter text here...',
-            'readOnly': false,
-            'theme': 'snow',
-            'modules': {
-                toolbar: [
-                    ['bold', 'italic', 'underline'],            // toggled buttons
-                    [{'list': 'ordered'}, {'list': 'bullet'}],
-                    [{'indent': '-1'}, {'indent': '+1'}],       // outdent/indent
-
-                    [{'color': []}, {'background': []}],        // dropdown with defaults from theme
-                    [{'align': []}],
-
-                    ['clean']                                   // remove formatting button
-                ]
-            }
-        };
+        this.editorConfig = QuillConfiguration.getInstance();
     }
 
-    get editorConfig(): object {
+    get editorConfig(): QuillConfiguration {
         return this._editorConfig;
     }
 
-    set editorConfig(value: object) {
+    set editorConfig(value: QuillConfiguration) {
         this._editorConfig = value;
     }
 

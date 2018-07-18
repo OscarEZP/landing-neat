@@ -13,7 +13,7 @@
                     <input id="in-find-account-username" matInput placeholder="Username" type="text"
                            [formControl]="findAccountForm.controls['usernameFormControl']"
                            [errorStateMatcher]="matcher"
-                           [(ngModel)]="recoverPasswordService.data.username">
+                           [(ngModel)]="username">
                     <mat-error *ngIf="usernameFormControl.hasError('required')">
                         Please enter your username
                     </mat-error>

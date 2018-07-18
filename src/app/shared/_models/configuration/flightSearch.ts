@@ -1,17 +1,13 @@
-import { TimeInstant } from '../timeInstant';
-
 export class FlightSearch {
 
     private _tail: string;
     private _offSet: number;
     private _limit: number;
-    private _from: TimeInstant;
 
-    constructor(tail: string, offSet: number, limit: number, from: TimeInstant) {
+    constructor(tail: string, offSet: number, limit: number) {
         this._tail = tail;
         this._offSet = offSet;
         this._limit = limit;
-        this._from = from;
     }
 
     get tail(): string {
@@ -38,11 +34,4 @@ export class FlightSearch {
         this._limit = value;
     }
 
-    get from(): TimeInstant {
-        return this._from;
-    }
-
-    set from(value: TimeInstant) {
-        this._from = value;
-    }
 }

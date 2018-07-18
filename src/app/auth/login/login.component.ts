@@ -6,9 +6,10 @@ import { MessageService } from '../../shared/_services/message.service';
 import { StorageService } from '../../shared/_services/storage.service';
 import { AuthService } from '../_services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
-import {RoutingService} from '../../shared/_services/routing.service';
+import {Routing, RoutingService} from '../../shared/_services/routing.service';
 import {ManagementUser} from '../../shared/_models/management/managementUser';
 import { Access } from '../../shared/_models/management/access';
+import {Subscription} from 'rxjs/Subscription';
 
 
 @Component({
@@ -42,6 +43,9 @@ export class LoginComponent implements OnInit {
 
     loginForm: FormGroup;
 
+    private _routing: Routing;
+    private _routingSubs: Subscription;
+
     constructor(
         protected _authService: AuthService,
         private _storageService: StorageService,
@@ -56,6 +60,8 @@ export class LoginComponent implements OnInit {
     }
 
     ngOnInit() {
+        this._routingSubs = this.getRoutingSubs();
+
         this.registerView = false;
         this.disableButton = false;
         this.activateLoadingBar(false);
@@ -75,11 +81,16 @@ export class LoginComponent implements OnInit {
         });
     }
 
+    private getRoutingSubs(): Subscription {
+        return this._routingService.routing$
+            .subscribe(v => this.routing = v);
+    }
+
     /**
      * Method for get an access token, if success, the user will be redirected to any section enabled
      * @param {NgForm} form
      */
-    logIn(form: NgForm) {
+    logIn(form: FormGroup) {
         this.activateLoadingBar(true);
         if (form.valid && !this.disableButton) {
             this.disableButton = true;
@@ -105,7 +116,7 @@ export class LoginComponent implements OnInit {
     private redirect(username: string) {
         this._authService.getAccess(username).then(
         res => {
-            const role = this._routingService.arrMenu.find(menu => {
+            const role = this.routing.arrMenu.find(menu => {
                 const moduleConfig = this._authService.modulesConfig.filter(
                     mod => this.authModule(res).find(mu => mu.module === mod.code)
                 );
@@ -128,8 +139,8 @@ export class LoginComponent implements OnInit {
      */
     private authModule(managementUser: ManagementUser): Access[] {
         return managementUser.access
-            .filter(m => !!(m.role === LoginComponent.ADMIN_MODE ||
-                    (m.role === LoginComponent.USER_MODE && m.module !== LoginComponent.GENERAL_CODE)));
+            .filter(m => (m.role === LoginComponent.ADMIN_MODE ||
+                (m.role === LoginComponent.USER_MODE && m.module !== LoginComponent.GENERAL_CODE)));
     }
 
     activateLoadingBar(show: boolean) {
@@ -148,14 +159,22 @@ export class LoginComponent implements OnInit {
         return this._authService.data;
     }
 
-    set data(value: { username: string, password: string }){
+    set data(value: { username: string, password: string }) {
         this._authService.data = value;
+    }
+
+    get routing(): Routing {
+        return this._routing;
+    }
+
+    set routing(value: Routing) {
+        this._routing = value;
     }
 }
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
         const isSubmitted = form && form.submitted;
-        return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+        return (control && control.invalid && (control.dirty || control.touched || isSubmitted));
     }
 }

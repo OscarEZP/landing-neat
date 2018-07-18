@@ -11,10 +11,10 @@ import {Task} from '../../../../shared/_models/task/task';
 import {DateRange} from '../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../shared/_models/timeInstant';
 import {TimelineTask} from '../../../../shared/_models/task/timelineTask';
-import {Timeline, DataSet} from 'vis';
-import {Review} from '../../../../shared/_models/task/analysis/review';
-import {Analysis} from '../../../../shared/_models/task/analysis/analysis';
+import {DataSet, Timeline} from 'vis';
+import {Review} from '../../../../shared/_models/task/fleethealth/analysis/review';
 import {TimelineOptions} from '../../../../shared/_models/task/timelineOptions';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
     selector: 'lsl-timeline-report',
@@ -24,16 +24,19 @@ import {TimelineOptions} from '../../../../shared/_models/task/timelineOptions';
 export class TimelineReportComponent implements OnInit, OnDestroy {
 
     private static DAYS_FROM = 30;
+    private static DAYS_FROM_CHRONIC = 90;
     private static ZOOM_MIN_DAYS = 15;
-    private static ZOOM_MAX_MONTH = 12;
-
-    private static TASK_SEARCH_ENDPOINT = 'taskRelationsSearch';
+    private static ZOOM_MAX_MONTH = 3;
+    private static ACTIVE_TASK_DAYS = 4;
+    private static  RELATED_TASK_SEARCH_ENDPOINT = 'tasksFleethealthRelatedSearch';
+    private static TASK_HISTORICAL_ENDPOINT = 'taskHistorical';
+    private static TIMELINE_DATE_FORMAT = 'YYYY-MM-DD';
 
     @Output()
-    onAnalyzedTaskSelected: EventEmitter<any> = new EventEmitter();
+    onAnalyzedTaskSelected: EventEmitter<TimelineTask> = new EventEmitter();
 
     @Output()
-    onAtaCorrected: EventEmitter<any> = new EventEmitter();
+    onEditorLoad: EventEmitter<boolean> = new EventEmitter();
 
     private _tooltip: boolean;
     private _tooltipStyle: Style;
@@ -42,47 +45,74 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private _loading: boolean;
     private _error: boolean;
     private _minDate: moment.Moment;
-    private _analysis: Analysis;
     private _clickEvent: object;
     private _listSubscription: Subscription;
+    private _taskHistoricalSubscription: Subscription;
     private _dataSet: DataSet<object>;
+    private _updatedByUser: boolean;
+    private _timelineTaskSelected: object;
+    private _firstLoad: boolean;
 
-    constructor(
-        private _translate: TranslateService,
-        private _element: ElementRef,
-        private _historicalReportService: HistoricalReportService,
-        private _apiRestService: ApiRestService
-    ) {
+    private _tasksFromReport: TimelineTask[];
+    private _tasksReplacedByReport: TimelineTask[];
+
+    private _tasksFromReportSubs: Subscription;
+
+    constructor(private _translate: TranslateService,
+                private _element: ElementRef,
+                private _historicalReportService: HistoricalReportService,
+                private _apiRestService: ApiRestService) {
         this._translate.setDefaultLang('en');
-        this.tooltip = false;
-        this.tooltipStyle = new Style();
-        this.taskList = [];
-        this.analysis = Analysis.getInstance();
-        this.listSubscription = null;
     }
 
     ngOnInit() {
+        this.tooltip = false;
+        this.tooltipStyle = new Style();
+        this.taskList = [];
+        this.listSubscription = null;
+        this.taskHistoricalSubscription = null;
+        this.tasksFromReportSubs = null;
+        this.updatedByUser = false;
+        this.historicalReportRelated = null;
+        this.tasksFromReport = [];
+        this.tasksReplacedByReport = [];
         this.timelineData = this.getTimelineInitData();
-        this.createTimeline(this.timelineData);
         this.clickEvent = null;
+        this.createTimeline(this.timelineData);
+        this.firstLoad = false;
+
+        if (this.isCloseTimeline) {
+            this.taskHistoricalSubscription = this.getTaskHistoricalSubscription(this.activeTask);
+        } else if (this.hasChronic) {
+            this.listSubscription = this.relatedTaskSearch();
+        }
     }
 
     ngOnDestroy() {
+        if (this.tasksFromReportSubs) {
+            this.tasksFromReportSubs.unsubscribe();
+        }
         if (this.listSubscription) {
             this.listSubscription.unsubscribe();
+        }
+        if (this.taskHistoricalSubscription) {
+            this.taskHistoricalSubscription.unsubscribe();
         }
         this.timeline.destroy();
     }
 
     /**
      * Get options for Timeline creation by a Moment object
-     * @param {moment.Moment} maxTime
      * @returns {TimelineOptions}
      */
-    private getTimelineOptions(maxTime: moment.Moment): TimelineOptions {
+    private getTimelineOptions(): TimelineOptions {
+        const maxDate = moment(this.activeTask.createEpochTime)
+            .utc()
+            .add(TimelineReportComponent.ACTIVE_TASK_DAYS, 'days')
+            .format(TimelineReportComponent.TIMELINE_DATE_FORMAT);
         return new TimelineOptions(
-            this.minDate.format('YYYY-MM-DD'),
-            maxTime.format('YYYY-MM-DD'),
+            this.minDate.format(TimelineReportComponent.TIMELINE_DATE_FORMAT),
+            maxDate,
             TimelineReportComponent.ZOOM_MIN_DAYS,
             TimelineReportComponent.ZOOM_MAX_MONTH * 30,
             true
@@ -96,16 +126,14 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private createTimeline(data: TimelineTask[]) {
         data = data.map(task => task.getJson());
-        const dataMinDate = this.taskList
-            .sort((a, b) => a.createEpochTime < b.createEpochTime ? 1 : -1)
-            .shift();
-        this.minDate = moment(dataMinDate ? dataMinDate.createEpochTime : this.activeTask.createEpochTime)
-            .utc()
-            .subtract(TimelineReportComponent.DAYS_FROM, 'days');
+        const dataMinDate = this.timelineData
+            .sort((a, b) => a.createDate.epochTime > b.createDate.epochTime ? 1 : -1).find(tl => !!tl);
+        this.minDate = moment(dataMinDate ? dataMinDate.createDate.epochTime : this.activeTask.createEpochTime).utc();
+
         if (this.timeline) {
             this.tooltip = false;
+            this.timeline.setOptions(this.getTimelineOptions().getJson());
             this.dataSet.update(data);
-            this.timeline.setData({items: this.dataSet});
         } else {
             this.dataSet = new DataSet(data);
             this.timeline = this.getNewTimeline(this.dataSet);
@@ -119,8 +147,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private getNewTimeline(items: DataSet<object>): Timeline {
 
-        const maxTime = moment(this.activeTask.dueDateEpochTime).utc();
-        const options = this.getTimelineOptions(maxTime).getJson();
+        const options = this.getTimelineOptions().getJson();
         const timeline = new Timeline(this.element.nativeElement, items, options);
 
         timeline.on('click', (event: object) => {
@@ -128,29 +155,57 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             if (event['what'] === 'item') {
                 this.showTooltip();
                 this.onAnalyzedTaskSelected.emit(this.timelineTaskSelected['data']);
+                this.onEditorLoad.emit(false);
             } else {
                 this.tooltip = false;
             }
         });
         timeline.on('rangechange', () => {
+            this.updatedByUser = true;
             this.tooltip = false;
+        });
+        timeline.on('changed', () => {
+            if (this.updatedByUser || this.firstLoad) {
+                this.timelineData.map(tl => {
+                    tl.width = this.getTimelineItems().find(ti => ti.data.task.barcode === tl.barcode).width;
+                    return tl;
+                });
+                this.dataSet.update(this.timelineData.map(tl => tl.getJson()));
+                this.updatedByUser = false;
+                this.firstLoad = false;
+            }
+        });
+        timeline.on('select', (sel) => {
+            this.timelineTaskSelected = this.timeline['itemSet']['items'][sel.items[0]];
         });
         return timeline;
     }
 
     /**
-     * Returns Timeline Task selected
-     * @returns {object | null}
+     * Get items from timeline graph object
+     * @returns {any[]}
      */
-    get timelineTaskSelected(): object | null {
-        const items = this.timeline['itemSet']['items'];
-        const arrItems = Object
-            .keys(items)
-            .map(key => items[key] && items[key].selected ? items[key] : false)
-            .filter(item => item !== false);
-        return arrItems.length > 0 ? arrItems[0] : null;
+    private getTimelineItems() {
+        const tlItems = this.timeline['itemSet']['items'];
+        return Object
+            .keys(tlItems)
+            .map(i => tlItems[i]);
     }
 
+    /**
+     * Observable for get historical reports
+     * @param {string} param
+     * @returns {Observable<Task[]>}
+     */
+    private tasksFromReport$(param: string): Observable<Task[]> {
+        return this._apiRestService
+            .getSingle<Task[]>(TimelineReportComponent.TASK_HISTORICAL_ENDPOINT, param);
+    }
+
+    /**
+     * Returns initial timeline data
+     * @returns {TimelineTask[]}
+     */
     private getTimelineInitData(): TimelineTask[] {
         return [new TimelineTask(this.activeTask, true)];
     }
@@ -162,13 +217,97 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     private getListSubscription(signature: RelationedTaskSearch): Subscription {
         this.loading = true;
-        return this._apiRestService.search<Task[]>(TimelineReportComponent.TASK_SEARCH_ENDPOINT, signature).subscribe(
-            (list) => {
-                this.taskList = list;
-                this.loading = false;
-            },
-            () => this.getError()
-        );
+        return this._apiRestService.search<Task[]>(TimelineReportComponent.RELATED_TASK_SEARCH_ENDPOINT, signature)
+            .subscribe(
+                (list) => {
+                    this.taskList = list;
+                    this.loading = false;
+                    this.setRelatedTasks();
+                    if (this._historicalReportService.hasChronic) {
+                        this.onAnalyzedTaskSelected.emit(new TimelineTask(this.activeTask, true, true));
+                        this.onEditorLoad.emit(true);
+                    }
+                    this.createTimeline(this.timelineData);
+                },
+                () => this.getError()
+            );
+    }
+
+    /**
+     * Get Task Analysis Historical
+     * @param {string} barcode
+     * @returns {Subscription}
+     */
+    private getTaskHistoricalSubscription(task: Task): Subscription {
+        this.loading = true;
+        return this._apiRestService
+            .getSingle<Task[]>(TimelineReportComponent.TASK_HISTORICAL_ENDPOINT, task.barcode)
+            .subscribe(
+                (list) => {
+                    this.taskList = list;
+                    this.loading = false;
+                    this.setRelatedTasks();
+                    this.onAnalyzedTaskSelected.emit(new TimelineTask(task, true, true));
+                    this.onEditorLoad.emit(true);
+                    this.firstLoad = true;
+                    const reportRelated = this.timelineData
+                        .find(tl => tl.reviews.length > 0);
+                    this.historicalReportRelated = reportRelated ? reportRelated : this.historicalReportRelated;
+                    this.timelineData
+                        .filter(tl => tl.hasHistorical && this.historicalReportRelated && tl.barcode !== this.historicalReportRelated.barcode)
+                        .map(tl => {
+                            tl.isHistoricalEnabled = false;
+                            return tl;
+                        });
+                    if (this.historicalReportRelated) {
+                        this.tasksFromReportSubs = this.getHistoricalReportTasksSubs();
+                    } else {
+                        this.createTimeline(this.timelineData);
+                    }
+                },
+                () => this.getError()
+            );
+    }
+
+    /**
+     * Related Tasks Search associated of the deferral item
+     * @returns {Subscription}
+     */
+    private relatedTaskSearch(): Subscription {
+        const signature: RelationedTaskSearch = RelationedTaskSearch.getInstance();
+        let days = 0;
+        if (!this.hasChronic) {
+            signature.tail = this.activeTask.tail;
+            signature.ataGroup = this.activeTask.ata;
+            days = TimelineReportComponent.DAYS_FROM;
+        } else {
+            days = TimelineReportComponent.DAYS_FROM_CHRONIC;
+        }
+        signature.barcode = this.activeTask.barcode;
+        const endDate = this.activeTask.createEpochTime;
+        const initDate = moment(endDate).utc().subtract(days, 'days').valueOf();
+        signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
+        return this.getListSubscription(signature);
+    }
+
+    private getReviewByBarcode(barcode: string): Review {
+        return this.historicalReportRelated.reviews.find(r => r.barcode === barcode);
+    }
+
+    /**
+     * Subscription for handle historical reports
+     * @returns {Subscription}
+     */
+    private getHistoricalReportTasksSubs(): Subscription {
+        return this.tasksFromReport$(this.historicalReportRelated.barcode)
+            .subscribe(tasks => {
+                const filteredTasks = tasks
+                    .filter(t => !!this.getReviewByBarcode(t.barcode))
+                    .map(t => new TimelineTask(t, false, true, this.getReviewByBarcode(t.barcode).apply))
+                ;
+                this.handleAddedTasks(filteredTasks);
+                this.createTimeline(this.timelineData);
+            });
     }
 
     /**
@@ -177,44 +316,22 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
      */
     public checkCorrectedATA(result: boolean) {
         if (result) {
-            const signature: RelationedTaskSearch = RelationedTaskSearch.getInstance();
-
-            signature.tail = this.activeTask.tail;
-            signature.ataGroup = this.activeTask.ata;
-            signature.barcode = this.activeTask.barcode;
-
-            const endDate = this.activeTask.createEpochTime;
-            const initDate = moment(endDate).utc().subtract(TimelineReportComponent.DAYS_FROM, 'days').valueOf();
-
-            signature.dateRange = new DateRange(new TimeInstant(initDate, ''), new TimeInstant(endDate, ''));
-            this.listSubscription = this.getListSubscription(signature).add(() => {
-                this.timelineData = this.taskList.map(task => {
-                    return new TimelineTask(task, task.id === this.activeTask.id, true, this.validateApply(task.review));
-                });
-                const findTask = this.timelineData.find(value => value.barcode === this.activeTask.barcode);
-                if (typeof findTask === 'undefined') {
-                    this.timelineData.push(new TimelineTask(this.activeTask, true, true));
-                }
-                this.createTimeline(this.timelineData);
-                this.onAtaCorrected.emit(result);
-            });
+            this.updatedByUser = true;
+            this.relatedTaskSearch();
         }
     }
 
     /**
-     * Validation when a review is not null
-     * @param {Review} review
-     * @returns {boolean}
+     * Set the first level of related tasks
      */
-    private validateApply(review: Review): boolean {
-        let apply: boolean = null;
-        if (review !== null) {
-            if (review.apply) {
-                this.updateReview(review);
-            }
-            apply = review.apply;
+    private setRelatedTasks() {
+        this.timelineData = this.taskList.map(task =>
+            new TimelineTask(task, task.id === this.activeTask.id, true, task.review ? task.review.apply : null)
+        );
+        const findTask = this.timelineData.find(value => value.barcode === this.activeTask.barcode);
+        if (typeof findTask === 'undefined') {
+            this.timelineData.push(new TimelineTask(this.activeTask, true, true));
         }
-        return apply;
     }
 
     /**
@@ -250,22 +367,106 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
             .find(item => item.task.barcode === review.barcode);
         itemUpdated.apply = review.apply;
         itemUpdated.className = itemUpdated.generateClassName();
-        this.timelineData = this.timelineData.map(v => v.barcode === itemUpdated.barcode ? itemUpdated : v );
-        this.createTimeline([itemUpdated]);
-        this.updateReview(review);
+        this.timelineData.map(v => v.barcode === itemUpdated.barcode ? itemUpdated : v);
+        this.dataSet.update([itemUpdated.getJson()]);
+
+        if (itemUpdated.hasHistorical && (!this.historicalReportRelated || this.historicalReportRelated === itemUpdated)) {
+            this.historicalReportRelated = itemUpdated.apply ? itemUpdated : null;
+            this.updatedByUser = true;
+            this.dataSet.update(this.getReportsNotSelected(itemUpdated, !itemUpdated.apply));
+            this.handleTasksFromReport(itemUpdated);
+        }
+
+        this.tooltip = false;
     }
 
     /**
-     * Update the reviews list for analysis
-     * @param {Review} review
+     * Add a new TimelineTask to timeline
+     * @param {TimelineTask[]} timelineTasks
      */
-    private updateReview(review: Review): void {
-        const findReview = this.reviews.find(x => x.barcode === review.barcode);
-        if (typeof findReview === 'undefined') {
-            this.reviews.push(review);
+    private addTimelineTask(timelineTasks: TimelineTask[]) {
+        this.updatedByUser = true;
+        this.dataSet.add(timelineTasks.map(tl => tl.getJson()));
+    }
+
+    /**
+     * Delete a current TimelineTask from timeline
+     * @param {TimelineTask[]} timelineTasks
+     */
+    private delTimelineTask(timelineTasks: TimelineTask[]) {
+        this.updatedByUser = true;
+        this.dataSet.remove(timelineTasks.map(tl => tl.getJson()));
+    }
+
+    /**
+     * Set new TimelineTaks from historical reports
+     * @param {Task[]} tasks
+     */
+    private handleAddedTasks(timelineTasks: TimelineTask[]) {
+        this.tasksFromReport = timelineTasks.map(tl => {
+            tl.isHistoricalChildren = true;
+            return tl;
+        });
+        this.tasksReplacedByReport = this.timelineData
+            .filter(td => this.tasksFromReport.find(tfr => tfr.barcode === td.barcode));
+        this.delTimelineTask(this.tasksReplacedByReport);
+        this.timelineData = this.timelineData
+            .filter(tl => !this.tasksReplacedByReport.find(trr => trr.barcode === tl.barcode))
+            .concat(this.tasksFromReport);
+        this.addTimelineTask(this.tasksFromReport);
+        this.createTimeline(this.timelineData);
+    }
+
+    /**
+     * Remove TimelineTasks from historical reports
+     */
+    private handleDeletedTasks() {
+        this.delTimelineTask(this.tasksFromReport);
+        this.timelineData = this.timelineData
+            .filter(tl => !this.tasksFromReport.find(tfr => tl.barcode === tfr.barcode))
+            .concat(this.tasksReplacedByReport);
+        this.addTimelineTask(this.tasksReplacedByReport);
+        this.createTimeline(this.timelineData);
+    }
+
+    /**
+     * Add or remove tasks by 'Apply'
+     * @param {TimelineTask} itemUpdated
+     */
+    private handleTasksFromReport(itemUpdated: TimelineTask) {
+        if (itemUpdated.apply) {
+            this.tasksFromReportSubs = this.tasksFromReport$(itemUpdated.barcode)
+                .subscribe(tasks => this.handleAddedTasks(tasks.map(t => new TimelineTask(t, false, true, t.review.apply))));
         } else {
-            findReview.apply = review.apply;
+            this.handleDeletedTasks();
         }
+    }
+
+    /**
+     * Get unselected reports
+     * @param {TimelineTask} tlTask
+     * @param {boolean} enabled
+     * @returns {object[]}
+     */
+    private getReportsNotSelected(tlTask: TimelineTask, enabled: boolean): object[] {
+        return this.timelineData
+            .filter(i => i.task.hasHistorical && i.barcode !== tlTask.barcode)
+            .map(i => {
+                i.isHistoricalEnabled = enabled;
+                return i.getJson();
+            });
+    }
+
+    /**
+     * Returns Timeline Task selected
+     * @returns {object | null}
+     */
+    get timelineTaskSelected(): object {
+        return this._timelineTaskSelected;
+    }
+
+    set timelineTaskSelected(value: object) {
+        this._timelineTaskSelected = value;
     }
 
     /**
@@ -349,22 +550,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         return this._element;
     }
 
-    get analysis(): Analysis {
-        return this._analysis;
-    }
-
-    set analysis(value: Analysis) {
-        this._analysis = value;
-    }
-
-    get reviews(): Review[] {
-        return this.analysis.reviews;
-    }
-
-    get maxTime(): number {
-        return this.activeTask.isClose ? this.activeTask.revisionDate.epochTime : this.activeTask.extendedDueDate.epochTime ? this.activeTask.extendedDueDate.epochTime : this.activeTask.dueDate.epochTime;
-    }
-
     get clickEvent(): object {
         return this._clickEvent;
     }
@@ -387,5 +572,74 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
 
     set dataSet(value: DataSet<object>) {
         this._dataSet = value;
+    }
+
+    get updatedByUser(): boolean {
+        return this._updatedByUser;
+    }
+
+    set updatedByUser(value: boolean) {
+        this._updatedByUser = value;
+    }
+
+    get historicalReportRelated(): TimelineTask {
+        return this._historicalReportService.historicalReportRelated;
+    }
+
+    set historicalReportRelated(value: TimelineTask) {
+        this._historicalReportService.historicalReportRelated = value;
+    }
+
+    get tasksFromReport(): TimelineTask[] {
+        return this._tasksFromReport;
+    }
+
+    set tasksFromReport(value: TimelineTask[]) {
+        this._tasksFromReport = value;
+    }
+
+    get tasksReplacedByReport(): TimelineTask[] {
+        return this._tasksReplacedByReport;
+    }
+
+    set tasksReplacedByReport(value: TimelineTask[]) {
+        this._tasksReplacedByReport = value;
+    }
+
+    get tasksFromReportSubs(): Subscription {
+        return this._tasksFromReportSubs;
+    }
+
+    set tasksFromReportSubs(value: Subscription) {
+        this._tasksFromReportSubs = value;
+    }
+
+    get taskHistoricalSubscription(): Subscription {
+        return this._taskHistoricalSubscription;
+    }
+
+    set taskHistoricalSubscription(value: Subscription) {
+        this._taskHistoricalSubscription = value;
+    }
+
+    get firstLoad(): boolean {
+        return this._firstLoad;
+    }
+
+    set firstLoad(value: boolean) {
+        this._firstLoad = value;
+    }
+
+    get isDisplayedCorrectedAta(): boolean {
+        return this._historicalReportService.isDisplayedCorrectedAta;
+    }
+
+    get isCloseTimeline(): boolean {
+        return this._historicalReportService.isCloseTimeline;
+    }
+
+
+    get hasChronic(): boolean {
+        return this._historicalReportService.hasChronic;
     }
 }

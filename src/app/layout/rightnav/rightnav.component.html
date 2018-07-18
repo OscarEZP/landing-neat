@@ -16,7 +16,7 @@
         <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">update</mat-icon>
     </button>
     <hr>
-    <button id="btn-rightnav-close-details" mat-icon-button (click)="closeDetails()">
+    <button id="btn-rightnav-close-details" mat-icon-button (click)="closeDetails()" [disabled]="isDisabled()">
         <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">navigate_next</mat-icon>
     </button>
 </nav>

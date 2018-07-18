@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import {FormGroup} from '@angular/forms';
 
 @Injectable()
 export class HistoricalSearchService {
@@ -8,7 +8,7 @@ export class HistoricalSearchService {
     private _fields: any;
 
     constructor() {
-        this.active = false;
+        this._active = false;
         this._fields = {};
     }
 

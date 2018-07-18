@@ -12,7 +12,7 @@
                 {{ "MANAGEMENT.USER.YOUR_CSV_FILE" | translate }}
             </span>
         </div>
-        <input id="in-bulk-load-file" name="uploadFile" name="file" type="file" (change)="handleInputChange($event)">
+        <input id="in-bulk-load-file" name="uploadFile" name="file" accept=".csv" type="file" (change)="handleInputChange($event)">
         <div id="summary" *ngIf="loaded">
             <h2>{{ "MANAGEMENT.USER.DATA_ISSUE" | translate }}</h2>
             <p>

@@ -15,8 +15,7 @@ export class ManagementComponent implements OnInit, AfterViewInit {
         private _translate: TranslateService,
         private _layoutService: LayoutService
     ) {
-        this.showAddButton = false;
-        this.showRightNav = false;
+
     }
 
     ngOnInit() {
@@ -27,6 +26,8 @@ export class ManagementComponent implements OnInit, AfterViewInit {
                     this.moduleTitle = res;
                 }
             );
+        this.showAddButton = false;
+        this.showRightNav = false;
     }
 
     ngAfterViewInit() {

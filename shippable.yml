@@ -13,49 +13,53 @@ env:
     - IMAGE_NAME=mcp/moc-web
     - IMAGE_REPO_URL=693532776274.dkr.ecr.us-east-1.amazonaws.com/mcp/moc-web
     - SHIPPABLE_TEST_RESULTS_DIR=shippable/testresults
-    - SHIPPABLE_CODE_COVERAGE_DIR=shippable/codecoverage
 
 branches:
   only:
     - develop
     - master
 
-cache: true
-
-cache_dir_list:
-  - $SHIPPABLE_BUILD_DIR/node_modules
+cache: false
 
 build:
   #commands in this section run inside your CI container. In addition, any commands such as ls, in this section can be used to skip default processing for CI.
   ci:
     # Shippable test & code coverage folders
     - mkdir -p $SHIPPABLE_TEST_RESULTS_DIR
-    - mkdir -p $SHIPPABLE_CODE_COVERAGE_DIR
     # Since caching is enabled, cleanup git leftovers
     - git clean -f -x
 
+    # Create some folders to make easy to make the image later
+    - cd $SHIPPABLE_BUILD_DIR
+    - mkdir ci
+    - cp -r docker/ ci/docker/
+
     # install NPM depedencies
     - cd $SHIPPABLE_BUILD_DIR
+    - npm i npm@latest -g
     - shippable_retry npm install --quiet
 
     #Run the test
-    - npm run test --coverage --temp-directory=coverage --reporter=text-lcov --ci --testResultsProcessor="./node_modules/jest-junit-reporter"
+    - npm run test --coverage
     - cp $SHIPPABLE_BUILD_DIR/test-report.xml $SHIPPABLE_TEST_RESULTS_DIR/test-report.xml
 
     #Run the build for staging environment
     - cd $SHIPPABLE_BUILD_DIR
     - >
       if [ "$BRANCH" == "master" ]; then
-        npm run ng -- build --env=prod --output-hashing=all
+        npm run ng -- build --configuration production --prod
+        cp -r dist/ ci/dist/
       elif [ "$BRANCH" == "develop" ]; then
-        npm run ng -- build --env=staging --output-hashing=all
+        npm run ng -- build --configuration staging
+        cp -r dist/ ci/dist/
       fi
 
   on_success:
     # WEB IMAGE
+    - cd $SHIPPABLE_BUILD_DIR/ci
     - >
       if [ "$BRANCH" == "master" ] || [ "$BRANCH" == "develop" ] && [ "$IS_PULL_REQUEST" == "false" ]; then
-        docker build -f $SHIPPABLE_BUILD_DIR/docker/Dockerfile  -t $IMAGE_NAME $SHIPPABLE_BUILD_DIR
+        docker build -f $SHIPPABLE_BUILD_DIR/ci/docker/Dockerfile -t $IMAGE_NAME .
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:latest
         docker tag $IMAGE_NAME:latest $IMAGE_REPO_URL:$BRANCH.$BUILD_NUMBER
         docker push $IMAGE_REPO_URL:latest

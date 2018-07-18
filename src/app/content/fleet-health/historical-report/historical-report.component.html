@@ -1,5 +1,5 @@
 <form #formDir="ngForm" (ngSubmit)="submitForm()">
-    <div mat-dialog-title fxLayoutGap="30px" class="title-dialog-container" fxLayout="column">
+    <div mat-dialog-title class="title-dialog-container" fxLayout="column">
         <div fxLayout="row" fxFlex>
             <h1 class="title-dialog" fxFlex>{{ 'FLEET_HEALTH.LIST.ATA' | translate }} {{task.ata}} / {{task.fleet}} / {{task.barcode}}</h1>
             <button (click)="openCancelDialog()" id="btn-contingency-form-close-btn" type="button" class="close-btn" mat-icon-button fxFlexOffset="1">
@@ -17,6 +17,7 @@
     <div id="deferral-list" class="reg-list">
         <header fxLayout="row" class="" fxLayoutGap="10px">
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TAIL_FLEET' | translate }}</div>
+            <div fxFlex="5" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPERATOR' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.BARCODE' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.OPENING_DATE' | translate }}</div>
             <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DUE_DATE' | translate }}</div>
@@ -31,6 +32,8 @@
             <div fxLayout="row" class="contingency-item" fxLayoutGap="10px">
                 <!--TAIL/FLEET-->
                 <div fxFlex="7" fxLayout="column" fxLayoutAlign="center"><span>{{ task.tail }}</span><span>{{ task.fleet }}</span></div>
+                <!-- OPERATOR -->
+                <div fxFlex="5" fxLayoutAlign="start center">{{ task.authority }}</div>
                 <!-- BARCODE -->
                 <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">{{ task.barcode | uppercase }}</div>
                 <!-- OPENING DATE -->
@@ -54,7 +57,7 @@
 
                 <!-- TIMELINE STATUS -->
                 <div fxFlex="7" fxLayoutAlign="start center">
-                    <span class="badge" *ngIf="task.timelineStatus" [ngClass]="{'open': task.timelineStatus==='OPEN'}">
+                    <span class="badge" *ngIf="task.timelineStatus" [ngClass]="{'open': task.timelineStatus==='OPEN', 'close': task.timelineStatus==='CLOSE'}">
                         {{ task.timelineStatus }}
                     </span>
                 </div>
@@ -65,12 +68,12 @@
     <div>
         <div id="container-timeline">
             <h3>{{ 'FLEET_HEALTH.REPORT.REPORTS_TIMELINE' | translate }}</h3>
-            <lsl-timeline-report (onAnalyzedTaskSelected)="setAnalizedTask($event)" id="timeline"></lsl-timeline-report>
+            <lsl-timeline-report (onAnalyzedTaskSelected)="setAnalizedTask($event)" (onEditorLoad)="setEditorLoad($event)" id="timeline"></lsl-timeline-report>
         </div>
         <div id="container-historical-report">
             <h3>{{ 'FLEET_HEALTH.REPORT.HISTORICAL_REPORTS' | translate }}</h3>
-            <div *ngIf="isCorrected" fxLayout="row" fxLayoutGap="10px">
-                <lsl-historical-task [analyzedTask]="analyzedTask" fxFlex="50"></lsl-historical-task>
+            <div *ngIf="isDisplayedDetailTask" fxLayout="row" fxLayoutGap="10px">
+                <lsl-historical-task [editorLoad]="editorLoad" [analyzedTask]="analyzedTask" fxFlex="50"></lsl-historical-task>
                 <div fxLayout="column" fxFlex="50">
                     <lsl-analysis-report></lsl-analysis-report>
                     <div mat-dialog-actions fxLayoutAlign="end">
@@ -85,7 +88,7 @@
                     </div>
                 </div>
             </div>
-            <lsl-ess *ngIf="!isCorrected" icon="assignment" message="FLEET_HEALTH.REPORT.START_NEW_PROJECT"></lsl-ess>
+            <lsl-ess *ngIf="!isDisplayedDetailTask" icon="assignment" message="FLEET_HEALTH.REPORT.START_NEW_PROJECT"></lsl-ess>
         </div>
     </div>
 

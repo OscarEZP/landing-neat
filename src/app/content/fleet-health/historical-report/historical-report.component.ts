@@ -9,8 +9,8 @@ import {TimelineTask} from '../../../shared/_models/task/timelineTask';
 import {Validation} from '../../../shared/_models/validation';
 import {MessageService} from '../../../shared/_services/message.service';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
-import {Analysis} from '../../../shared/_models/task/analysis/analysis';
-import {Review} from '../../../shared/_models/task/analysis/review';
+import {Analysis} from '../../../shared/_models/task/fleethealth/analysis/analysis';
+import {Review} from '../../../shared/_models/task/fleethealth/analysis/review';
 import {StorageService} from '../../../shared/_services/storage.service';
 import {CancelComponent} from '../../operations/cancel/cancel.component';
 import {Subscription} from 'rxjs/Subscription';
@@ -25,7 +25,7 @@ import {Subscription} from 'rxjs/Subscription';
 })
 export class HistoricalReportComponent implements OnInit, OnDestroy {
 
-    private static TASK_SAVE_ANALYSIS_ENDPOINT = 'taskSaveAnalysis';
+    private static TASK_SAVE_ANALYSIS_ENDPOINT = 'tasksFleethealthAnalysis';
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
     private static SAVED_ANALYSIS = 'FLEET_HEALTH.REPORT.MSG.SAVED_ANALYSIS';
     private static REQUIRED_REVIEWS = 'FLEET_HEALTH.REPORT.ERROR.REQUIRED_REVIEWS';
@@ -33,10 +33,9 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     private static REQUIRED_REPORT = 'FLEET_HEALTH.REPORT.ERROR.REQUIRED_REPORT';
     private static DEFAULT_ERROR = 'ERRORS.DEFAULT';
 
-
-    private _task: Task;
     private _analyzedTask: TimelineTask;
     private _validations: Validation;
+    private _editorLoad: boolean;
 
     constructor(
         private _dialogService: DialogService,
@@ -53,7 +52,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.analyzedTask = TimelineTask.getInstance();
-        this.task = this._historicalReportService.task;
+        this.editorLoad = false;
     }
 
     ngOnDestroy() {
@@ -85,16 +84,13 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
      * @returns {boolean}
      */
     private validateFilledItems(): boolean {
-        return this.isCorrected || this.editorContent !== '' || this.analyzedList.length > 0;
+        if (this.task.timelineStatus === Task.OPEN_STATUS) {
+            return this.isCorrected || this.editorContent !== '' || this.analyzedList.length > 0;
+        } else {
+            return false;
+        }
     }
 
-    /**
-     * Set the analyzed task from subcomponents
-     * @param {TimelineTask} task
-     */
-    public setAnalizedTask(task: TimelineTask) {
-        this.analyzedTask = task;
-    }
 
     /**
      * Save form data and reload the deferral list
@@ -124,7 +120,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     private getSignature(): Analysis {
         const analysis = Analysis.getInstance();
         analysis.barcode = this.task.barcode;
-        analysis.ata = this.newAta;
+        analysis.ata = this._historicalReportService.validationAta;
         analysis.reviews = this.reviews;
         analysis.username = this.user;
         analysis.alertCode = this.alertCode;
@@ -144,7 +140,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
             this.getTranslateString(HistoricalReportComponent.REQUIRED_REVIEWS);
             return false;
         }
-        if (!this.isCorrected) {
+        if (!this.isCorrected && this._historicalReportService.isDisplayedCorrectedAta) {
             this.getTranslateString(HistoricalReportComponent.REQUIRED_ATA);
             return false;
         }
@@ -160,18 +156,18 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
      * @param {string} toTranslate
      * @returns {Subscription}
      */
-    private getTranslateString(toTranslate: string): Subscription {
-        return this._translate.get(toTranslate).subscribe((res: string) => {
+    private getTranslateString(toTranslate: string): Promise<void> {
+        return this._translate.get(toTranslate).toPromise().then((res: string) => {
             this._messageService.openSnackBar(res, 2500);
         });
     }
 
     get task(): Task {
-        return this._task;
+        return this._historicalReportService.task;
     }
 
     set task(value: Task) {
-        this._task = value;
+        this._historicalReportService.task = value;
     }
 
     set analyzedTask(value: TimelineTask) {
@@ -225,5 +221,27 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
     get alertCode(): string {
         return this.task.alertCode;
     }
+    get isDisplayedDetailTask(): boolean {
+        return this._historicalReportService.isDisplayedDetailTask;
+    }
 
+    get editorLoad(): boolean {
+        return this._editorLoad;
+    }
+
+    set editorLoad(value: boolean) {
+        this._editorLoad = value;
+    }
+
+    /**
+     * Set the analyzed task from subcomponents
+     * @param {TimelineTask} task
+     */
+    public setAnalizedTask(task: TimelineTask) {
+        this.analyzedTask = task;
+    }
+
+    public setEditorLoad(value: boolean) {
+        this.editorLoad = value;
+    }
 }

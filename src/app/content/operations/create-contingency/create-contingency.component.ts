@@ -383,7 +383,6 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                 return m[1].toUpperCase();
             });
             this[variableName] = value.types;
-
         }, this);
     }
 
@@ -472,7 +471,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
      * @param {string} selectedOption
      */
     public onSelectAircraft(selectedOption: string): void {
-        const flightSearch = new FlightSearch(selectedOption, 0, 5, new TimeInstant(this.utcModel.epochTime, null));
+        const flightSearch = new FlightSearch(selectedOption, 0, 8);
         this.flightList = [];
         this.plannedFlights = false;
         this._apiRestService

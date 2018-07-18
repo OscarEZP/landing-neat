@@ -1,11 +1,11 @@
 import {Task} from './task';
 import {TimeInstant} from '../timeInstant';
 import {DateUtil} from '../../util/dateUtil';
+import {Review} from './fleethealth/analysis/review';
 
 export class TimelineTask {
 
-    private static OPEN_ICON = 'lock_open';
-    private static CLOSE_ICON = 'lock';
+    private static HISTORICAL_ICON = 'assignment';
     private static DATE_FORMAT = 'YYYY-MM-DD';
     public static TASK_DEFAULT_TITLE = 'TASK';
 
@@ -13,7 +13,12 @@ export class TimelineTask {
     private static FULL_CLASS = 'full';
     private static RELATED_CLASS = 'related';
     private static DONT_APPLY_CLASS = 'dont-apply';
+    private static DISABLED_CLASS = 'disabled';
+    private static HIDE_CLASS = 'hide';
+    private static HIDDEN_ICON_CLASS = 'hidden-icon';
 
+    private static MIN_LABEL_WIDTH = 62;
+    private static MIN_ICON_WIDTH = 28;
 
     private _id: number;
     private _content: string;
@@ -27,6 +32,9 @@ export class TimelineTask {
     private _group: string;
     private _subgroup: string;
     private _type: string;
+    private _isHistoricalEnabled: boolean;
+    private _width: number;
+    private _isHistoricalChildren: boolean;
 
     static getInstance() {
         return new TimelineTask(Task.getInstance(), false, false);
@@ -39,13 +47,18 @@ export class TimelineTask {
         this._id = task.id;
         this._active = active;
         this._corrected = corrected;
-        this._apply = apply;
+        this._apply = apply; // !apply && this.task.review ? this.task.review.apply : apply;
         this._className = this.generateClassName();
         this._group = task.barcode;
         this._type = '';
-        this._content = '';
+        this._content = this.getContent();
+        this._isHistoricalEnabled = true;
     }
 
+    /**
+     * Generate a string with classes by few rules
+     * @returns {string}
+     */
     public generateClassName(): string {
         const arrStyles = [];
         if (this.active) {
@@ -58,28 +71,41 @@ export class TimelineTask {
             arrStyles.push(TimelineTask.RELATED_CLASS);
             if (this.apply === true) {
                 arrStyles.push(TimelineTask.FULL_CLASS);
-            }else if (this.apply === false) {
+            } else if (this.apply === false) {
                 arrStyles.push(TimelineTask.DONT_APPLY_CLASS);
             }
+            if (!this.isHistoricalEnabled) {
+                arrStyles.push(TimelineTask.DISABLED_CLASS);
+            }
+        }
+        if (this.width < TimelineTask.MIN_LABEL_WIDTH) {
+            arrStyles.push(TimelineTask.HIDE_CLASS);
+        }
+        if (this.width < TimelineTask.MIN_ICON_WIDTH) {
+            arrStyles.push(TimelineTask.HIDDEN_ICON_CLASS);
         }
         return arrStyles.join(' ');
     }
 
-    public getContent(content: boolean = true): string {
-        const title = this.active === true ? TimelineTask.TASK_DEFAULT_TITLE : this.task.taskType;
-        const head = '<div class="head"><h1>' + title + '</h1> <span>' + (this.isOpen ? '<i class="material-icons icon-red">' : '<i class="material-icons">') + this.getContentIcon() + '</i></span> </div>';
-        const body = '<p>' + this.task.ata + '/'  + this.task.barcode + '</p>' ;
-        return content ? head + body : '';
+    /**
+     * Generate a html text for showing it inside a TimelineTask
+     * @returns {string}
+     */
+    public getContent(): string {
+        const type = this.task.taskType ? this.task.taskType : TimelineTask.TASK_DEFAULT_TITLE;
+        let html = '<h1>' + type.toUpperCase().substr(0, 3) + '</h1>';
+        html += this.task.hasHistorical ? '<i class="material-icons">' + TimelineTask.HISTORICAL_ICON + '</i>' : '';
+        return html;
     }
 
-    private getContentIcon() {
-        return this.isClose ? TimelineTask.CLOSE_ICON : TimelineTask.OPEN_ICON ;
-    }
-
+    /**
+     * Convert this instance into a JSON object
+     * @returns {any}
+     */
     public getJson() {
+        this.className = this.generateClassName();
         return JSON.parse(JSON.stringify(this).replace(/\b[_]/g, ''));
     }
-
 
     get id(): number {
         return this._id;
@@ -117,6 +143,14 @@ export class TimelineTask {
         this._active = value;
     }
 
+    set task(value: Task) {
+        this._task = value;
+    }
+
+    set corrected(value: boolean) {
+        this._corrected = value;
+    }
+
     get task(): Task {
         return this._task;
     }
@@ -137,7 +171,7 @@ export class TimelineTask {
         this._apply = value;
     }
 
-    get createDate(): TimeInstant{
+    get createDate(): TimeInstant {
         return this.task.createDate;
     }
 
@@ -153,7 +187,7 @@ export class TimelineTask {
         return this.task.extendedDueDate;
     }
 
-    get dueDate(): TimeInstant{
+    get dueDate(): TimeInstant {
         return this.task.dueDate;
     }
 
@@ -173,13 +207,12 @@ export class TimelineTask {
         this._type = value;
     }
 
-    get isOpen(): boolean{
+    get isOpen(): boolean {
         return this.task.isOpen;
 
     }
-    get isClose(): boolean{
+    get isClose(): boolean {
         return this.task.isClose;
-
     }
 
     private calculateDateEndTaskNotDeferred(task: Task): number {
@@ -200,7 +233,7 @@ export class TimelineTask {
         return endDate;
     }
 
-    get startDateEpochTime(): number{
+    get startDateEpochTime(): number {
         return this.task.createDate.epochTime;
     }
 
@@ -212,4 +245,35 @@ export class TimelineTask {
         this._className = value;
     }
 
+    get hasHistorical(): boolean {
+        return this.task.hasHistorical;
+    }
+
+    get isHistoricalEnabled(): boolean {
+        return this._isHistoricalEnabled;
+    }
+
+    set isHistoricalEnabled(value: boolean) {
+        this._isHistoricalEnabled = value;
+    }
+
+    get width(): number {
+        return this._width;
+    }
+
+    set width(value: number) {
+        this._width = value;
+    }
+
+    get isHistoricalChildren(): boolean {
+        return this._isHistoricalChildren;
+    }
+
+    set isHistoricalChildren(value: boolean) {
+        this._isHistoricalChildren = value;
+    }
+
+    get reviews(): Review[] {
+        return this.task.review.reviews;
+    }
 }

@@ -12,6 +12,17 @@ import {StorageService} from '../../shared/_services/storage.service';
     styleUrls: ['./find-account.component.scss']
 })
 export class FindAccountComponent implements OnInit {
+
+    private _username: string;
+
+    get username(): string {
+        return this._username;
+    }
+
+    set username(value: string) {
+        this._username = value;
+    }
+
     usernameFormControl = new FormControl('', [
         Validators.required
     ]);
@@ -21,29 +32,28 @@ export class FindAccountComponent implements OnInit {
 
 
     constructor(
-        protected recoverPasswordService: RecoverPasswordService,
-        private messageService: MessageService,
-        private storageService: StorageService,
-        private router: Router,
-        private fb: FormBuilder) {
-
-    }
-
-    ngOnInit() {
-        this.recoverPasswordService.reset();
-        this.findAccountForm = this.fb.group({
+        private _messageService: MessageService,
+        private _storageService: StorageService,
+        private _router: Router,
+        private _fb: FormBuilder,
+        private _recoverPasswordService: RecoverPasswordService) {
+        this.findAccountForm = _fb.group({
             'usernameFormControl': this.usernameFormControl
         });
     }
 
-    findAccount(form: NgForm) {
+    ngOnInit() {
+        this._recoverPasswordService.reset();
+    }
+
+    findAccount(form: FormGroup) {
         if (form.valid) {
-            this.recoverPasswordService.findAccount(this.usernameFormControl.value).then(value => {
-                this.storageService.addRecoverPassword(this.usernameFormControl.value, value);
-                this.router.navigate([this.recoverPasswordService.getRecoverUrl()]);
+            this._recoverPasswordService.findAccount(this.usernameFormControl.value).then(value => {
+                this._storageService.addRecoverPassword(this.usernameFormControl.value, value);
+                this._router.navigate([this._recoverPasswordService.getRecoverUrl()]);
 
             }).catch(reason => {
-                this.messageService.openSnackBar(reason);
+                this._messageService.openSnackBar(reason);
             });
 
         }

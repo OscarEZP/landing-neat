@@ -20,21 +20,40 @@ $timeline-label-height: 22px;
     padding: 10px;
   }
 
+  .vis-label .vis-inner {
+    min-height: 200px;
+  }
+
+  .vis-item {
+    margin: 0 0 0 13px;
+    height: 20px;
+  }
+
+  .vis-item.hide {
+    div.vis-item-content > h1 {
+      display: none;
+    }
+  }
+
+  .vis-item.hidden-icon {
+    div.vis-item-content > .material-icons {
+      display: none;
+    }
+  }
+
   .vis-item-content {
-    height: $timeline-label-height;
     cursor: pointer;
     font-size: 9px;
-    padding: 2px 5px 2px 15px;
-
+    h1 {
+      text-transform: uppercase;
+      font-weight: bold;
+      display: inline-block;
+      font-size: 12px;
+      height: 20px;
+    }
     .head {
       display: flex;
       width: 100%;
-
-      h1 {
-        width: 50%;
-        text-transform: uppercase;
-        font-weight: bold;
-      }
 
       span {
         text-align: right;
@@ -42,7 +61,29 @@ $timeline-label-height: 22px;
       }
     }
     .material-icons {
-      font-size: 9px;
+      font-size: 15px;
+      float: right;
+      margin: -2px 0 0 0;
+      color: mat-color($foreground, secondary-text);
+    }
+  }
+
+  .vis-item.full {
+    .material-icons {
+      color: mat-color($primary, default-contrast);
+    }
+  }
+
+  .vis-item.disabled {
+    .material-icons {
+      color: mat-color($foreground, disabled);
+    }
+  }
+
+  .vis-item.disabled.full {
+    .material-icons {
+      color: mat-color($primary, default-contrast);
+      opacity: .5;
     }
   }
 
@@ -50,10 +91,6 @@ $timeline-label-height: 22px;
     background-color: mat-color($warn);
     color: mat-color($primary, default-contrast);
     border-color: mat-color($warn);
-
-    .material-icons {
-      color: mat-color($primary, default-contrast);
-    }
   }
 
   .vis-item.active {
@@ -124,12 +161,5 @@ $timeline-label-height: 22px;
     color: red;
   }
 
-  .vis-background {
-    .vis-group {
-      .vis-item.vis-background.active {
-          //margin-top: -10px;
-      }
-    }
-  }
 }
 

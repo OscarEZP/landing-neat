@@ -4,7 +4,7 @@ import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {Observable} from 'rxjs/Observable';
 import {DetailsService} from '../../../details/_services/details.service';
-import {InfiniteScrollService} from '../../_services/infinite-scroll.service';
+import {PaginatorObjectService} from '../../_services/paginator-object.service';
 import {DialogService} from '../../_services/dialog.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {MatPaginator} from '@angular/material';
@@ -32,8 +32,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
 
     private static TASK_FLEETHEALTH_ENDPOINT = 'tasksFleethealthSearch';
 
-    private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
-    private static DEFAULT_INTERVAL = 30;
+    private static DEFERRAL_UPDATE_INTERVAL = 'DEFERRAL_UPDATE_INTERVAL';
+    private static DEFAULT_INTERVAL = 120;
 
     private _listSubscription: Subscription;
     private _reloadSubscription: Subscription;
@@ -50,28 +50,28 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private _error: boolean;
     private _haveStationsConf: boolean;
     private _haveAuthoritiesConf: boolean;
+    private _paginatorObject: PaginatorObjectService;
 
     constructor(
         private _messageData: DataService,
         private _apiRestService: ApiRestService,
         private _detailsService: DetailsService,
-        private _infiniteScrollService: InfiniteScrollService,
         private _dialogService: DialogService,
         private _historicalReportService: HistoricalReportService,
         private _localStorage: StorageService,
         private _messageService: MessageService,
         private _dataService: DataService,
-    ) {
-        this.selectedRegister = Task.getInstance();
-        this.selectedRegisterPivot = Task.getInstance();
-    }
+    ) {}
 
     ngOnInit() {
+        this.intervalToRefresh = DeferralListComponent.DEFAULT_INTERVAL;
+        this.selectedRegister = Task.getInstance();
+        this.selectedRegisterPivot = Task.getInstance();
+        this.paginatorObjectService = PaginatorObjectService.getInstance();
         this.list = [];
         this.reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.intervalRefreshSubscription = this.getIntervalToRefresh();
         this.paginatorSubscription = this.getPaginationSubscription();
-        this.infiniteScrollService.init();
         this.haveStationsConf = this.validateStations();
         this.haveAuthoritiesConf = this.validateAuthorities();
     }
@@ -95,7 +95,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @return {boolean}
      */
     private getError(): boolean {
-        this.infiniteScrollService.length = 0;
+        this.paginatorObjectService.length = 0;
         this.loading = false;
         return this.error = true;
     }
@@ -144,7 +144,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
                 this.subscribeTimer();
                 this.list = response.fleetHealths;
                 this.loading = false;
-                this.infiniteScrollService.length = !isNaN(response.count.items) ? response.count.items : 0;
+                this.paginatorObjectService.length = !isNaN(response.count.items) ? response.count.items : 0;
+
             },
             () => {
                 this.getError();
@@ -163,8 +164,8 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      */
     public getPaginationSubscription(): Subscription {
         return this.paginator.page.subscribe((page) => {
-            this.infiniteScrollService.pageSize = page.pageSize;
-            this.infiniteScrollService.pageIndex = page.pageIndex;
+            this.paginatorObjectService.pageSize = page.pageSize;
+            this.paginatorObjectService.pageIndex = page.pageIndex;
             this.getList();
         });
     }
@@ -176,7 +177,7 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private getSearchSignature(): FleetHealthSearch {
         const signature: FleetHealthSearch = FleetHealthSearch.getInstance();
         signature.technicalAnalysis = this._localStorage.userAtecFilter;
-        signature.pagination = new Pagination(this.infiniteScrollService.offset, this.infiniteScrollService.pageSize);
+        signature.pagination = new Pagination(this.paginatorObjectService.offset, this.paginatorObjectService.pageSize);
        return signature;
     }
 
@@ -207,10 +208,10 @@ export class DeferralListComponent implements OnInit, OnDestroy {
     private getIntervalToRefresh(): Subscription {
         this.loading = true;
         this.error = false;
-        return this._apiRestService.getSingle('configTypes', DeferralListComponent.CONTINGENCY_UPDATE_INTERVAL).subscribe(
+        return this._apiRestService.getSingle('configTypes', DeferralListComponent.DEFERRAL_UPDATE_INTERVAL).subscribe(
             rs => {
                 const res = rs as GroupTypes;
-                this.intervalToRefresh = Number(res.types[0].code) * 1000;
+                this.intervalToRefresh = Number(res.types[0].code ? res.types[0].code : DeferralListComponent.DEFAULT_INTERVAL) * 1000;
                 this.loading = false;
             },
             () => {
@@ -239,19 +240,17 @@ export class DeferralListComponent implements OnInit, OnDestroy {
      * @param task
      */
     public setSelectedRegister(register: Task) {
-        if (register.timelineStatus === 'OPEN') {
             this.selectedRegister = register;
             this.selectedRegisterPivot = register;
             this.openHistoricalReport(register);
             this.serviceTask = register;
             this.list = [];
             this.listSubscription.unsubscribe();
-        }
     }
 
     /**
-     * Method for open close contingency modal
-     * @param contingency
+     * Method for open Historical Task
+     * @param task
      */
     private openHistoricalReport(task: Task) {
         this._dialogService.openDialog(HistoricalReportComponent, {
@@ -324,12 +323,12 @@ export class DeferralListComponent implements OnInit, OnDestroy {
         return this._detailsService;
     }
 
-    get infiniteScrollService(): InfiniteScrollService {
-        return this._infiniteScrollService;
+    get paginatorObjectService(): PaginatorObjectService {
+        return this._paginatorObject;
     }
 
-    set infiniteScrollService(value: InfiniteScrollService) {
-        this._infiniteScrollService = value;
+    set paginatorObjectService(value: PaginatorObjectService) {
+        this._paginatorObject = value;
     }
 
     set loading(value: boolean) {

@@ -1,3 +1,4 @@
+declare var global: any;
 global['CSS'] = null;
 
 const mock = () => {

@@ -1,9 +1,9 @@
 import {TimeInstant} from '../../timeInstant';
-import {CorrectiveAction} from './correctiveAction';
-import {Step} from './step';
-import {Part} from './part';
+import {CorrectiveAction} from '../detail/correctiveAction';
+import {Step} from '../detail/step';
+import {Part} from '../detail/part';
 
-export class HistoricalTask {
+export class DetailTask {
 
 
     private _barcode: string;
@@ -14,6 +14,7 @@ export class HistoricalTask {
     private _correctiveActions: CorrectiveAction[];
     private _steps: Step[];
     private _parts: Part[];
+    private _report: string;
 
 
    private constructor() {
@@ -25,11 +26,12 @@ export class HistoricalTask {
         this._creationDate = TimeInstant.getInstance();
         this._faultName = '';
         this._parts = [];
+        this._report = '';
 
     }
 
     public static getInstance() {
-        return new HistoricalTask();
+        return new DetailTask();
     }
 
 
@@ -97,6 +99,14 @@ export class HistoricalTask {
         this._parts = value ?  value.map(v =>
             Object.assign(Part.getInstance(), v )
         ) : [];
+    }
+
+    set report(value: string) {
+        this._report = value;
+    }
+
+    get report(): string {
+        return this._report;
     }
 }
 
