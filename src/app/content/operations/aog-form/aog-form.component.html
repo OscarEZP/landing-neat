@@ -241,11 +241,11 @@
                             {{'AOG.AOG_FORM.DURATION'|translate}} *:
                         </label>
                         <mat-form-field id="form-field-duration">
-                            <input required id="in-aog-form-duration"
-                                   matInput
-                                   type="time"
-                                   [formControl]="aogForm.controls['duration']"
-                                   name="duration">
+                            <mat-select
+                                    id="sel-aog-form-duration"
+                                    [formControl]="aogForm.controls['duration']">
+                                <mat-option *ngFor="let duration of arrDuration" [value]="duration">{{ duration }} {{'FORM.MINUTES' | translate }}</mat-option>
+                            </mat-select>
                             <mat-error
                                     *ngIf="aogForm.controls['duration'].hasError('required') && aogForm.controls['duration'].touched">
                                 {{'OPERATIONS.CONTINGENCY_FORM.DURATION_REQUIRED'|translate}}
@@ -255,8 +255,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 
     <div mat-dialog-actions fxLayoutAlign="end">

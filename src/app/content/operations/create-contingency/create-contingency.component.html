@@ -349,7 +349,7 @@
                         <mat-form-field fxFlex="25">
                             <mat-select id="rad-contingency-form-duration" placeholder="Interval"
                                         [formControl]="contingencyForm.controls['duration']" [(ngModel)]="contingency.status.requestedInterval.duration">
-                                <mat-option [value]="time" *ngFor="let time of durationArray">{{ time }} {{'OPERATIONS.CONTINGENCY_FORM.MINUTES'| translate}}
+                                <mat-option [value]="time" *ngFor="let time of durationArray">{{ time }} {{'FORM.MINUTES'| translate}}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
