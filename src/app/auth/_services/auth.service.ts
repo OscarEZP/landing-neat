@@ -199,11 +199,11 @@ export class AuthService {
         return this.loginUrl;
     }
 
-    getHemicycleGroupName() {
+    getHemicycleGroupName(): string {
         return AuthService.HEMICYCLE_GROUP_NAME;
     }
 
-    getHemicycleUrl() {
+    getHemicycleUrl(): string {
         return AuthService.HEMICYCLE_URL;
     }
 

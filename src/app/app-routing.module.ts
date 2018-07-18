@@ -48,19 +48,16 @@ const ROUTES: Routes = [
                     {
                         path: 'contingencies',
                         component: ContingencyListComponent,
-                        canActivate: [AuthGuardService],
                     },
                     {
                         path: 'contingencies/historical',
                         component: ContingencyListComponent,
-                        canActivate: [AuthGuardService],
                         data: { historical: true },
                     },
 
                     {
                         path: 'pendings',
                         component: PendingListComponent,
-                        canActivate: [AuthGuardService],
                     }
                 ]
             },
