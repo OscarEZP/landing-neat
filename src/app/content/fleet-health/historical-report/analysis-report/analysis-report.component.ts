@@ -36,15 +36,19 @@ export class AnalysisReportComponent implements OnInit, AfterViewInit {
         this.htmlCallback = () => this.copyTextToClipboard(this.editorContent);
     }
 
+    /**
+     * The 'Copy to clipboard' label must be created after render process
+     */
     ngAfterViewInit() {
-        this.createCopyToClipboardLabel(this._el.nativeElement.querySelector('.ql-html'));
+        const el = this._el.nativeElement.querySelector('.ql-html');
+        this.translate('FLEET_HEALTH.REPORT.COPY_TO_CLIPBOARD')
+            .then(res => el.innerHTML = res + '<i class="material-icons">file_copy</i>');
     }
 
-    private createCopyToClipboardLabel(el: object): Promise<string> {
-        return this.translate('FLEET_HEALTH.REPORT.COPY_TO_CLIPBOARD')
-            .then(res => el['innerHTML'] = res + '<i class="material-icons">file_copy</i>');
-    }
-
+    /**
+     * Copy a text to clipboard
+     * @param text
+     */
     private copyTextToClipboard(text) {
         const textArea = document.createElement('textarea');
         textArea.value = text;
@@ -63,10 +67,19 @@ export class AnalysisReportComponent implements OnInit, AfterViewInit {
         document.body.removeChild(textArea);
     }
 
+    /**
+     * Translate a message
+     * @param {string} toTranslate
+     * @returns {Promise<string>}
+     */
     private translate(toTranslate: string): Promise<string> {
         return this._translateService.get(toTranslate).toPromise();
     }
 
+    /**
+     * Translate and show a toast with a message
+     * @param {string} toTranslate
+     */
     private translateAndShow(toTranslate: string): void {
         this.translate(toTranslate).then((res: string) => this._messageService.openSnackBar(res, 2500));
     }
