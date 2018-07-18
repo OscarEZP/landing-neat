@@ -13,3 +13,22 @@
     font-style: italic;
   }
 }
+
+/deep/
+.ql-toolbar.ql-snow {
+  span.ql-formats {
+    position: relative;
+    margin: 0;
+
+    button.ql-html {
+      width: 45px;
+      border: thin solid;
+      right: 0;
+    }
+    button.ql-html:after {
+    }
+  }
+  span.ql-formats:last-child {
+    float: right;
+  }
+}

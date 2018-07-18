@@ -133,7 +133,9 @@
       "MSG": {
         "NO_TASK_SELECTED": "No task selected. To see a report, please select a related task",
         "NO_TASKS": "There are no related tasks for this ATA",
-        "SAVED_ANALYSIS": "Saved analysis"
+        "SAVED_ANALYSIS": "Saved analysis",
+        "TEXT_COPIED": "Text was successfully copied!",
+        "TEXT_NOT_COPIED": "Sorry, text wasn't copied. Please, try again."
       },
       "PART_GROUP": "Part Group",
       "PART_REPLACEMENT": "Part Replacement",
