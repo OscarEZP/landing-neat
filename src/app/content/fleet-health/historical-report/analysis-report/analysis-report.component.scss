@@ -21,9 +21,15 @@
     margin: 0;
 
     button.ql-html {
-      width: 45px;
-      border: thin solid;
+      width: auto;
       right: 0;
+      color: mat-color($primary);
+
+      .material-icons {
+        float: right;
+        font-size: 14px;
+        padding: 0 0 0 5px;
+      }
     }
     button.ql-html:after {
     }

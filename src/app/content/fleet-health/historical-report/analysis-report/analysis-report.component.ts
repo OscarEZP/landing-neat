@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HistoricalReportService} from '../_services/historical-report.service';
 import {QuillEditorComponent} from 'ngx-quill';
 import {QuillConfiguration} from '../../../../shared/_models/components/quillConfiguration';
@@ -10,7 +10,7 @@ import {MessageService} from '../../../../shared/_services/message.service';
     templateUrl: './analysis-report.component.html',
     styleUrls: ['./analysis-report.component.scss']
 })
-export class AnalysisReportComponent implements OnInit {
+export class AnalysisReportComponent implements OnInit, AfterViewInit {
 
     private static SUCCESS_TEXT = 'FLEET_HEALTH.REPORT.MSG.TEXT_COPIED';
     private static ERROR_TEXT = 'FLEET_HEALTH.REPORT.MSG.TEXT_NOT_COPIED';
@@ -28,13 +28,21 @@ export class AnalysisReportComponent implements OnInit {
         private _messageService: MessageService,
         private _el: ElementRef
     ) {
-        console.log(this._el.nativeElement.querySelector('.ql-html'));
     }
 
     ngOnInit() {
         this.editorContent = '';
         this.editorConfig = QuillConfiguration.getInstance();
         this.htmlCallback = () => this.copyTextToClipboard(this.editorContent);
+    }
+
+    ngAfterViewInit() {
+        this.createCopyToClipboardLabel(this._el.nativeElement.querySelector('.ql-html'));
+    }
+
+    private createCopyToClipboardLabel(el: object): Promise<string> {
+        return this.translate('FLEET_HEALTH.REPORT.COPY_TO_CLIPBOARD')
+            .then(res => el['innerHTML'] = res + '<i class="material-icons">file_copy</i>');
     }
 
     private copyTextToClipboard(text) {
@@ -45,20 +53,22 @@ export class AnalysisReportComponent implements OnInit {
         textArea.select();
         try {
             if (document.execCommand('copy')) {
-                this.translateString(AnalysisReportComponent.SUCCESS_TEXT);
+                this.translateAndShow(AnalysisReportComponent.SUCCESS_TEXT);
             } else {
-                this.translateString(AnalysisReportComponent.ERROR_TEXT);
+                this.translateAndShow(AnalysisReportComponent.ERROR_TEXT);
             }
         } catch (err) {
-            this.translateString(AnalysisReportComponent.ERROR_TEXT);
+            this.translateAndShow(AnalysisReportComponent.ERROR_TEXT);
         }
         document.body.removeChild(textArea);
     }
 
-    private translateString(toTranslate: string): void {
-        this._translateService.get(toTranslate)
-            .toPromise()
-            .then((res: string) => this._messageService.openSnackBar(res, 2500));
+    private translate(toTranslate: string): Promise<string> {
+        return this._translateService.get(toTranslate).toPromise();
+    }
+
+    private translateAndShow(toTranslate: string): void {
+        this.translate(toTranslate).then((res: string) => this._messageService.openSnackBar(res, 2500));
     }
 
     get editorConfig(): QuillConfiguration {
