@@ -96,6 +96,7 @@
   },
   "FORM": {
     "IS_REQUIRED": "{{value}} is required",
+    "MINUTES": "minutes",
     "REQUIRE_FIELDS": "All fields with (*) are required"
   },
   "FLEET_HEALTH": {
@@ -239,7 +240,6 @@
         "FOLLOW_UP_DISABLED": "Sorry follow up is disabled because from creation of contingency past more than 180 minutes",
         "FOLLOW_UP_LAST_STATUS": "Sorry is not possible to create a follow up for the current status",
         "FOLLOW_UP_CLOSED_STATUS": "This contingency is already closed",
-        "MINUTES": "minutes",
         "OBSERVATION_REQUIRED": "Observation is required",
         "OBSERVATION_TITLE": "Write your comment",
         "TIME_AVAILABLE_WARNING": "Maximum time available:"
@@ -275,7 +275,6 @@
       "INTERVAL": "Interval",
       "MAINTENANCE": "Maintenance",
       "MAX_LENGTH_VALIDATION": "Must be less than 400 characters",
-      "MINUTES": "minutes",
       "NO": "No",
       "OBSERVATION_REQUIRED_VALIDATION": "Status is required",
       "OBSERVATIONS_PLACEHOLDER": "Status",
