@@ -51,7 +51,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static DEFAULT_DURATION = 60;
     private static AOG_TYPE = 'AOG';
     private static INTERVAL_DURATION = 30;
-    private static INTERVAL_LIMIT = 180;
+    private static INTERVAL_LIMIT = 1440;
 
     private _utcModel: TimeInstant;
     private _aogForm: FormGroup;
@@ -336,10 +336,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * @return {Location[]}
      */
     private locationFilter(val: string): Location[] {
-        if (val !== null) {
-            return this.locationList.filter(location =>
-                location.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
-        }
+        return this.locationList.filter(location =>
+            location.code.toLocaleLowerCase().search(val ? val.toLocaleLowerCase() : '') !== -1);
     }
 
     /**
@@ -564,6 +562,15 @@ export class AogFormComponent implements OnInit, OnDestroy {
                     });
                 });
         }
+    }
+
+    getDurationLabel(duration: number): string {
+        const minToHour = 60;
+        const durationToHours = duration / minToHour;
+        const hours = Math.floor(durationToHours);
+        return durationToHours === hours ?
+            hours.toString().concat(hours > 1 ? ' hours' : ' hour') :
+            hours.toString().concat('h ').concat((duration - (hours * minToHour)).toString()).concat('m');
     }
 
     /**
