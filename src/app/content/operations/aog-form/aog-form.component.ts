@@ -48,6 +48,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
     private static CONTINGENCY_MESSAGE = 'AOG.AOG_FORM.MESSAGE.CONTINGENCY_DATA';
 
+    private static MINUTE_ABBREVIATION = 'FORM.MINUTE_ABBREVIATION';
+    private static HOUR_ABBREVIATION = 'FORM.HOUR_ABBREVIATION';
+    private static HOUR_LABEL = 'FORM.HOUR';
+    private static HOURS_LABEL = 'FORM.HOURS';
+
     private static DEFAULT_DURATION = 60;
     private static AOG_TYPE = 'AOG';
     private static INTERVAL_DURATION = 30;
@@ -134,6 +139,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._formSubs = this.getFormSubs();
         this._contingencySubs = new Subscription();
         this.username = this._storageService.getCurrentUser().username;
+
     }
 
     ngOnDestroy() {
@@ -569,8 +575,14 @@ export class AogFormComponent implements OnInit, OnDestroy {
         const durationToHours = duration / minToHour;
         const hours = Math.floor(durationToHours);
         return durationToHours === hours ?
-            hours.toString().concat(hours > 1 ? ' hours' : ' hour') :
-            hours.toString().concat('h ').concat((duration - (hours * minToHour)).toString()).concat('m');
+            hours.toString()
+                .concat(' ')
+                .concat(hours > 1 ? AogFormComponent.HOURS_LABEL : AogFormComponent.HOUR_LABEL) :
+            hours.toString()
+                .concat(AogFormComponent.HOUR_ABBREVIATION)
+                .concat(' ')
+                .concat((duration - (hours * minToHour)).toString())
+                .concat(AogFormComponent.MINUTE_ABBREVIATION);
     }
 
     /**
