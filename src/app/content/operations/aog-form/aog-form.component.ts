@@ -139,7 +139,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._formSubs = this.getFormSubs();
         this._contingencySubs = new Subscription();
         this.username = this._storageService.getCurrentUser().username;
-
     }
 
     ngOnDestroy() {
@@ -577,7 +576,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         return durationToHours === hours ?
             hours.toString()
                 .concat(' ')
-                .concat(hours > 1 ? AogFormComponent.HOURS_LABEL : AogFormComponent.HOUR_LABEL) :
+                .concat(hours > 1 ? AogFormComponent.HOURS_LABEL : AogFormComponent.HOURS_LABEL) :
             hours.toString()
                 .concat(AogFormComponent.HOUR_ABBREVIATION)
                 .concat(' ')
