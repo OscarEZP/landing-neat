@@ -1,0 +1,33 @@
+import {Injectable} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {MessageService} from './message.service';
+
+@Injectable()
+export class TranslationService {
+
+    private static LANG = 'EN';
+
+    constructor(
+        private _translateService: TranslateService,
+        private _messageService: MessageService
+    ) {
+        this._translateService.setDefaultLang(TranslationService.LANG);
+    }
+
+    /**
+     * Translate a message
+     * @param {string} toTranslate
+     * @returns {Promise<string>}
+     */
+    public translate(toTranslate: string): Promise<string> {
+        return this._translateService.get(toTranslate).toPromise();
+    }
+
+    /**
+     * Translate and show a toast with a message
+     * @param {string} toTranslate
+     */
+    public translateAndShow(toTranslate: string, time: number = null): Promise<void> {
+        return this.translate(toTranslate).then((res: string) => this._messageService.openSnackBar(res, time));
+    }
+}

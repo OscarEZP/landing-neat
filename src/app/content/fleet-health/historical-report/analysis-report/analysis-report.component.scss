@@ -13,3 +13,28 @@
     font-style: italic;
   }
 }
+
+/deep/
+.ql-toolbar.ql-snow {
+  span.ql-formats {
+    position: relative;
+    margin: 0;
+
+    button.ql-html {
+      width: auto;
+      right: 0;
+      color: mat-color($primary);
+
+      .material-icons {
+        float: right;
+        font-size: 14px;
+        padding: 0 0 0 5px;
+      }
+    }
+    button.ql-html:after {
+    }
+  }
+  span.ql-formats:last-child {
+    float: right;
+  }
+}
