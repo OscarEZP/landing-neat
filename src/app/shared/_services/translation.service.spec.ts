@@ -1,4 +1,4 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {TranslationService} from './translation.service';
 import {TranslateService} from '@ngx-translate/core';
