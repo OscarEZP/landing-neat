@@ -24,6 +24,7 @@ import {CancelComponent} from '../cancel/cancel.component';
 import {ContingencyService} from '../../_services/contingency.service';
 import {Contingency} from '../../../shared/_models/contingency/contingency';
 import {MatSnackBarRef} from '@angular/material/snack-bar/typings/snack-bar-ref';
+import {TranslationService} from '../../../shared/_services/translation.service';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -47,11 +48,17 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
     private static CONTINGENCY_MESSAGE = 'AOG.AOG_FORM.MESSAGE.CONTINGENCY_DATA';
+    private static AOG_SUCCESS_MESSAGE = 'AOG.AOG_FORM.MESSAGE.SUCCESS';
+
+    private static MINUTE_ABBREVIATION = 'FORM.MINUTE_ABBREVIATION';
+    private static HOUR_ABBREVIATION = 'FORM.HOUR_ABBREVIATION';
+    private static HOUR_LABEL = 'FORM.HOUR';
+    private static HOURS_LABEL = 'FORM.HOURS';
 
     private static DEFAULT_DURATION = 60;
     private static AOG_TYPE = 'AOG';
     private static INTERVAL_DURATION = 30;
-    private static INTERVAL_LIMIT = 180;
+    private static INTERVAL_LIMIT = 1440;
 
     private _utcModel: TimeInstant;
     private _aogForm: FormGroup;
@@ -68,6 +75,10 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _timeClock: Date;
     private _isSafety: boolean;
     private _contingency: Contingency;
+    private _hourLabel: string;
+    private _hoursLabel: string;
+    private _minuteAbbreviation: string;
+    private _hourAbbreviation: string;
 
     private _locationList$: Observable<Location[]>;
     private _aircraftList$: Observable<Aircraft[]>;
@@ -95,7 +106,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
         private _translate: TranslateService,
         private _storageService: StorageService,
         private _messageData: DataService,
-        private _contingencyService: ContingencyService
+        private _contingencyService: ContingencyService,
+        private _translationService: TranslationService
     ) {
         this._utcModel = new TimeInstant(new Date().getTime(), null);
         this._alive = true;
@@ -134,6 +146,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._formSubs = this.getFormSubs();
         this._contingencySubs = new Subscription();
         this.username = this._storageService.getCurrentUser().username;
+
+        this._translationService.translate(AogFormComponent.MINUTE_ABBREVIATION).then(res => this._minuteAbbreviation = res);
+        this._translationService.translate(AogFormComponent.HOUR_ABBREVIATION).then(res => this._hourAbbreviation = res);
+        this._translationService.translate(AogFormComponent.HOURS_LABEL).then(res => this._hoursLabel = res);
+        this._translationService.translate(AogFormComponent.HOUR_LABEL).then(res => this._hourLabel = res);
     }
 
     ngOnDestroy() {
@@ -229,7 +246,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
                 this.postAog();
             }
         } else {
-            this.getTranslateString(AogFormComponent.VALIDATION_ERROR_MESSAGE);
+            this._translationService.translateAndShow(AogFormComponent.VALIDATION_ERROR_MESSAGE);
         }
     }
 
@@ -242,22 +259,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
             .search(AogFormComponent.AOG_ENDPOINT, this.aog)
             .toPromise()
             .then(r => {
-                this.getTranslateString('AOG.AOG_FORM.MESSAGE.SUCCESS');
+                this._translationService.translateAndShow(AogFormComponent.AOG_SUCCESS_MESSAGE);
                 this._dialogService.closeAllDialogs();
                 this._messageData.stringMessage('reload');
             })
             ;
-    }
-
-    /**
-     * Promise to translate and display messages
-     * @param {string} toTranslate
-     * @returns {Promise}
-     */
-    private getTranslateString(toTranslate: string): Promise<void> {
-        return this._translate.get(toTranslate)
-            .toPromise()
-            .then((res: string) => this._messageService.openSnackBar(res));
     }
 
     /**
@@ -336,10 +342,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * @return {Location[]}
      */
     private locationFilter(val: string): Location[] {
-        if (val !== null) {
-            return this.locationList.filter(location =>
-                location.code.toLocaleLowerCase().search(val.toLocaleLowerCase()) !== -1);
-        }
+        return this.locationList.filter(location =>
+            location.code.toLocaleLowerCase().search(val ? val.toLocaleLowerCase() : '') !== -1);
     }
 
     /**
@@ -392,7 +396,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         return this._contingencyService.closeContingency(this.contingency.close)
             .toPromise()
             .then(() => this.postAog())
-            .catch( () => this.getTranslateString(AogFormComponent.CLOSE_CONTINGENCY_ERROR_MESSAGE));
+            .catch( () => this._translationService.translateAndShow(AogFormComponent.CLOSE_CONTINGENCY_ERROR_MESSAGE));
     }
 
     /**
@@ -517,14 +521,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     public tailDomainValidator(control: FormControl): Observable<any> {
         const tail = control.value;
         return Observable.of(this.aircraftList).map(res => {
-            for (const item of res) {
-                if (item.tail === tail) {
-                    return null;
-                }
-            }
-            return {
-                tailDomain: true
-            };
+            return res.find(item => item.tail === tail) ? null : { tailDomain: true };
         });
     }
 
@@ -536,14 +533,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     public operatorDomainValidator(control: FormControl) {
         const operator = control.value;
         return Observable.of(this.operatorList).map(res => {
-            for (const item of res) {
-                if (operator === item.code) {
-                    return null;
-                }
-            }
-            return {
-                operatorDomain: true
-            };
+            return res.find(item => operator === item.code) ? null : { operatorDomain: true };
         });
     }
 
@@ -564,6 +554,21 @@ export class AogFormComponent implements OnInit, OnDestroy {
                     });
                 });
         }
+    }
+
+    getDurationLabel(duration: number): string {
+        const minToHour = 60;
+        const durationToHours = duration / minToHour;
+        const hours = Math.floor(durationToHours);
+        return durationToHours === hours ?
+            hours.toString()
+                .concat(' ')
+                .concat(hours > 1 ? this.hoursLabel : this.hourLabel) :
+            hours.toString()
+                .concat(this.hourAbbreviation)
+                .concat(' ')
+                .concat((duration - (hours * minToHour)).toString())
+                .concat(this.minuteAbbreviation);
     }
 
     /**
@@ -718,4 +723,21 @@ export class AogFormComponent implements OnInit, OnDestroy {
     set arrDuration(value: Array<number>) {
         this._arrDuration = value;
     }
+
+    get hourLabel(): string {
+        return this._hourLabel;
+    }
+
+    get hoursLabel(): string {
+        return this._hoursLabel;
+    }
+
+    get minuteAbbreviation(): string {
+        return this._minuteAbbreviation;
+    }
+
+    get hourAbbreviation(): string {
+        return this._hourAbbreviation;
+    }
+
 }

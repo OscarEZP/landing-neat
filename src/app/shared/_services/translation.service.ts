@@ -5,7 +5,7 @@ import {MessageService} from './message.service';
 @Injectable()
 export class TranslationService {
 
-    private static LANG = 'EN';
+    private static LANG = 'en';
 
     constructor(
         private _translateService: TranslateService,

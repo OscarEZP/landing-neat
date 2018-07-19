@@ -95,7 +95,11 @@
     "AUTHORITIES_WITHOUT_CONF": "Authorities without configuration. Ask your system administrator."
   },
   "FORM": {
+    "HOUR_ABBREVIATION": "h",
+    "HOUR": "hour",
+    "HOURS": "hours",
     "IS_REQUIRED": "{{value}} is required",
+    "MINUTE_ABBREVIATION": "m",
     "MINUTES": "minutes",
     "REQUIRE_FIELDS": "All fields with (*) are required"
   },
