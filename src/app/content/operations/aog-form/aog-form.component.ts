@@ -522,15 +522,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         const tail = control.value;
         return Observable.of(this.aircraftList).map(res => {
             return res.find(item => item.tail === tail) ? null : { tailDomain: true };
-            //
-            // for (const item of res) {
-            //     if (item.tail === tail) {
-            //         return null;
-            //     }
-            // }
-            // return {
-            //     tailDomain: true
-            // };
         });
     }
 
@@ -542,14 +533,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     public operatorDomainValidator(control: FormControl) {
         const operator = control.value;
         return Observable.of(this.operatorList).map(res => {
-            for (const item of res) {
-                if (operator === item.code) {
-                    return null;
-                }
-            }
-            return {
-                operatorDomain: true
-            };
+            return res.find(item => operator === item.code) ? null : { operatorDomain: true };
         });
     }
 
