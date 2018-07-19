@@ -2,8 +2,7 @@ import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/
 import {HistoricalReportService} from '../_services/historical-report.service';
 import {QuillEditorComponent} from 'ngx-quill';
 import {QuillConfiguration} from '../../../../shared/_models/components/quillConfiguration';
-import {TranslateService} from '@ngx-translate/core';
-import {MessageService} from '../../../../shared/_services/message.service';
+import {TranslationService} from '../../../../shared/_services/translation.service';
 
 @Component({
     selector: 'lsl-analysis-report',
@@ -14,6 +13,7 @@ export class AnalysisReportComponent implements OnInit, AfterViewInit {
 
     private static SUCCESS_TEXT = 'FLEET_HEALTH.REPORT.MSG.TEXT_COPIED';
     private static ERROR_TEXT = 'FLEET_HEALTH.REPORT.MSG.TEXT_NOT_COPIED';
+    private static COPY_TO_CLIPBOARD_LABEL = 'FLEET_HEALTH.REPORT.COPY_TO_CLIPBOARD';
 
     private _editorConfig: QuillConfiguration;
 
@@ -24,8 +24,7 @@ export class AnalysisReportComponent implements OnInit, AfterViewInit {
 
     constructor(
         private _historicalReportService: HistoricalReportService,
-        private _translateService: TranslateService,
-        private _messageService: MessageService,
+        private _translationService: TranslationService,
         private _el: ElementRef
     ) {
     }
@@ -33,7 +32,12 @@ export class AnalysisReportComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         this.editorContent = '';
         this.editorConfig = QuillConfiguration.getInstance();
-        this.htmlCallback = () => this.copyTextToClipboard(this.editorContent);
+        this.htmlCallback = () => {
+            const message = this.copyTextToClipboard(this.editorContent) ?
+                AnalysisReportComponent.SUCCESS_TEXT :
+                AnalysisReportComponent.ERROR_TEXT;
+            this._translationService.translateAndShow(message, 2500);
+        };
     }
 
     /**
@@ -41,7 +45,7 @@ export class AnalysisReportComponent implements OnInit, AfterViewInit {
      */
     ngAfterViewInit() {
         const el = this._el.nativeElement.querySelector('.ql-html');
-        this.translate('FLEET_HEALTH.REPORT.COPY_TO_CLIPBOARD')
+        this._translationService.translate(AnalysisReportComponent.COPY_TO_CLIPBOARD_LABEL)
             .then(res => el.innerHTML = res + '<i class="material-icons">file_copy</i>');
     }
 
@@ -49,7 +53,8 @@ export class AnalysisReportComponent implements OnInit, AfterViewInit {
      * Copy a text to clipboard
      * @param text
      */
-    private copyTextToClipboard(text) {
+    public copyTextToClipboard(text): boolean {
+        let result = false;
         const textArea = document.createElement('textarea');
         textArea.value = text;
         document.body.appendChild(textArea);
@@ -57,31 +62,11 @@ export class AnalysisReportComponent implements OnInit, AfterViewInit {
         textArea.select();
         try {
             if (document.execCommand('copy')) {
-                this.translateAndShow(AnalysisReportComponent.SUCCESS_TEXT);
-            } else {
-                this.translateAndShow(AnalysisReportComponent.ERROR_TEXT);
+                result = true;
             }
-        } catch (err) {
-            this.translateAndShow(AnalysisReportComponent.ERROR_TEXT);
-        }
+        } catch (err) { console.log(err); }
         document.body.removeChild(textArea);
-    }
-
-    /**
-     * Translate a message
-     * @param {string} toTranslate
-     * @returns {Promise<string>}
-     */
-    private translate(toTranslate: string): Promise<string> {
-        return this._translateService.get(toTranslate).toPromise();
-    }
-
-    /**
-     * Translate and show a toast with a message
-     * @param {string} toTranslate
-     */
-    private translateAndShow(toTranslate: string): void {
-        this.translate(toTranslate).then((res: string) => this._messageService.openSnackBar(res, 2500));
+        return result;
     }
 
     get editorConfig(): QuillConfiguration {

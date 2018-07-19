@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {MatSnackBar, MatSnackBarConfig} from '@angular/material';
-import {Observable} from 'rxjs/Observable';
 import {MatSnackBarRef} from '@angular/material/snack-bar/typings/snack-bar-ref';
 
 @Injectable()

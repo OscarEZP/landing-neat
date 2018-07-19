@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "webpack-dev-server --port=4200",
     "build": "webpack",
-    "test": "jest",
+    "test": "jest --no-cache",
     "lint": "ng lint",
     "freshtall": "npm cache clean --force && rm -rf node_modules && rm -f package-lock.json && npm install",
     "compodoc": "./node_modules/.bin/compodoc -p src/tsconfig.app.json -s --open"
@@ -92,6 +92,9 @@
       "!**/src/app/auth/_models/**.{ts}",
       "!**/node_modules/**"
     ],
-    "collectCoverage": true
+    "collectCoverage": true,
+    "transformIgnorePatterns": [
+      "node_modules/(?!ngx-quill)"
+    ]
   }
 }
