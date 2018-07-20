@@ -100,7 +100,7 @@ export class User {
     }
 
     set groupList(value: Group[]) {
-        value.map(v => Object.assign(Group.getInstance(), v));
+        value.forEach(v => Object.assign(Group.getInstance(), v));
         this._groupList = value;
     }
 
