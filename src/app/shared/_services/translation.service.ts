@@ -27,7 +27,7 @@ export class TranslationService {
      * Translate and show a toast with a message
      * @param {string} toTranslate
      */
-    public translateAndShow(toTranslate: string, time: number = null): Promise<void> {
+    public translateAndShow(toTranslate: string, time: number = 2500): Promise<void> {
         return this.translate(toTranslate).then((res: string) => this._messageService.openSnackBar(res, time));
     }
 }
