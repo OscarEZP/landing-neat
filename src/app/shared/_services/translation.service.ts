@@ -24,7 +24,7 @@ export class TranslationService {
     }
 
     /**
-     * Translate and show a toast with a message
+     * Translate and show a toast message
      * @param {string} toTranslate
      */
     public translateAndShow(toTranslate: string, time: number = 2500): Promise<void> {
