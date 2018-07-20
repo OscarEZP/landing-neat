@@ -103,7 +103,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         private _apiRestService: ApiRestService,
         private _messageService: MessageService,
         private _clockService: ClockService,
-        private _translate: TranslateService,
         private _storageService: StorageService,
         private _messageData: DataService,
         private _contingencyService: ContingencyService,
@@ -258,12 +257,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
         return this._apiRestService
             .search(AogFormComponent.AOG_ENDPOINT, this.aog)
             .toPromise()
-            .then(r => {
+            .then(() => {
                 this._translationService.translateAndShow(AogFormComponent.AOG_SUCCESS_MESSAGE);
                 this._dialogService.closeAllDialogs();
                 this._messageData.stringMessage('reload');
-            })
-            ;
+            }).catch(err => console.error(err));
     }
 
     /**
@@ -418,16 +416,16 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * @returns {Promise<void>}
      */
     private showContingencyConfirm(): Promise<void> {
-        return this._translate.get(AogFormComponent.CONTINGENCY_MESSAGE, {value: this.aog.tail})
-            .toPromise()
+        return this._translationService.translate(AogFormComponent.CONTINGENCY_MESSAGE, {value: this.aog.tail})
             .then((res: string) => {
                 const ref = this._messageService.openFromComponent(CancelComponent, {
                     data: {message: res, closeAll: false},
                     horizontalPosition: 'center',
                     verticalPosition: 'top'
                 });
-                this.handleContingencyConfirm(ref);
-            });
+                this.handleContingencyConfirm(ref).catch(err => console.error(err));
+            })
+            .catch(err => console.error(err));
     }
 
     /**
@@ -544,15 +542,15 @@ export class AogFormComponent implements OnInit, OnDestroy {
         if (this.aogForm.pristine) {
             this._dialogService.closeAllDialogs();
         } else {
-            this._translate.get(AogFormComponent.CANCEL_COMPONENT_MESSAGE)
-                .toPromise()
+            this._translationService.translate(AogFormComponent.CANCEL_COMPONENT_MESSAGE)
                 .then((res: string) => {
                     this._messageService.openFromComponent(CancelComponent, {
                         data: {message: res},
                         horizontalPosition: 'center',
                         verticalPosition: 'top'
                     });
-                });
+                })
+                .catch(err => console.error(err));
         }
     }
 

@@ -19,8 +19,8 @@ export class TranslationService {
      * @param {string} toTranslate
      * @returns {Promise<string>}
      */
-    public translate(toTranslate: string): Promise<string> {
-        return this._translateService.get(toTranslate).toPromise();
+    public translate(toTranslate: string, params: {value: string} = {value: ''}): Promise<string> {
+        return this._translateService.get(toTranslate, params).toPromise();
     }
 
     /**
