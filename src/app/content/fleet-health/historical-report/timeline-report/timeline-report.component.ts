@@ -273,12 +273,12 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         const signature: RelationedTaskSearch = RelationedTaskSearch.getInstance();
         let days = 0;
         if (!this.hasChronic) {
-            signature.tail = this.activeTask.tail;
             signature.ataGroup = this.activeTask.ata;
             days = TimelineReportComponent.DAYS_FROM;
         } else {
             days = TimelineReportComponent.DAYS_FROM_CHRONIC;
         }
+        signature.tail = this.activeTask.tail;
         signature.barcode = this.activeTask.barcode;
         const endDate = this.activeTask.createEpochTime;
         const initDate = moment(endDate).utc().subtract(days, 'days').valueOf();
