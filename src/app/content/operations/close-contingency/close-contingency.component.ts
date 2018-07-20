@@ -102,7 +102,7 @@ export class CloseContingencyComponent implements OnInit {
                 counterFilled = counterFilled + 1;
             }
         });
-        return counterFilled > defaultValid ? true : false;
+        return counterFilled > defaultValid;
     }
 
     dismissCloseContigency(): void {

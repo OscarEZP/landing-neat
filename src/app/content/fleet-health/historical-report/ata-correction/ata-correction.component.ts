@@ -49,7 +49,7 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
         this._ataForm = this._fb.group({
             ata: [this.task.ata, [Validators.pattern('^(\\d{1,2})$'), Validators.required, this.ataValidator.bind(this)]],
         });
-        this.filteredAta = this.getFilteredAta();
+        this.filteredAta = this.retrieveFilteredAta();
     }
 
     ngOnDestroy(): void {
@@ -70,7 +70,7 @@ export class AtaCorrectionComponent implements OnInit, OnDestroy {
         .subscribe(ataList => this.ataList = ataList);
     }
 
-    public getFilteredAta(): Observable<string[]> {
+    public retrieveFilteredAta(): Observable<string[]> {
         return this.ataForm.controls['ata'].valueChanges.pipe(
             map(val => {
                 const result = this.filter(val, this.ataList);
