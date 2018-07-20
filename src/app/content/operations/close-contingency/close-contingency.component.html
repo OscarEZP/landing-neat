@@ -62,9 +62,24 @@
                     {{'OPERATIONS.CLOSE_COMPONENT.OBS_REQUIRED'|translate}}
                 </mat-error>
             </mat-form-field>
-
         </div>
-
+        <mat-divider class="add-margin"></mat-divider>
+        <div fxLayout="column" fxLayoutGap="15px">
+            <div>
+                <span class="subtitles">{{'OPERATIONS.CLOSE_COMPONENT.AOG_ADITIONAL_INFO'|translate}}</span>
+            </div>
+            <div fxLayout="row">
+                <mat-form-field>
+                    <mat-select
+                            id="sel-aog-form-technical-type"
+                            placeholder="{{ 'AOG.AOG_FORM.TECHNICAL_TYPE' | translate }}"
+                            [formControl]="aogForm.controls['safetyEventCode']">
+                        <!--<mat-option *ngFor="let safety of safetyEventList" [value]="safety.code">{{ safety.description }}</mat-option>-->
+                    </mat-select>
+                </mat-form-field>
+                <div></div>
+            </div>
+        </div>
     </div>
     <mat-divider class="add-margin-last"></mat-divider>
     <div mat-dialog-actions fxLayoutAlign="end">
