@@ -51,7 +51,7 @@ export class BulkLoadComponent implements OnInit {
      * Set an input file element and trigger a click for selection interface
      */
     public selectFile() {
-        this.fileInput = document.getElementById(BulkLoadComponent.LOAD_FILE_ID) as HTMLElement;
+        this.fileInput = document.getElementById(BulkLoadComponent.LOAD_FILE_ID);
         this.fileInput.click();
     }
 

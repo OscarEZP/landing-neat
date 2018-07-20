@@ -131,7 +131,7 @@ export class ResolvePendingComponent implements OnInit, OnDestroy {
 
         return this._apiRestService.search<Pending[]>(ResolvePendingComponent.SEARCH_ENDPOINT, pendingSearch)
             .subscribe(rs => {
-                const res = rs as Pending[];
+                const res = rs;
                 this.groupPendingByArea = this.reloadPendings(res);
             });
 

@@ -25,9 +25,9 @@ export interface PartInterface {
 export class HistoricalTaskComponent implements OnInit {
 
     private static TASK_DETAIL_ENDPOINT = 'taskDetail';
-    private static DATE_FORMAT = 'dd-MM-yyyy HH:mm';
     private static MOMENT_DATE_FORMAT = 'DD-MM-YYYY';
 
+    private _dateFormat: string;
     private _detailTask: DetailTask;
     private _analyzedTask: TimelineTask;
     private _editorLoad: boolean;
@@ -63,6 +63,7 @@ export class HistoricalTaskComponent implements OnInit {
         this._displayedColumns = ['description', 'partGroup', 'quantity', 'eta', 'status'];
         this._tableData = [];
         this._pageSize = 5;
+        this._dateFormat = 'dd-MM-yyyy HH:mm';
     }
 
     ngOnInit() {
@@ -209,8 +210,12 @@ export class HistoricalTaskComponent implements OnInit {
         this._pageSize = value;
     }
 
+
     get dateFormat(): string {
-        return HistoricalTaskComponent.DATE_FORMAT;
+        return this._dateFormat;
     }
 
+    set dateFormat(value: string) {
+        this._dateFormat = value;
+    }
 }
