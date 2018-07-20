@@ -166,11 +166,10 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
         });
         timeline.on('changed', () => {
             if (this.updatedByUser || this.firstLoad) {
-                const timelineData = this.timelineData.map(tl => {
-                    tl.width = this.getTimelineItems().find(ti => ti.data.task.barcode === tl.barcode).width;
-                    return tl;
-                });
-                this.dataSet.update(timelineData.map(tl => tl.getJson()));
+                this.timelineData.forEach(tl =>
+                    tl.width = this.getTimelineItems().find(ti => ti.data.task.barcode === tl.barcode).width
+                );
+                this.dataSet.update(this.timelineData.map(tl => tl.getJson()));
                 this.updatedByUser = false;
                 this.firstLoad = false;
             }
@@ -250,19 +249,16 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
                     this.onAnalyzedTaskSelected.emit(new TimelineTask(task, true, true));
                     this.onEditorLoad.emit(true);
                     this.firstLoad = true;
-                    const reportRelated = this.timelineData
-                        .find(tl => tl.reviews.length > 0);
+                    const reportRelated = this.timelineData.find(tl => tl.reviews.length > 0);
                     this.historicalReportRelated = reportRelated ? reportRelated : this.historicalReportRelated;
-                    const timelineData = this.timelineData
-                        .filter(tl => tl.hasHistorical && this.historicalReportRelated && tl.barcode !== this.historicalReportRelated.barcode)
-                        .map(tl => {
-                            tl.isHistoricalEnabled = false;
-                            return tl;
-                        });
+                    this.timelineData
+                    .filter(tl => tl.hasHistorical && this.historicalReportRelated && tl.barcode !== this.historicalReportRelated.barcode)
+                    .forEach(tl => tl.isHistoricalEnabled = false);
+
                     if (this.historicalReportRelated) {
                         this.tasksFromReportSubs = this.getHistoricalReportTasksSubs();
                     } else {
-                        this.createTimeline(timelineData);
+                        this.createTimeline(this.timelineData);
                     }
                 },
                 () => this.getError()
@@ -641,7 +637,6 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     get isCloseTimeline(): boolean {
         return this._historicalReportService.isCloseTimeline;
     }
-
 
     get hasChronic(): boolean {
         return this._historicalReportService.hasChronic;
