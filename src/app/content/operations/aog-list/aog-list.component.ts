@@ -12,6 +12,7 @@ import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {DataService} from '../../../shared/_services/data.service';
 import {Observable} from 'rxjs/Observable';
 import {AogFormComponent} from '../aog-form/aog-form.component';
+import {Count} from '../../../shared/_models/common/count';
 
 @Component({
     selector: 'lsl-aog-list',
@@ -23,7 +24,7 @@ export class AogListComponent implements OnInit, OnDestroy {
     @ViewChild('contPaginator') public paginator: MatPaginator;
 
     private static AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT = 'aircraftOnGroundSearch';
-    private static AIRCRAFT_ON_GROUND_COUNT_ENDPOINT = 'aircraftOnGroundCount';
+    private static AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT = 'aircraftOnGroundSearchCount';
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
     private static DEFAULT_INTERVAL = 30;
@@ -146,9 +147,9 @@ export class AogListComponent implements OnInit, OnDestroy {
 
     private getCountSubscription(): Subscription {
         return this._apiRestService
-            .search<number>(AogListComponent.AIRCRAFT_ON_GROUND_COUNT_ENDPOINT, null)
+            .search<Count>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT, null)
             .subscribe(
-            (response) => this.paginatorObjectService.length = response,
+            (response) => this.paginatorObjectService.length = response.items,
             () => this.getError()
         );
     }
