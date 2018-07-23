@@ -1,17 +1,18 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { catchError, tap } from 'rxjs/operators';
-import { Subject } from 'rxjs/Subject';
-import { Count } from '../../shared/_models/configuration/count';
-import { Contingency } from '../../shared/_models/contingency/contingency';
-import { ApiRestService } from '../../shared/_services/apiRest.service';
-import { LogService } from './log.service';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import {catchError, tap} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
+import {Count} from '../../shared/_models/common/count';
+import {Contingency} from '../../shared/_models/contingency/contingency';
+import {ApiRestService} from '../../shared/_services/apiRest.service';
+import {LogService} from './log.service';
+import {SearchContingency} from '../../shared/_models/contingency/searchContingency';
 
 @Injectable()
 export class ContingencyService {
 
-    private static CONTINGENCY_LIST_ENDPOINT = 'contingencyList';
+
     private static AIRCRAFT_SEARCH_ENDPOINT = 'aircraftsSearch';
     private static CLOSE_ENDPOINT = 'close';
     private static CONTINGENCY_SEARCH_ENDPOINT = 'contingencySearch';
@@ -28,10 +29,8 @@ export class ContingencyService {
         return percentage > 100 ? 100 : percentage;
     }
 
-    constructor(
-                private http: HttpClient,
-                private logService: LogService,
-                ) {
+    constructor(private http: HttpClient,
+                private logService: LogService) {
 
         this.contingencyList = [];
         this.loading = false;
@@ -41,9 +40,9 @@ export class ContingencyService {
         });
     }
 
-    public getContingencies(): Observable<Contingency[]> {
+    public getContingencies(searchSignature: SearchContingency): Observable<Contingency[]> {
         return this.apiService
-            .getAll<Contingency[]>(ContingencyService.CONTINGENCY_LIST_ENDPOINT)
+            .search<Contingency[]>(ContingencyService.CONTINGENCY_SEARCH_ENDPOINT, searchSignature)
             .pipe(
                 tap((contingencies: Contingency[]) => {
                     this.contingencyListChanged.next(contingencies);
@@ -79,10 +78,11 @@ export class ContingencyService {
 
     public postHistoricalSearch(searchSignature): Observable<any> {
         return this.apiService.search<Contingency[]>(ContingencyService.CONTINGENCY_SEARCH_ENDPOINT, searchSignature)
-        .pipe(
+            .pipe(
                 tap(contingencies => {
                     this.log(`fetched search`);
-                    this._contingencyList = this.addLastInformationPercentage(contingencies);
+                    this._contingencyList = contingencies;
+                    this.addLastInformationPercentage(contingencies);
                 }),
                 catchError(this.handleError('getContingencies'))
             );
@@ -90,13 +90,13 @@ export class ContingencyService {
 
     public getPendings(searchSignature): Observable<any> {
         return this.apiService.search<Contingency[]>(ContingencyService.CONTINGENCY_SEARCH_ENDPOINT, searchSignature)
-        .pipe(
-            tap(contingencies => {
-                this.log(`fetched search`);
-                this._contingencyList = contingencies;
-            }),
-            catchError(this.handleError('getContingencies'))
-        );
+            .pipe(
+                tap(contingencies => {
+                    this.log(`fetched search`);
+                    this._contingencyList = contingencies;
+                }),
+                catchError(this.handleError('getContingencies'))
+            );
     }
 
     public getTotalRecords(searchSignature): Observable<any> {

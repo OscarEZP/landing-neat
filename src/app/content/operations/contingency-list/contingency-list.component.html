@@ -132,7 +132,7 @@
         </div>
     </main>
 </div>
-<div [hidden]="checkDataStatus() || !historicalSearchService.active">
+<div [hidden]="!historicalSearchService.active || !checkDataStatus()">
     <mat-paginator #contPaginator
                    [length]="paginatorObject.length"
                    [pageIndex]="paginatorObject.pageIndex"

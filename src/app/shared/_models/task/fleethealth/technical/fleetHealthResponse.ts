@@ -1,12 +1,12 @@
-import {Count} from '../../../configuration/count';
 import {Task} from '../../task';
+import {Count} from '../../../common/count';
 
 export class FleetHealthResponse {
 
     private _count: Count;
     private _fleetHealths: Task[];
 
-   private constructor(count: Count, fleetHealths: Task[]) {
+    private constructor(count: Count, fleetHealths: Task[]) {
         this._count = count;
         this._fleetHealths = fleetHealths;
     }
