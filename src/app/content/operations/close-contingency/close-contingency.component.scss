@@ -1,23 +1,44 @@
 #close-form {
   color: rgba(0, 0, 0, .87);
   font-size: 13px;
+  height: 100%;
+
+  .mat-dialog-title {
+    margin: 0 0 10px;
+  }
+
   .title-dialog {
     font-size: 20px;
   }
   .subtitles {
     font-size: 14px;
   }
-  .add-margin {
-    margin-bottom: 24px;
-    margin-top: 15px;
+  .mat-dialog-content {
+    height: calc(100% - 90px);
+    padding: 10px 24px;
   }
-  .add-margin-last {
-    margin-bottom: 15px;
-    margin-top: 30px;
+  .mat-divider {
+    margin: 20px 0;
   }
+
+  .mat-divider:last-child,
+  .mat-divider:first-child,
+  .no-margin
+  {
+    margin: 0;
+  }
+}
+
+/deep/
+.mat-dialog-container {
+  overflow: hidden;
 }
 
 .label-item {
   letter-spacing: -.7px;
   color: #7d7d7d;
+}
+
+#con-close-contingency-observation {
+  margin: 0 0 0 0;
 }

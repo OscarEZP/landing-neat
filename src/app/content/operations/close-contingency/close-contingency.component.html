@@ -1,12 +1,12 @@
-<form id="close-form" [formGroup]="closeForm" #formClose="ngForm" (ngSubmit)="submitForm(closeForm.value)">
+<form id="close-form" [formGroup]="closeForm" #formClose="ngForm" (ngSubmit)="submitForm()">
     <div mat-dialog-title>
         <span class="title-dialog" fxFlex>{{'OPERATIONS.CLOSE_COMPONENT.TITLE'|translate}}</span>
     </div>
 
-    <mat-divider class="add-margin"></mat-divider>
+    <mat-divider class="no-margin"></mat-divider>
 
-    <div mat-dialog-content fxLayoutGap="" fxLayout="column">
-        <div fxLayout="column" fxLayoutGap="15px">
+    <div mat-dialog-content fxLayoutGap="10px" fxLayout="column">
+        <div fxLayout="column" fxLayoutGap="15px" fxFlexOffset="20px">
             <div>
                 <span class="subtitles">{{'OPERATIONS.CLOSE_COMPONENT.CONTINGENCY_INFO'|translate}}</span>
             </div>
@@ -24,64 +24,142 @@
                     <span>{{data.flight.flightNumber}}</span>
                 </div>
             </div>
-            <div fxLayout="row" fxLayoutGap="20px">
+            <div fxLayout="row" fxFlexOffset="20px">
                 <label class="label-item">{{'OPERATIONS.CLOSE_COMPONENT.DESC'|translate}}</label>
                 <span>{{data.reason}}</span>
             </div>
-
         </div>
-        <mat-divider class="add-margin"></mat-divider>
-        <div fxLayout="column" fxLayoutGap="15px">
+        <mat-divider></mat-divider>
+        <div fxLayout="column" fxLayoutGap="15px" fxFlexOffset="10px">
             <div>
                 <span class="subtitles">{{'OPERATIONS.CLOSE_COMPONENT.CLOSURE_INFO'|translate}}</span>
             </div>
             <div fxLayout="row" fxLayoutGap="15px">
                 <label fxFlex="20" class="label-item">{{'OPERATIONS.CLOSE_COMPONENT.AC_STATUS'|translate}}</label>
-                <mat-radio-group fxLayoutGap="10px" [formControl]="closeForm.controls['type']">
-                    <mat-radio-button labelPosition="after" *ngFor="let closeType of typeCloseList.types" value="{{closeType.code}}">
-                        {{closeType.description}}
+                <mat-radio-group fxLayout="row" fxLayoutGap="10px" [formControl]="closeForm.controls['type']">
+                    <mat-radio-button labelPosition="after" *ngFor="let type of closeType" value="{{type.code}}">
+                        {{type.description}}
                     </mat-radio-button>
                 </mat-radio-group>
             </div>
             <mat-error *ngIf="closeForm.controls['type'].hasError('required') && closeForm.controls['type'].value === null && formClose.submitted">
                 {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_TYPE_REQUIRED'|translate}}
             </mat-error>
-
         </div>
-        <mat-divider class="add-margin"></mat-divider>
-        <div fxLayout="column" fxLayoutGap="15px">
+        <mat-divider></mat-divider>
+        <div fxLayout="column" fxLayoutGap="10px">
             <div>
                 <span class="subtitles">{{'OPERATIONS.CLOSE_COMPONENT.OBS'|translate}}</span>
             </div>
-            <mat-form-field class="full-width">
-                <textarea id="in-close-contingency-observation" matInput #observation placeholder="Observations to Maintenance" maxlength="400"
+            <div fxLayout="row" id="con-close-contingency-observation">
+                <mat-form-field class="full-width">
+                    <textarea id="in-close-contingency-observation" matInput #observation placeholder="Observations to Maintenance" maxlength="400"
                           [formControl]="closeForm.controls['observation']"
-                          required></textarea>
-                <mat-hint align="end">{{observation.value.length}} / 400</mat-hint>
-                <mat-error *ngIf="closeForm.controls['observation'].hasError('required') && closeForm.controls['observation'].invalid">
-                    {{'OPERATIONS.CLOSE_COMPONENT.OBS_REQUIRED'|translate}}
-                </mat-error>
-            </mat-form-field>
+                          required>
+
+                    </textarea>
+                    <mat-hint align="end">{{observation.value.length}} / 400</mat-hint>
+                    <mat-error *ngIf="closeForm.controls['observation'].hasError('required') && closeForm.controls['observation'].invalid">
+                        {{'OPERATIONS.CLOSE_COMPONENT.OBS_REQUIRED'|translate}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
         </div>
-        <mat-divider class="add-margin"></mat-divider>
+        <div fxLayout="column" fxLayoutGap="15px">
+            <mat-divider></mat-divider>
+        </div>
         <div fxLayout="column" fxLayoutGap="15px">
             <div>
                 <span class="subtitles">{{'OPERATIONS.CLOSE_COMPONENT.AOG_ADITIONAL_INFO'|translate}}</span>
             </div>
-            <div fxLayout="row">
-                <mat-form-field>
-                    <mat-select
-                            id="sel-aog-form-technical-type"
-                            placeholder="{{ 'AOG.AOG_FORM.TECHNICAL_TYPE' | translate }}"
-                            [formControl]="aogForm.controls['safetyEventCode']">
-                        <!--<mat-option *ngFor="let safety of safetyEventList" [value]="safety.code">{{ safety.description }}</mat-option>-->
-                    </mat-select>
+            <div fxLayout="row" fxLayoutGap="20px">
+                <mat-form-field fxFlex="50">
+                    <input required id="in-aog-form-backup-station"
+                           #searchStation type="text"
+                           placeholder="{{ 'AOG.AOG_FORM.STATION' | translate }}" matInput
+                           [formControl]="aogForm.controls['station']" [matAutocomplete]="stationString">
+                    <mat-error
+                            *ngIf="aogForm.controls['station'].hasError('required') && aogForm.controls['station'].touched">
+                        {{'OPERATIONS.CONTINGENCY_FORM.STATION_REQUIRED'|translate}}
+                    </mat-error>
+                    <mat-autocomplete #stationString="matAutocomplete">
+                        <mat-option *ngFor="let st of locationList$ | async" [value]="st.code">
+                            {{ st.code }}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
-                <div></div>
+                <mat-form-field fxFlex="50">
+                    <input required id="in-aog-form-barcode" matInput placeholder="{{'AOG.AOG_FORM.BARCODE'|translate}}"
+                           [formControl]="aogForm.controls['barcode']" [(ngModel)]="aog.barcode">
+                    <mat-error *ngIf="aogForm.controls['barcode'].hasError('pattern') && aogForm.controls['barcode'].touched">
+                        {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_PATTERN'|translate}}
+                    </mat-error>
+                    <mat-error *ngIf="aogForm.controls['barcode'].hasError('required') && aogForm.controls['barcode'].touched">
+                        {{'AOG.AOG_FORM.ERROR.BARCODE_REQUIRED'|translate}}
+                    </mat-error>
+                    <mat-error *ngIf="aogForm.controls['barcode'].hasError('maxlenght') && aogForm.controls['barcode'].touched">
+                        {{'OPERATIONS.CONTINGENCY_FORM.CONTINGENCY_BARCODE_MAX'|translate}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row">
+                <mat-form-field class="full-width">
+                    <textarea required matInput
+                              id="txt-aog-form-reason"
+                              placeholder="{{'AOG.AOG_FORM.REASON' | translate}}"
+                              [formControl]="aogForm.controls['reason']"
+                              #reason>
+                    </textarea>
+                    <mat-hint align="end">{{reason.value.length}} / 400</mat-hint>
+                    <mat-error
+                            *ngIf="aogForm.controls['reason'].hasError('required') && aogForm.controls['reason'].touched">
+                        {{'OPERATIONS.CONTINGENCY_FORM.REASON_REQUIRED_VALIDATION' | translate}}
+                    </mat-error>
+                    <mat-error
+                            *ngIf="aogForm.controls['reason'].hasError('maxlength') && aogForm.controls['reason'].touched">
+                        {{'OPERATIONS.CONTINGENCY_FORM.MAX_LENGTH_VALIDATION' | translate}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row">
+                <div fxLayout="column" fxFlex="150px" fxLayoutGap="10px">
+
+                    <label fxLayout="row" [ngClass]="{ 'invalid': closeForm.submitted && aogForm.controls['tipology'].hasError('required') }">
+                        {{'AOG.AOG_FORM.TIPOLOGY'|translate}} *:
+                    </label>
+                    <mat-radio-group required fxLayout="row" id="rad-aog-form-tipology"
+                                     fxLayoutGap="10px" [formControl]="aogForm.controls['tipology']">
+                        <mat-radio-button fxFlex="50" labelPosition="after"
+                                          *ngFor="let ct of aogStatus"
+                                          value="{{ ct.code }}">{{ ct.code }}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                    <mat-error *ngIf="aogForm.controls['tipology'].hasError('required') && aogForm.submitted">
+                        {{'AOG.AOG_FORM.ERROR.TIPOLOGY_REQUIRED'|translate}}
+                    </mat-error>
+                </div>
+                <div fxLayout="column" fxFlex="90px">
+                    <label fxLayout="row" [ngClass]="{ 'invalid': closeForm.submitted && aogForm.controls['duration'].hasError('required') }">
+                        {{'AOG.AOG_FORM.DURATION'|translate}} *:
+                    </label>
+                    <mat-form-field id="form-field-duration" fxLayout="row">
+                        <mat-select
+                                id="sel-aog-form-duration"
+                                [formControl]="aogForm.controls['duration']">
+                            <mat-option *ngFor="let duration of arrDuration" [value]="duration">{{ getDurationLabel(duration) }}</mat-option>
+                        </mat-select>
+                        <mat-error
+                                *ngIf="aogForm.controls['duration'].hasError('required') && aogForm.controls['duration'].touched">
+                            {{'OPERATIONS.CONTINGENCY_FORM.DURATION_REQUIRED'|translate}}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
             </div>
         </div>
     </div>
-    <mat-divider class="add-margin-last"></mat-divider>
+    <mat-divider class="no-margin"></mat-divider>
     <div mat-dialog-actions fxLayoutAlign="end">
         <button id="btn-close-contingency-cancel" type="button" mat-button (click)="openCancelDialog()">
             {{'OPERATIONS.CLOSE_COMPONENT.BTN_CANCEL'|translate}}

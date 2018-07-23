@@ -1,13 +1,23 @@
 import {TimeInstant} from './timeInstant';
 export class Close {
-    private _closeDate: TimeInstant;
     private _id: number;
+    private _closeDate: TimeInstant;
     private _observation: string;
     private _type: string;
     private _username: string;
 
-    constructor () {
-
+    constructor (
+        id: number = null,
+        closeDate: TimeInstant = TimeInstant.getInstance(),
+        observation: string = '',
+        type: string = '',
+        username: string = ''
+    ) {
+        this._id = id;
+        this._closeDate = closeDate;
+        this._observation = observation;
+        this._type = type;
+        this._username = username;
     }
 
     get closeDate(): TimeInstant {
