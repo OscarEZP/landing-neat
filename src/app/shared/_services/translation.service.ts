@@ -19,15 +19,15 @@ export class TranslationService {
      * @param {string} toTranslate
      * @returns {Promise<string>}
      */
-    public translate(toTranslate: string): Promise<string> {
-        return this._translateService.get(toTranslate).toPromise();
+    public translate(toTranslate: string, params: {value: string} = {value: ''}): Promise<string> {
+        return this._translateService.get(toTranslate, params).toPromise();
     }
 
     /**
-     * Translate and show a toast with a message
+     * Translate and show a toast message
      * @param {string} toTranslate
      */
-    public translateAndShow(toTranslate: string, time: number = null): Promise<void> {
+    public translateAndShow(toTranslate: string, time: number = 2500): Promise<void> {
         return this.translate(toTranslate).then((res: string) => this._messageService.openSnackBar(res, time));
     }
 }

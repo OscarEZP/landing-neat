@@ -9,6 +9,7 @@ import { DataService } from '../../../shared/_services/data.service';
 import { MessageService } from '../../../shared/_services/message.service';
 import { DialogService } from '../../_services/dialog.service';
 import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
+import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
 
 @Component({
     selector: 'lsl-contingency-simplified-list',
@@ -18,7 +19,7 @@ import { GroupTypes } from '../../../shared/_models/configuration/groupTypes';
 })
 
 export class ContingencySimplifiedListComponent implements OnInit, OnDestroy {
-
+    private static CONTINGENCY_SEARCH_ENDPOINT = 'contingencySearch';
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
     private _alive: boolean;
@@ -67,9 +68,10 @@ export class ContingencySimplifiedListComponent implements OnInit, OnDestroy {
 
     private getContingences() {
         this.messageData.stringMessage('open');
-
+        const search: SearchContingency = SearchContingency.getInstance();
+        search.isClose = false;
         this._apiService
-            .getAll<Contingency[]>('contingencyList')
+            .search<Contingency[]>(ContingencySimplifiedListComponent.CONTINGENCY_SEARCH_ENDPOINT, search)
             .subscribe((response: Contingency[]) => this.contingencyList = response,
                 (response: HttpErrorResponse) => () => {
                     this.messageData.stringMessage('close');
