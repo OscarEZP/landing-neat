@@ -96,7 +96,7 @@ export class AogListComponent implements OnInit, OnDestroy {
 
     /**
      * Method for get a search signature for get data
-     * @return {SearchAog}
+     * @return {AogSearch}
      */
     private getSearchSignature(): AogSearch {
         const signature: AogSearch = AogSearch.getInstance();
@@ -124,7 +124,7 @@ export class AogListComponent implements OnInit, OnDestroy {
             (response) => {
                 this.subscribeTimer();
                 this.aogList = response;
-                this.getCountSubscription();
+                this.getCountSubscription(this.getSearchSignature());
                 this.loading = false;
             },
             () => {
@@ -145,9 +145,9 @@ export class AogListComponent implements OnInit, OnDestroy {
         });
     }
 
-    private getCountSubscription(): Subscription {
+    private getCountSubscription(signature: AogSearch): Subscription {
         return this._apiRestService
-            .search<Count>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT, null)
+            .search<Count>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT, signature)
             .subscribe(
             (response) => this.paginatorObjectService.length = response.items,
             () => this.getError()
