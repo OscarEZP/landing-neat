@@ -82,7 +82,7 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this._closeTypeSubs.unsubscribe();
+        this._locationSubs.unsubscribe();
         this._groupTypesSubs.unsubscribe();
     }
 
