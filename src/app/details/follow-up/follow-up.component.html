@@ -41,7 +41,7 @@
                 <aside fxFlex="40" id="interval-select">
                     <mat-form-field>
                         <mat-select placeholder="Interval" [formControl]="followUpForm.controls['duration']" [(ngModel)]="followUp.requestedInterval.duration">
-                            <mat-option *ngFor="let min of durations" (click)="getCurrentTime()" [value]="min">{{ min }} {{'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.MINUTES' | translate }}</mat-option>
+                            <mat-option *ngFor="let min of durations" (click)="getCurrentTime()" [value]="min">{{ min }} {{'FORM.MINUTES' | translate }}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </aside>
