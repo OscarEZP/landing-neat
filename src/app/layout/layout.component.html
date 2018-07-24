@@ -16,7 +16,5 @@
         </div>
         <lsl-rightnav *ngIf="showRightNav"></lsl-rightnav>
     </section>
-    <button *ngIf="showAddButton" (click)="openCreationForm()" mat-icon-button id="btn-layout-add-contingency"
-            [disabled]="disableAddButton">+
-    </button>
+    <button *ngIf="showAddButton" (click)="openCreationForm()" mat-icon-button id="btn-layout-add-form" [disabled]="disableAddButton">+</button>
 </mat-sidenav-container>
