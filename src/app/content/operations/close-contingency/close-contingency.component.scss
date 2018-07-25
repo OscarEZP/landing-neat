@@ -1,3 +1,6 @@
+@import '../../../../assets/style/base.scss';
+$font-size: 16px;
+
 #close-form {
   color: rgba(0, 0, 0, .87);
   font-size: 13px;
@@ -26,9 +29,6 @@
   .mat-divider {
     margin: 10px 0;
   }
-  textarea {
-    resize: none;
-  }
   .mat-divider:last-child,
   .mat-divider:first-child,
   .no-margin
@@ -36,18 +36,31 @@
     margin: 0;
   }
 
-  //.con-text-area {
-  //  margin: 0 0 60px 0;
-  //}
-  //
-  //.con-reason {
-  //  margin: 40px 0;
-  //}
-}
+  .mat-radio-group {
+    margin: -2px 0 0 0;
+  }
 
-/deep/
-.mat-dialog-container {
-  overflow: hidden;
+  /deep/
+  #form-field-duration {
+    .mat-input-infix.mat-form-field-infix {
+      width: 100%;
+    }
+  }
+
+  .subtitles, button {
+    text-transform: uppercase;
+  }
+
+  .time-display {
+    span, .mat-icon {
+      color: mat-color($foreground, secondary-text);
+    }
+  }
+  .mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
 }
 
 .label-item {
@@ -55,3 +68,6 @@
   color: #7d7d7d;
 }
 
+.mat-error {
+  @include gen-component-font-size($font-size, -5);
+}

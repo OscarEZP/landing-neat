@@ -17,7 +17,6 @@ import {AircraftSearch} from '../../../shared/_models/configuration/aircraftSear
 import {Safety} from '../../../shared/_models/safety';
 import {MessageService} from '../../../shared/_services/message.service';
 import {ClockService} from '../../../shared/_services/clock.service';
-import {TranslateService} from '@ngx-translate/core';
 import {StorageService} from '../../../shared/_services/storage.service';
 import {DataService} from '../../../shared/_services/data.service';
 import {CancelComponent} from '../cancel/cancel.component';
@@ -133,36 +132,36 @@ export class AogFormComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this._groupTypesSubs = this.getGroupTypes();
-        this._aircraftSubs = this.getAircraftSubs();
-        this._operatorSubs = this.getOperatorSubs();
-        this._locationSubs = this.getLocationSubs();
-        this._safetyEventSubs = this.getSafetyEventSubs();
-        this._timerSubs = this.getTimerSubs();
-        this._datetimeSubs = new Subscription();
-        this._safetyCheckSubs = this.getSafetyCheckSubs();
-        this._clockSubs = this.getClockSubscription();
-        this._formSubs = this.getFormSubs();
-        this._contingencySubs = new Subscription();
+        this.groupTypesSubs = this.getGroupTypes();
+        this.aircraftSubs = this.getAircraftSubs();
+        this.operatorSubs = this.getOperatorSubs();
+        this.locationSubs = this.getLocationSubs();
+        this.safetyEventSubs = this.getSafetyEventSubs();
+        this.timerSubs = this.getTimerSubs();
+        this.datetimeSubs = new Subscription();
+        this.safetyCheckSubs = this.getSafetyCheckSubs();
+        this.clockSubs = this.getClockSubscription();
+        this.formSubs = this.getFormSubs();
+        this.contingencySubs = new Subscription();
         this.username = this._storageService.getCurrentUser().username;
 
-        this._translationService.translate(AogFormComponent.MINUTE_ABBREVIATION).then(res => this._minuteAbbreviation = res);
-        this._translationService.translate(AogFormComponent.HOUR_ABBREVIATION).then(res => this._hourAbbreviation = res);
-        this._translationService.translate(AogFormComponent.HOURS_LABEL).then(res => this._hoursLabel = res);
-        this._translationService.translate(AogFormComponent.HOUR_LABEL).then(res => this._hourLabel = res);
+        this._translationService.translate(AogFormComponent.MINUTE_ABBREVIATION).then(res => this.minuteAbbreviation = res);
+        this._translationService.translate(AogFormComponent.HOUR_ABBREVIATION).then(res => this.hourAbbreviation = res);
+        this._translationService.translate(AogFormComponent.HOURS_LABEL).then(res => this.hoursLabel = res);
+        this._translationService.translate(AogFormComponent.HOUR_LABEL).then(res => this.hourLabel = res);
     }
 
     ngOnDestroy() {
-        this._aircraftSubs.unsubscribe();
-        this._operatorSubs.unsubscribe();
-        this._locationSubs.unsubscribe();
-        this._safetyEventSubs.unsubscribe();
-        this._timerSubs.unsubscribe();
-        this._datetimeSubs.unsubscribe();
-        this._safetyCheckSubs.unsubscribe();
-        this._clockSubs.unsubscribe();
-        this._formSubs.unsubscribe();
-        this._contingencySubs.unsubscribe();
+        this.aircraftSubs.unsubscribe();
+        this.operatorSubs.unsubscribe();
+        this.locationSubs.unsubscribe();
+        this.safetyEventSubs.unsubscribe();
+        this.timerSubs.unsubscribe();
+        this.datetimeSubs.unsubscribe();
+        this.safetyCheckSubs.unsubscribe();
+        this.clockSubs.unsubscribe();
+        this.formSubs.unsubscribe();
+        this.contingencySubs.unsubscribe();
     }
 
     /**
@@ -261,7 +260,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
                 this._translationService.translateAndShow(AogFormComponent.AOG_SUCCESS_MESSAGE);
                 this._dialogService.closeAllDialogs();
                 this._messageData.stringMessage('reload');
-            }).catch(err => console.error(err));
+            }).catch(error => this._messageService.openSnackBar(error.message));
     }
 
     /**
@@ -738,4 +737,107 @@ export class AogFormComponent implements OnInit, OnDestroy {
         return this._hourAbbreviation;
     }
 
+    get timerSubs(): Subscription {
+        return this._timerSubs;
+    }
+
+    set timerSubs(value: Subscription) {
+        this._timerSubs = value;
+    }
+
+    get datetimeSubs(): Subscription {
+        return this._datetimeSubs;
+    }
+
+    set datetimeSubs(value: Subscription) {
+        this._datetimeSubs = value;
+    }
+
+    get aircraftSubs(): Subscription {
+        return this._aircraftSubs;
+    }
+
+    set aircraftSubs(value: Subscription) {
+        this._aircraftSubs = value;
+    }
+
+    get operatorSubs(): Subscription {
+        return this._operatorSubs;
+    }
+
+    set operatorSubs(value: Subscription) {
+        this._operatorSubs = value;
+    }
+
+    get locationSubs(): Subscription {
+        return this._locationSubs;
+    }
+
+    set locationSubs(value: Subscription) {
+        this._locationSubs = value;
+    }
+
+    get safetyEventSubs(): Subscription {
+        return this._safetyEventSubs;
+    }
+
+    set safetyEventSubs(value: Subscription) {
+        this._safetyEventSubs = value;
+    }
+
+    get safetyCheckSubs(): Subscription {
+        return this._safetyCheckSubs;
+    }
+
+    set safetyCheckSubs(value: Subscription) {
+        this._safetyCheckSubs = value;
+    }
+
+    get clockSubs(): Subscription {
+        return this._clockSubs;
+    }
+
+    set clockSubs(value: Subscription) {
+        this._clockSubs = value;
+    }
+
+    get formSubs(): Subscription {
+        return this._formSubs;
+    }
+
+    set formSubs(value: Subscription) {
+        this._formSubs = value;
+    }
+
+    get groupTypesSubs(): Subscription {
+        return this._groupTypesSubs;
+    }
+
+    set groupTypesSubs(value: Subscription) {
+        this._groupTypesSubs = value;
+    }
+
+    get contingencySubs(): Subscription {
+        return this._contingencySubs;
+    }
+
+    set contingencySubs(value: Subscription) {
+        this._contingencySubs = value;
+    }
+
+    set hourLabel(value: string) {
+        this._hourLabel = value;
+    }
+
+    set hoursLabel(value: string) {
+        this._hoursLabel = value;
+    }
+
+    set minuteAbbreviation(value: string) {
+        this._minuteAbbreviation = value;
+    }
+
+    set hourAbbreviation(value: string) {
+        this._hourAbbreviation = value;
+    }
 }

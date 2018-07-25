@@ -1,5 +1,5 @@
 import {Component, OnInit, Inject, OnDestroy} from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { DialogService } from '../../_services/dialog.service';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { StorageService } from '../../../shared/_services/storage.service';
@@ -17,6 +17,8 @@ import {User} from '../../../shared/_models/user/user';
 import {map, startWith} from 'rxjs/operators';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {Aog} from '../../../shared/_models/aog/aog';
+import {TimeInstant} from '../../../shared/_models/timeInstant';
+import {Contingency} from '../../../shared/_models/contingency/contingency';
 
 @Component({
     selector: 'lsl-close-contingency',
@@ -25,12 +27,23 @@ import {Aog} from '../../../shared/_models/aog/aog';
 })
 export class CloseContingencyComponent implements OnInit, OnDestroy {
 
+    private static AOG_ENDPOINT = 'aircraftOnGround';
+    private static AOG_SUCCESS_MESSAGE = 'AOG.AOG_FORM.MESSAGE.SUCCESS';
+
     private static CLOSE_TYPE = 'CLOSE_TYPE';
     private static CLOSE_SUCCESS_MESSAGE = 'OPERATIONS.CLOSE_COMPONENT.CLOSE_SUCCESS';
     private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
     private static LOCATIONS_ENDPOINT = 'locations';
     private static TYPES_LIST_ENDPOINT = 'types';
+    private static INTERVAL_DURATION = 30;
+    private static INTERVAL_LIMIT = 1440;
+    private static DEFAULT_DURATION = 60;
+
+    private static MINUTE_ABBREVIATION = 'FORM.MINUTE_ABBREVIATION';
+    private static HOUR_ABBREVIATION = 'FORM.HOUR_ABBREVIATION';
+    private static HOUR_LABEL = 'FORM.HOUR';
+    private static HOURS_LABEL = 'FORM.HOURS';
 
     private _aog: Aog;
     private _closeForm: FormGroup;
@@ -39,12 +52,18 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
     private _locationList: Location[];
     private _typeCloseList: GroupTypes;
     private _groupTypeList: GroupTypes[];
+    private _arrDuration: Array<number>;
+    private _hourLabel: string;
+    private _hoursLabel: string;
+    private _minuteAbbreviation: string;
+    private _hourAbbreviation: string;
+    private _utcModel: TimeInstant;
+    private _aogTypeCode: string;
 
     private _locationList$: Observable<Location[]>;
 
-    private _closeTypeSubs: Subscription;
-    private _locationSubs: Subscription;
-    private _groupTypesSubs: Subscription;
+    private _locationSub: Subscription;
+    private _groupTypesSub: Subscription;
 
     constructor(
         private _dialogService: DialogService,
@@ -55,7 +74,7 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
         private _apiRestService: ApiRestService,
         private _fb: FormBuilder,
         private _translationService: TranslationService,
-        @Inject(MAT_DIALOG_DATA) public data: any
+        @Inject(MAT_DIALOG_DATA) public _data: any
     ) {
         this._closeForm = _fb.group({
             'type': [null, Validators.required],
@@ -63,27 +82,45 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
         });
 
         this._aogForm = _fb.group({
-            'station'   : ['', Validators.required],
-            'barcode'   : ['', [Validators.pattern('^([a-zA-Z0-9])+'), Validators.maxLength(80)]],
-            'reason'    : ['', Validators.required],
-            'status'    : ['', Validators.required],
-            'duration'  : ['', Validators.required],
+            'station'   : [this.station, Validators.required],
+            'barcode'   : [this.data.barcode, [Validators.pattern('^([a-zA-Z0-9])+'), Validators.maxLength(80)]],
+            'reason'    : [this.data.reason, Validators.required],
+            'duration'  : [CloseContingencyComponent.DEFAULT_DURATION, Validators.required],
             'tipology'  : ['', Validators.required]
         });
 
+        this._utcModel = new TimeInstant(new Date().getTime(), null);
         this._closeSignature = new Close();
         this._typeCloseList = new GroupTypes();
         this._aog = Aog.getInstance();
+        this._aogTypeCode = 'AOG';
     }
 
     ngOnInit() {
-        this._locationSubs = this.getLocationSubs();
-        this._groupTypesSubs = this.getGroupTypesSubs();
+        this.locationSub = this.getLocationSubs();
+        this.groupTypesSub = this.getGroupTypesSubs();
+        this.arrDuration = this.getDurationIntervals();
+        this._translationService.translate(CloseContingencyComponent.MINUTE_ABBREVIATION).then(res => this.minuteAbbreviation = res);
+        this._translationService.translate(CloseContingencyComponent.HOUR_ABBREVIATION).then(res => this.hourAbbreviation = res);
+        this._translationService.translate(CloseContingencyComponent.HOURS_LABEL).then(res => this.hoursLabel = res);
+        this._translationService.translate(CloseContingencyComponent.HOUR_LABEL).then(res => this.hourLabel = res);
     }
 
     ngOnDestroy() {
-        this._locationSubs.unsubscribe();
-        this._groupTypesSubs.unsubscribe();
+        this.locationSub.unsubscribe();
+        this.groupTypesSub.unsubscribe();
+    }
+
+    /**
+     * Array with 30 minutes intervals
+     * @returns {number[]}
+     */
+    private getDurationIntervals(): number[] {
+        const res = [];
+        for (let i = 1; i * CloseContingencyComponent.INTERVAL_DURATION <= CloseContingencyComponent.INTERVAL_LIMIT; i++) {
+            res.push(i * CloseContingencyComponent.INTERVAL_DURATION);
+        }
+        return res;
     }
 
     /**
@@ -105,6 +142,21 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
             });
     }
 
+    public getDurationLabel(duration: number): string {
+        const minToHour = 60;
+        const durationToHours = duration / minToHour;
+        const hours = Math.floor(durationToHours);
+        return durationToHours === hours ?
+            hours.toString()
+                .concat(' ')
+                .concat(hours > 1 ? this.hoursLabel : this.hourLabel) :
+            hours.toString()
+                .concat(this.hourAbbreviation)
+                .concat(' ')
+                .concat((duration - (hours * minToHour)).toString())
+                .concat(this.minuteAbbreviation);
+    }
+
     /**
      * Filter for location observable list in view
      * @param {string} val
@@ -115,23 +167,59 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
             location.code.toLocaleLowerCase().search(val ? val.toLocaleLowerCase() : '') !== -1);
     }
 
-    // private getCloseTypeSubs(): Subscription {
-    //     return this._apiRestService.getSingle<GroupTypes>('configTypes', CloseContingencyComponent.CLOSE_TYPE)
-    //         .subscribe(rs => this.typeCloseList = rs);
-    // }
-
-    public submitForm() {
+    public submitForm(): void {
         if (this.closeForm.valid) {
-            this._contingencyService.closeContingency(this.closeSignature).subscribe(
-                () => {
-                    this._translationService.translateAndShow(CloseContingencyComponent.CLOSE_SUCCESS_MESSAGE);
-                    this.dismissCloseContigency();
-                    this._dataService.stringMessage('reload');
-                }, err => console.error(err)
-            );
+            this.postCloseContingency();
+
         } else {
             this._translationService.translateAndShow(CloseContingencyComponent.VALIDATION_ERROR_MESSAGE);
         }
+    }
+
+    /**
+     * Subscription to get data from AOG form
+     * @returns {Subscription}
+     */
+    private getFormSubs(): Subscription {
+        this.aog.safety = this.data.safetyEvent.code;
+        return this.aogForm.valueChanges.subscribe(v => {
+            this.aog.station = v.station;
+            this.aog.barcode = v.barcode;
+            // this.aog.maintenance = v.aogType;
+            // this.aog.failure = v.failure;
+            this.aog.observation = this.closeForm.controls['observation'].value;
+            this.aog.reason = v.reason;
+            this.aog.durationAog = v.duration;
+            this.aog.code = v.tipology;
+        });
+    }
+
+    /**
+     * Promise to send data
+     * @returns {Promise<void>}
+     */
+    private postAog(): Promise<void> {
+        return this._apiRestService
+            .search(CloseContingencyComponent.AOG_ENDPOINT, this.aog)
+            .toPromise()
+            .then(() => {
+                this._translationService.translateAndShow(CloseContingencyComponent.AOG_SUCCESS_MESSAGE);
+                this._dataService.stringMessage('reload');
+                this.dismissCloseContigency();
+            }).catch(err => console.error(err));
+    }
+
+    private postCloseContingency(): Promise <void> {
+        return this._contingencyService.closeContingency(this.closeSignature).toPromise()
+            .then(() => {
+                this._translationService.translateAndShow(CloseContingencyComponent.CLOSE_SUCCESS_MESSAGE);
+                this._dataService.stringMessage('reload');
+                if (this.closeForm.controls['type'].value === this.aogTypeCode) {
+                    this.postAog();
+                } else {
+                    this.dismissCloseContigency();
+                }
+            }, err => console.error(err));
     }
 
     /**
@@ -162,7 +250,7 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
 
     get closeSignature(): Close {
         return new Close(
-            this.data.id,
+            this._data.id,
             null,
             this.closeForm.controls['type'].value,
             this.closeForm.controls['observation'].value,
@@ -194,8 +282,12 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
         return counterFilled > defaultValid;
     }
 
-    dismissCloseContigency(): void {
+    public dismissCloseContigency(): void {
         this._dialogService.closeAllDialogs();
+    }
+
+    get station(): string {
+        return this.data.backup.location ? this.data.backup.location : this.data.flight.origin;
     }
 
     get user(): User  {
@@ -216,14 +308,6 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
 
     set closeForm(value: FormGroup) {
         this._closeForm = value;
-    }
-
-    get typeCloseList(): GroupTypes {
-        return this._typeCloseList;
-    }
-
-    set typeCloseList(value: GroupTypes) {
-        this._typeCloseList = value;
     }
 
     get locationList$(): Observable<Location[]> {
@@ -257,4 +341,85 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
     set groupTypeList(value: GroupTypes[]) {
         this._groupTypeList = value;
     }
+
+    get data(): any {
+        return this._data;
+    }
+
+    set data(value: any) {
+        this._data = value;
+    }
+
+    get locationSub(): Subscription {
+        return this._locationSub;
+    }
+
+    set locationSub(value: Subscription) {
+        this._locationSub = value;
+    }
+
+    get groupTypesSub(): Subscription {
+        return this._groupTypesSub;
+    }
+
+    set groupTypesSub(value: Subscription) {
+        this._groupTypesSub = value;
+    }
+
+    get hourLabel(): string {
+        return this._hourLabel;
+    }
+
+    get hoursLabel(): string {
+        return this._hoursLabel;
+    }
+
+    get minuteAbbreviation(): string {
+        return this._minuteAbbreviation;
+    }
+
+    get hourAbbreviation(): string {
+        return this._hourAbbreviation;
+    }
+
+    set hourLabel(value: string) {
+        this._hourLabel = value;
+    }
+
+    set hoursLabel(value: string) {
+        this._hoursLabel = value;
+    }
+
+    set minuteAbbreviation(value: string) {
+        this._minuteAbbreviation = value;
+    }
+
+    set hourAbbreviation(value: string) {
+        this._hourAbbreviation = value;
+    }
+
+    set arrDuration(value: Array<number>) {
+        this._arrDuration = value;
+    }
+
+    get arrDuration(): Array<number> {
+        return this._arrDuration;
+    }
+
+    get utcModel(): TimeInstant {
+        return this._utcModel;
+    }
+
+    set utcModel(value: TimeInstant) {
+        this._utcModel = value;
+    }
+
+    get aogTypeCode(): string {
+        return this._aogTypeCode;
+    }
+
+    set aogTypeCode(value: string) {
+        this._aogTypeCode = value;
+    }
+
 }
