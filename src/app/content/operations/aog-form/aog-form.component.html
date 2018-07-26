@@ -138,7 +138,7 @@
                     {{'AOG.AOG_FORM.AOG_TYPE'|translate}} *
                 </label>
                 <mat-radio-group required fxLayout="column" id="rad-aog-form-contingency-type"
-                                 fxLayoutGap="10px" [formControl]="aogForm.controls['aogType']">
+                                 fxLayoutGap="10px" [formControl]="aogForm.controls['contingencyType']">
                     <mat-radio-button labelPosition="after"
                                       *ngFor="let ct of contingencyType"
                                       value="{{ ct.code }}">{{ ct.description }}

@@ -133,7 +133,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      */
     private selectedContingencyChanged(contingency: Contingency): void {
         this.selectedContingency = contingency;
-        this.disabledComponent();
+        this.validations.isComponentDisabled = this.isComponentDisabled();
 
         this.getCurrentTime();
         this.getStatusCodesAvailable();
@@ -229,7 +229,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
             .getSingle('configStatus', this.selectedContingency.status.code)
             .subscribe((data: StatusCode[]) => {
                     this.statusCodes = data;
-                    this.disabledComponent();
+                    this.validations.isComponentDisabled = this.isComponentDisabled();
                 },
                 error => () => {
                     this._dataService.stringMessage('close');
@@ -383,14 +383,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      * Private method to disable form view if any of the conditions are fulfilled
      * @return {boolean}
      */
-    private disabledComponent(): boolean {
-        let isComponentDisabled = false;
-
-        if (this.selectedContingency.isClose || this.selectedContingency.status.level === null || this.delta <= 0 || this.statusCodes.length === 0) {
-            isComponentDisabled = true;
-        }
-
-        return this.validations.isComponentDisabled = isComponentDisabled;
+    private isComponentDisabled(): boolean {
+        return this.selectedContingency.isClose || this.selectedContingency.status.level === null || this.delta <= 0 || this.statusCodes.length === 0;
     }
 
     /**

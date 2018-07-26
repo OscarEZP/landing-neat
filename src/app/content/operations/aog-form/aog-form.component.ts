@@ -405,7 +405,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         return this._contingencyService.closeContingency(this.contingency.close)
             .toPromise()
             .then(() => this.postAog())
-            .catch( () => this._translationService.translateAndShow(AogFormComponent.CLOSE_CONTINGENCY_ERROR_MESSAGE));
+            .catch(() => this._translationService.translateAndShow(AogFormComponent.CLOSE_CONTINGENCY_ERROR_MESSAGE));
     }
 
     /**
@@ -503,6 +503,9 @@ export class AogFormComponent implements OnInit, OnDestroy {
             variableName = value.groupName.toLowerCase().replace(/(\_\w)/g, function (m) {
                 return m[1].toUpperCase();
             });
+            if (variableName === 'contingencyType') {
+                value.types.sort((a, b) => a.description < b.description ? 1 : -1);
+            }
             this[variableName] = value.types;
         }, this);
     }

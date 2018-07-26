@@ -99,7 +99,7 @@ export class AogListComponent implements OnInit, OnDestroy {
 
     /**
      * Method for get a search signature for get data
-     * @return {SearchAog}
+     * @return {AogSearch}
      */
     private getSearchSignature(): AogSearch {
         const signature: AogSearch = AogSearch.getInstance();
