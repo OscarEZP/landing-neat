@@ -140,7 +140,7 @@ export class HistoricalTaskComponent implements OnInit {
             this.taskType.toUpperCase(),
             this.analyzedTask.task.ata,
             this.analyzedTask.task.barcode,
-            DateUtil.formatDate(this.detailTask.task.createDate.epochTime, HistoricalTaskComponent.MOMENT_DATE_FORMAT)
+            DateUtil.formatDate(this._historicalReportService.getDetailTaskDate().epochTime, HistoricalTaskComponent.MOMENT_DATE_FORMAT)
         ];
         return arrHeader.join(' / ');
     }
