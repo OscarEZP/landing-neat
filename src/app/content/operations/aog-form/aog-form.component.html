@@ -138,9 +138,9 @@
                     {{'AOG.AOG_FORM.AOG_TYPE'|translate}} *
                 </label>
                 <mat-radio-group required fxLayout="column" id="rad-aog-form-contingency-type"
-                                 fxLayoutGap="10px" [formControl]="aogForm.controls['aogType']">
+                                 fxLayoutGap="10px" [formControl]="aogForm.controls['contingencyType']">
                     <mat-radio-button labelPosition="after"
-                                      *ngFor="let ct of aogType"
+                                      *ngFor="let ct of contingencyType"
                                       value="{{ ct.code }}">{{ ct.description }}
                     </mat-radio-button>
                 </mat-radio-group>
@@ -156,7 +156,7 @@
                 <mat-radio-group required fxLayout="row" id="rad-aog-form-failure-type"
                                  fxLayoutGap="10px" [formControl]="aogForm.controls['failure']">
                     <mat-radio-button labelPosition="after"
-                                      *ngFor="let ct of aogFailureType"
+                                      *ngFor="let ct of failureType"
                                       value="{{ ct.code }}">{{ ct.description }}
                     </mat-radio-button>
                 </mat-radio-group>
