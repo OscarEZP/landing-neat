@@ -128,21 +128,32 @@ export class AogFormComponent implements OnInit, OnDestroy {
             'tipology': [this.aog.code],
             'closeObservation': ['']
         });
-        this._arrDuration = this.getDurationIntervals();
+        this._arrDuration = [];
+        this._groupTypesSubs = new Subscription();
+        this._aircraftSubs = new Subscription();
+        this._operatorSubs = new Subscription();
+        this._locationSubs = new Subscription();
+        this._safetyEventSubs = new Subscription();
+        this._timerSubs = new Subscription();
+        this._datetimeSubs = new Subscription();
+        this._safetyCheckSubs = new Subscription();
+        this._clockSubs = new Subscription();
+        this._formSubs = new Subscription();
+        this._contingencySubs = new Subscription();
     }
 
     ngOnInit() {
+        this.username = this._storageService.getCurrentUser().username;
+        this.arrDuration = this.getDurationIntervals();
         this.groupTypesSubs = this.getGroupTypes();
         this.aircraftSubs = this.getAircraftSubs();
         this.operatorSubs = this.getOperatorSubs();
         this.locationSubs = this.getLocationSubs();
         this.safetyEventSubs = this.getSafetyEventSubs();
         this.timerSubs = this.getTimerSubs();
-        this.datetimeSubs = new Subscription();
         this.safetyCheckSubs = this.getSafetyCheckSubs();
         this.clockSubs = this.getClockSubscription();
         this.formSubs = this.getFormSubs();
-        this.contingencySubs = new Subscription();
         this.username = this._storageService.getCurrentUser().username;
 
         this._translationService.translate(AogFormComponent.MINUTE_ABBREVIATION).then(res => this.minuteAbbreviation = res);
@@ -152,6 +163,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        this.groupTypesSubs.unsubscribe();
         this.aircraftSubs.unsubscribe();
         this.operatorSubs.unsubscribe();
         this.locationSubs.unsubscribe();
@@ -229,12 +241,12 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * @param {FormControl} control
      * @returns {object}
      */
-    private safetyEventValidator(control: FormControl): object {
+    public safetyEventValidator(control: FormControl): object {
         return !control.value && this.isSafety ? { isSafety: true } : null;
     }
 
     /**
-     * Event to submit data
+     * Submit data, if there is a contingency related, then close it
      */
     public submitForm(): void {
         if (this.aogForm.valid) {
@@ -272,7 +284,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
             .getAll<Safety[]>(AogFormComponent.SAFETY_EVENT_LIST_ENDPOINT)
             .subscribe(
                 data => this.safetyEventList = data,
-                error => () => this._messageService.openSnackBar(error.message)
+                error => this._messageService.openSnackBar(error.message)
             );
     }
 
