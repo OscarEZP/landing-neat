@@ -28,7 +28,6 @@ export class HistoricalTaskComponent implements OnInit {
     private static MOMENT_DATE_FORMAT = 'DD-MM-YYYY';
 
     private _dateFormat: string;
-    private _detailTask: DetailTask;
     private _analyzedTask: TimelineTask;
     private _editorLoad: boolean;
     private _dataSource: MatTableDataSource<any>;
@@ -141,17 +140,20 @@ export class HistoricalTaskComponent implements OnInit {
             this.taskType.toUpperCase(),
             this.analyzedTask.task.ata,
             this.analyzedTask.task.barcode,
-            DateUtil.formatDate(this.detailTask.creationDate.epochTime, HistoricalTaskComponent.MOMENT_DATE_FORMAT)
+            DateUtil.formatDate(this.detailTask.task.createDate.epochTime, HistoricalTaskComponent.MOMENT_DATE_FORMAT)
         ];
         return arrHeader.join(' / ');
     }
 
     get detailTask(): DetailTask {
-        return this._detailTask;
+        return this._historicalReportService.detailTask;
     }
 
+    get detailTaskDate(): TimeInstant {
+        return this._historicalReportService.getDetailTaskDate();
+    }
     set detailTask(value: DetailTask) {
-        this._detailTask = value;
+        this._historicalReportService.detailTask = value;
     }
 
     set editorContent(value: string) {

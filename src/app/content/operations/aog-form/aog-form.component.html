@@ -140,7 +140,7 @@
                 <mat-radio-group required fxLayout="column" id="rad-aog-form-contingency-type"
                                  fxLayoutGap="10px" [formControl]="aogForm.controls['aogType']">
                     <mat-radio-button labelPosition="after"
-                                      *ngFor="let ct of contingencyType"
+                                      *ngFor="let ct of aogType"
                                       value="{{ ct.code }}">{{ ct.description }}
                     </mat-radio-button>
                 </mat-radio-group>
@@ -156,7 +156,7 @@
                 <mat-radio-group required fxLayout="row" id="rad-aog-form-failure-type"
                                  fxLayoutGap="10px" [formControl]="aogForm.controls['failure']">
                     <mat-radio-button labelPosition="after"
-                                      *ngFor="let ct of failureType"
+                                      *ngFor="let ct of aogFailureType"
                                       value="{{ ct.code }}">{{ ct.description }}
                     </mat-radio-button>
                 </mat-radio-group>

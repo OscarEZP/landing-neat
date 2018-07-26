@@ -9,7 +9,7 @@
         </div>
         <div fxLayout="row">
             <div fxFlex="">
-                <h1>{{ detailTask.ata }} / {{ detailTask.barcode }} / {{ detailTask.creationDate.epochTime | utcDate | date: dateFormat.split(' ')[0]}}</h1>
+                <h1>{{ detailTask.task.ata }} / {{ detailTask.task.barcode }} / {{ detailTaskDate.epochTime | utcDate | date: dateFormat.split(' ')[0]}}</h1>
             </div>
             <div fxFlexAlign="end center" fxLayout="row" >
                 <button [color]="primary" (click)="copyText()" mat-raised-button type="button">{{'FLEET_HEALTH.REPORT.COPY_TEXT' | translate}}</button>
