@@ -29,7 +29,7 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
 
     private static AOG_ENDPOINT = 'aircraftOnGround';
     private static AOG_SUCCESS_MESSAGE = 'AOG.AOG_FORM.MESSAGE.SUCCESS';
-
+    private static CONTINGENCY_TYPE = 'OPR';
     private static CLOSE_TYPE = 'CLOSE_TYPE';
     private static CLOSE_SUCCESS_MESSAGE = 'OPERATIONS.CLOSE_COMPONENT.CLOSE_SUCCESS';
     private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
@@ -64,6 +64,7 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
 
     private _locationSub: Subscription;
     private _groupTypesSub: Subscription;
+    private _aogFormSub: Subscription;
 
     constructor(
         private _dialogService: DialogService,
@@ -74,7 +75,7 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
         private _apiRestService: ApiRestService,
         private _fb: FormBuilder,
         private _translationService: TranslationService,
-        @Inject(MAT_DIALOG_DATA) public _data: any
+        @Inject(MAT_DIALOG_DATA) public _data: Contingency
     ) {
         this._closeForm = _fb.group({
             'type': [null, Validators.required],
@@ -97,8 +98,18 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.locationSub = this.getLocationSubs();
-        this.groupTypesSub = this.getGroupTypesSubs();
+        this.aog.safety = this.data.safetyEvent.code;
+        this.aog.maintenance = CloseContingencyComponent.CONTINGENCY_TYPE;
+        this.aog.failure = this.data.failure;
+        this.aog.fleet = this.data.aircraft.fleet;
+        this.aog.tail = this.data.aircraft.tail;
+        this.aog.operator = this.data.aircraft.operator;
+
+        this.username = this._storageService.getCurrentUser().username;
+
+        this.locationSub = this.getLocationSub();
+        this.groupTypesSub = this.getGroupTypesSub();
+        this.aogFormSub = this.getAogFormSubs();
         this.arrDuration = this.getDurationIntervals();
         this._translationService.translate(CloseContingencyComponent.MINUTE_ABBREVIATION).then(res => this.minuteAbbreviation = res);
         this._translationService.translate(CloseContingencyComponent.HOUR_ABBREVIATION).then(res => this.hourAbbreviation = res);
@@ -109,6 +120,22 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.locationSub.unsubscribe();
         this.groupTypesSub.unsubscribe();
+        this.aogFormSub.unsubscribe();
+    }
+
+    /**
+     * Subscription to get data from AOG form
+     * @returns {Subscription}
+     */
+    private getAogFormSubs(): Subscription {
+        return this.aogForm.valueChanges.subscribe(v => {
+            this.aog.observation = this.closeForm.controls['observation'].value;
+            this.aog.station = v.station;
+            this.aog.barcode = v.barcode;
+            this.aog.reason = v.reason;
+            this.aog.durationAog = v.duration;
+            this.aog.code = v.tipology;
+        });
     }
 
     /**
@@ -127,7 +154,7 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
      * Get the location list from server
      * @return {Subscription}
      */
-    private getLocationSubs(): Subscription {
+    private getLocationSub(): Subscription {
         return this._apiRestService
             .getAll<Location[]>(CloseContingencyComponent.LOCATIONS_ENDPOINT)
             .subscribe((response: Location[]) => {
@@ -142,6 +169,11 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
             });
     }
 
+    /**
+     * Get labels for duration intervals, example: 3h 00m
+     * @param {number} duration
+     * @returns {string}
+     */
     public getDurationLabel(duration: number): string {
         const minToHour = 60;
         const durationToHours = duration / minToHour;
@@ -167,35 +199,19 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
             location.code.toLocaleLowerCase().search(val ? val.toLocaleLowerCase() : '') !== -1);
     }
 
+    /**
+     * Submit data process
+     */
     public submitForm(): void {
         if (this.closeForm.valid) {
             this.postCloseContingency();
-
         } else {
             this._translationService.translateAndShow(CloseContingencyComponent.VALIDATION_ERROR_MESSAGE);
         }
     }
 
     /**
-     * Subscription to get data from AOG form
-     * @returns {Subscription}
-     */
-    private getFormSubs(): Subscription {
-        this.aog.safety = this.data.safetyEvent.code;
-        return this.aogForm.valueChanges.subscribe(v => {
-            this.aog.station = v.station;
-            this.aog.barcode = v.barcode;
-            // this.aog.maintenance = v.aogType;
-            // this.aog.failure = v.failure;
-            this.aog.observation = this.closeForm.controls['observation'].value;
-            this.aog.reason = v.reason;
-            this.aog.durationAog = v.duration;
-            this.aog.code = v.tipology;
-        });
-    }
-
-    /**
-     * Promise to send data
+     * Promise to create an AOG
      * @returns {Promise<void>}
      */
     private postAog(): Promise<void> {
@@ -209,14 +225,18 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
             }).catch(err => console.error(err));
     }
 
+    /**
+     * Promise to close a Contingency
+     * @returns {Promise<void>}
+     */
     private postCloseContingency(): Promise <void> {
         return this._contingencyService.closeContingency(this.closeSignature).toPromise()
             .then(() => {
-                this._translationService.translateAndShow(CloseContingencyComponent.CLOSE_SUCCESS_MESSAGE);
                 this._dataService.stringMessage('reload');
                 if (this.closeForm.controls['type'].value === this.aogTypeCode) {
                     this.postAog();
                 } else {
+                    this._translationService.translateAndShow(CloseContingencyComponent.CLOSE_SUCCESS_MESSAGE);
                     this.dismissCloseContigency();
                 }
             }, err => console.error(err));
@@ -226,7 +246,7 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
      * Get all group types
      * @return {Subscription}
      */
-    private getGroupTypesSubs(): Subscription {
+    private getGroupTypesSub(): Subscription {
         return this._apiRestService
             .getAll<GroupTypes[]>(CloseContingencyComponent.TYPES_LIST_ENDPOINT)
             .subscribe((response: GroupTypes[]) => {
@@ -248,6 +268,10 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
         }, this);
     }
 
+    /**
+     * Get signature for close a Contingency
+     * @returns {Close}
+     */
     get closeSignature(): Close {
         return new Close(
             this._data.id,
@@ -258,8 +282,11 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
         );
     }
 
-    public openCancelDialog() {
-        if (this.validateFilledItems()) {
+    /**
+     * Open a cancel dialog if there is a change in form
+     */
+    public openCancelDialog(): void {
+        if (!this.closeForm.pristine) {
             this._translationService.translate(CloseContingencyComponent.CANCEL_COMPONENT_MESSAGE)
                 .then(res => this._messageService.openFromComponent(CancelComponent, {
                     data: {message: res},
@@ -271,17 +298,18 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
         }
     }
 
-    private validateFilledItems(): boolean {
-        let counterFilled = 0;
-        const defaultValid = 0;
-        Object.keys(this.closeForm.controls).forEach(elem => {
-            if (this.closeForm.controls[elem].valid) {
-                counterFilled = counterFilled + 1;
-            }
-        });
-        return counterFilled > defaultValid;
+    /**
+     * Set an username in the AOG instance
+     * @param {string} value
+     */
+    set username(value: string) {
+        this.aog.username = value;
+        this.aog.status.username = value;
     }
 
+    /**
+     * Close active dialogs
+     */
     public dismissCloseContigency(): void {
         this._dialogService.closeAllDialogs();
     }
@@ -342,11 +370,11 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
         this._groupTypeList = value;
     }
 
-    get data(): any {
+    get data(): Contingency {
         return this._data;
     }
 
-    set data(value: any) {
+    set data(value: Contingency) {
         this._data = value;
     }
 
@@ -422,4 +450,11 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
         this._aogTypeCode = value;
     }
 
+    get aogFormSub(): Subscription {
+        return this._aogFormSub;
+    }
+
+    set aogFormSub(value: Subscription) {
+        this._aogFormSub = value;
+    }
 }
