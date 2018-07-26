@@ -44,8 +44,7 @@
                             {{'FLEET_HEALTH.REPORT.MAINTENANCE_ACTION' | translate}} {{i+1}}
                         </mat-panel-title>
                         <mat-panel-description>
-                            {{ action.actionDate.epochTime | utcDate | date: dateFormat }} |
-                            {{ action.updateDate.epochTime | utcDate | date: dateFormat }}
+                            {{ action.actionDate.epochTime | utcDate | date: dateFormat }}
                         </mat-panel-description>
                     </mat-expansion-panel-header>
                     <p>{{action.name.firstName}} {{action.name.lastName}}</p>

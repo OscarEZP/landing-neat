@@ -382,6 +382,9 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             variableName = value.groupName.toLowerCase().replace(/(\_\w)/g, function (m) {
                 return m[1].toUpperCase();
             });
+            if (variableName === 'contingencyType') {
+                value.types.sort((a, b) => a.description < b.description ? 1 : -1);
+            }
             this[variableName] = value.types;
         }, this);
     }
