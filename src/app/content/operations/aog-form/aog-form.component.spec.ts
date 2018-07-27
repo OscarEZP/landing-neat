@@ -16,7 +16,11 @@ import {LogService} from '../../_services/log.service';
 import {TranslationService} from '../../../shared/_services/translation.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormControl} from '@angular/forms';
+import {Observable} from 'rxjs/Observable';
 import {Aircraft} from '../../../shared/_models/aircraft';
+import {MatSnackBarRef} from '@angular/material';
+import {CancelComponent} from '../cancel/cancel.component';
+import {Contingency} from '../../../shared/_models/contingency/contingency';
 
 describe('AOG form test', () => {
 
@@ -24,7 +28,13 @@ describe('AOG form test', () => {
     let fixture: ComponentFixture<AogFormComponent>;
 
     const MockTranslationService = {
-        translateAndShow: (value) => value
+        translateAndShow: () => {},
+        translate: () => new Promise(() => {})
+    };
+
+    const MockApiRestService = {
+        getAll: () => new Observable(s => s.next([])),
+        search: () => new Observable(s => s.next([])),
     };
 
     beforeEach(() => {
@@ -39,7 +49,7 @@ describe('AOG form test', () => {
             providers: [
                 DialogService,
                 DatetimeService,
-                ApiRestService,
+                {provide: ApiRestService, useValue: MockApiRestService},
                 MessageService,
                 ClockService,
                 StorageService,
@@ -66,7 +76,19 @@ describe('AOG form test', () => {
     });
 
     it('AOG form should be defined', () => {
-        expect(aogFormComponent.aogForm).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['tail']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['fleet']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['operator']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['station']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['safety']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['barcode']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['safetyEventCode']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['aogType']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['observation']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['reason']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['duration']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['tipology']).toBeDefined();
+        expect(aogFormComponent.aogForm.controls['closeObservation']).toBeDefined();
     });
 
     it('Duration min limit is set', () => {
@@ -81,39 +103,96 @@ describe('AOG form test', () => {
         expect(maxLimit).toEqual(1440);
     });
 
-    it('Safety event validator: checked and value', () => {
+    describe('Safety event validator', () => {
+        it('Check and value', () => {
+            aogFormComponent.isSafety = true;
+            const result = aogFormComponent.safetyEventValidator({value: 'test'} as FormControl);
+            expect(result).toBeNull();
+        });
+
+        it('No check and value', () => {
+            aogFormComponent.isSafety = false;
+            const result = aogFormComponent.safetyEventValidator({value: 'test'} as FormControl);
+            expect(result).toBeNull();
+        });
+
+        it('Checked and no value', () => {
+            aogFormComponent.isSafety = true;
+            const result = aogFormComponent.safetyEventValidator({value: ''} as FormControl);
+            expect(result).toEqual({ isSafety: true });
+        });
+
+        it('No check and no value', () => {
+            aogFormComponent.isSafety = false;
+            const result = aogFormComponent.safetyEventValidator({value: ''} as FormControl);
+            expect(result).toBeNull();
+        });
+    });
+
+    it('On select aircraft should complete tail, fleet & operator', () => {
+        const aircraft = new Aircraft('TAIL1', 'FLEET1', 'OPERATOR1' );
+        aogFormComponent.aircraftList = [aircraft];
+        aogFormComponent.onSelectAircraft('TAIL1');
+        expect(aogFormComponent.aog.tail).toEqual('TAIL1');
+        expect(aogFormComponent.aog.fleet).toEqual('FLEET1');
+        expect(aogFormComponent.aog.operator).toEqual('OPERATOR1');
+    });
+
+    it('AOG should be filled after adding information', () => {
+        aogFormComponent.ngOnInit();
+        aogFormComponent.aogForm.controls['station'].setValue('STATION');
         aogFormComponent.isSafety = true;
-        const result = aogFormComponent.safetyEventValidator({value: 'test'} as FormControl);
-        expect(result).toBeNull();
+        aogFormComponent.aogForm.controls['safetyEventCode'].setValue('SAFETY_EVENT_CODE');
+        aogFormComponent.aogForm.controls['barcode'].setValue('BARCODE');
+        aogFormComponent.aogForm.controls['aogType'].setValue('AOGTYPE');
+        aogFormComponent.aogForm.controls['failure'].setValue('FAILURE');
+        aogFormComponent.aogForm.controls['observation'].setValue('OBSERVATION');
+        aogFormComponent.aogForm.controls['reason'].setValue('REASON');
+        aogFormComponent.aogForm.controls['duration'].setValue('DURATION');
+        aogFormComponent.aogForm.controls['tipology'].setValue('TIPOLOGY');
+
+        expect(aogFormComponent.aog.station).toEqual('STATION');
+        expect(aogFormComponent.aog.safety).toEqual('SAFETY_EVENT_CODE');
+        expect(aogFormComponent.aog.barcode).toEqual('BARCODE');
+        expect(aogFormComponent.aog.maintenance).toEqual('AOGTYPE');
+        expect(aogFormComponent.aog.failure).toEqual('FAILURE');
+        expect(aogFormComponent.aog.observation).toEqual('OBSERVATION');
+        expect(aogFormComponent.aog.reason).toEqual('REASON');
+        expect(aogFormComponent.aog.durationAog).toEqual('DURATION');
+        expect(aogFormComponent.aog.code).toEqual('TIPOLOGY');
     });
 
-    it('Safety event validator: no check and value', () => {
-        aogFormComponent.isSafety = false;
-        const result = aogFormComponent.safetyEventValidator({value: 'test'} as FormControl);
-        expect(result).toBeNull();
+    it('Contingency data should be full filled after ACCEPT', () => {
+        const MockMatSnackBarRef = {
+            afterDismissed: () => new Observable(s => { s.next(); s.complete(); }),
+            instance: {
+                response: CancelComponent.ACCEPT
+            }
+        };
+        const contingency = new Contingency();
+        contingency.barcode = 'BARCODE';
+        contingency.flight.origin = 'STATION';
+        contingency.safetyEvent.code = 'SAFETY_EVENT_CODE';
+        contingency.type = 'AOG_TYPE';
+        contingency.failure = 'FAILURE';
+        contingency.reason = 'REASON';
+        aogFormComponent.contingency = contingency;
+        expect.assertions(7);
+        aogFormComponent.handleContingencyConfirm(MockMatSnackBarRef as MatSnackBarRef).then(() => {
+            const aogForm = aogFormComponent.aogForm;
+            expect(aogForm.controls['barcode'].value).toEqual('BARCODE');
+            expect(aogForm.controls['station'].value).toEqual('STATION');
+            expect(aogForm.controls['safety'].value).toBeTruthy();
+            expect(aogForm.controls['safetyEventCode'].value).toEqual('SAFETY_EVENT_CODE');
+            expect(aogForm.controls['aogType'].value).toEqual('AOG_TYPE');
+            expect(aogForm.controls['failure'].value).toEqual('FAILURE');
+            expect(aogForm.controls['reason'].value).toEqual('REASON');
+        }).catch(e => console.error(e));
     });
 
-    it('Safety event validator: checked and no value', () => {
-        aogFormComponent.isSafety = true;
-        const result = aogFormComponent.safetyEventValidator({value: ''} as FormControl);
-        expect(result).toEqual({ isSafety: true });
+    it('Duration label should have format xh ym', () => {
+        aogFormComponent.minuteAbbreviation = 'm';
+        aogFormComponent.hourAbbreviation = 'h';
+        expect(aogFormComponent.getDurationLabel(90)).toEqual('1h 30m');
     });
-
-    it('Safety event validator: no check and no value', () => {
-        aogFormComponent.isSafety = false;
-        const result = aogFormComponent.safetyEventValidator({value: ''} as FormControl);
-        expect(result).toBeNull();
-    });
-
-
-    // it('Autocomplete tail, fleet and operator', () => {
-    //     aogFormComponent.aircraftList = [
-    //         new Aircraft('TAIL1', 'FLEET', 'OPERATOR' )
-    //     ];
-    //     aogFormComponent.onSelectAircraft('TAIL1');
-    //     expect(aogFormComponent.aog.tail).toEqual('TAIL1') ;
-    //     expect(aogFormComponent.aog.tail).toEqual('TAIL1') ;
-    //     expect(aogFormComponent.aog.tail).toEqual('TAIL1') ;
-    // });
-
 });

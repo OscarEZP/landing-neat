@@ -444,7 +444,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * @param {MatSnackBarRef<any>} ref
      * @returns {Promise<void>}
      */
-    private handleContingencyConfirm(ref: MatSnackBarRef<any>): Promise<void> {
+    public handleContingencyConfirm(ref: MatSnackBarRef<any>): Promise<void> {
         return ref.afterDismissed()
             .toPromise()
             .then(() => {
@@ -545,7 +545,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     public operatorDomainValidator(control: FormControl) {
         const operator = control.value;
         return Observable.of(this.operatorList).map(res => {
-            return res.find(item => operator === item.code) ? null : { operatorDomain: true };
+            return res && res.find(item => operator === item.code) ? null : { operatorDomain: true };
         });
     }
 
@@ -568,7 +568,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         }
     }
 
-    getDurationLabel(duration: number): string {
+    public getDurationLabel(duration: number): string {
         const minToHour = 60;
         const durationToHours = duration / minToHour;
         const hours = Math.floor(durationToHours);
