@@ -7,7 +7,7 @@ import {StorageService} from '../../shared/_services/storage.service';
 import {Group} from '../../shared/_models/user/group';
 
 @Injectable()
-export class AuthGuardService implements CanActivate, CanActivateChild {
+export class AuthGuardService implements CanActivate {
 
     constructor(
         private _authService: AuthService,
@@ -30,11 +30,6 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
 
         this._router.navigate([ this._authService.getLoginUrl() ]);
         return false;
-    }
-
-    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        // Auth for childs
-        return true;
     }
 
     get groupList(): Group[] {

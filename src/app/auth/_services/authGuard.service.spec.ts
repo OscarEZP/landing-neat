@@ -7,6 +7,8 @@ import {ActivatedRouteSnapshot, RouterStateSnapshot, Router} from '@angular/rout
 import {RouterTestingModule} from '@angular/router/testing';
 
 let service;
+let routeSnapshot;
+let stateSnapshot;
 
 describe('AuthGuard Service Test', () => {
 
@@ -38,6 +40,9 @@ describe('AuthGuard Service Test', () => {
             ]
         });
 
+        routeSnapshot = new ActivatedRouteSnapshot();
+        stateSnapshot = {url: ''};
+
         service = new AuthGuardService(MockAuthService as AuthService, MockRouter as Router, MockStorageService as StorageService);
     });
 
@@ -46,15 +51,19 @@ describe('AuthGuard Service Test', () => {
     });
 
     it('Testing Hemicycle user redirection', () => {
-        const route = new ActivatedRouteSnapshot();
-        const state = {url: ''};
         const HemicycleMocStorageService = { getCurrentUser: () => ({ groupList: [{name: AuthService.HEMICYCLE_GROUP_NAME}] }) };
         const HemicycleService = new AuthGuardService(MockAuthService as AuthService, MockRouter as Router, HemicycleMocStorageService as StorageService);
-        expect(HemicycleService.canActivate(route, state as RouterStateSnapshot)).toBeFalsy();
+        expect(HemicycleService.canActivate(routeSnapshot, stateSnapshot as RouterStateSnapshot)).toBeFalsy();
     });
 
-    it('Testing Hemicycle user redirection', () => {
+    it('Logged user and enabled URL', () => {
+        expect(service.canActivate(routeSnapshot, stateSnapshot)).toBeTruthy();
+    });
 
+    it('Logged user and disabled URL', () => {
+        const DisabledMocAuthService = { getIsLoggedIn: () => true, getIsAuth: () => false, getLoginUrl: () => '' };
+        const DisabledUrlService = new AuthGuardService(DisabledMocAuthService as AuthService, MockRouter as Router, MockStorageService as StorageService);
+        expect(DisabledUrlService.canActivate(routeSnapshot, stateSnapshot)).toBeFalsy();
     });
 
 });

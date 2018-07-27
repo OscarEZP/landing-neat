@@ -79,7 +79,6 @@ const ROUTES: Routes = [
                     {
                         path: 'deferrals',
                         component: DeferralListComponent,
-                        canActivate: [AuthGuardService],
                     }
                 ]
             },
@@ -96,7 +95,6 @@ const ROUTES: Routes = [
                     {
                         path: 'general/users',
                         component: UserManagementComponent,
-                        canActivate: [AuthGuardService],
                         children: [
                             {
                                 path: '',
@@ -106,34 +104,28 @@ const ROUTES: Routes = [
                             {
                                 path: 'bulk-load',
                                 component: BulkLoadComponent,
-                                canActivate: [AuthGuardService],
                             },
                             {
                                 path: 'add-user',
                                 component: UserListComponent,
-                                canActivate: [AuthGuardService],
                             },
                             {
                                 path: 'user-list',
                                 component: UserListComponent,
-                                canActivate: [AuthGuardService],
                             },
                         ]
                     },
                     {
                         path: 'operations/emails',
                         component: UserManagementComponent,
-                        canActivate: [AuthGuardService],
                     },
                     {
                         path: 'fleet-health/atec',
                         component: AtecFilterComponent,
-                        canActivate: [AuthGuardService],
                     }
                 ]
             },
-        ],
-        canActivate: [AuthGuardService]
+        ]
     },
 
     {
