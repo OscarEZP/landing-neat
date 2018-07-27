@@ -21,8 +21,21 @@ import {Aircraft} from '../../../shared/_models/aircraft';
 import {MatSnackBarRef} from '@angular/material';
 import {CancelComponent} from '../cancel/cancel.component';
 import {Contingency} from '../../../shared/_models/contingency/contingency';
+import {Types} from '../../../shared/_models/configuration/types';
+import {TimeInstant} from '../../../shared/_models/timeInstant';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
 
+jest.mock('../../../shared/_services/datetime.service');
+jest.mock('../../../shared/_services/apiRest.service');
+jest.mock('../../../shared/_services/message.service');
+jest.mock('../../../shared/_services/clock.service');
 jest.mock('../../../shared/_services/storage.service');
+jest.mock('../../../shared/_services/data.service');
+jest.mock('../../_services/contingency.service');
+jest.mock('../../_services/log.service');
+jest.mock('../../../shared/_services/translation.service');
 
 describe('AOG form test', () => {
 
@@ -98,14 +111,12 @@ describe('AOG form test', () => {
     });
 
     it('Duration min limit is set', () => {
-        aogFormComponent.ngOnInit();
-        const minLimit = aogFormComponent.arrDuration.shift();
+        const minLimit = aogFormComponent.getDurationIntervals().shift();
         expect(minLimit).toEqual(30);
     });
 
     it('Duration max limit is set', () => {
-        aogFormComponent.ngOnInit();
-        const maxLimit = aogFormComponent.arrDuration.pop();
+        const maxLimit = aogFormComponent.getDurationIntervals().pop();
         expect(maxLimit).toEqual(1440);
     });
 
@@ -136,8 +147,8 @@ describe('AOG form test', () => {
     });
 
     it('On select aircraft should complete tail, fleet & operator', () => {
-        const aircraft = new Aircraft('TAIL1', 'FLEET1', 'OPERATOR1' );
-        aogFormComponent.aircraftList = [aircraft];
+        aogFormComponent.aircraftList = [new Aircraft('TAIL1', 'FLEET1', 'OPERATOR1' )];
+        aogFormComponent.operatorList = [new Types('OPERATOR1', 'OPERATOR', TimeInstant.getInstance())];
         aogFormComponent.onSelectAircraft('TAIL1');
         expect(aogFormComponent.aog.tail).toEqual('TAIL1');
         expect(aogFormComponent.aog.fleet).toEqual('FLEET1');
@@ -145,7 +156,7 @@ describe('AOG form test', () => {
     });
 
     it('AOG should be filled after adding information', () => {
-        aogFormComponent.ngOnInit();
+        const sub = aogFormComponent.getFormSubs();
         aogFormComponent.aogForm.controls['station'].setValue('STATION');
         aogFormComponent.isSafety = true;
         aogFormComponent.aogForm.controls['safetyEventCode'].setValue('SAFETY_EVENT_CODE');
@@ -166,6 +177,7 @@ describe('AOG form test', () => {
         expect(aogFormComponent.aog.reason).toEqual('REASON');
         expect(aogFormComponent.aog.durationAog).toEqual('DURATION');
         expect(aogFormComponent.aog.code).toEqual('TIPOLOGY');
+        sub.unsubscribe();
     });
 
     it('Contingency data should be full filled after ACCEPT', () => {

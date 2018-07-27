@@ -180,7 +180,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * Array with 30 minutes intervals
      * @returns {number[]}
      */
-    private getDurationIntervals(): number[] {
+    public getDurationIntervals(): number[] {
         const res = [];
         for (let i = 1; i * AogFormComponent.INTERVAL_DURATION <= AogFormComponent.INTERVAL_LIMIT; i++) {
             res.push(i * AogFormComponent.INTERVAL_DURATION);
@@ -192,7 +192,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * Subscription to get data from AOG form
      * @returns {Subscription}
      */
-    private getFormSubs(): Subscription {
+    public getFormSubs(): Subscription {
         return this.aogForm.valueChanges.subscribe(v => {
             this.aog.station = v.station;
             this.aog.safety = this.isSafety ? v.safetyEventCode : '';
