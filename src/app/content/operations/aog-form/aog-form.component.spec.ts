@@ -22,6 +22,8 @@ import {MatSnackBarRef} from '@angular/material';
 import {CancelComponent} from '../cancel/cancel.component';
 import {Contingency} from '../../../shared/_models/contingency/contingency';
 
+jest.mock('../../../shared/_services/storage.service');
+
 describe('AOG form test', () => {
 
     let aogFormComponent: AogFormComponent;
