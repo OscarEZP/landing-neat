@@ -37,6 +37,10 @@ describe('AOG form test', () => {
         search: () => new Observable(s => s.next([])),
     };
 
+    const MockStorageService = {
+        getCurrentUser: () => ({ username: 'USERNAME' })
+    };
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [
@@ -52,7 +56,7 @@ describe('AOG form test', () => {
                 {provide: ApiRestService, useValue: MockApiRestService},
                 MessageService,
                 ClockService,
-                StorageService,
+                {provide: StorageService, useValue: MockStorageService},
                 DataService,
                 ContingencyService,
                 LogService,
