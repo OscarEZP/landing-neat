@@ -209,7 +209,6 @@ export class Contingency {
         this._hasPendingMeeting = value;
     }
 
-
     get openDate(): TimeInstant {
         return this._openDate;
     }

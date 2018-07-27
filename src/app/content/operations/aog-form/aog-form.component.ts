@@ -95,16 +95,18 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _groupTypesSubs: Subscription;
     private _contingencySubs: Subscription;
 
-    constructor(private _dialogService: DialogService,
-                private _fb: FormBuilder,
-                private _datetimeService: DatetimeService,
-                private _apiRestService: ApiRestService,
-                private _messageService: MessageService,
-                private _clockService: ClockService,
-                private _storageService: StorageService,
-                private _messageData: DataService,
-                private _contingencyService: ContingencyService,
-                private _translationService: TranslationService) {
+    constructor(
+        private _dialogService: DialogService,
+        private _fb: FormBuilder,
+        private _datetimeService: DatetimeService,
+        private _apiRestService: ApiRestService,
+        private _messageService: MessageService,
+        private _clockService: ClockService,
+        private _storageService: StorageService,
+        private _messageData: DataService,
+        private _contingencyService: ContingencyService,
+        private _translationService: TranslationService
+    ) {
         this._utcModel = new TimeInstant(new Date().getTime(), null);
         this._alive = true;
         this._interval = 1000 * 60;
@@ -126,47 +128,59 @@ export class AogFormComponent implements OnInit, OnDestroy {
             'tipology': [this.aog.code],
             'closeObservation': ['']
         });
-        this._arrDuration = this.getDurationIntervals();
+        this._arrDuration = [];
+        this._groupTypesSubs = new Subscription();
+        this._aircraftSubs = new Subscription();
+        this._operatorSubs = new Subscription();
+        this._locationSubs = new Subscription();
+        this._safetyEventSubs = new Subscription();
+        this._timerSubs = new Subscription();
+        this._datetimeSubs = new Subscription();
+        this._safetyCheckSubs = new Subscription();
+        this._clockSubs = new Subscription();
+        this._formSubs = new Subscription();
+        this._contingencySubs = new Subscription();
     }
 
     ngOnInit() {
-        this._groupTypesSubs = this.getGroupTypes();
-        this._aircraftSubs = this.getAircraftSubs();
-        this._operatorSubs = this.getOperatorSubs();
-        this._locationSubs = this.getLocationSubs();
-        this._safetyEventSubs = this.getSafetyEventSubs();
-        this._timerSubs = this.getTimerSubs();
-        this._datetimeSubs = new Subscription();
-        this._safetyCheckSubs = this.getSafetyCheckSubs();
-        this._clockSubs = this.getClockSubscription();
-        this._formSubs = this.getFormSubs();
-        this._contingencySubs = new Subscription();
+        this.username = this._storageService.getCurrentUser().username;
+        this.arrDuration = this.getDurationIntervals();
+        this.groupTypesSubs = this.getGroupTypes();
+        this.aircraftSubs = this.getAircraftSubs();
+        this.operatorSubs = this.getOperatorSubs();
+        this.locationSubs = this.getLocationSubs();
+        this.safetyEventSubs = this.getSafetyEventSubs();
+        this.timerSubs = this.getTimerSubs();
+        this.safetyCheckSubs = this.getSafetyCheckSubs();
+        this.clockSubs = this.getClockSubscription();
+        this.formSubs = this.getFormSubs();
         this.username = this._storageService.getCurrentUser().username;
 
-        this._translationService.translate(AogFormComponent.MINUTE_ABBREVIATION).then(res => this._minuteAbbreviation = res);
-        this._translationService.translate(AogFormComponent.HOUR_ABBREVIATION).then(res => this._hourAbbreviation = res);
-        this._translationService.translate(AogFormComponent.HOURS_LABEL).then(res => this._hoursLabel = res);
-        this._translationService.translate(AogFormComponent.HOUR_LABEL).then(res => this._hourLabel = res);
+        this._translationService.translate(AogFormComponent.MINUTE_ABBREVIATION).then(res => this.minuteAbbreviation = res);
+        this._translationService.translate(AogFormComponent.HOUR_ABBREVIATION).then(res => this.hourAbbreviation = res);
+        this._translationService.translate(AogFormComponent.HOURS_LABEL).then(res => this.hoursLabel = res);
+        this._translationService.translate(AogFormComponent.HOUR_LABEL).then(res => this.hourLabel = res);
     }
 
     ngOnDestroy() {
-        this._aircraftSubs.unsubscribe();
-        this._operatorSubs.unsubscribe();
-        this._locationSubs.unsubscribe();
-        this._safetyEventSubs.unsubscribe();
-        this._timerSubs.unsubscribe();
-        this._datetimeSubs.unsubscribe();
-        this._safetyCheckSubs.unsubscribe();
-        this._clockSubs.unsubscribe();
-        this._formSubs.unsubscribe();
-        this._contingencySubs.unsubscribe();
+        this.groupTypesSubs.unsubscribe();
+        this.aircraftSubs.unsubscribe();
+        this.operatorSubs.unsubscribe();
+        this.locationSubs.unsubscribe();
+        this.safetyEventSubs.unsubscribe();
+        this.timerSubs.unsubscribe();
+        this.datetimeSubs.unsubscribe();
+        this.safetyCheckSubs.unsubscribe();
+        this.clockSubs.unsubscribe();
+        this.formSubs.unsubscribe();
+        this.contingencySubs.unsubscribe();
     }
 
     /**
      * Array with 30 minutes intervals
      * @returns {number[]}
      */
-    private getDurationIntervals(): number[] {
+    public getDurationIntervals(): number[] {
         const res = [];
         for (let i = 1; i * AogFormComponent.INTERVAL_DURATION <= AogFormComponent.INTERVAL_LIMIT; i++) {
             res.push(i * AogFormComponent.INTERVAL_DURATION);
@@ -178,7 +192,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * Subscription to get data from AOG form
      * @returns {Subscription}
      */
-    private getFormSubs(): Subscription {
+    public getFormSubs(): Subscription {
         return this.aogForm.valueChanges.subscribe(v => {
             this.aog.station = v.station;
             this.aog.safety = this.isSafety ? v.safetyEventCode : '';
@@ -227,12 +241,12 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * @param {FormControl} control
      * @returns {object}
      */
-    private safetyEventValidator(control: FormControl): object {
-        return !control.value && this.isSafety ? {isSafety: true} : null;
+    public safetyEventValidator(control: FormControl): object {
+        return !control.value && this.isSafety ? { isSafety: true } : null;
     }
 
     /**
-     * Event to submit data
+     * Submit data, if there is a contingency related, then close it
      */
     public submitForm(): void {
         if (this.aogForm.valid) {
@@ -258,7 +272,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
                 this._translationService.translateAndShow(AogFormComponent.AOG_SUCCESS_MESSAGE);
                 this._dialogService.closeAllDialogs();
                 this._messageData.stringMessage('reload');
-            }).catch(err => console.error(err));
+            }).catch(error => this._messageService.openSnackBar(error.message));
     }
 
     /**
@@ -270,7 +284,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
             .getAll<Safety[]>(AogFormComponent.SAFETY_EVENT_LIST_ENDPOINT)
             .subscribe(
                 data => this.safetyEventList = data,
-                error => () => this._messageService.openSnackBar(error.message)
+                error => this._messageService.openSnackBar(error.message)
             );
     }
 
@@ -430,7 +444,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * @param {MatSnackBarRef<any>} ref
      * @returns {Promise<void>}
      */
-    private handleContingencyConfirm(ref: MatSnackBarRef<any>): Promise<void> {
+    public handleContingencyConfirm(ref: MatSnackBarRef<any>): Promise<void> {
         return ref.afterDismissed()
             .toPromise()
             .then(() => {
@@ -463,8 +477,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * Signature to search a contingency before to save an AOG
      * @returns {{isClose: boolean; tails: string[]}}
      */
-    private getContingencySignature(): { isClose: boolean, tails: string[] } {
-        return {isClose: false, tails: [this.aogForm.controls['tail'].value]};
+    private getContingencySignature(): {isClose: boolean, tails: string[]} {
+        return { isClose: false, tails : [this.aogForm.controls['tail'].value] };
     }
 
     /**
@@ -519,7 +533,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     public tailDomainValidator(control: FormControl): Observable<any> {
         const tail = control.value;
         return Observable.of(this.aircraftList).map(res => {
-            return res.find(item => item.tail === tail) ? null : {tailDomain: true};
+            return res.find(item => item.tail === tail) ? null : { tailDomain: true };
         });
     }
 
@@ -531,7 +545,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     public operatorDomainValidator(control: FormControl) {
         const operator = control.value;
         return Observable.of(this.operatorList).map(res => {
-            return res.find(item => operator === item.code) ? null : {operatorDomain: true};
+            return res && res.find(item => operator === item.code) ? null : { operatorDomain: true };
         });
     }
 
@@ -554,7 +568,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         }
     }
 
-    getDurationLabel(duration: number): string {
+    public getDurationLabel(duration: number): string {
         const minToHour = 60;
         const durationToHours = duration / minToHour;
         const hours = Math.floor(durationToHours);
@@ -738,4 +752,107 @@ export class AogFormComponent implements OnInit, OnDestroy {
         return this._hourAbbreviation;
     }
 
+    get timerSubs(): Subscription {
+        return this._timerSubs;
+    }
+
+    set timerSubs(value: Subscription) {
+        this._timerSubs = value;
+    }
+
+    get datetimeSubs(): Subscription {
+        return this._datetimeSubs;
+    }
+
+    set datetimeSubs(value: Subscription) {
+        this._datetimeSubs = value;
+    }
+
+    get aircraftSubs(): Subscription {
+        return this._aircraftSubs;
+    }
+
+    set aircraftSubs(value: Subscription) {
+        this._aircraftSubs = value;
+    }
+
+    get operatorSubs(): Subscription {
+        return this._operatorSubs;
+    }
+
+    set operatorSubs(value: Subscription) {
+        this._operatorSubs = value;
+    }
+
+    get locationSubs(): Subscription {
+        return this._locationSubs;
+    }
+
+    set locationSubs(value: Subscription) {
+        this._locationSubs = value;
+    }
+
+    get safetyEventSubs(): Subscription {
+        return this._safetyEventSubs;
+    }
+
+    set safetyEventSubs(value: Subscription) {
+        this._safetyEventSubs = value;
+    }
+
+    get safetyCheckSubs(): Subscription {
+        return this._safetyCheckSubs;
+    }
+
+    set safetyCheckSubs(value: Subscription) {
+        this._safetyCheckSubs = value;
+    }
+
+    get clockSubs(): Subscription {
+        return this._clockSubs;
+    }
+
+    set clockSubs(value: Subscription) {
+        this._clockSubs = value;
+    }
+
+    get formSubs(): Subscription {
+        return this._formSubs;
+    }
+
+    set formSubs(value: Subscription) {
+        this._formSubs = value;
+    }
+
+    get groupTypesSubs(): Subscription {
+        return this._groupTypesSubs;
+    }
+
+    set groupTypesSubs(value: Subscription) {
+        this._groupTypesSubs = value;
+    }
+
+    get contingencySubs(): Subscription {
+        return this._contingencySubs;
+    }
+
+    set contingencySubs(value: Subscription) {
+        this._contingencySubs = value;
+    }
+
+    set hourLabel(value: string) {
+        this._hourLabel = value;
+    }
+
+    set hoursLabel(value: string) {
+        this._hoursLabel = value;
+    }
+
+    set minuteAbbreviation(value: string) {
+        this._minuteAbbreviation = value;
+    }
+
+    set hourAbbreviation(value: string) {
+        this._hourAbbreviation = value;
+    }
 }

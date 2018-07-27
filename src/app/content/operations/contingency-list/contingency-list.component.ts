@@ -164,7 +164,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             data: contingency,
             hasBackdrop: true,
             disableClose: true,
-            height: '536px',
+            height: '80%',
             width: '500px'
         });
     }

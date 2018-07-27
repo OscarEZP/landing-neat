@@ -1,23 +1,73 @@
+@import '../../../../assets/style/base.scss';
+$font-size: 16px;
+
 #close-form {
   color: rgba(0, 0, 0, .87);
   font-size: 13px;
+  height: 100%;
+
+
+  section {
+    height: calc(100% - 90px);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .mat-dialog-title {
+    margin: 0 0 10px;
+  }
+
   .title-dialog {
     font-size: 20px;
   }
   .subtitles {
     font-size: 14px;
   }
-  .add-margin {
-    margin-bottom: 24px;
-    margin-top: 15px;
+  .mat-dialog-content {
+    padding: 10px 24px;
   }
-  .add-margin-last {
-    margin-bottom: 15px;
-    margin-top: 30px;
+  .mat-divider {
+    margin: 10px 0;
+  }
+  .mat-divider:last-child,
+  .mat-divider:first-child,
+  .no-margin
+  {
+    margin: 0;
+  }
+
+  .mat-radio-group {
+    margin: -2px 0 0 0;
+  }
+
+  /deep/
+  #form-field-duration {
+    .mat-input-infix.mat-form-field-infix {
+      width: 100%;
+    }
+  }
+
+  .subtitles, button {
+    text-transform: uppercase;
+  }
+
+  .time-display {
+    span, .mat-icon {
+      color: mat-color($foreground, secondary-text);
+    }
+  }
+  .mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
   }
 }
 
 .label-item {
   letter-spacing: -.7px;
   color: #7d7d7d;
+}
+
+.mat-error {
+  @include gen-component-font-size($font-size, -5);
 }

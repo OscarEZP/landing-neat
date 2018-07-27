@@ -93,6 +93,7 @@
       "!**/node_modules/**"
     ],
     "collectCoverage": true,
+    "testURL": "http://localhost/",
     "transformIgnorePatterns": [
       "node_modules/(?!ngx-quill)"
     ]
