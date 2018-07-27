@@ -241,7 +241,7 @@ export class HistoricalReportComponent implements OnInit, OnDestroy {
         this.analyzedTask = task;
     }
 
-    public setEditorLoad(value: boolean) {
+    public defineEditorLoad(value: boolean) {
         this.editorLoad = value;
     }
 }

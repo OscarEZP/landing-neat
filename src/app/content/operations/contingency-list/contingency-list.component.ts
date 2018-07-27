@@ -44,7 +44,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private _selectedContingency: Contingency;
     private _selectedContingencyPivot: Contingency;
     private _intervalToRefresh: number;
-    private _paginatorObject: PaginatorObjectService;
+    private _paginatorSubscription: Subscription;
 
     constructor(private _messageData: DataService,
                 private _dialogService: DialogService,
@@ -54,8 +54,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 private _contingencyService: ContingencyService,
                 private _translate: TranslateService,
                 private _apiRestService: ApiRestService,
-                private _layoutService: LayoutService
-    ) {
+                private _layoutService: LayoutService) {
         this._translate.setDefaultLang('en');
         this.selectedContingency = Contingency.getInstance();
         this.selectedContingencyPivot = Contingency.getInstance();
@@ -76,8 +75,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.routingSubscription = this._route.data.subscribe(data => this.historicalSearchService.active = data.historical);
         this.contingencyService.clearList();
-        this.paginatorObject = PaginatorObjectService.getInstance();
-        this.getPaginationSubscription();
+        this.paginatorSubscription = this.getPaginationSubscription();
         this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
     }
 
@@ -106,6 +104,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         if (this.historicalSubscription) {
             this.historicalSubscription.unsubscribe();
         }
+        if (this.paginatorSubscription) {
+            this.paginatorSubscription.unsubscribe();
+        }
         this._layoutService.reset();
     }
 
@@ -123,7 +124,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
                 false
             );
             this.contingencyService.loading = true;
-            this.historicalSubscription = this.contingencyService.postHistoricalSearch(search).subscribe(() => { this.contingencyService.loading = false; });
+            this.historicalSubscription = this.contingencyService.postHistoricalSearch(search).subscribe(() => {
+                this.contingencyService.loading = false;
+            });
         });
     }
 
@@ -161,7 +164,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             data: contingency,
             hasBackdrop: true,
             disableClose: true,
-            height: '536px',
+            height: '80%',
             width: '500px'
         });
     }
@@ -189,7 +192,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private getContingencies() {
         if (!this.historicalSearchService.active) {
             this.contingencyService.loading = true;
-            this.contingenciesSubscription = this.contingencyService.getContingencies().subscribe((contingencyList: Contingency[]) => {
+            const search: SearchContingency = SearchContingency.getInstance();
+            search.isClose = false;
+            this.contingenciesSubscription = this.contingencyService.getContingencies(search).subscribe((contingencyList: Contingency[]) => {
                 const ctgInArray = contingencyList.filter(ctg => ctg.id === this.selectedContingencyPivot.id).length;
                 if (this.selectedContingencyPivot.id !== null && ctgInArray === 1) {
                     this.selectedContingency = this.selectedContingencyPivot;
@@ -296,11 +301,11 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     get paginatorObject(): PaginatorObjectService {
-        return this._paginatorObject;
+        return this.historicalSearchService.paginatorObjectService;
     }
 
     set paginatorObject(value: PaginatorObjectService) {
-        this._paginatorObject = value;
+        this.historicalSearchService.paginatorObjectService = value;
     }
 
     get intervalRefreshSubscription(): Subscription {
@@ -357,5 +362,13 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     set timerSubscription(value: Subscription) {
         this._timerSubscription = value;
+    }
+
+    get paginatorSubscription(): Subscription {
+        return this._paginatorSubscription;
+    }
+
+    set paginatorSubscription(value: Subscription) {
+        this._paginatorSubscription = value;
     }
 }

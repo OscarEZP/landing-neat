@@ -104,3 +104,8 @@
 .mat-sidenav-content {
   background-color: mat-color($primary, default-contrast);
 }
+
+/deep/
+.invalid {
+  color: mat-color($warn);
+}

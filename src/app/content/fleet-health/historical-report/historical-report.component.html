@@ -68,7 +68,7 @@
     <div>
         <div id="container-timeline">
             <h3>{{ 'FLEET_HEALTH.REPORT.REPORTS_TIMELINE' | translate }}</h3>
-            <lsl-timeline-report (onAnalyzedTaskSelected)="setAnalizedTask($event)" (onEditorLoad)="setEditorLoad($event)" id="timeline"></lsl-timeline-report>
+            <lsl-timeline-report (onAnalyzedTaskSelected)="setAnalizedTask($event)" (onEditorLoad)="defineEditorLoad($event)" id="timeline"></lsl-timeline-report>
         </div>
         <div id="container-historical-report">
             <h3>{{ 'FLEET_HEALTH.REPORT.HISTORICAL_REPORTS' | translate }}</h3>

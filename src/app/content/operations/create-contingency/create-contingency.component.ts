@@ -42,7 +42,7 @@ import {Pagination} from '../../../shared/_models/common/pagination';
 
 export class ContingencyFormComponent implements OnInit, OnDestroy {
 
-    private static CONTINGENCY_LIST_ENDPOINT = 'contingencyList';
+    private static CONTINGENCY_ENDPOINT = 'contingency';
     private static OPERATOR_LIST_ENDPOINT = 'operator';
     private static SAFETY_EVENT_LIST_ENDPOINT = 'safetyEvent';
     private static AIRCRAFTS_SEARCH_ENDPOINT = 'aircraftsSearch';
@@ -247,7 +247,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             this.validations.isSending = true;
             let res: Response;
             this._apiRestService
-                .add<Response>(ContingencyFormComponent.CONTINGENCY_LIST_ENDPOINT, this.contingency)
+                .add<Response>(ContingencyFormComponent.CONTINGENCY_ENDPOINT, this.contingency)
                 .subscribe(response => res = response,
                     err => {
                         this.getTranslateString(ContingencyFormComponent.FORM_FAILURE_MESSAGE);
@@ -382,6 +382,9 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             variableName = value.groupName.toLowerCase().replace(/(\_\w)/g, function (m) {
                 return m[1].toUpperCase();
             });
+            if (variableName === 'contingencyType') {
+                value.types.sort((a, b) => a.description < b.description ? 1 : -1);
+            }
             this[variableName] = value.types;
         }, this);
     }

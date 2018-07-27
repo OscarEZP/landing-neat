@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import {FormGroup} from '@angular/forms';
+import {PaginatorObjectService} from './paginator-object.service';
 
 @Injectable()
 export class HistoricalSearchService {
     private _searchForm: FormGroup;
     private _active: boolean;
     private _fields: any;
-
+    private _paginatorObjectService: PaginatorObjectService;
     constructor() {
         this._active = false;
         this._fields = {};
+        this._paginatorObjectService = PaginatorObjectService.getInstance();
     }
 
     public initForm(fields: any) {
@@ -41,7 +43,7 @@ export class HistoricalSearchService {
         return this.isAllSelected(this.searchForm.value.tails) ? null : this.searchForm.value.tails;
     }
 
-    set searchForm(value){
+    set searchForm(value) {
         this._searchForm = value;
     }
 
@@ -56,5 +58,11 @@ export class HistoricalSearchService {
     set active(value: boolean) {
         this._active = value;
     }
+    get paginatorObjectService(): PaginatorObjectService {
+        return this._paginatorObjectService;
+    }
 
+    set paginatorObjectService(value: PaginatorObjectService) {
+        this._paginatorObjectService = value;
+    }
 }

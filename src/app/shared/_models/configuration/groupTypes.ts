@@ -5,7 +5,7 @@ export class GroupTypes {
     private _groupName: string;
     private _types: Types[];
 
-    constructor(groupName: string, types: Types[]) {
+    constructor(groupName: string = '', types: Types[] = []) {
         this._groupName = groupName;
         this._types = types;
     }

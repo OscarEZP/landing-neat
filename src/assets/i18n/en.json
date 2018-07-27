@@ -24,7 +24,7 @@
         "AOG_TYPE_REQUIRED": "AOG Type is required",
         "BARCODE_REQUIRED": "Barcode is required",
         "CLOSE_CONTINGENCY": "Ooops, something went wrong",
-        "DURATION_REUIRED": "Duration is required",
+        "DURATION_REQUIRED": "Duration is required",
         "FAILURE_REQUIRED": "Failure Type is required",
         "SAFETY_EVENT_REQUIRED": "Safety Event is required",
         "TIPOLOGY_REQUIRED": "Tipology is required"
@@ -95,7 +95,12 @@
     "AUTHORITIES_WITHOUT_CONF": "Authorities without configuration. Ask your system administrator."
   },
   "FORM": {
+    "HOUR_ABBREVIATION": "h",
+    "HOUR": "hour",
+    "HOURS": "hours",
     "IS_REQUIRED": "{{value}} is required",
+    "MINUTE_ABBREVIATION": "m",
+    "MINUTES": "minutes",
     "REQUIRE_FIELDS": "All fields with (*) are required"
   },
   "FLEET_HEALTH": {
@@ -115,6 +120,7 @@
     },
     "REPORT": {
       "COPY_TEXT": "Copy text",
+      "COPY_TO_CLIPBOARD": "Copy to clipboard",
       "DESCRIPTION": "Description",
       "FAULT_NAME": "Fault Name",
       "ANALYSIS": "Historical Analysis",
@@ -133,7 +139,9 @@
       "MSG": {
         "NO_TASK_SELECTED": "No task selected. To see a report, please select a related task",
         "NO_TASKS": "There are no related tasks for this ATA",
-        "SAVED_ANALYSIS": "Saved analysis"
+        "SAVED_ANALYSIS": "Saved analysis",
+        "TEXT_COPIED": "Text was successfully copied!",
+        "TEXT_NOT_COPIED": "Sorry, text wasn't copied. Please, try again."
       },
       "PART_GROUP": "Part Group",
       "PART_REPLACEMENT": "Part Replacement",
@@ -206,21 +214,22 @@
       "YES_BUTTON_LABEL": "Yes"
     },
     "CLOSE_COMPONENT": {
-      "TITLE": "Close Contingency",
-      "CONTINGENCY_INFO": "Contingency Info",
       "AC": "A/C:",
-      "OPERATOR": "Operator:",
-      "FLIGHT": "Flight:",
-      "DESC": "Description:",
-      "CLOSURE_INFO": "CLOSURE INFO",
       "AC_STATUS": "Aircraft status",
-      "RELEASED": "Released to service",
       "AOG": "Aircraft declared AOG",
-      "OBS": "OBSERVATIONS",
+      "AOG_ADITIONAL_INFO": "AOG Aditional Info",
+      "BTN_CANCEL": "Cancel",
+      "BTN_SAVE": "Save",
+      "CLOSE_SUCCESS": "Contingency has been closed successfully",
+      "CLOSURE_INFO": "Closure Info",
+      "CONTINGENCY_INFO": "Contingency Info",
+      "DESC": "Description:",
+      "FLIGHT": "Flight:",
+      "OBS": "Observations",
       "OBS_REQUIRED": "Observation is required",
-      "BTN_CANCEL": "CANCEL",
-      "BTN_SAVE": "SAVE",
-      "CLOSE_SUCCESS": "Contingency has been closed successfully"
+      "OPERATOR": "Operator:",
+      "RELEASED": "Released to service",
+      "TITLE": "Close Contingency"
     },
     "CONTINGENCIES_WITH_PENDINGS": "Contingencies with pendings",
     "CLOSED_CONTINGENCY": "Closed contingency",
@@ -236,7 +245,6 @@
         "FOLLOW_UP_DISABLED": "Sorry follow up is disabled because from creation of contingency past more than 180 minutes",
         "FOLLOW_UP_LAST_STATUS": "Sorry is not possible to create a follow up for the current status",
         "FOLLOW_UP_CLOSED_STATUS": "This contingency is already closed",
-        "MINUTES": "minutes",
         "OBSERVATION_REQUIRED": "Observation is required",
         "OBSERVATION_TITLE": "Write your comment",
         "TIME_AVAILABLE_WARNING": "Maximum time available:"
@@ -272,7 +280,6 @@
       "INTERVAL": "Interval",
       "MAINTENANCE": "Maintenance",
       "MAX_LENGTH_VALIDATION": "Must be less than 400 characters",
-      "MINUTES": "minutes",
       "NO": "No",
       "OBSERVATION_REQUIRED_VALIDATION": "Status is required",
       "OBSERVATIONS_PLACEHOLDER": "Status",

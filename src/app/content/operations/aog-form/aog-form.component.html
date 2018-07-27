@@ -153,7 +153,7 @@
                     {{'AOG.AOG_FORM.FAILURE_TYPE'|translate}} *
                 </label>
 
-                <mat-radio-group required fxLayout="column" id="rad-aog-form-failure-type"
+                <mat-radio-group required fxLayout="row" id="rad-aog-form-failure-type"
                                  fxLayoutGap="10px" [formControl]="aogForm.controls['failure']">
                     <mat-radio-button labelPosition="after"
                                       *ngFor="let ct of failureType"
@@ -220,7 +220,7 @@
                 </mat-form-field>
 
                 <div fxLayout="row">
-                    <div fxLayout="column" fxFlex="150px" fxLayoutGap="20px">
+                    <div fxLayout="column" fxFlex="150px" fxLayoutGap="10px">
 
                         <label fxLayout="row" [ngClass]="{ 'invalid': formDir.submitted && aogForm.controls['tipology'].hasError('required') }">
                             {{'AOG.AOG_FORM.TIPOLOGY'|translate}} *:
@@ -236,27 +236,25 @@
                             {{'AOG.AOG_FORM.ERROR.TIPOLOGY_REQUIRED'|translate}}
                         </mat-error>
                     </div>
-                    <div fxLayout="column" fxFlex="80px">
+                    <div fxLayout="column" fxFlex="90px">
                         <label fxLayout="row" [ngClass]="{ 'invalid': formDir.submitted && aogForm.controls['duration'].hasError('required') }">
                             {{'AOG.AOG_FORM.DURATION'|translate}} *:
                         </label>
                         <mat-form-field id="form-field-duration">
-                            <input required id="in-aog-form-duration"
-                                   matInput
-                                   type="time"
-                                   [formControl]="aogForm.controls['duration']"
-                                   name="duration">
+                            <mat-select
+                                    id="sel-aog-form-duration"
+                                    [formControl]="aogForm.controls['duration']">
+                                <mat-option *ngFor="let duration of arrDuration" [value]="duration">{{ getDurationLabel(duration) }}</mat-option>
+                            </mat-select>
                             <mat-error
                                     *ngIf="aogForm.controls['duration'].hasError('required') && aogForm.controls['duration'].touched">
-                                {{'OPERATIONS.CONTINGENCY_FORM.DURATION_REQUIRED'|translate}}
+                                {{'AOG.AOG_FORM.ERROR.DURATION_REQUIRED'|translate}}
                             </mat-error>
                         </mat-form-field>
                     </div>
                 </div>
             </div>
         </div>
-
-
     </div>
 
     <div mat-dialog-actions fxLayoutAlign="end">

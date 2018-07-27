@@ -123,8 +123,8 @@ export class PendingListComponent implements OnInit, OnDestroy {
             this.paginatorObjectService.offset,
             this.paginatorObjectService.pageSize,
             null,
-            new TimeInstant(0, ''),
-            new TimeInstant(0, ''),
+           TimeInstant.getInstance(),
+           TimeInstant.getInstance(),
             false,
             true
         );
