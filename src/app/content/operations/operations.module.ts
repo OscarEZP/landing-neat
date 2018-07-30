@@ -21,14 +21,17 @@ import {SearchHistoricalComponent} from './search-historical/search-historical.c
 import {MeetingComponent} from './meeting/meeting.component';
 import {PendingListComponent} from './pending-list/pending-list.component';
 import {ResolvePendingComponent} from './resolve-pending/resolve-pending.component';
-import { AogListComponent } from './aog-list/aog-list.component';
-import { AogFormComponent } from './aog-form/aog-form.component';
+import {AogListComponent} from './aog-list/aog-list.component';
+import {AogFormComponent} from './aog-form/aog-form.component';
+import {RecoveryPlanModule} from './aog-list/recovery-plan/recovery-plan.module';
+import {RecoveryPlanViewComponent} from './aog-list/recovery-plan/recovery-plan-view/recovery-plan-view.component';
 
 @NgModule({
     imports: [
         BrowserModule,
         SharedModule,
-        RouterModule
+        RouterModule,
+        RecoveryPlanModule
     ],
     declarations: [
         OperationsComponent,
@@ -60,7 +63,8 @@ import { AogFormComponent } from './aog-form/aog-form.component';
         CancelComponent,
         CloseContingencyComponent,
         MeetingComponent,
-        ResolvePendingComponent
+        ResolvePendingComponent,
+        RecoveryPlanViewComponent
     ]
 })
 

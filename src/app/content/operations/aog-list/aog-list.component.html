@@ -54,9 +54,14 @@
                 </div>
             </div>
             <div fxFlex="11" fxLayoutAlign="end end">
-                <button id="btn-aog-list-TOO3LUTQ" mat-icon-button>
+                <button id="btn-aog-list-{{ aog.tail}}" mat-icon-button [matMenuTriggerFor]="menu">
                     <mat-icon aria-label="options">more_vert</mat-icon>
                 </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="openRecoveryPlan(aog)">
+                        <span>{{ 'BUTTONS.SUB_MENUS.OPEN_RECOVERY_PLAN' | translate }}</span>
+                    </button>
+                </mat-menu>
             </div>
         </div>
     </content>

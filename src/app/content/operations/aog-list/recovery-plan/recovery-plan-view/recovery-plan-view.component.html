@@ -1,0 +1,20 @@
+<div mat-dialog-title  class="title-dialog-container" fxLayout="column">
+<div fxLayout="row" fxFlex>
+    <span class="title-dialog" fxFlex>{{'AOG.RECOVERY_PLAN.TITLE' | translate}} - {{ aogData.tail }}</span>
+    <!-- <span class="date-title-dialog">{{ utcModel.label | utcDate | date: dateFormat}} | {{ timeClock | utcDate | date: hourFormat }} {{'LAYOUT.UTC'| translate}}</span> -->
+    <button id="btn-aog-form-close-btn" type="button" class="close-btn" mat-icon-button
+            fxFlexOffset="1">
+        <mat-icon aria-label="Example icon-button" class="material-icons close-dialog" (click)="closeModal()">close</mat-icon>
+    </button>
+</div>
+</div>
+
+<div mat-dialog-content class="content-dialog-container">
+    <div class="title-dialog">
+        <span>{{'AOG.AOG_FORM.AOG_INFORMATION'|translate}}</span>
+    </div>
+
+    <div fxLayout="row" class="sections-content">
+        <lsl-recovery-real-plan></lsl-recovery-real-plan>
+    </div>
+</div>
