@@ -21,6 +21,7 @@ import {SearchContingency} from '../../../shared/_models/contingency/searchConti
 import {PaginatorObjectService} from '../../_services/paginator-object.service';
 import {Layout, LayoutService} from '../../../layout/_services/layout.service';
 import {ContingencyFormComponent} from '../create-contingency/create-contingency.component';
+import {EditFieldComponent} from '../../../shared/components/edit-field/edit-field.component';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -166,6 +167,15 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             disableClose: true,
             height: '80%',
             width: '500px'
+        });
+    }
+
+    public editReason(contingency: Contingency) {
+        this._dialogService.openDialog(EditFieldComponent, {
+            data: contingency,
+            width: '50%',
+            height: '50%',
+            hasBackdrop: true
         });
     }
 
