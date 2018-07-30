@@ -104,6 +104,7 @@ export class AogListComponent implements OnInit, OnDestroy {
     private getSearchSignature(): AogSearch {
         const signature: AogSearch = AogSearch.getInstance();
         signature.pagination = new Pagination(this.paginatorObjectService.offset, this.paginatorObjectService.pageSize);
+        signature.isClose = false;
         return signature;
     }
 
@@ -112,7 +113,7 @@ export class AogListComponent implements OnInit, OnDestroy {
      */
     private getList(): void {
         const signature = this.getSearchSignature();
-        this.countSub = this.getCount$(signature.pagination).subscribe(
+        this.countSub = this.getCount$(signature).subscribe(
             () => this.listSubscription = this.getListSubscription(signature),
             () => this.getError()
         );
@@ -150,9 +151,9 @@ export class AogListComponent implements OnInit, OnDestroy {
         });
     }
 
-    private getCount$(pagination: Pagination): Observable<Count> {
+    private getCount$(search: AogSearch): Observable<Count> {
         return this._apiRestService
-            .search<Count>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT, pagination)
+            .search<Count>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT, search)
             .pipe(
                 tap(response => this.paginatorObjectService.length = response.items)
             );

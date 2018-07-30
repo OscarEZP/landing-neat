@@ -1,5 +1,6 @@
-import {TimeInstant} from '../timeInstant';
 import {Interval} from '../interval';
+import {Audit} from '../common/audit';
+
 export class StatusAog {
 
     private _aogId: number;
@@ -7,29 +8,24 @@ export class StatusAog {
     private _observation: string;
     private _requestedInterval: Interval;
     private _realInterval: Interval;
-    private _username: string;
-    private _creationDate: TimeInstant;
+    private _audit: Audit;
 
-    constructor(
-        code: string,
-        aogId: number,
-        creationDate: TimeInstant,
-        observation: string,
-        realInterval: Interval,
-        requestedInterval: Interval,
-        username: string
-    ) {
+    private constructor(code: string,
+                        aogId: number,
+                        observation: string,
+                        realInterval: Interval,
+                        requestedInterval: Interval,
+                        audit: Audit) {
         this._code = code;
         this._aogId = aogId;
-        this._creationDate = creationDate != null ? creationDate : TimeInstant.getInstance();
         this._observation = observation;
-        this._realInterval = realInterval != null ? realInterval : Interval.getInstance();
-        this._requestedInterval = requestedInterval != null ? requestedInterval : Interval.getInstance();
-        this._username = username;
+        this._realInterval = realInterval;
+        this._requestedInterval = requestedInterval;
+        this._audit = audit;
     }
 
     static getInstance(): StatusAog {
-        return new StatusAog(null, null, null, null, null, null, null);
+        return new StatusAog(null, null, null, Interval.getInstance(), Interval.getInstance(), Audit.getInstance());
     }
 
     get aogId(): number {
@@ -72,20 +68,12 @@ export class StatusAog {
         this._realInterval = value;
     }
 
-    get username(): string {
-        return this._username;
+    get audit(): Audit {
+        return this._audit;
     }
 
-    set username(value: string) {
-        this._username = value;
-    }
-
-    get creationDate(): TimeInstant {
-        return this._creationDate;
-    }
-
-    set creationDate(value: TimeInstant) {
-        this._creationDate = value;
+    set audit(value: Audit) {
+        this._audit = value;
     }
 }
 

@@ -9,7 +9,7 @@ import { DataService } from '../../../shared/_services/data.service';
 import { CancelComponent } from '../cancel/cancel.component';
 import { ApiRestService } from '../../../shared/_services/apiRest.service';
 import {TranslationService} from '../../../shared/_services/translation.service';
-import {Close} from '../../../shared/_models/close';
+import {Close} from '../../../shared/_models/contingency/close';
 import {Subscription} from 'rxjs/Subscription';
 import {Observable} from 'rxjs/Observable';
 import {Location} from '../../../shared/_models/configuration/location';
@@ -303,8 +303,8 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
      * @param {string} value
      */
     set username(value: string) {
-        this.aog.username = value;
-        this.aog.status.username = value;
+        this.aog.audit.username = value;
+        this.aog.status.audit.username = value;
     }
 
     /**
