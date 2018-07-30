@@ -205,7 +205,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
             this.aog.code = v.tipology;
             if (this.contingency) {
                 this.contingency.close.id = this.contingency.id;
-                this.contingency.close.username = this.aog.username;
+                this.contingency.close.username = this.aog.audit.username;
                 this.contingency.close.type = AogFormComponent.AOG_TYPE;
                 this.contingency.close.observation = v.closeObservation;
             }
@@ -588,8 +588,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * @param {string} value
      */
     set username(value: string) {
-        this.aog.username = value;
-        this.aog.status.username = value;
+        this.aog.audit.username = value;
+        this.aog.status.audit.username = value;
     }
 
     get utcModel(): TimeInstant {
