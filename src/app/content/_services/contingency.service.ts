@@ -65,8 +65,6 @@ export class ContingencyService {
         );
     }
 
-
-
     public addLastInformationPercentage(contingencies: Contingency[]): Contingency[] {
         if (contingencies.length > 0) {
             contingencies.forEach((item) => {

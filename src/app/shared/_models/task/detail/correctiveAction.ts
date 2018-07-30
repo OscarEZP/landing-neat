@@ -7,8 +7,8 @@ export class CorrectiveAction {
     private _barcode: string;
     private _name: Name;
     private _description: string;
-    private _createDate: TimeInstant;
-    private _reviseDate: TimeInstant;
+    private _actionDate: TimeInstant;
+    private _updateDate: TimeInstant;
 
 
    private constructor() {
@@ -16,8 +16,8 @@ export class CorrectiveAction {
         this._barcode = '';
         this._name = Name.getInstance();
         this._description = '';
-        this._createDate = TimeInstant.getInstance();
-        this._reviseDate = TimeInstant.getInstance();
+        this._actionDate = TimeInstant.getInstance();
+        this._updateDate = TimeInstant.getInstance();
     }
 
     public static getInstance() {
@@ -57,19 +57,20 @@ export class CorrectiveAction {
         this._description = value;
     }
 
-    get createDate(): TimeInstant {
-        return this._createDate;
+
+    get actionDate(): TimeInstant {
+        return this._actionDate;
     }
 
-    set createDate(value: TimeInstant) {
-        this._createDate = value;
+    set actionDate(value: TimeInstant) {
+        this._actionDate = value;
     }
 
-    get reviseDate(): TimeInstant {
-        return this._reviseDate;
+    get updateDate(): TimeInstant {
+        return this._updateDate;
     }
 
-    set reviseDate(value: TimeInstant) {
-        this._reviseDate = value;
+    set updateDate(value: TimeInstant) {
+        this._updateDate = value;
     }
 }

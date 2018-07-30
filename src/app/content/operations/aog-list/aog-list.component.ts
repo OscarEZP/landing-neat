@@ -40,6 +40,7 @@ export class AogListComponent implements OnInit, OnDestroy {
     private _reloadSubscription: Subscription;
     private _timerSubscription: Subscription;
     private _intervalToRefresh: number;
+    private _countSub: Subscription;
 
     constructor(private _messageData: DataService,
                 private _translate: TranslateService,
@@ -76,6 +77,7 @@ export class AogListComponent implements OnInit, OnDestroy {
         this.reloadSubscription.unsubscribe();
         this.intervalRefreshSubscription.unsubscribe();
         this.paginatorSubscription.unsubscribe();
+        this.countSub.unsubscribe();
         if (this.listSubscription) {
             this.listSubscription.unsubscribe();
         }
@@ -103,6 +105,7 @@ export class AogListComponent implements OnInit, OnDestroy {
     private getSearchSignature(): AogSearch {
         const signature: AogSearch = AogSearch.getInstance();
         signature.pagination = new Pagination(this.paginatorObjectService.offset, this.paginatorObjectService.pageSize);
+        signature.isClose = false;
         return signature;
     }
 
@@ -111,7 +114,10 @@ export class AogListComponent implements OnInit, OnDestroy {
      */
     private getList(): void {
         const signature = this.getSearchSignature();
-        this.listSubscription = this.getListSubscription(signature);
+        this.countSub = this.getCount$(signature).subscribe(
+            () => this.listSubscription = this.getListSubscription(signature),
+            () => this.getError()
+        );
     }
 
     /**
@@ -126,7 +132,6 @@ export class AogListComponent implements OnInit, OnDestroy {
             (response) => {
                 this.subscribeTimer();
                 this.aogList = response;
-                this.getCountSubscription(this.getSearchSignature());
                 this.loading = false;
             },
             () => {
@@ -147,13 +152,12 @@ export class AogListComponent implements OnInit, OnDestroy {
         });
     }
 
-    private getCountSubscription(signature: AogSearch): Subscription {
+    private getCount$(search: AogSearch): Observable<Count> {
         return this._apiRestService
-            .search<Count>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT, signature)
-            .subscribe(
-            (response) => this.paginatorObjectService.length = response.items,
-            () => this.getError()
-        );
+            .search<Count>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT, search)
+            .pipe(
+                tap(response => this.paginatorObjectService.length = response.items)
+            );
     }
 
     /**
@@ -302,4 +306,11 @@ export class AogListComponent implements OnInit, OnDestroy {
         this._layoutService.layout = value;
     }
 
+    get countSub(): Subscription {
+        return this._countSub;
+    }
+
+    set countSub(value: Subscription) {
+        this._countSub = value;
+    }
 }

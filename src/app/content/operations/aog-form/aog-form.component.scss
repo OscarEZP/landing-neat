@@ -73,9 +73,7 @@ $font-size: 16px;
         @include gen-component-font-size($font-size, -2);
       }
 
-      .invalid {
-        color: mat-color($warn);
-      }
+
     }
 
     > div:first-child {

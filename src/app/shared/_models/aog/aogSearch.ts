@@ -2,14 +2,16 @@ import {Pagination} from '../common/pagination';
 export class AogSearch {
 
     private _pagination: Pagination;
+    private _isClose: Boolean;
 
-    private constructor(pagination: Pagination) {
+    private constructor(pagination: Pagination, isClose: Boolean) {
         this._pagination = pagination;
+        this._isClose = isClose;
 
     }
 
     static getInstance(): AogSearch {
-        return new AogSearch(Pagination.getInstance());
+        return new AogSearch(Pagination.getInstance(), false);
     }
 
 
@@ -19,5 +21,13 @@ export class AogSearch {
 
     set pagination(value: Pagination) {
         this._pagination = value;
+    }
+
+    get isClose(): Boolean {
+        return this._isClose;
+    }
+
+    set isClose(value: Boolean) {
+        this._isClose = value;
     }
 }
