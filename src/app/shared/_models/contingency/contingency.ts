@@ -4,7 +4,7 @@ import { Flight } from '../flight';
 import { Safety } from '../safety';
 import { Status } from '../status';
 import { TimeInstant } from '../timeInstant';
-import { Close } from '../close';
+import { Close } from './close';
 
 export class Contingency {
 
