@@ -10,6 +10,9 @@ let service;
 let routeSnapshot;
 let stateSnapshot;
 
+jest.mock('../../shared/_services/storage.service');
+jest.mock('./auth.service');
+
 describe('AuthGuard Service Test', () => {
 
     const MockStorageService = {
@@ -19,7 +22,7 @@ describe('AuthGuard Service Test', () => {
     const MockAuthService = {
         getHemicycleGroupName: () => AuthService.HEMICYCLE_GROUP_NAME,
         getHemicycleUrl: () => AuthService.HEMICYCLE_URL,
-        getIsAuth: (url: string) => true,
+        getIsAuth: () => true,
         getIsLoggedIn: () => true
     };
 
