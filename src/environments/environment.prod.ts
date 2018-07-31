@@ -55,6 +55,7 @@ export const environment = {
         technicalDefaultConfig: '/api/v1/management/default-tech-analysis',
         technicalNotConfiguredAuthoritySearch: '/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: '/api/v1/management/tech-station/_search',
-        types: '/api/v1/configurations/types'
+        types: '/api/v1/configurations/types',
+        closeAog: '/api/aircraft-on-ground/v1/aircraft-on-ground/_close'
     }
 };
