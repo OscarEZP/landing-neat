@@ -14,7 +14,6 @@ import {Observable} from 'rxjs/Observable';
 import {AogFormComponent} from '../aog-form/aog-form.component';
 import {Count} from '../../../shared/_models/common/count';
 import {tap} from 'rxjs/operators';
-/*import {CloseContingencyComponent} from '../close-contingency/close-contingency.component';*/
 import {DialogService} from '../../_services/dialog.service';
 import {CloseAogComponent} from '../close-aog/close-aog.component';
 
