@@ -7,13 +7,11 @@ import { CountdownComponent } from './components/countdown.component/countdown.c
 import { MaterialModule } from './modules/material.module';
 import { EssComponent } from './components/ess/ess.component';
 import { DirectivesModule } from './_directives/directives.module';
-import { EditFieldComponent } from './components/edit-field/edit-field.component';
 
 @NgModule({
     declarations: [
         CountdownComponent,
-        EssComponent,
-        EditFieldComponent
+        EssComponent
     ],
     imports: [
         MaterialModule,

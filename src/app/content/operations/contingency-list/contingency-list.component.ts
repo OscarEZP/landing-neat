@@ -21,7 +21,8 @@ import {SearchContingency} from '../../../shared/_models/contingency/searchConti
 import {PaginatorObjectService} from '../../_services/paginator-object.service';
 import {Layout, LayoutService} from '../../../layout/_services/layout.service';
 import {ContingencyFormComponent} from '../create-contingency/create-contingency.component';
-import {EditFieldComponent} from '../../../shared/components/edit-field/edit-field.component';
+import {EditFieldComponent, EditFieldDataInterface} from '../edit-field/edit-field.component';
+import {Reason} from '../../../shared/_models/common/reason';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -33,6 +34,8 @@ import {EditFieldComponent} from '../../../shared/components/edit-field/edit-fie
 export class ContingencyListComponent implements OnInit, OnDestroy {
 
     @ViewChild('contPaginator') public paginator: MatPaginator;
+
+    private static EDIT_REASON_CONTINGENCY = 'editReasonContingency';
 
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
@@ -171,12 +174,29 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     }
 
     public editReason(contingency: Contingency) {
+        const editFieldData: EditFieldDataInterface = {
+            domain: contingency,
+            attribute: 'reason',
+            promise: this.getReasonPostPromise(contingency),
+            translation: {
+                title: 'Edit field',
+                field: {
+                    value: 'Reason'
+                },
+                placeholder: 'Edit reason'
+            }
+        };
         this._dialogService.openDialog(EditFieldComponent, {
-            data: contingency,
+            data: editFieldData,
             width: '50%',
-            height: '50%',
+            height: '350px',
             hasBackdrop: true
         });
+    }
+
+    private getReasonPostPromise(contingency: Contingency): Promise<any> {
+        const signature = new Reason(contingency.id, );
+        return this._apiRestService.search(ContingencyListComponent.EDIT_REASON_CONTINGENCY, signature).toPromise();
     }
 
     public openMeeting(contingency: Contingency) {

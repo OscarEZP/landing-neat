@@ -95,10 +95,14 @@
     "AUTHORITIES_WITHOUT_CONF": "Authorities without configuration. Ask your system administrator."
   },
   "FORM": {
+    "EDIT_FORM_TITLE": "Edit {{value}}",
     "HOUR_ABBREVIATION": "h",
     "HOUR": "hour",
     "HOURS": "hours",
     "IS_REQUIRED": "{{value}} is required",
+    "MESSAGE": {
+      "EDIT_SUCCESS": "{{value}} updated!"
+    },
     "MINUTE_ABBREVIATION": "m",
     "MINUTES": "minutes",
     "REQUIRE_FIELDS": "All fields with (*) are required"

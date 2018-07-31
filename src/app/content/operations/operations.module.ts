@@ -23,7 +23,7 @@ import {PendingListComponent} from './pending-list/pending-list.component';
 import {ResolvePendingComponent} from './resolve-pending/resolve-pending.component';
 import { AogListComponent } from './aog-list/aog-list.component';
 import { AogFormComponent } from './aog-form/aog-form.component';
-import {EditFieldComponent} from '../../shared/components/edit-field/edit-field.component';
+import {EditFieldComponent} from './edit-field/edit-field.component';
 
 @NgModule({
     imports: [
@@ -44,7 +44,8 @@ import {EditFieldComponent} from '../../shared/components/edit-field/edit-field.
         PendingListComponent,
         ResolvePendingComponent,
         AogListComponent,
-        AogFormComponent
+        AogFormComponent,
+        EditFieldComponent
     ],
     exports: [],
     providers: [

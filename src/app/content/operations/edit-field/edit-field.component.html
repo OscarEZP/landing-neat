@@ -1,0 +1,40 @@
+<form [formGroup]="editFieldForm" #formDir="ngForm" (ngSubmit)="submitForm()">
+    <div mat-dialog-title class="title-dialog-container" fxLayout="column">
+        <div fxLayout="row" fxFlex>
+            <span class="title-dialog" fxFlex>{{'FORM.EDIT_FORM_TITLE' | translate: translation.field}}</span>
+            <button id="btn-aog-form-close-btn" type="button" class="close-btn" mat-icon-button
+                    fxFlexOffset="1">
+                <mat-icon aria-label="Close button" class="material-icons close-dialog" (click)="openCancelDialog()">close
+                </mat-icon>
+            </button>
+        </div>
+    </div>
+    <div mat-dialog-content>
+        <mat-form-field class="full-width" *ngIf="type === types.textarea">
+            <textarea required matInput
+              id="txt-aog-form-close-observation"
+              maxlength="{{maxTextAreaLength}}" rows="8"
+              placeholder="{{translation.placeholder | translate}}"
+              [formControl]="editFieldForm.controls['textarea']"
+              #textArea>
+            </textarea>
+            <mat-hint align="end">{{textArea.value.length}} / {{maxTextAreaLength}}</mat-hint>
+            <mat-error
+                    *ngIf="editFieldForm.controls['textarea'].hasError('required') && editFieldForm.controls['textarea'].touched">
+                {{'FORM.IS_REQUIRED' | translate: translation.field}}
+            </mat-error>
+            <mat-error
+                    *ngIf="editFieldForm.controls['textarea'].hasError('maxlength') && editFieldForm.controls['textarea'].touched">
+                {{'OPERATIONS.CONTINGENCY_FORM.MAX_LENGTH_VALIDATION' | translate}}
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions fxLayoutAlign="end">
+        <button id="btn-aog-form-cancel" type="button" mat-button (click)="openCancelDialog()">
+            {{'BUTTONS.CANCEL'|translate}}
+        </button>
+        <button [disabled]="editFieldForm.controls['textarea'].value.length === 0" id="btn-edit-field-submit" type="submit" mat-button mat-raised-button color="primary">
+            {{'BUTTONS.CREATE'|translate}}
+        </button>
+    </div>
+</form>
