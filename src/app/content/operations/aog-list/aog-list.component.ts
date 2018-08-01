@@ -46,8 +46,7 @@ export class AogListComponent implements OnInit, OnDestroy {
                 private _translate: TranslateService,
                 private _apiRestService: ApiRestService,
                 private _layoutService: LayoutService,
-                private _aogService: AogService) {
-                private _layoutService: LayoutService,
+                private _aogService: AogService,
                 private _dialogService: DialogService) {
 
 
