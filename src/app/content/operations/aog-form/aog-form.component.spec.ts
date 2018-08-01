@@ -26,6 +26,7 @@ import {TimeInstant} from '../../../shared/_models/timeInstant';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import {AogService} from '../../_services/aog.service';
 
 jest.mock('../../../shared/_services/datetime.service');
 jest.mock('../../../shared/_services/apiRest.service');
@@ -33,6 +34,8 @@ jest.mock('../../../shared/_services/message.service');
 jest.mock('../../../shared/_services/clock.service');
 jest.mock('../../../shared/_services/storage.service');
 jest.mock('../../../shared/_services/data.service');
+
+jest.mock('../../_services/aog.service');
 jest.mock('../../_services/contingency.service');
 jest.mock('../../_services/log.service');
 jest.mock('../../../shared/_services/translation.service');
@@ -75,6 +78,7 @@ describe('AOG form test', () => {
                 DataService,
                 ContingencyService,
                 LogService,
+                AogService,
                 {provide: TranslationService, useValue: MockTranslationService},
             ],
             declarations: [AogFormComponent]

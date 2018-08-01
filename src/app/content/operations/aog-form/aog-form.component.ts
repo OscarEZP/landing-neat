@@ -393,7 +393,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._aogService.validateTail(tail)
             .then(aog => {
                 if (aog) {
-                    this._contingencyService.search(search).then(res => {
+                    this._contingencyService.search(search).toPromise().then(res => {
                         this.contingency = res.length > 0 ? res.shift() : null;
                         if (this.contingency) {
                             this.showContingencyConfirm();
