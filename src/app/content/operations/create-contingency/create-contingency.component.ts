@@ -478,7 +478,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     /**
      * Method triggered when aircraft tail is selected, populate the fields and the model in contingency aircraft & flight
      * Also force selection of first flight in the form and recalculate the flight etd
-     * @param {string} selectedOption
+     * @param {string} tail
      */
     public onSelectAircraft(tail: string): void {
         this._contingencyService.validateTail(tail)
@@ -488,23 +488,30 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
                         if (aog) {
                             this.flightSearch(tail);
                         } else {
-                            this.cleanFlight();
+                            this.aircraftClean();
                             this._translationService.translateAndShow(ContingencyFormComponent.VALIDATION_TAIL_AOG_ERROR_MESSAGE, 2500, {value: tail});
                         }
                     }).catch(err => this._translationService.translateAndShow(ContingencyFormComponent.ERRORS_DEFAULT));
 
                 } else {
-                    this.cleanFlight();
+                    this.aircraftClean();
                     this._translationService.translateAndShow(ContingencyFormComponent.VALIDATION_TAIL_CONTINGENCY_ERROR_MESSAGE, 2500, {value: tail});
                 }
             }).catch(err => this._translationService.translateAndShow(ContingencyFormComponent.ERRORS_DEFAULT));
     }
 
-    private cleanFlight(): void {
+    /**
+     * Aircraft Clean |Tail and Operator
+     */
+    private aircraftClean(): void {
         this.contingencyForm.get('operator').setValue('');
         this.contingencyForm.get('fleet').setValue('');
     }
 
+    /**
+     * Flight Search by tail
+     * @param {string} tail
+     */
     private flightSearch(tail: string): void {
         const flightSearch = new FlightSearch(tail, 0, 8);
         this.flightList = [];

@@ -377,9 +377,15 @@ export class AogFormComponent implements OnInit, OnDestroy {
     /**
      * Method triggered when aircraft tail is selected, populate the fields and the model in aog aircraft & flight
      * Also validates tail in active Contingency or AOG
-     * @param {string} selectedOption
+     * @param {string} tail
      */
     public onSelectAircraft(tail: string): void {
+
+        if (this.contingency) {
+            this.contingency =  null;
+            this.aogForm.reset();
+            this.aogForm.get('tail').setValue(tail);
+        }
         this.completeAircraft(tail);
         const search: SearchContingency = SearchContingency.getInstance();
         search.isClose = false;
@@ -387,7 +393,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._aogService.validateTail(tail)
             .then(aog => {
                 if (aog) {
-                    this._contingencyService.search(search).toPromise().then(res => {
+                    this._contingencyService.search(search).then(res => {
                         this.contingency = res.length > 0 ? res.shift() : null;
                         if (this.contingency) {
                             this.showContingencyConfirm();
@@ -418,6 +424,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.aogForm.get('operator').updateValueAndValidity();
         this.aogForm.get('fleet').setValue(this.aog.fleet);
         this.aogForm.get('fleet').updateValueAndValidity();
+
     }
 
     /**
