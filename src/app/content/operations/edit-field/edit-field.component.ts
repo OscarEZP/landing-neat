@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {CancelComponent} from '../../../content/operations/cancel/cancel.component';
 import {DialogService} from '../../../content/_services/dialog.service';
@@ -7,10 +7,10 @@ import {MessageService} from '../../../shared/_services/message.service';
 import {MAT_DIALOG_DATA} from '@angular/material';
 
 export interface EditFieldDataInterface {
-    domain: any;
+    content: string;
     attribute: string;
-    promise: Promise<any>;
     translation: EditFieldTranslationInterface;
+    type: string;
 }
 
 export interface EditFieldTranslationInterface {
@@ -20,7 +20,7 @@ export interface EditFieldTranslationInterface {
 }
 
 export interface EditFieldTypesInterface {
-    textarea?: string;
+    textarea: string;
 }
 
 @Component({
@@ -31,6 +31,9 @@ export interface EditFieldTypesInterface {
 export class EditFieldComponent implements OnInit {
 
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
+
+    @Output()
+    submit: EventEmitter<any> = new EventEmitter();
 
     private _editFieldForm: FormGroup;
     private _type: string;
@@ -46,16 +49,15 @@ export class EditFieldComponent implements OnInit {
     ) {
         this._editFieldForm = _fb.group({});
         this._types = { textarea: 'textarea' };
-        this._type = this.types.textarea;
+        this._type = data.type;
         this._maxTextAreaLength = 400;
     }
 
     ngOnInit() {
-        this.addValidator(this.type);
-    }
-
-    private addValidator(type: string) {
-        this.editFieldForm.addControl(type, new FormControl('', [Validators.required, Validators.maxLength(this.maxTextAreaLength)]));
+        this.editFieldForm.addControl(
+            this.type,
+            new FormControl(this.data.content, [Validators.required, Validators.maxLength(this.maxTextAreaLength)])
+        );
     }
 
     /**
@@ -77,16 +79,13 @@ export class EditFieldComponent implements OnInit {
         }
     }
 
+    /**
+     * Emit the field value on submit attribute
+     */
     public submitForm(): void {
-        this.data.promise
-            .then(x => {
-                this._dialogService.closeAllDialogs();
-                this._translationService.translateAndShow('FORM.MESSAGE.EDIT_SUCCESS', 2500, this.translation.field);
-            })
-            .catch(err => {
-                console.error(err);
-                this._translationService.translateAndShow('ERRORS.DEFAULT');
-            });
+        if (this.editFieldForm.valid) {
+            this.submit.emit(this.editFieldForm.value[this.type]);
+        }
     }
 
     get editFieldForm(): FormGroup {

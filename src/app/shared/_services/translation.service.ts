@@ -23,7 +23,7 @@ export class TranslationService {
      * @param {string} toTranslate
      * @returns {Promise<string>}
      */
-    public translate(toTranslate: string, params: TranslationParamInterface = {value: ''}): Promise<string> {
+    public translate(toTranslate: string | string[], params: TranslationParamInterface = {value: ''}): Promise<string> {
         return this._translateService.get(toTranslate, params).toPromise();
     }
 
