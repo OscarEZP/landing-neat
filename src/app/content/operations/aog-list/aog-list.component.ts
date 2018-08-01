@@ -186,6 +186,11 @@ export class AogListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Observable for AOG list count service
+     * @param {AogSearch} search
+     * @returns {Observable<Count>}
+     */
     private getCount$(search: AogSearch): Observable<Count> {
         return this._apiRestService
             .search<Count>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT, search)
@@ -195,7 +200,7 @@ export class AogListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Subscription for get the time for reload data
+     * Subscription for get time for reload data
      * @return {Subscription}
      */
     private getIntervalToRefresh(): Subscription {
@@ -238,6 +243,10 @@ export class AogListComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Open a modal for close AOG
+     * @param {Aog} aog
+     */
     public openCloseAircraftOnGround(aog: Aog) {
         this._dialogService.openDialog(CloseAogComponent, {
             data: aog,

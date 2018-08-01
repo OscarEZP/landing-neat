@@ -256,6 +256,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         return reason;
     }
 
+    /**
+     * Open a modal for create a meeting
+     * @param {Contingency} contingency
+     */
     public openMeeting(contingency: Contingency) {
         this._dialogService.openDialog(MeetingComponent, {
             data: contingency,
@@ -266,6 +270,12 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Promise for edit reason
+     * @param {Reason} reason
+     * @param {EditFieldDataInterface} dataInterface
+     * @returns {Promise<void>}
+     */
     private postEditReason(reason: Reason, dataInterface: EditFieldDataInterface): Promise<void> {
         return this._apiRestService
             .add(ContingencyListComponent.EDIT_REASON_CONTINGENCY_ENDPOINT, reason)
@@ -278,6 +288,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             .catch(() => this._translationService.translateAndShow(ContingencyListComponent.DEFAULT_ERROR_MESSAGE));
     }
 
+    /**
+     * Reload list if the message is 'reload'
+     * @param message
+     */
     public reloadList(message) {
         if (message === 'reload') {
             this.getContingencies();
@@ -307,6 +321,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Subscription for reload list
+     * @returns {Subscription}
+     */
     private subscribeTimer(): Subscription {
         if (this.timerSubscription) {
             this.timerSubscription.unsubscribe();
@@ -316,6 +334,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Subscription for get an interval for refresh data
+     * @returns {Subscription}
+     */
     private getIntervalToRefresh(): Subscription {
         this.contingencyService.loading = true;
 
