@@ -40,12 +40,13 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     @ViewChild('contPaginator') public paginator: MatPaginator;
 
-    private static EDIT_REASON_CONTINGENCY = 'editReasonContingency';
+    private static EDIT_REASON_CONTINGENCY_ENDPOINT = 'editReasonContingency';
     private static DEFAULT_ERROR_MESSAGE = 'ERRORS.DEFAULT';
-    private static SUCCESS_MESSAGE = 'FORM.MESSAGE.EDIT_SUCCESS';
+    private static SUCCESS_MESSAGE = 'FORM.MESSAGES.SAVE_SUCCESS';
     private static REASON_PLACEHOLDER = 'OPERATIONS.CONTINGENCY_FORM.REASON_PLACEHOLDER';
     private static EDIT_FORM_TITLE = 'FORM.EDIT_FORM_TITLE';
     private static REASON_ATTRIBUTE = 'reason';
+    private static REASON_FIELD_TYPE = 'textarea';
 
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
@@ -62,6 +63,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private _selectedContingencyPivot: Contingency;
     private _intervalToRefresh: number;
     private _editFieldTranslation: EditFieldTranslationInterface;
+    private _toEdit: number;
 
     constructor(
         private _messageData: DataService,
@@ -88,6 +90,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         };
         this._editReasonSub = new Subscription();
         this._editFieldTranslation = { title: '', field: {value: ''}, placeholder: '' };
+        this._toEdit = null;
     }
 
     ngOnInit() {
@@ -214,8 +217,8 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private getDataInterface(content: string): EditFieldDataInterface {
         return {
             content: content,
-            type: 'textarea',
-            attribute: 'reason',
+            type: ContingencyListComponent.REASON_FIELD_TYPE,
+            attribute: ContingencyListComponent.REASON_ATTRIBUTE,
             translation: this.editFieldTranslation
         };
     }
@@ -265,10 +268,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     private postEditReason(reason: Reason, dataInterface: EditFieldDataInterface): Promise<void> {
         return this._apiRestService
-            .add(ContingencyListComponent.EDIT_REASON_CONTINGENCY, reason)
+            .add(ContingencyListComponent.EDIT_REASON_CONTINGENCY_ENDPOINT, reason)
             .toPromise()
             .then(() => {
-                this._translationService.translateAndShow(ContingencyListComponent.SUCCESS_MESSAGE, 2500, dataInterface.translation.field);
+                this._translationService.translateAndShow(ContingencyListComponent.SUCCESS_MESSAGE, 2500, {value: dataInterface.translation.field.value.toLowerCase()});
                 this._dialogService.closeAllDialogs();
                 this._messageData.stringMessage('reload');
             })
@@ -487,5 +490,13 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     set editFieldTranslation(value: EditFieldTranslationInterface) {
         this._editFieldTranslation = value;
+    }
+
+    get toEdit(): number {
+        return this._toEdit;
+    }
+
+    set toEdit(value: number) {
+        this._toEdit = value;
     }
 }

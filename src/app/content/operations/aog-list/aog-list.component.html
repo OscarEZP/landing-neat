@@ -5,18 +5,18 @@
         <span *ngIf="paginatorObjectService.length === 1">{{'AOG.ACTIVE_AOG' | translate }}</span>
 
     </div>
-    <header fxLayout="row">
+    <header fxLayout="row" fxLayoutGap="20px">
         <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.TAILFLEET' | translate}}</div>
         <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.OPERATOR' | translate}}</div>
         <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.BARCODE' | translate}}</div>
-        <div fxFlex="28" fxLayoutAlign="start center">{{'AOG.LIST.REASON' | translate}}</div>
+        <div fxFlex="28" fxLayoutAlign="start center" class="description">{{'AOG.LIST.REASON' | translate}}</div>
         <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.NEXTSTEP' | translate}}</div>
         <div fxFlex="15" fxLayoutAlign="start center">{{'AOG.LIST.STATUS' | translate}}</div>
         <div fxFlex="15" fxLayoutAlign="start center">{{'AOG.LIST.DURATION' | translate}}</div>
         <div fxFlex="11">&nbsp;</div>
     </header>
     <content>
-        <div fxLayout="row" *ngFor="let aog of aogList" class="contingency-item">
+        <div fxLayout="row" *ngFor="let aog of aogList" class="contingency-item" fxLayoutGap="20px">
             <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
                 <span>{{aog.tail}}</span>
                 <span>{{aog.fleet}}</span>
@@ -27,12 +27,13 @@
             <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">
                 {{aog.barcode}}
             </div>
-            <div fxFlex="28" fxLayout="row" fxLayoutAlign="start center">
-                {{aog.reason}}
+            <div fxFlex="28" class="description" fxLayout="row" fxLayoutAlign="start center" (click)="editReason(aog)">
+                <span fxFlex="90" (mouseout)="toEdit = null"  (mouseover)="toEdit = aog.id">{{(aog.reason.length > 65) ? (aog.reason | slice:0:65) + '...' : aog.reason}}</span>
+                <mat-icon fxFlex="10" *ngIf="toEdit === aog.id">edit</mat-icon>
             </div>
             <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center"></div>
             <div fxFlex="15" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-                <div fxLayout="column" ngClass="aog-{{aog.status.code.toLowerCase()}}" fxLayoutAlign="center center"
+                <div fxLayout="column" ngClass="badge aog-{{aog.status.code.toLowerCase()}}" fxLayoutAlign="center center"
                      class="aog-status">{{aog.status.code}}
                 </div>
                 <div fxFlex="10" fxLayout="column" fxLayoutAlign="center center">

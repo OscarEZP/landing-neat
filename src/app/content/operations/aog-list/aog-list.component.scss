@@ -3,6 +3,12 @@
 /deep/
 #aog-list {
   margin-top: 15px;
+
+  .mat-icon {
+    color: mat-color($foreground, 'icon');
+    @include md-icon-size(16px);
+  }
+
   .aog-status {
     width: 44px;
     height: 16px;
@@ -36,6 +42,21 @@
     line-height: 1.65;
     letter-spacing: normal;
     color: #000000;
+  }
+  .description {
+    min-width: 150px;
+
+  }
+  .contingency-item {
+    > div {
+      overflow: hidden;
+    }
+
+    > div:last-child {
+      .mat-icon {
+        @include md-icon-size(24px);
+      }
+    }
   }
 }
 
