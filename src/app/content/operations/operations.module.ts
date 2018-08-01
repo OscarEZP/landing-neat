@@ -23,6 +23,8 @@ import {PendingListComponent} from './pending-list/pending-list.component';
 import {ResolvePendingComponent} from './resolve-pending/resolve-pending.component';
 import { AogListComponent } from './aog-list/aog-list.component';
 import { AogFormComponent } from './aog-form/aog-form.component';
+import {AogService} from '../_services/aog.service';
+
 
 @NgModule({
     imports: [
@@ -54,7 +56,8 @@ import { AogFormComponent } from './aog-form/aog-form.component';
         ApiRestService,
         HistoricalSearchService,
         {provide: MAT_DATE_LOCALE, useValue: 'es-CL'},
-        DateUtil
+        DateUtil,
+        AogService
     ],
     entryComponents: [
         CancelComponent,

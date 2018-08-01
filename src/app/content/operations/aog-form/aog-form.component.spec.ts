@@ -156,7 +156,7 @@ describe('AOG form test', () => {
     });
 
     it('AOG should be filled after adding information', () => {
-        const sub = aogFormComponent.getFormSubs();
+        const sub = aogFormComponent.getDataAOGFormSubs();
         aogFormComponent.aogForm.controls['station'].setValue('STATION');
         aogFormComponent.isSafety = true;
         aogFormComponent.aogForm.controls['safetyEventCode'].setValue('SAFETY_EVENT_CODE');

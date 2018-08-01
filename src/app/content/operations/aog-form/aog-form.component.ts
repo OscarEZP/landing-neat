@@ -24,6 +24,8 @@ import {ContingencyService} from '../../_services/contingency.service';
 import {Contingency} from '../../../shared/_models/contingency/contingency';
 import {MatSnackBarRef} from '@angular/material/snack-bar/typings/snack-bar-ref';
 import {TranslationService} from '../../../shared/_services/translation.service';
+import {AogService} from '../../_services/aog.service';
+import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -38,12 +40,13 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static SAFETY_EVENT_LIST_ENDPOINT = 'safetyEvent';
     private static LOCATIONS_ENDPOINT = 'locations';
     private static AOG_ENDPOINT = 'aircraftOnGround';
-    private static CONTINGENCY_SEARCH_ENDPOINT = 'contingencySearch';
 
     private static DATE_FORMAT = 'dd MMM yyyy ';
     private static HOUR_FORMAT = 'HH:mm:ss';
 
+    private static ERRORS_DEFAULT = 'ERRORS.DEFAULT';
     private static CLOSE_CONTINGENCY_ERROR_MESSAGE = 'AOG.AOG_FORM.ERROR.CLOSE_CONTINGENCY';
+    private static VALIDATION_TAIL_AOG_ERROR_MESSAGE = 'TAIL.ERROR.AOG_ACTIVE';
     private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
     private static CONTINGENCY_MESSAGE = 'AOG.AOG_FORM.MESSAGE.CONTINGENCY_DATA';
@@ -93,20 +96,18 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _clockSubs: Subscription;
     private _formSubs: Subscription;
     private _groupTypesSubs: Subscription;
-    private _contingencySubs: Subscription;
 
-    constructor(
-        private _dialogService: DialogService,
-        private _fb: FormBuilder,
-        private _datetimeService: DatetimeService,
-        private _apiRestService: ApiRestService,
-        private _messageService: MessageService,
-        private _clockService: ClockService,
-        private _storageService: StorageService,
-        private _messageData: DataService,
-        private _contingencyService: ContingencyService,
-        private _translationService: TranslationService
-    ) {
+    constructor(private _dialogService: DialogService,
+                private _fb: FormBuilder,
+                private _datetimeService: DatetimeService,
+                private _apiRestService: ApiRestService,
+                private _messageService: MessageService,
+                private _clockService: ClockService,
+                private _storageService: StorageService,
+                private _messageData: DataService,
+                private _contingencyService: ContingencyService,
+                private _aogService: AogService,
+                private _translationService: TranslationService) {
         this._utcModel = new TimeInstant(new Date().getTime(), null);
         this._alive = true;
         this._interval = 1000 * 60;
@@ -139,7 +140,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._safetyCheckSubs = new Subscription();
         this._clockSubs = new Subscription();
         this._formSubs = new Subscription();
-        this._contingencySubs = new Subscription();
     }
 
     ngOnInit() {
@@ -153,7 +153,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.timerSubs = this.getTimerSubs();
         this.safetyCheckSubs = this.getSafetyCheckSubs();
         this.clockSubs = this.getClockSubscription();
-        this.formSubs = this.getFormSubs();
+        this.formSubs = this.getDataAOGFormSubs();
         this.username = this._storageService.getCurrentUser().username;
 
         this._translationService.translate(AogFormComponent.MINUTE_ABBREVIATION).then(res => this.minuteAbbreviation = res);
@@ -173,7 +173,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.safetyCheckSubs.unsubscribe();
         this.clockSubs.unsubscribe();
         this.formSubs.unsubscribe();
-        this.contingencySubs.unsubscribe();
     }
 
     /**
@@ -192,7 +191,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * Subscription to get data from AOG form
      * @returns {Subscription}
      */
-    public getFormSubs(): Subscription {
+    public getDataAOGFormSubs(): Subscription {
         return this.aogForm.valueChanges.subscribe(v => {
             this.aog.station = v.station;
             this.aog.safety = this.isSafety ? v.safetyEventCode : '';
@@ -242,7 +241,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * @returns {object}
      */
     public safetyEventValidator(control: FormControl): object {
-        return !control.value && this.isSafety ? { isSafety: true } : null;
+        return !control.value && this.isSafety ? {isSafety: true} : null;
     }
 
     /**
@@ -376,13 +375,39 @@ export class AogFormComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Method triggered when aircraft tail is selected, populate the fields and the model in contingency aircraft & flight
-     * Also force selection of first flight in the form and recalculate the flight etd
+     * Method triggered when aircraft tail is selected, populate the fields and the model in aog aircraft & flight
+     * Also validates tail in active Contingency or AOG
      * @param {string} selectedOption
      */
-    public onSelectAircraft(selectedOption: string): void {
+    public onSelectAircraft(tail: string): void {
+        this.completeAircraft(tail);
+        const search: SearchContingency = SearchContingency.getInstance();
+        search.isClose = false;
+        search.tails = [tail];
+        this._aogService.validateTail(tail)
+            .then(aog => {
+                if (aog) {
+                    this._contingencyService.search(search).toPromise().then(res => {
+                        this.contingency = res.length > 0 ? res.shift() : null;
+                        if (this.contingency) {
+                            this.showContingencyConfirm();
+                        }
+                    }).catch(err => this._translationService.translateAndShow(AogFormComponent.ERRORS_DEFAULT));
+                } else {
+                    this.aogForm.get('operator').setValue(null);
+                    this.aogForm.get('fleet').setValue(null);
+                    this._translationService.translateAndShow(AogFormComponent.VALIDATION_TAIL_AOG_ERROR_MESSAGE, 2500, {value: tail});
+                }
+            }).catch(err => this._translationService.translateAndShow(AogFormComponent.ERRORS_DEFAULT));
+    }
+
+    /**
+     *Complete Aircraft information (fleet|operator|
+     * @param {string} tail
+     */
+    private completeAircraft(tail: string): void {
         this.aircraftList
-            .filter(a => a.tail === selectedOption)
+            .filter(a => a.tail === tail)
             .forEach(a => {
                 this.aog.tail = a.tail;
                 this.aog.fleet = a.fleet;
@@ -393,8 +418,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.aogForm.get('operator').updateValueAndValidity();
         this.aogForm.get('fleet').setValue(this.aog.fleet);
         this.aogForm.get('fleet').updateValueAndValidity();
-
-        this._contingencySubs = this.getContingencySubs();
     }
 
     /**
@@ -406,20 +429,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
             .toPromise()
             .then(() => this.postAog())
             .catch(() => this._translationService.translateAndShow(AogFormComponent.CLOSE_CONTINGENCY_ERROR_MESSAGE));
-    }
-
-    /**
-     * Subscription to get a contingency
-     * @returns {Subscription}
-     */
-    private getContingencySubs(): Subscription {
-        return this._apiRestService.search<Contingency[]>(AogFormComponent.CONTINGENCY_SEARCH_ENDPOINT, this.getContingencySignature())
-            .subscribe(v => {
-                this.contingency = v.length > 0 ? v.shift() : null;
-                if (this.contingency) {
-                    this.showContingencyConfirm();
-                }
-            });
     }
 
     /**
@@ -449,10 +458,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
             .toPromise()
             .then(() => {
                 if (ref.instance.response === CancelComponent.ACCEPT) {
+
                     this.aogForm.setValue({
-                        'tail': this.aog.tail,
-                        'fleet': this.aog.fleet,
-                        'operator': this.aog.operator,
+                        'tail': this.contingency.aircraft.tail,
+                        'fleet': this.contingency.aircraft.fleet,
+                        'operator': this.contingency.aircraft.operator,
                         'barcode': this.contingency.barcode,
                         'station': this.contingency.flight.origin,
                         'safety': !!this.contingency.safetyEvent.code,
@@ -467,19 +477,13 @@ export class AogFormComponent implements OnInit, OnDestroy {
                     });
                     this.aogForm.controls['closeObservation'].setValidators(Validators.required);
                 } else {
-                    this.aogForm.reset();
+                    this.aogForm.get('operator').setValue(null);
+                    this.aogForm.get('fleet').setValue(null);
                     this.contingency = null;
                 }
             });
     }
 
-    /**
-     * Signature to search a contingency before to save an AOG
-     * @returns {{isClose: boolean; tails: string[]}}
-     */
-    private getContingencySignature(): {isClose: boolean, tails: string[]} {
-        return { isClose: false, tails : [this.aogForm.controls['tail'].value] };
-    }
 
     /**
      * Get all group types
@@ -533,7 +537,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     public tailDomainValidator(control: FormControl): Observable<any> {
         const tail = control.value;
         return Observable.of(this.aircraftList).map(res => {
-            return res.find(item => item.tail === tail) ? null : { tailDomain: true };
+            return res.find(item => item.tail === tail) ? null : {tailDomain: true};
         });
     }
 
@@ -545,7 +549,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
     public operatorDomainValidator(control: FormControl) {
         const operator = control.value;
         return Observable.of(this.operatorList).map(res => {
-            return res && res.find(item => operator === item.code) ? null : { operatorDomain: true };
+            return res && res.find(item => operator === item.code) ? null : {operatorDomain: true};
         });
     }
 
@@ -830,14 +834,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
 
     set groupTypesSubs(value: Subscription) {
         this._groupTypesSubs = value;
-    }
-
-    get contingencySubs(): Subscription {
-        return this._contingencySubs;
-    }
-
-    set contingencySubs(value: Subscription) {
-        this._contingencySubs = value;
     }
 
     set hourLabel(value: string) {
