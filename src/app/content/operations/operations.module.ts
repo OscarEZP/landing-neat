@@ -25,6 +25,7 @@ import { AogListComponent } from './aog-list/aog-list.component';
 import { AogFormComponent } from './aog-form/aog-form.component';
 import {AogService} from '../_services/aog.service';
 
+import {CloseAogComponent} from './close-aog/close-aog.component';
 
 @NgModule({
     imports: [
@@ -45,7 +46,8 @@ import {AogService} from '../_services/aog.service';
         PendingListComponent,
         ResolvePendingComponent,
         AogListComponent,
-        AogFormComponent
+        AogFormComponent,
+        CloseAogComponent
     ],
     exports: [],
     providers: [
@@ -63,7 +65,8 @@ import {AogService} from '../_services/aog.service';
         CancelComponent,
         CloseContingencyComponent,
         MeetingComponent,
-        ResolvePendingComponent
+        ResolvePendingComponent,
+        CloseAogComponent
     ]
 })
 

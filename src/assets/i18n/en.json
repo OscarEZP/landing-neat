@@ -17,6 +17,8 @@
       "AOG_CREATION": "AOG Creation",
       "AOG_INFORMATION": "AOG Information",
       "AOG_TYPE": "AOG Type",
+      "CLOSE_FAILURE_MESSAGE": "Ooops, Something went wrong",
+      "CLOSE_SUCCESSFULLY_MESSAGE": "AOG has been closed successfully",
       "BARCODE": "Barcode",
       "CLOSE_OBSERVATION": "Observations for the AOG declaration",
       "DURATION": "Duration",
@@ -78,6 +80,7 @@
     "APPLY": "APPLY",
     "SUB_MENUS": {
       "CLOSE_CONTINGENCY": "Close Contingency",
+      "CLOSE_AOG": "Close AOG",
       "MEETING": "Meeting",
       "FOLLOW_UP": "Follow up",
       "PENDING": "Pending",
@@ -235,7 +238,12 @@
       "OBS_REQUIRED": "Observation is required",
       "OPERATOR": "Operator:",
       "RELEASED": "Released to service",
-      "TITLE": "Close Contingency"
+      "TITLE": "Close Contingency",
+      "AOG_CLOSE": "Close AOG",
+      "AOG_INFO": "AOG Info",
+      "AOG_BARCODE": "Barcode: ",
+      "AOG_REASON": "Reason: ",
+      "AOG_PLACEHOLDER_COMMENT": "Write your comment"
     },
     "CONTINGENCIES_WITH_PENDINGS": "Contingencies with pendings",
     "CLOSED_CONTINGENCY": "Closed contingency",

@@ -15,6 +15,8 @@ import {AogFormComponent} from '../aog-form/aog-form.component';
 import {Count} from '../../../shared/_models/common/count';
 import {tap} from 'rxjs/operators';
 import {AogService} from '../../_services/aog.service';
+import {DialogService} from '../../_services/dialog.service';
+import {CloseAogComponent} from '../close-aog/close-aog.component';
 
 @Component({
     selector: 'lsl-aog-list',
@@ -45,6 +47,8 @@ export class AogListComponent implements OnInit, OnDestroy {
                 private _apiRestService: ApiRestService,
                 private _layoutService: LayoutService,
                 private _aogService: AogService) {
+                private _layoutService: LayoutService,
+                private _dialogService: DialogService) {
 
 
         this._translate.setDefaultLang('en');
@@ -200,6 +204,16 @@ export class AogListComponent implements OnInit, OnDestroy {
             this.getList();
             this._messageData.stringMessage(null);
         }
+    }
+
+    public openCloseAircraftOnGround(aog: Aog) {
+        this._dialogService.openDialog(CloseAogComponent, {
+            data: aog,
+            hasBackdrop: true,
+            disableClose: true,
+            height: '50%',
+            width: '500px'
+        });
     }
 
     get aogList(): Aog[] {
