@@ -14,6 +14,7 @@ import {Observable} from 'rxjs/Observable';
 import {AogFormComponent} from '../aog-form/aog-form.component';
 import {Count} from '../../../shared/_models/common/count';
 import {tap} from 'rxjs/operators';
+import {AogService} from '../../_services/aog.service';
 import {DialogService} from '../../_services/dialog.service';
 import {CloseAogComponent} from '../close-aog/close-aog.component';
 
@@ -25,9 +26,6 @@ import {CloseAogComponent} from '../close-aog/close-aog.component';
 export class AogListComponent implements OnInit, OnDestroy {
 
     @ViewChild('contPaginator') public paginator: MatPaginator;
-
-    private static AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT = 'aircraftOnGroundSearch';
-    private static AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT = 'aircraftOnGroundSearchCount';
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
     private static DEFAULT_INTERVAL = 30;
@@ -48,6 +46,7 @@ export class AogListComponent implements OnInit, OnDestroy {
                 private _translate: TranslateService,
                 private _apiRestService: ApiRestService,
                 private _layoutService: LayoutService,
+                private _aogService: AogService,
                 private _dialogService: DialogService) {
 
 
@@ -130,7 +129,7 @@ export class AogListComponent implements OnInit, OnDestroy {
     private getListSubscription(signature: AogSearch): Subscription {
         this.loading = true;
         this.error = false;
-        return this._apiRestService.search<Aog[]>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT, signature).subscribe(
+        return this._aogService.search(signature).subscribe(
             (response) => {
                 this.subscribeTimer();
                 this.aogList = response;
@@ -155,8 +154,8 @@ export class AogListComponent implements OnInit, OnDestroy {
     }
 
     private getCount$(search: AogSearch): Observable<Count> {
-        return this._apiRestService
-            .search<Count>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT, search)
+        return this._aogService
+            .getTotalRecords(search)
             .pipe(
                 tap(response => this.paginatorObjectService.length = response.items)
             );
@@ -171,18 +170,18 @@ export class AogListComponent implements OnInit, OnDestroy {
         this.error = false;
         return this._apiRestService.getSingle('configTypes', AogListComponent.CONTINGENCY_UPDATE_INTERVAL)
             .subscribe(
-            rs => {
-                const res = rs as GroupTypes;
-                this.intervalToRefresh = Number(res.types[0].code ? res.types[0].code : AogListComponent.DEFAULT_INTERVAL) * 1000;
-                this.loading = false;
-                this.getList();
-            },
-            () => {
-                this.loading = false;
-                this.intervalToRefresh = AogListComponent.DEFAULT_INTERVAL * 1000;
-                this.getList();
-            }
-        );
+                rs => {
+                    const res = rs as GroupTypes;
+                    this.intervalToRefresh = Number(res.types[0].code ? res.types[0].code : AogListComponent.DEFAULT_INTERVAL) * 1000;
+                    this.loading = false;
+                    this.getList();
+                },
+                () => {
+                    this.loading = false;
+                    this.intervalToRefresh = AogListComponent.DEFAULT_INTERVAL * 1000;
+                    this.getList();
+                }
+            );
     }
 
     /**

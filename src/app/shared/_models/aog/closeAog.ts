@@ -2,7 +2,7 @@ import {Audit} from '../common/audit';
 
 export class CloseAog {
     private _aogId: number;
-    private _observation: String;
+    private _observation: string;
     private _audit: Audit;
 
     private constructor() {
@@ -23,11 +23,11 @@ export class CloseAog {
         this._aogId = value;
     }
 
-    get observation(): String {
+    get observation(): string {
         return this._observation;
     }
 
-    set observation(value: String) {
+    set observation(value: string) {
         this._observation = value;
     }
 

@@ -194,7 +194,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             this.contingencyService.loading = true;
             const search: SearchContingency = SearchContingency.getInstance();
             search.isClose = false;
-            this.contingenciesSubscription = this.contingencyService.getContingencies(search).subscribe((contingencyList: Contingency[]) => {
+            this.contingenciesSubscription = this.contingencyService.search(search).subscribe((contingencyList: Contingency[]) => {
                 const ctgInArray = contingencyList.filter(ctg => ctg.id === this.selectedContingencyPivot.id).length;
                 if (this.selectedContingencyPivot.id !== null && ctgInArray === 1) {
                     this.selectedContingency = this.selectedContingencyPivot;
