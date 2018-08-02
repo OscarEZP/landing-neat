@@ -109,8 +109,8 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
 
         this.locationSub = this.getLocationSub();
         this.groupTypesSub = this.getGroupTypesSub();
-        this.aogFormSub = this.getAogFormSubs();
         this.arrDuration = this.getDurationIntervals();
+
         this._translationService.translate(CloseContingencyComponent.MINUTE_ABBREVIATION).then(res => this.minuteAbbreviation = res);
         this._translationService.translate(CloseContingencyComponent.HOUR_ABBREVIATION).then(res => this.hourAbbreviation = res);
         this._translationService.translate(CloseContingencyComponent.HOURS_LABEL).then(res => this.hoursLabel = res);
@@ -120,22 +120,22 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.locationSub.unsubscribe();
         this.groupTypesSub.unsubscribe();
-        this.aogFormSub.unsubscribe();
     }
 
     /**
-     * Subscription to get data from AOG form
-     * @returns {Subscription}
+     * Aog from form
+     * @returns {Aog}
      */
-    private getAogFormSubs(): Subscription {
-        return this.aogForm.valueChanges.subscribe(v => {
-            this.aog.observation = this.closeForm.controls['observation'].value;
-            this.aog.station = v.station;
-            this.aog.barcode = v.barcode;
-            this.aog.reason = v.reason;
-            this.aog.durationAog = v.duration;
-            this.aog.code = v.tipology;
-        });
+    private getAogFormValues(aog: Aog, aogForm: FormGroup, closeForm: FormGroup): Aog {
+        const aogControls = aogForm.controls;
+        const closeControls = closeForm.controls;
+        aog.observation = closeControls.observation.value;
+        aog.station = aogControls.station.value;
+        aog.barcode = aogControls.barcode.value;
+        aog.reason = aogControls.reason.value;
+        aog.durationAog = aogControls.duration.value;
+        aog.code = aogControls.tipology.value;
+        return aog;
     }
 
     /**
@@ -203,6 +203,7 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
      * Submit data process
      */
     public submitForm(): void {
+
         if (this.closeForm.valid) {
             this.postCloseContingency();
         } else {
@@ -214,9 +215,9 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
      * Promise to create an AOG
      * @returns {Promise<void>}
      */
-    private postAog(): Promise<void> {
+    private postAog(aog: Aog): Promise<void> {
         return this._apiRestService
-            .search(CloseContingencyComponent.AOG_ENDPOINT, this.aog)
+            .search(CloseContingencyComponent.AOG_ENDPOINT, aog)
             .toPromise()
             .then(() => {
                 this._translationService.translateAndShow(CloseContingencyComponent.AOG_SUCCESS_MESSAGE);
@@ -234,7 +235,8 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
             .then(() => {
                 this._dataService.stringMessage('reload');
                 if (this.closeForm.controls['type'].value === this.aogTypeCode) {
-                    this.postAog();
+                    const aog = this.getAogFormValues(this.aog, this.aogForm, this.closeForm);
+                    this.postAog(aog);
                 } else {
                     this._translationService.translateAndShow(CloseContingencyComponent.CLOSE_SUCCESS_MESSAGE);
                     this.dismissCloseContigency();
