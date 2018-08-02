@@ -1,5 +1,5 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {ComponentFixture, inject, TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ContingencyListComponent} from './contingency-list.component';
 import {RouterTestingModule} from '@angular/router/testing';
 import {DataService} from '../../../shared/_services/data.service';
@@ -24,10 +24,9 @@ import {TimeInstant} from '../../../shared/_models/timeInstant';
 import {LayoutService} from '../../../layout/_services/layout.service';
 import {TranslationService} from '../../../shared/_services/translation.service';
 import {EditFieldComponent} from '../edit-field/edit-field.component';
-import {MatDialogRef} from '@angular/material';
 
 jest.mock('../../../details/_services/details.service');
-// jest.mock('../../_services/dialog.service');
+jest.mock('../../_services/dialog.service');
 jest.mock('../../_services/historical-search.service');
 jest.mock('../../_services/contingency.service');
 jest.mock('../../../shared/_services/data.service');
@@ -63,13 +62,6 @@ describe('Contingency List Test', () => {
             'ACTIVE_CONTINGENCY': 'a'
         }
     };
-
-    const MockDialogService = {
-        openDialog: () => {
-            submit: Observable.of('');
-        },
-        closeAllDialogs: () => true
-    }
 
     const MockDataService = {
         currentNumberMessage: Observable.of(this.messageSourceNumber),
@@ -118,7 +110,7 @@ describe('Contingency List Test', () => {
             ],
             providers: [
                 {provide: DataService, useValue: MockDataService},
-                {provide: DialogService, useValue: MockDialogService},
+                DialogService,
                 DetailsService,
                 HistoricalSearchService,
                 {provide: ContingencyService, useValue: MockContingencyList},
