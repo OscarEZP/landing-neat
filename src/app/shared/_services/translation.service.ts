@@ -11,8 +11,10 @@ export class TranslationService {
 
     private static LANG = 'en';
 
-    constructor(private _translateService: TranslateService,
-                private _messageService: MessageService) {
+    constructor(
+        private _translateService: TranslateService,
+        private _messageService: MessageService
+    ) {
         this._translateService.setDefaultLang(TranslationService.LANG);
     }
 
@@ -21,7 +23,7 @@ export class TranslationService {
      * @param {string} toTranslate
      * @returns {Promise<string>}
      */
-    public translate(toTranslate: string, params: { value: string } = {value: ''}): Promise<string> {
+    public translate(toTranslate: string | string[], params: TranslationParamInterface = {value: ''}): Promise<string> {
         return this._translateService.get(toTranslate, params).toPromise();
     }
 
@@ -29,7 +31,7 @@ export class TranslationService {
      * Translate and show a toast message
      * @param {string} toTranslate
      */
-    public translateAndShow(toTranslate: string, time: number = 2500, params: TranslationParamInterface = {value: ''}): Promise<void> {
+    public translateAndShow(toTranslate: string | string[], time: number = 2500, params: TranslationParamInterface = {value: ''}): Promise<void> {
         return this.translate(toTranslate, params).then((res: string) => this._messageService.openSnackBar(res, time));
     }
 }

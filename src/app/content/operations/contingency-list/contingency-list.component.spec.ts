@@ -1,5 +1,5 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {ComponentFixture, inject, TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ContingencyListComponent} from './contingency-list.component';
 import {RouterTestingModule} from '@angular/router/testing';
 import {DataService} from '../../../shared/_services/data.service';
@@ -21,8 +21,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {Types} from '../../../shared/_models/configuration/types';
 import {TimeInstant} from '../../../shared/_models/timeInstant';
-import {LogService} from '../../_services/log.service';
 import {LayoutService} from '../../../layout/_services/layout.service';
+import {TranslationService} from '../../../shared/_services/translation.service';
+import {EditFieldComponent} from '../edit-field/edit-field.component';
 
 jest.mock('../../../details/_services/details.service');
 jest.mock('../../_services/dialog.service');
@@ -38,7 +39,6 @@ describe('Contingency List Test', () => {
 
     let contingencyListComponent: ContingencyListComponent;
     let fixture: ComponentFixture<ContingencyListComponent>;
-    let contigencyService;
     let translate;
 
     const MockConfigRefresh = {
@@ -83,12 +83,6 @@ describe('Contingency List Test', () => {
         getSingle: () => Observable.of(fakeGroupTypeRS)
     };
 
-    const MockLayoutService = {
-        showAddButton: () => false,
-        showRightNav: () => true,
-        reset: () => {}
-    };
-
     class FakeLoader implements TranslateLoader {
         getTranslation(lang: string): Observable<any> {
             return Observable.of(translations);
@@ -127,20 +121,18 @@ describe('Contingency List Test', () => {
                     provide: ActivatedRoute,
                     useValue: fakeActivatedRoute
                 },
-                {provide: LayoutService, useValue: MockLayoutService}
+                LayoutService,
+                TranslationService
             ],
             declarations: [
-                ContingencyListComponent
+                ContingencyListComponent,
+                EditFieldComponent
             ]
         }).compileComponents();
         translate = TestBed.get(TranslateService);
     });
 
     beforeEach(() => {
-        inject([ContingencyService, HttpTestingController, LogService], (_contingencyService, _httpMock, _logService) => {
-            contigencyService = new ContingencyService(_httpMock, _logService);
-        });
-
         fixture = TestBed.createComponent(ContingencyListComponent);
         contingencyListComponent = fixture.componentInstance;
     });
@@ -156,4 +148,13 @@ describe('Contingency List Test', () => {
     it('$checkDataStatus method expect to be false at beginning', () => {
         expect(contingencyListComponent.checkDataStatus()).toBeFalsy();
     });
+
+    it('Details should open', () => {
+        const section = 'section';
+        const contingency = Contingency.getInstance();
+        contingencyListComponent.openDetails(contingency, section);
+        expect(contingencyListComponent.detailsService.activeContingencyChanged).toBeCalledWith(contingency);
+        expect(contingencyListComponent.detailsService.openDetails).toBeCalledWith(section);
+    });
+
 });

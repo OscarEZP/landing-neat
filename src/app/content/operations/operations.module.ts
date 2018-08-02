@@ -26,6 +26,7 @@ import { AogFormComponent } from './aog-form/aog-form.component';
 import {AogService} from '../_services/aog.service';
 
 import {CloseAogComponent} from './close-aog/close-aog.component';
+import {EditFieldComponent} from './edit-field/edit-field.component';
 
 @NgModule({
     imports: [
@@ -47,6 +48,7 @@ import {CloseAogComponent} from './close-aog/close-aog.component';
         ResolvePendingComponent,
         AogListComponent,
         AogFormComponent,
+        EditFieldComponent,
         CloseAogComponent
     ],
     exports: [],
@@ -66,6 +68,7 @@ import {CloseAogComponent} from './close-aog/close-aog.component';
         CloseContingencyComponent,
         MeetingComponent,
         ResolvePendingComponent,
+        EditFieldComponent,
         CloseAogComponent
     ]
 })

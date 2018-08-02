@@ -104,10 +104,17 @@
     "AUTHORITIES_WITHOUT_CONF": "Authorities without configuration. Ask your system administrator."
   },
   "FORM": {
+    "EDIT_FORM_TITLE": "Edit {{value}}",
     "HOUR_ABBREVIATION": "h",
     "HOUR": "hour",
     "HOURS": "hours",
     "IS_REQUIRED": "{{value}} is required",
+    "ERRORS": {
+      "SUBMIT_FAIL": "There's a problem saving the {{value}}, please try again"
+    },
+    "MESSAGES": {
+      "SAVE_SUCCESS": "The {{value}} was saved"
+    },
     "MINUTE_ABBREVIATION": "m",
     "MINUTES": "minutes",
     "REQUIRE_FIELDS": "All fields with (*) are required"
