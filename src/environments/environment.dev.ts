@@ -9,7 +9,7 @@ export const environment = {
     paths: {
         aircraftOnGround: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground',
         aircraftOnGroundSearch: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_search',
-        aircraftOnGroundCount: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_count',
+        aircraftOnGroundSearchCount: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_search/_count',
         aircrafts: ':9002/api/v1/contingencies/configurations/aircrafts',
         aircraftsSearch: ':9005/api/v1/configurations/aircrafts/_search',
         areas: ':9002/api/v1/contingencies/pendings/areas',
@@ -20,10 +20,12 @@ export const environment = {
         configStatus: ':9005/api/v1/configurations/status/_search',
         configTypes: ':9005/api/v1/configurations/types/groupNames',
         confirmForgotPassword: ':9001/api/security/users/_confirmforgotpassword',
-        contingencyList: ':9002/api/v1/contingencies',
+        contingency: ':9002/api/v1/contingencies',
         contingencySearch: ':9002/api/v1/contingencies/_search',
         contingencySearchCount: ':9002/api/v1/contingencies/_search/count',
         dateTime: ':9001/api/security/currentdatetime',
+        editReasonAircraftOnGround: ':9016/api/aircraft-on-ground/v1/aogs/_reason',
+        editReasonContingency: ':9002/api/v1/contingencies/_reason',
         flights: ':9005/api/v1/configurations/flights/_search',
         followUp: ':9002/api/v1/contingencies/status/_followUp',
         forgotPassword: ':9001/api/security/users/_forgotpassword',
@@ -54,6 +56,7 @@ export const environment = {
         technicalDefaultConfig: ':9015/api/v1/management/default-tech-analysis',
         technicalNotConfiguredAuthoritySearch: ':9015/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: ':9015/api/v1/management/tech-station/_search',
-        types: ':9005/api/v1/configurations/types'
+        types: ':9005/api/v1/configurations/types',
+        closeAog: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_close'
     }
 };

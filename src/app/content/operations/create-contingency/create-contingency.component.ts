@@ -33,6 +33,9 @@ import {DialogService} from '../../_services/dialog.service';
 import {CancelComponent} from '../cancel/cancel.component';
 import {PlannedFlightSearch} from '../../../shared/_models/configuration/plannedFlightSearch';
 import {Pagination} from '../../../shared/_models/common/pagination';
+import {ContingencyService} from '../../_services/contingency.service';
+import {AogService} from '../../_services/aog.service';
+import {TranslationService} from '../../../shared/_services/translation.service';
 
 @Component({
     selector: 'lsl-contingency-form',
@@ -42,7 +45,7 @@ import {Pagination} from '../../../shared/_models/common/pagination';
 
 export class ContingencyFormComponent implements OnInit, OnDestroy {
 
-    private static CONTINGENCY_LIST_ENDPOINT = 'contingencyList';
+    private static CONTINGENCY_ENDPOINT = 'contingency';
     private static OPERATOR_LIST_ENDPOINT = 'operator';
     private static SAFETY_EVENT_LIST_ENDPOINT = 'safetyEvent';
     private static AIRCRAFTS_SEARCH_ENDPOINT = 'aircraftsSearch';
@@ -53,11 +56,14 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private static PLANNED_FLIGTHS_ENDPOINT = 'plannedFlights';
     private static HOURS_LIMIT = 4;
     private static PLANNED_FLIGTHS_LIMIT = 500;
-
+    private static ERRORS_DEFAULT = 'ERRORS.DEFAULT';
     private static FORM_FAILURE_MESSAGE = 'OPERATIONS.CONTINGENCY_FORM.FAILURE_MESSAGE';
     private static FORM_SUCCESSFULLY_MESSAGE = 'OPERATIONS.CONTINGENCY_FORM.SUCCESSFULLY_MESSAGE';
     private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
+    private static VALIDATION_TAIL_AOG_ERROR_MESSAGE = 'TAIL.ERROR.AOG_ACTIVE';
+    private static VALIDATION_TAIL_CONTINGENCY_ERROR_MESSAGE = 'TAIL.ERROR.CONTINGENCY_ACTIVE';
+
 
     private static DATE_FORMAT = 'dd MMM yyyy ';
     private static HOUR_FORMAT = 'HH:mm:ss';
@@ -103,17 +109,18 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     private _safetyEventSubscription: Subscription;
     private _plannedFlightsSubscription: Subscription;
 
-    constructor(
-        private _dialogService: DialogService,
-        private _fb: FormBuilder,
-        private _datetimeService: DatetimeService,
-        private _clockService: ClockService,
-        private _messageData: DataService,
-        private _messageService: MessageService,
-        private _storageService: StorageService,
-        private _apiRestService: ApiRestService,
-        private _translate: TranslateService
-    ) {
+    constructor(private _dialogService: DialogService,
+                private _fb: FormBuilder,
+                private _datetimeService: DatetimeService,
+                private _clockService: ClockService,
+                private _messageData: DataService,
+                private _messageService: MessageService,
+                private _storageService: StorageService,
+                private _apiRestService: ApiRestService,
+                private _translate: TranslateService,
+                private _contingencyService: ContingencyService,
+                private _aogService: AogService,
+                private _translationService: TranslationService) {
         const initFakeDate = new Date().getTime();
         this.flightList = [];
         this.plannedFlightList = [];
@@ -247,7 +254,7 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             this.validations.isSending = true;
             let res: Response;
             this._apiRestService
-                .add<Response>(ContingencyFormComponent.CONTINGENCY_LIST_ENDPOINT, this.contingency)
+                .add<Response>(ContingencyFormComponent.CONTINGENCY_ENDPOINT, this.contingency)
                 .subscribe(response => res = response,
                     err => {
                         this.getTranslateString(ContingencyFormComponent.FORM_FAILURE_MESSAGE);
@@ -382,6 +389,9 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
             variableName = value.groupName.toLowerCase().replace(/(\_\w)/g, function (m) {
                 return m[1].toUpperCase();
             });
+            if (variableName === 'contingencyType') {
+                value.types.sort((a, b) => a.description < b.description ? 1 : -1);
+            }
             this[variableName] = value.types;
         }, this);
     }
@@ -468,19 +478,52 @@ export class ContingencyFormComponent implements OnInit, OnDestroy {
     /**
      * Method triggered when aircraft tail is selected, populate the fields and the model in contingency aircraft & flight
      * Also force selection of first flight in the form and recalculate the flight etd
-     * @param {string} selectedOption
+     * @param {string} tail
      */
-    public onSelectAircraft(selectedOption: string): void {
-        const flightSearch = new FlightSearch(selectedOption, 0, 8);
+    public onSelectAircraft(tail: string): void {
+        this._contingencyService.validateTail(tail)
+            .then(contingency => {
+                if (contingency) {
+                    this._aogService.validateTail(tail).then(aog => {
+                        if (aog) {
+                            this.flightSearch(tail);
+                        } else {
+                            this.aircraftClean();
+                            this._translationService.translateAndShow(ContingencyFormComponent.VALIDATION_TAIL_AOG_ERROR_MESSAGE, 2500, {value: tail});
+                        }
+                    }).catch(err => this._translationService.translateAndShow(ContingencyFormComponent.ERRORS_DEFAULT));
+
+                } else {
+                    this.aircraftClean();
+                    this._translationService.translateAndShow(ContingencyFormComponent.VALIDATION_TAIL_CONTINGENCY_ERROR_MESSAGE, 2500, {value: tail});
+                }
+            }).catch(err => this._translationService.translateAndShow(ContingencyFormComponent.ERRORS_DEFAULT));
+    }
+
+    /**
+     * Aircraft Clean |Tail and Operator
+     */
+    private aircraftClean(): void {
+        this.contingencyForm.get('operator').setValue('');
+        this.contingencyForm.get('fleet').setValue('');
+    }
+
+    /**
+     * Flight Search by tail
+     * @param {string} tail
+     */
+    private flightSearch(tail: string): void {
+        const flightSearch = new FlightSearch(tail, 0, 8);
         this.flightList = [];
         this.plannedFlights = false;
+
         this._apiRestService
             .search<Flight[]>(ContingencyFormComponent.FLIGTHS_ENDPOINT, flightSearch)
             .subscribe((response: Flight[]) => {
                 this.flightList = response;
                 this.defaultFlightList = response.map(val => new Flight(val.flightNumber, val.origin, val.destination, val.etd));
                 for (const item of this.aircraftList) {
-                    if (item.tail === selectedOption) {
+                    if (item.tail === tail) {
                         this.contingency.aircraft = new Aircraft(item.tail, item.fleet, item.operator);
                         if (this.flightList.length > 0) {
                             this.contingency.flight = new Flight(

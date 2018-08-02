@@ -11,6 +11,14 @@ const mock = () => {
     };
 };
 
+Object.defineProperty(window, 'matchMedia', {
+    value: () => ({
+        matches: false,
+        addListener: () => {},
+        removeListener: () => {}
+    })
+});
+
 Object.defineProperty(window, 'localStorage', {value: mock()});
 Object.defineProperty(window, 'sessionStorage', {value: mock()});
 Object.defineProperty(document, 'doctype', {

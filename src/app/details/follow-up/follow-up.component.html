@@ -41,7 +41,7 @@
                 <aside fxFlex="40" id="interval-select">
                     <mat-form-field>
                         <mat-select placeholder="Interval" [formControl]="followUpForm.controls['duration']" [(ngModel)]="followUp.requestedInterval.duration">
-                            <mat-option *ngFor="let min of durations" (click)="getCurrentTime()" [value]="min">{{ min }} {{'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.MINUTES' | translate }}</mat-option>
+                            <mat-option *ngFor="let min of durations" (click)="getCurrentTime()" [value]="min">{{ min }} {{'FORM.MINUTES' | translate }}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </aside>
@@ -58,7 +58,7 @@
                 </div>
             </div>
             <div fxLayout="row" *ngIf="delta < followUp.requestedInterval.duration" class="validate-warning remove-space">
-                {{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.TIME_AVAILABLE_WARNING' | translate }} {{ delta }} {{'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.MINUTES' | translate }}
+                {{ 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.TIME_AVAILABLE_WARNING' | translate }} {{ delta }} {{'FORM.MINUTES' | translate }}
             </div>
             <mat-form-field class="full-width">
                     <textarea matInput
@@ -81,7 +81,6 @@
         </form>
     </section>
     <section class="box" *ngIf="validations.isComponentDisabled">
-        <h2>{{ 'OPERATIONS.CONTINGENCY_FORM.TYPOLOGY' | translate }}</h2>
         {{ disabledMensage() | translate }}
     </section>
 

@@ -36,7 +36,6 @@ export class SearchHistoricalComponent implements OnInit {
     private _minFrom: Date;
     private _minTo: Date;
     private _selectedOptions = [];
-    private _paginatorObject: PaginatorObjectService;
 
     constructor(
         private _translate: TranslateService,
@@ -132,11 +131,11 @@ export class SearchHistoricalComponent implements OnInit {
     }
 
     get paginatorObject(): PaginatorObjectService {
-        return this._paginatorObject;
+        return this._searchHistoricalService.paginatorObjectService;
     }
 
     set paginatorObject(value: PaginatorObjectService) {
-        this._paginatorObject = value;
+        this._searchHistoricalService.paginatorObjectService = value;
     }
 
     ngOnInit() {
@@ -146,7 +145,6 @@ export class SearchHistoricalComponent implements OnInit {
         this.searchForm = this._searchHistoricalService.searchForm;
         this.getAircraft();
         this.setMinDate();
-        this.paginatorObject = PaginatorObjectService.getInstance();
     }
 
     private setMinDate() {

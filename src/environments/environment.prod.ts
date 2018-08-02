@@ -9,7 +9,7 @@ export const environment = {
     paths: {
         aircraftOnGround: '/api/aircraft-on-ground/v1/aircraft-on-ground',
         aircraftOnGroundSearch: '/api/aircraft-on-ground/v1/aircraft-on-ground/_search',
-        aircraftOnGroundCount: '/api/aircraft-on-ground/v1/aircraft-on-ground/_count',
+        aircraftOnGroundSearchCount: '/api/aircraft-on-ground/v1/aircraft-on-ground/_search/_count',
         aircrafts: '/api/v1/configurations/aircrafts',
         aircraftsSearch: '/api/v1/configurations/aircrafts/_search',
         areas: '/api/v1/contingencies/pendings/areas',
@@ -20,10 +20,12 @@ export const environment = {
         configStatus: '/api/v1/configurations/status/_search',
         configTypes: '/api/v1/configurations/types/groupNames',
         confirmForgotPassword: '/api/security/users/_confirmforgotpassword',
-        contingencyList: '/api/v1/contingencies',
+        contingency: '/api/v1/contingencies',
         contingencySearch: '/api/v1/contingencies/_search',
         contingencySearchCount: '/api/v1/contingencies/_search/count',
         dateTime: '/api/security/currentdatetime',
+        editReasonAircraftOnGround: '/api/aircraft-on-ground/v1/aogs/_reason',
+        editReasonContingency: '/api/v1/contingencies/_reason',
         flights: '/api/v1/configurations/flights/_search',
         followUp: '/api/v1/contingencies/status/_followUp',
         forgotPassword: '/api/security/users/_forgotpassword',
@@ -53,6 +55,7 @@ export const environment = {
         technicalDefaultConfig: '/api/v1/management/default-tech-analysis',
         technicalNotConfiguredAuthoritySearch: '/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: '/api/v1/management/tech-station/_search',
-        types: '/api/v1/configurations/types'
+        types: '/api/v1/configurations/types',
+        closeAog: '/api/aircraft-on-ground/v1/aircraft-on-ground/_close'
     }
 };

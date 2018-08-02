@@ -1,3 +1,5 @@
+import {ElementRef} from '@angular/core';
+
 export class QuillConfiguration {
 
     private _style: object;
@@ -5,6 +7,7 @@ export class QuillConfiguration {
     private _readOnly: boolean;
     private _theme: string;
     private _modules: object;
+    private _element: ElementRef;
 
     private constructor(style: object, placeholder: string, readOnly: boolean, theme: string, modules: object) {
         this._style = style;
@@ -16,16 +19,20 @@ export class QuillConfiguration {
 
     static getInstance(): QuillConfiguration {
         return new QuillConfiguration({'height': '250px'}, 'Enter text here...', false, 'snow', {
-            toolbar: [
-                ['bold', 'italic', 'underline'],            // toggled buttons
-                [{'list': 'ordered'}, {'list': 'bullet'}],
-                [{'indent': '-1'}, {'indent': '+1'}],       // outdent/indent
-
-                [{'color': []}, {'background': []}],        // dropdown with defaults from theme
-                [{'align': []}],
-
-                ['clean']                                   // remove formatting button
-            ]
+            toolbar: {
+                container: [
+                    ['bold', 'italic', 'underline'],            // toggled buttons
+                    [{'list': 'ordered'}, {'list': 'bullet'}],
+                    [{'indent': '-1'}, {'indent': '+1'}],       // outdent/indent
+                    [{'color': []}, {'background': []}],        // dropdown with defaults from theme
+                    [{'align': []}],
+                    ['clean'],                                   // remove formatting button
+                    ['html']
+                ],
+                handlers : {
+                    html: () => {}
+                }
+            }
         });
     }
 
@@ -68,5 +75,17 @@ export class QuillConfiguration {
 
     set modules(value: object) {
         this._modules = value;
+    }
+
+    get element(): ElementRef {
+        return this._element;
+    }
+
+    set element(value: ElementRef) {
+        this._element = value;
+    }
+
+    set htmlHandler(value: object) {
+        this.modules['toolbar']['handlers']['html'] = value;
     }
 }

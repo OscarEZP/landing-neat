@@ -149,7 +149,6 @@ describe('Contingency List Test', () => {
         contingencyListComponent.ngOnDestroy();
     });
 
-
     it('Test to know if the module exist', () => {
         expect(contingencyListComponent).toBeDefined();
     });

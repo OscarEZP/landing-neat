@@ -12,6 +12,11 @@ import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
 import {DataService} from '../../../shared/_services/data.service';
 import {Observable} from 'rxjs/Observable';
 import {AogFormComponent} from '../aog-form/aog-form.component';
+import {Count} from '../../../shared/_models/common/count';
+import {tap} from 'rxjs/operators';
+import {AogService} from '../../_services/aog.service';
+import {DialogService} from '../../_services/dialog.service';
+import {CloseAogComponent} from '../close-aog/close-aog.component';
 
 @Component({
     selector: 'lsl-aog-list',
@@ -21,9 +26,6 @@ import {AogFormComponent} from '../aog-form/aog-form.component';
 export class AogListComponent implements OnInit, OnDestroy {
 
     @ViewChild('contPaginator') public paginator: MatPaginator;
-
-    private static AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT = 'aircraftOnGroundSearch';
-    private static AIRCRAFT_ON_GROUND_COUNT_ENDPOINT = 'aircraftOnGroundCount';
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
     private static DEFAULT_INTERVAL = 30;
@@ -38,11 +40,14 @@ export class AogListComponent implements OnInit, OnDestroy {
     private _reloadSubscription: Subscription;
     private _timerSubscription: Subscription;
     private _intervalToRefresh: number;
+    private _countSub: Subscription;
 
     constructor(private _messageData: DataService,
                 private _translate: TranslateService,
                 private _apiRestService: ApiRestService,
-                private _layoutService: LayoutService) {
+                private _layoutService: LayoutService,
+                private _aogService: AogService,
+                private _dialogService: DialogService) {
 
 
         this._translate.setDefaultLang('en');
@@ -73,6 +78,7 @@ export class AogListComponent implements OnInit, OnDestroy {
         this.reloadSubscription.unsubscribe();
         this.intervalRefreshSubscription.unsubscribe();
         this.paginatorSubscription.unsubscribe();
+        this.countSub.unsubscribe();
         if (this.listSubscription) {
             this.listSubscription.unsubscribe();
         }
@@ -95,20 +101,24 @@ export class AogListComponent implements OnInit, OnDestroy {
 
     /**
      * Method for get a search signature for get data
-     * @return {SearchAog}
+     * @return {AogSearch}
      */
     private getSearchSignature(): AogSearch {
         const signature: AogSearch = AogSearch.getInstance();
         signature.pagination = new Pagination(this.paginatorObjectService.offset, this.paginatorObjectService.pageSize);
+        signature.isClose = false;
         return signature;
     }
 
     /**
-     * Set a subscription for get total amount of records and data list.
+     * Set a subscription for total amount of records and data list.
      */
     private getList(): void {
         const signature = this.getSearchSignature();
-        this.listSubscription = this.getListSubscription(signature);
+        this.countSub = this.getCount$(signature).subscribe(
+            () => this.listSubscription = this.getListSubscription(signature),
+            () => this.getError()
+        );
     }
 
     /**
@@ -119,11 +129,10 @@ export class AogListComponent implements OnInit, OnDestroy {
     private getListSubscription(signature: AogSearch): Subscription {
         this.loading = true;
         this.error = false;
-        return this._apiRestService.search<Aog[]>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT, signature).subscribe(
+        return this._aogService.search(signature).subscribe(
             (response) => {
                 this.subscribeTimer();
                 this.aogList = response;
-                this.getCountSubscription();
                 this.loading = false;
             },
             () => {
@@ -144,13 +153,12 @@ export class AogListComponent implements OnInit, OnDestroy {
         });
     }
 
-    private getCountSubscription(): Subscription {
-        return this._apiRestService
-            .search<number>(AogListComponent.AIRCRAFT_ON_GROUND_COUNT_ENDPOINT, null)
-            .subscribe(
-            (response) => this.paginatorObjectService.length = response,
-            () => this.getError()
-        );
+    private getCount$(search: AogSearch): Observable<Count> {
+        return this._aogService
+            .getTotalRecords(search)
+            .pipe(
+                tap(response => this.paginatorObjectService.length = response.items)
+            );
     }
 
     /**
@@ -162,18 +170,18 @@ export class AogListComponent implements OnInit, OnDestroy {
         this.error = false;
         return this._apiRestService.getSingle('configTypes', AogListComponent.CONTINGENCY_UPDATE_INTERVAL)
             .subscribe(
-            rs => {
-                const res = rs as GroupTypes;
-                this.intervalToRefresh = Number(res.types[0].code ? res.types[0].code : AogListComponent.DEFAULT_INTERVAL) * 1000;
-                this.loading = false;
-                this.getList();
-            },
-            () => {
-                this.loading = false;
-                this.intervalToRefresh = AogListComponent.DEFAULT_INTERVAL * 1000;
-                this.getList();
-            }
-        );
+                rs => {
+                    const res = rs as GroupTypes;
+                    this.intervalToRefresh = Number(res.types[0].code ? res.types[0].code : AogListComponent.DEFAULT_INTERVAL) * 1000;
+                    this.loading = false;
+                    this.getList();
+                },
+                () => {
+                    this.loading = false;
+                    this.intervalToRefresh = AogListComponent.DEFAULT_INTERVAL * 1000;
+                    this.getList();
+                }
+            );
     }
 
     /**
@@ -195,6 +203,16 @@ export class AogListComponent implements OnInit, OnDestroy {
             this.getList();
             this._messageData.stringMessage(null);
         }
+    }
+
+    public openCloseAircraftOnGround(aog: Aog) {
+        this._dialogService.openDialog(CloseAogComponent, {
+            data: aog,
+            hasBackdrop: true,
+            disableClose: true,
+            height: '50%',
+            width: '500px'
+        });
     }
 
     get aogList(): Aog[] {
@@ -289,4 +307,11 @@ export class AogListComponent implements OnInit, OnDestroy {
         this._layoutService.layout = value;
     }
 
+    get countSub(): Subscription {
+        return this._countSub;
+    }
+
+    set countSub(value: Subscription) {
+        this._countSub = value;
+    }
 }

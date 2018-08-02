@@ -25,10 +25,9 @@ export interface PartInterface {
 export class HistoricalTaskComponent implements OnInit {
 
     private static TASK_DETAIL_ENDPOINT = 'taskDetail';
-    private static DATE_FORMAT = 'dd-MM-yyyy HH:mm';
     private static MOMENT_DATE_FORMAT = 'DD-MM-YYYY';
 
-    private _detailTask: DetailTask;
+    private _dateFormat: string;
     private _analyzedTask: TimelineTask;
     private _editorLoad: boolean;
     private _dataSource: MatTableDataSource<any>;
@@ -63,6 +62,7 @@ export class HistoricalTaskComponent implements OnInit {
         this._displayedColumns = ['description', 'partGroup', 'quantity', 'eta', 'status'];
         this._tableData = [];
         this._pageSize = 5;
+        this._dateFormat = 'dd-MM-yyyy HH:mm';
     }
 
     ngOnInit() {
@@ -140,17 +140,20 @@ export class HistoricalTaskComponent implements OnInit {
             this.taskType.toUpperCase(),
             this.analyzedTask.task.ata,
             this.analyzedTask.task.barcode,
-            DateUtil.formatDate(this.detailTask.creationDate.epochTime, HistoricalTaskComponent.MOMENT_DATE_FORMAT)
+            DateUtil.formatDate(this._historicalReportService.getDetailTaskDate().epochTime, HistoricalTaskComponent.MOMENT_DATE_FORMAT)
         ];
         return arrHeader.join(' / ');
     }
 
     get detailTask(): DetailTask {
-        return this._detailTask;
+        return this._historicalReportService.detailTask;
     }
 
+    get detailTaskDate(): TimeInstant {
+        return this._historicalReportService.getDetailTaskDate();
+    }
     set detailTask(value: DetailTask) {
-        this._detailTask = value;
+        this._historicalReportService.detailTask = value;
     }
 
     set editorContent(value: string) {
@@ -209,8 +212,12 @@ export class HistoricalTaskComponent implements OnInit {
         this._pageSize = value;
     }
 
+
     get dateFormat(): string {
-        return HistoricalTaskComponent.DATE_FORMAT;
+        return this._dateFormat;
     }
 
+    set dateFormat(value: string) {
+        this._dateFormat = value;
+    }
 }

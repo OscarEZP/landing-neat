@@ -19,6 +19,9 @@ export class SearchContingency {
         this._isClose = isClose;
         this._isPending = isPending;
     }
+    static getInstance(): SearchContingency {
+        return new SearchContingency(null, null, [], TimeInstant.getInstance(), TimeInstant.getInstance(), false, false);
+    }
 
     get offSet(): number {
         return this._offSet;

@@ -1,7 +1,8 @@
-import {TimeInstant} from '../timeInstant';
 import {StatusAog} from './statusAog';
-export class Aog {
+import {Audit} from '../common/audit';
 
+export class Aog {
+    private _id: number;
     private _tail: string;
     private _fleet: string;
     private _operator: string;
@@ -12,22 +13,21 @@ export class Aog {
     private _failure: string;
     private _reason: string;
     private _status: StatusAog;
-    private _username: string;
-    private _creationDate: TimeInstant;
+    private _audit: Audit;
 
     private constructor() {
-        this.tail = '';
-        this.fleet = '';
-        this.operator = '';
-        this.station = '';
-        this.barcode = '';
-        this.safety = '';
-        this.maintenance = '';
-        this.failure = '';
-        this.reason = '';
-        this.status = StatusAog.getInstance();
-        this.username = '';
-        this.creationDate = TimeInstant.getInstance();
+        this._id = null;
+        this._tail = '';
+        this._fleet = '';
+        this._operator = '';
+        this._station = '';
+        this._barcode = '';
+        this._safety = '';
+        this._maintenance = '';
+        this._failure = '';
+        this._reason = '';
+        this._status = StatusAog.getInstance();
+        this._audit = Audit.getInstance();
     }
 
     public static getInstance() {
@@ -114,22 +114,6 @@ export class Aog {
         this._status = value;
     }
 
-    get username(): string {
-        return this._username;
-    }
-
-    set username(value: string) {
-        this._username = value;
-    }
-
-    get creationDate(): TimeInstant {
-        return this._creationDate;
-    }
-
-    set creationDate(value: TimeInstant) {
-        this._creationDate = value;
-    }
-
     get durationAog(): number {
         return this.status.requestedInterval.duration;
     }
@@ -154,4 +138,19 @@ export class Aog {
         this.status.code = value;
     }
 
+    get audit(): Audit {
+        return this._audit;
+    }
+
+    set audit(value: Audit) {
+        this._audit = value;
+    }
+
+    get id(): number {
+        return this._id;
+    }
+
+    set id(value: number) {
+        this._id = value;
+    }
 }

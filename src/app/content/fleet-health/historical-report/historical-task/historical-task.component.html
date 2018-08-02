@@ -9,7 +9,7 @@
         </div>
         <div fxLayout="row">
             <div fxFlex="">
-                <h1>{{ detailTask.ata }} / {{ detailTask.barcode }} / {{ detailTask.creationDate.epochTime | utcDate | date: dateFormat.split(' ')[0]}}</h1>
+                <h1>{{ detailTask.task.ata }} / {{ detailTask.task.barcode }} / {{ detailTaskDate.epochTime | utcDate | date: dateFormat.split(' ')[0]}}</h1>
             </div>
             <div fxFlexAlign="end center" fxLayout="row" >
                 <button [color]="primary" (click)="copyText()" mat-raised-button type="button">{{'FLEET_HEALTH.REPORT.COPY_TEXT' | translate}}</button>
@@ -20,7 +20,7 @@
     <div class="content">
         <div id="fault-name">
             <h2>{{'FLEET_HEALTH.REPORT.FAULT_NAME' | translate}}</h2>
-            <p>{{detailTask.faultName}}</p>
+            <p>{{detailTask.task.faultName}}</p>
         </div>
         <div id="description">
             <mat-accordion>
@@ -30,7 +30,7 @@
                             {{'FLEET_HEALTH.REPORT.DESCRIPTION' | translate}}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <div [innerHtml]="detailTask.description?detailTask.description:'-'"></div>
+                    <div [innerHtml]="detailTask.task.description?detailTask.task.description:'-'"></div>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
@@ -44,8 +44,7 @@
                             {{'FLEET_HEALTH.REPORT.MAINTENANCE_ACTION' | translate}} {{i+1}}
                         </mat-panel-title>
                         <mat-panel-description>
-                            {{ action.actionDate.epochTime | utcDate | date: dateFormat }} |
-                            {{ action.updateDate.epochTime | utcDate | date: dateFormat }}
+                            {{ action.actionDate.epochTime | utcDate | date: dateFormat }}
                         </mat-panel-description>
                     </mat-expansion-panel-header>
                     <p>{{action.name.firstName}} {{action.name.lastName}}</p>
