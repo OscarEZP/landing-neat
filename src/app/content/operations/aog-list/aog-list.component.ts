@@ -72,7 +72,8 @@ export class AogListComponent implements OnInit, OnDestroy {
         private _apiRestService: ApiRestService,
         private _layoutService: LayoutService,
         private _dialogService: DialogService,
-        private _storageService: StorageService
+        private _storageService: StorageService,
+        private _aogService: AogService
     ) {
         this._error = false;
         this._aogList = [];
