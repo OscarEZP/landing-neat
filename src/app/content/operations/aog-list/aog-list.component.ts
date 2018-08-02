@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Aog} from '../../../shared/_models/aog/aog';
-import {TranslateService} from '@ngx-translate/core';
 import {Layout, LayoutService} from '../../../layout/_services/layout.service';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -17,13 +16,11 @@ import {tap} from 'rxjs/operators';
 import {AogService} from '../../_services/aog.service';
 import {DialogService} from '../../_services/dialog.service';
 import {CloseAogComponent} from '../close-aog/close-aog.component';
-import {ContingencyListComponent} from '../contingency-list/contingency-list.component';
 import {TranslationService} from '../../../shared/_services/translation.service';
 import {
     EditFieldComponent, EditFieldDataInterface,
     EditFieldTranslationInterface
 } from '../edit-field/edit-field.component';
-import {Contingency} from '../../../shared/_models/contingency/contingency';
 import {Reason} from '../../../shared/_models/common/reason';
 import {Audit} from '../../../shared/_models/common/audit';
 import {StorageService} from '../../../shared/_services/storage.service';
@@ -44,9 +41,6 @@ export class AogListComponent implements OnInit, OnDestroy {
     private static EDIT_FORM_TITLE = 'FORM.EDIT_FORM_TITLE';
     private static REASON_ATTRIBUTE = 'reason';
     private static REASON_FIELD_TYPE = 'textarea';
-
-    private static AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT = 'aircraftOnGroundSearch';
-    private static AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT = 'aircraftOnGroundSearchCount';
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
     private static DEFAULT_INTERVAL = 30;
@@ -317,7 +311,7 @@ export class AogListComponent implements OnInit, OnDestroy {
             .add(AogListComponent.EDIT_REASON_AOG_ENDPOINT, reason)
             .toPromise()
             .then(() => {
-                this._translationService.translateAndShow(AogListComponent.SUCCESS_MESSAGE, 2500, dataInterface.translation.field);
+                this._translationService.translateAndShow(AogListComponent.SUCCESS_MESSAGE, 2500, {value: dataInterface.translation.field.value.toLowerCase()});
                 this._dialogService.closeAllDialogs();
                 this._messageData.stringMessage('reload');
             })
