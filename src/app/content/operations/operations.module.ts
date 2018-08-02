@@ -23,6 +23,8 @@ import {PendingListComponent} from './pending-list/pending-list.component';
 import {ResolvePendingComponent} from './resolve-pending/resolve-pending.component';
 import { AogListComponent } from './aog-list/aog-list.component';
 import { AogFormComponent } from './aog-form/aog-form.component';
+import {AogService} from '../_services/aog.service';
+
 import {CloseAogComponent} from './close-aog/close-aog.component';
 import {EditFieldComponent} from './edit-field/edit-field.component';
 
@@ -58,7 +60,8 @@ import {EditFieldComponent} from './edit-field/edit-field.component';
         ApiRestService,
         HistoricalSearchService,
         {provide: MAT_DATE_LOCALE, useValue: 'es-CL'},
-        DateUtil
+        DateUtil,
+        AogService
     ],
     entryComponents: [
         CancelComponent,

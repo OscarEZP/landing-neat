@@ -63,6 +63,12 @@
     "TO_FIND_YOUR_CODE": "to find your verification code and enter it here",
     "USERNAME": "Username"
   },
+  "TAIL": {
+    "ERROR": {
+      "AOG_ACTIVE": "There's an active AOG for the same tail {{value}}",
+      "CONTINGENCY_ACTIVE": "There's an active Contingency for the same tail {{value}}"
+    }
+  },
   "BUTTONS": {
     "ADD": "ADD",
     "CANCEL": "CANCEL",
