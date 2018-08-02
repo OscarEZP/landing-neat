@@ -4,7 +4,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from '../../shared/_services/message.service';
 import { StorageService } from '../../shared/_services/storage.service';
-import { AuthService } from '../_services/auth.service';
+import {AuthDataInterface, AuthService} from '../_services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import {Routing, RoutingService} from '../../shared/_services/routing.service';
 import {ManagementUser} from '../../shared/_models/management/managementUser';
@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit {
         this.activateLoadingBar(true);
         if (form.valid && !this.disableButton) {
             this.disableButton = true;
-            const data = this._authService.getData();
+            const data = this.data;
             this._authService.logIn(data.username, data.password).then(value => {
                 this._storageService.addCurrentUser(value);
                 this.redirect(data.username);
@@ -155,11 +155,11 @@ export class LoginComponent implements OnInit {
         }
     }
 
-    get data(): { username: string, password: string } {
+    get data(): AuthDataInterface {
         return this._authService.data;
     }
 
-    set data(value: { username: string, password: string }) {
+    set data(value: AuthDataInterface) {
         this._authService.data = value;
     }
 

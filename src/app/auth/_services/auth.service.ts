@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import { User } from '../../shared/_models/user/user';
@@ -8,6 +8,16 @@ import { ManagementUser } from '../../shared/_models/management/managementUser';
 import { Access } from '../../shared/_models/management/access';
 import { TechnicalAnalysisSearch} from '../../shared/_models/task/search/technicalAnalysisSearch';
 import { TechnicalAnalysis } from '../../shared/_models/task/fleethealth/technical/technicalAnalysis';
+
+export interface AuthDataInterface {
+    username: string;
+    password: string;
+}
+
+export interface ModuleConfigInterface {
+    code: string;
+    module: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -21,22 +31,19 @@ export class AuthService {
     static USER_MODE = 'user';
     static ADMIN_MODE = 'admin';
 
-    private isLoggedIn: boolean;
     private _redirectUrl: string;
-    private loginUrl: string;
-    public data: { username: string, password: string };
-    private _modulesConfig: { code: string, module: string }[];
+    private _loginUrl: string;
+    private _data: AuthDataInterface;
+    private _modulesConfig: ModuleConfigInterface[];
 
     constructor(
-        private http: HttpClient,
         private _storageService: StorageService,
         private _apiService: ApiRestService
     ) {
-        this.isLoggedIn = this.getIsLoggedIn();
         this._redirectUrl = '/operations';
-        this.loginUrl = '/login';
+        this._loginUrl = '/login';
         this.reset();
-        this.modulesConfig = [
+        this._modulesConfig = [
             {
                 code: 'OP',
                 module: 'operations'
@@ -59,32 +66,18 @@ export class AuthService {
      * @returns {Promise<User>}
      */
     logIn(username: string, password: string): Promise<User> {
-        let user: User = new User();
+        const user: User = new User();
         user.username = username;
         user.password = password;
         return this.apiService
             .search<User>(AuthService.LOGIN_ENDPOINT, user)
-            .toPromise()
-            .then((value: User) => {
-                let i: number;
-                user = value;
-                for (i = 0; i < user.groupList.length; i++) {
-                    if (user.groupList[i].name.toLocaleLowerCase() === AuthService.HEMICYCLE_GROUP_NAME.toLocaleLowerCase()) {
-                        this.setRedirectUrl(AuthService.HEMICYCLE_URL);
-                    }
-                    user.principalGroup = user.groupList[i].name;
-                }
-                return Promise.resolve(user);
-            }).catch((reason: HttpErrorResponse) => {
-                return Promise.reject(reason.error.message);
-            });
+            .toPromise();
     }
 
     /**
      * Logout of App
      */
     logOut(): void {
-        this.isLoggedIn = false;
         this._storageService.removeCurrentUser();
         this._storageService.removeUserManagement();
         this._storageService.removeUserAtecFilter();
@@ -114,7 +107,6 @@ export class AuthService {
      * @returns {Promise<TechnicalAnalysis[]>}
      */
     getUserAtecFilter(signature: TechnicalAnalysisSearch): Promise<TechnicalAnalysis[]> {
-
         return this.apiService.search<TechnicalAnalysis[]>(AuthService.MANAGEMENT_ATEC_FILTER, signature)
             .toPromise()
             .then((res: TechnicalAnalysis[]) => {
@@ -136,7 +128,7 @@ export class AuthService {
         if (this.userManagement && this.userManagement.access.length !== 0) {
             const access = this.findAccess(module);
             return access ?
-                !!(access.role === AuthService.USER_MODE || access.role === AuthService.ADMIN_MODE) :
+                (access.role === AuthService.USER_MODE || access.role === AuthService.ADMIN_MODE) :
                 this.getIsAuthSubModule(module, arrModules);
         } else {
             return false;
@@ -152,7 +144,7 @@ export class AuthService {
     getIsAuthSubModule(module: string, arrModules: string[]): boolean {
         if (module === AuthService.MANAGEMENT_ENDPOINT) {
             const access = this.findAccess(arrModules.shift());
-            return access ? !!(access.role === AuthService.ADMIN_MODE) : false;
+            return access ? (access.role === AuthService.ADMIN_MODE) : false;
         } else {
             return false;
         }
@@ -196,19 +188,23 @@ export class AuthService {
     }
 
     getLoginUrl(): string {
-        return this.loginUrl;
+        return this._loginUrl;
     }
 
-    getHemicycleGroupName() {
+    getHemicycleGroupName(): string {
         return AuthService.HEMICYCLE_GROUP_NAME;
     }
 
-    getHemicycleUrl() {
+    getHemicycleUrl(): string {
         return AuthService.HEMICYCLE_URL;
     }
 
-    getData(): { username: string, password: string } {
-        return this.data;
+    get data(): AuthDataInterface {
+        return this._data;
+    }
+
+    set data(value: AuthDataInterface) {
+        this._data = value;
     }
 
     reset() {
@@ -231,11 +227,11 @@ export class AuthService {
         this._storageService.userAtecFilter = value;
     }
 
-    get modulesConfig(): { code: string; module: string }[] {
+    get modulesConfig(): ModuleConfigInterface[] {
         return this._modulesConfig;
     }
 
-    set modulesConfig(value: { code: string; module: string }[]) {
+    set modulesConfig(value: ModuleConfigInterface[]) {
         this._modulesConfig = value;
     }
 }
