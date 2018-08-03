@@ -182,9 +182,8 @@
                         {{'OPERATIONS.CONTINGENCY_FORM.MAX_LENGTH_VALIDATION' | translate}}
                     </mat-error>
                 </mat-form-field>
-
                 <mat-form-field class="full-width" *ngIf="contingency">
-                    <textarea required matInput
+                    <textarea matInput
                               id="txt-aog-form-close-observation"
                               placeholder="{{'AOG.AOG_FORM.CLOSE_OBSERVATION' | translate}}"
                               [formControl]="aogForm.controls['closeObservation']"

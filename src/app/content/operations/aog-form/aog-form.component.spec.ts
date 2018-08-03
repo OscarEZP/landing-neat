@@ -15,7 +15,7 @@ import {ContingencyService} from '../../_services/contingency.service';
 import {LogService} from '../../_services/log.service';
 import {TranslationService} from '../../../shared/_services/translation.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {MatSnackBarRef} from '@angular/material';
 import {CancelComponent} from '../cancel/cancel.component';
@@ -24,6 +24,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {AogService} from '../../_services/aog.service';
+import {Aog} from '../../../shared/_models/aog/aog';
 
 jest.mock('../../../shared/_services/datetime.service');
 jest.mock('../../../shared/_services/apiRest.service');
@@ -156,30 +157,46 @@ describe('AOG form test', () => {
     //     expect(aogFormComponent.aog.operator).toEqual('OPERATOR1');
     // });
 
-    it('AOG should be filled after adding information', () => {
-        const sub = aogFormComponent.getDataAOGFormSubs();
-        aogFormComponent.aogForm.controls['station'].setValue('STATION');
-        aogFormComponent.isSafety = true;
-        aogFormComponent.aogForm.controls['safetyEventCode'].setValue('SAFETY_EVENT_CODE');
-        aogFormComponent.aogForm.controls['barcode'].setValue('BARCODE');
-        aogFormComponent.aogForm.controls['aogType'].setValue('AOGTYPE');
-        aogFormComponent.aogForm.controls['failure'].setValue('FAILURE');
-        aogFormComponent.aogForm.controls['observation'].setValue('OBSERVATION');
-        aogFormComponent.aogForm.controls['reason'].setValue('REASON');
-        aogFormComponent.aogForm.controls['duration'].setValue('DURATION');
-        aogFormComponent.aogForm.controls['tipology'].setValue('TIPOLOGY');
+    describe('Should submit form data', () => {
 
-        expect(aogFormComponent.aog.station).toEqual('STATION');
-        expect(aogFormComponent.aog.safety).toEqual('SAFETY_EVENT_CODE');
-        expect(aogFormComponent.aog.barcode).toEqual('BARCODE');
-        expect(aogFormComponent.aog.maintenance).toEqual('AOGTYPE');
-        expect(aogFormComponent.aog.failure).toEqual('FAILURE');
-        expect(aogFormComponent.aog.observation).toEqual('OBSERVATION');
-        expect(aogFormComponent.aog.reason).toEqual('REASON');
-        expect(aogFormComponent.aog.durationAog).toEqual('DURATION');
-        expect(aogFormComponent.aog.code).toEqual('TIPOLOGY');
-        sub.unsubscribe();
+        fixture = TestBed.createComponent(AogFormComponent);
+        const aogFormSubmitComponent = fixture.componentInstance;
+
+        const aogForm = new FormGroup({
+            'station': new FormControl('STATION'),
+            'safetyEventCode': new FormControl('SAFETY_EVENT_CODE'),
+            'barcode': new FormControl('BARCODE'),
+            'aogType': new FormControl('AOGTYPE'),
+            'failure': new FormControl('FAILURE'),
+            'observation': new FormControl('OBSERVATION'),
+            'reason': new FormControl('REASON'),
+            'duration': new FormControl('DURATION'),
+            'tipology': new FormControl('TIPOLOGY'),
+            'operator': new FormControl('OPERATOR'),
+            'fleet': new FormControl('FLEET'),
+            'tail': new FormControl('TAIL')
+        });
+        aogFormSubmitComponent.isSafety = true;
+        aogFormSubmitComponent.aogForm = aogForm;
+        aogFormSubmitComponent.aog = new Aog();
+
+        it('Aog should be full filled', () => {
+            aogFormSubmitComponent.submitForm();
+            console.log(aogFormSubmitComponent.contingency);
+
+            expect(aogFormSubmitComponent.aog.station).toEqual('STATION');
+            expect(aogFormSubmitComponent.aog.safety).toEqual('SAFETY_EVENT_CODE');
+            expect(aogFormSubmitComponent.aog.barcode).toEqual('BARCODE');
+            expect(aogFormSubmitComponent.aog.maintenance).toEqual('AOGTYPE');
+            expect(aogFormSubmitComponent.aog.failure).toEqual('FAILURE');
+            expect(aogFormSubmitComponent.aog.observation).toEqual('OBSERVATION');
+            expect(aogFormSubmitComponent.aog.reason).toEqual('REASON');
+            expect(aogFormSubmitComponent.aog.durationAog).toEqual('DURATION');
+            expect(aogFormSubmitComponent.aog.code).toEqual('TIPOLOGY');
+        });
     });
+
+
 
     it('Contingency data should be full filled after ACCEPT', () => {
         const MockMatSnackBarRef = {

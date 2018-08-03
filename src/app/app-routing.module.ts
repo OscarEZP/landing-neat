@@ -61,11 +61,11 @@ const ROUTES: Routes = [
                     }
                 ]
             },
-            // {
-            //     path: 'operations/aog',
-            //     component: AogListComponent,
-            //     canActivate: [AuthGuardService],
-            // },
+            {
+                path: 'operations/aog',
+                component: AogListComponent,
+                canActivate: [AuthGuardService],
+            },
             {
                 path: 'fleet-health',
                 canActivate: [AuthGuardService],
