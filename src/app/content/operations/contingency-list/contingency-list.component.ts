@@ -89,7 +89,7 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             formComponent: ContingencyFormComponent
         };
         this._editReasonSub = new Subscription();
-        this._editFieldTranslation = { title: '', field: {value: ''}, placeholder: '' };
+        this._editFieldTranslation = { field: {value: ''}, placeholder: '' };
         this._toEdit = null;
     }
 
@@ -104,7 +104,6 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this._translationService
             .translate([ContingencyListComponent.REASON_PLACEHOLDER, ContingencyListComponent.EDIT_FORM_TITLE])
             .then(v => {
-                this.editFieldTranslation.title = v[ContingencyListComponent.EDIT_FORM_TITLE];
                 this.editFieldTranslation.placeholder = v[ContingencyListComponent.REASON_PLACEHOLDER];
                 this.editFieldTranslation.field = {value: v[ContingencyListComponent.REASON_PLACEHOLDER]};
             });
@@ -214,12 +213,13 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
      * @param {string} content
      * @returns {EditFieldDataInterface}
      */
-    private getDataInterface(content: string): EditFieldDataInterface {
+    private getDataInterface(contingency: Contingency): EditFieldDataInterface {
         return {
-            content: content,
+            content: contingency.reason,
             type: ContingencyListComponent.REASON_FIELD_TYPE,
             attribute: ContingencyListComponent.REASON_ATTRIBUTE,
-            translation: this.editFieldTranslation
+            translation: this.editFieldTranslation,
+            title: contingency.aircraft.tail.concat(' / ').concat(contingency.aircraft.fleet)
         };
     }
 
@@ -228,10 +228,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
      * @param {Contingency} contingency
      */
     public editReason(contingency: Contingency): void {
-        const dataInterface = this.getDataInterface(contingency.reason);
+        const dataInterface = this.getDataInterface(contingency);
         const ref = this._dialogService.openDialog(EditFieldComponent, {
             data: dataInterface,
-            width: '50%',
+            width: '400px',
             height: '350px',
             hasBackdrop: true
         }).componentInstance;

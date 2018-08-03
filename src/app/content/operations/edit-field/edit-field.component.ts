@@ -11,10 +11,10 @@ export interface EditFieldDataInterface {
     attribute: string;
     translation: EditFieldTranslationInterface;
     type: string;
+    title: string;
 }
 
 export interface EditFieldTranslationInterface {
-    title: string;
     field: TranslationParamInterface;
     placeholder: string;
 }
@@ -110,6 +110,10 @@ export class EditFieldComponent implements OnInit {
 
     set types(value: EditFieldTypesInterface) {
         this._types = value;
+    }
+
+    get title(): string {
+        return this.data.title;
     }
 
     get translation(): EditFieldTranslationInterface {
