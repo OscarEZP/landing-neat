@@ -288,8 +288,8 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
         return new Close(
             this._data.id,
             null,
-            this.closeForm.controls['type'].value,
             this.closeForm.controls['observation'].value,
+            this.closeForm.controls['type'].value,
             this.user.userId
         );
     }
