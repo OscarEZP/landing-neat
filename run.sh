@@ -1,10 +1,10 @@
 #!/bin/bash
 PROJECT_NAME=$(basename $(pwd))
-DOCKER_DEV_DIR=docker/dev
+DOCKER_DIR=docker
+DEV_FOLDER=dev
+SONAR_FOLDER=sonar
 
 clear
-cd $DOCKER_DEV_DIR
-
 # Options
 echo
 echo "PROJECT -> " $PROJECT_NAME
@@ -13,7 +13,7 @@ echo "Choose an option:"
 echo
 echo "1.- [Run DEVELOPMENT(STAGING) environment]"
 echo "2.- [Run TESTS]"
-echo "3.- [Run PRODUCTION environment]"
+echo "3.- [Run SONAR]"
 echo "4.- [Run DEVELOPMENT(LOCAL) environment]"
 echo
 echo "5.- [Build IMAGE]"
@@ -25,30 +25,40 @@ echo
 
 if [[ $OPTION = "1" ]] ;then
   clear
+  cd $DOCKER_DIR/$DEV_FOLDER
   echo "Running DEVELOPMENT(STAGING)..."
   echo ""
   docker-compose down
   docker-compose run --service-ports --rm web
+  cd ../../
 elif [[ $OPTION = "2" ]] ;then
   clear
+  cd $DOCKER_DIR/$DEV_FOLDER
   echo "Running TESTS..."
   docker-compose down
   docker-compose run --service-ports --rm test
+  cd ../../
 elif [[ $OPTION = "3" ]] ;then
   clear
-  echo "Running PRODUCTION..."
-# docker-compose down
-# docker-compose run --service-ports --rm prod
-# docker run -it -u $UID -v $(pwd):$(pwd) -p 4200:4200 --rm $PROJECT_NAME-dev /bin/bash -c 'npm install --quiet && npm run ng build'
+  cd $DOCKER_DIR/$SONAR_FOLDER
+  echo "Running SONAR..."
+  docker-compose down
+  docker-compose up
+  sonnar-scanner
+  cd ../../
 elif [[ $OPTION = "4" ]] ;then
   clear
+  cd $DOCKER_DIR/$DEV_FOLDER
   echo "Running DEVELOPMENT(LOCAL)..."
   docker-compose down
   docker-compose run --service-ports --rm local
+  cd ../../
 elif [[ $OPTION = "5" ]] ;then
   clear
+  cd $DOCKER_DIR/$DEV_FOLDER
   echo "Building IMAGE..."
   docker-compose build
+  cd ../../
 elif [[ $OPTION = "6" ]] ;then
   clear
   echo "Running CONTAINER..."
@@ -58,4 +68,3 @@ else
   clear
   echo "Bye."
 fi
-cd ../../

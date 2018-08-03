@@ -27,9 +27,11 @@
             <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">
                 {{aog.barcode}}
             </div>
-            <div fxFlex="28" class="description" fxLayout="row" fxLayoutAlign="start center" (click)="editReason(aog)">
-                <span fxFlex="90" (mouseout)="toEdit = null"  (mouseover)="toEdit = aog.id">{{(aog.reason.length > 65) ? (aog.reason | slice:0:65) + '...' : aog.reason}}</span>
-                <mat-icon fxFlex="10" *ngIf="toEdit === aog.id">edit</mat-icon>
+            <div fxFlex="28" (mouseout)="toEdit = null"  (mouseover)="toEdit = aog.id" class="description" fxLayout="row" fxLayoutAlign="start center" (click)="editReason(aog)">
+                <span fxFlex="90">{{(aog.reason.length > 65) ? (aog.reason | slice:0:65) + '...' : aog.reason}}</span>
+                <span fxFlex="10" [hidden]="toEdit !== aog.id">
+                    <mat-icon>edit</mat-icon>
+                </span>
             </div>
             <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center"></div>
             <div fxFlex="15" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
