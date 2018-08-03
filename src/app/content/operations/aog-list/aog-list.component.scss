@@ -44,8 +44,9 @@
     color: #000000;
   }
   .description {
-    min-width: 150px;
-
+    span {
+      overflow: hidden;
+    }
   }
   .contingency-item {
     > div {

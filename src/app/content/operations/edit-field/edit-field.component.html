@@ -1,7 +1,7 @@
 <form [formGroup]="editFieldForm" #formDir="ngForm" (ngSubmit)="submitForm()">
     <div mat-dialog-title class="title-dialog-container" fxLayout="column">
         <div fxLayout="row" fxFlex>
-            <span class="title-dialog" fxFlex>{{'FORM.EDIT_FORM_TITLE' | translate: translation.field}}</span>
+            <span class="title-dialog" fxFlex>{{title}}</span>
             <button id="btn-aog-form-close-btn" type="button" class="close-btn" mat-icon-button
                     fxFlexOffset="1">
                 <mat-icon aria-label="Close button" class="material-icons close-dialog" (click)="openCancelDialog()">close
@@ -33,8 +33,8 @@
         <button id="btn-aog-form-cancel" type="button" mat-button (click)="openCancelDialog()">
             {{'BUTTONS.CANCEL'|translate}}
         </button>
-        <button [disabled]="editFieldForm.controls['textarea'].value.length === 0" id="btn-edit-field-submit" type="submit" mat-button mat-raised-button color="primary">
-            {{'BUTTONS.CREATE'|translate}}
+        <button [disabled]="editFieldForm.pristine" id="btn-edit-field-submit" type="submit" mat-button mat-raised-button color="primary">
+            {{'BUTTONS.SAVE'|translate}}
         </button>
     </div>
 </form>

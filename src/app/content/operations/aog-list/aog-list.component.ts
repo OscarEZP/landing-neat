@@ -80,7 +80,7 @@ export class AogListComponent implements OnInit, OnDestroy {
             formComponent: AogFormComponent
         };
         this._editReasonSub = new Subscription();
-        this._editFieldTranslation = {title: '', field: {value: ''}, placeholder: ''};
+        this._editFieldTranslation = {field: {value: ''}, placeholder: ''};
         this._toEdit = null;
     }
 
@@ -93,7 +93,6 @@ export class AogListComponent implements OnInit, OnDestroy {
         this._translationService
             .translate([AogListComponent.REASON_PLACEHOLDER, AogListComponent.EDIT_FORM_TITLE])
             .then(v => {
-                this.editFieldTranslation.title = v[AogListComponent.EDIT_FORM_TITLE];
                 this.editFieldTranslation.placeholder = v[AogListComponent.REASON_PLACEHOLDER];
                 this.editFieldTranslation.field = {value: v[AogListComponent.REASON_PLACEHOLDER]};
             });
@@ -258,10 +257,10 @@ export class AogListComponent implements OnInit, OnDestroy {
      * @param {Aog} aog
      */
     public editReason(aog: Aog): void {
-        const dataInterface = this.getDataInterface(aog.reason);
+        const dataInterface = this.getDataInterface(aog);
         const ref = this._dialogService.openDialog(EditFieldComponent, {
             data: dataInterface,
-            width: '50%',
+            width: '400px',
             height: '350px',
             hasBackdrop: true
         }).componentInstance;
@@ -276,12 +275,13 @@ export class AogListComponent implements OnInit, OnDestroy {
      * @param {string} content
      * @returns {EditFieldDataInterface}
      */
-    private getDataInterface(content: string): EditFieldDataInterface {
+    private getDataInterface(aog: Aog): EditFieldDataInterface {
         return {
-            content: content,
+            content: aog.reason,
             type: AogListComponent.REASON_FIELD_TYPE,
             attribute: AogListComponent.REASON_ATTRIBUTE,
-            translation: this.editFieldTranslation
+            translation: this.editFieldTranslation,
+            title: aog.tail.concat(' / ').concat(aog.fleet)
         };
     }
 
