@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import {MatDialogRef} from '@angular/material/dialog/typings/dialog-ref';
 
 @Injectable()
 export class DialogService {
@@ -7,8 +8,8 @@ export class DialogService {
     constructor(private dialog: MatDialog) {
     }
 
-    public openDialog(dialogInstance, config): void {
-        this.dialog.open(dialogInstance, config);
+    public openDialog(dialogInstance, config): MatDialogRef<any> {
+        return this.dialog.open(dialogInstance, config);
     }
 
     public findDialogById(dialogId): void {

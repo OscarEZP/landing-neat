@@ -24,7 +24,7 @@ export const environment = {
         contingencySearch: '/api/v1/contingencies/_search',
         contingencySearchCount: '/api/v1/contingencies/_search/count',
         dateTime: '/api/security/currentdatetime',
-        editReasonAircraftOnGround: '/api/aircraft-on-ground/v1/aogs/_reason',
+        editReasonAircraftOnGround: '/api/aircraft-on-ground/v1/aircraft-on-ground/_reason',
         editReasonContingency: '/api/v1/contingencies/_reason',
         flights: '/api/v1/configurations/flights/_search',
         followUp: '/api/v1/contingencies/status/_followUp',

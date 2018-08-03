@@ -12,7 +12,6 @@ export class DetailsService {
     private _selectedContingency: Contingency;
     private _section: string;
     private _scrollToConfig: ScrollToConfigOptions;
-    // private _isOpen: boolean;
 
     private _sidenavVisibilityChange: Subject<boolean> = new Subject<boolean>();
     private _selectedContingencyChange: Subject<Contingency> = new Subject<Contingency>();
@@ -28,12 +27,7 @@ export class DetailsService {
         };
 
         this.selectedContingency = Contingency.getInstance();
-        // this.isOpen = false;
         this.activeTitle = 'Follow Up';
-
-        // this.sidenavVisibilityChange.subscribe((value: boolean) => {
-        //     this.isOpen = value;
-        // });
     }
 
     public activeContingencyChanged(contingency: Contingency) {

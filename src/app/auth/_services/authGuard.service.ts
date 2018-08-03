@@ -4,9 +4,10 @@ import {
 } from '@angular/router';
 import {AuthService} from './auth.service';
 import {StorageService} from '../../shared/_services/storage.service';
+import {Group} from '../../shared/_models/user/group';
 
 @Injectable()
-export class AuthGuardService implements CanActivate, CanActivateChild {
+export class AuthGuardService implements CanActivate {
 
     constructor(
         private _authService: AuthService,
@@ -16,10 +17,8 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
 
     }
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        if (!!this._storageService.getCurrentUser().groupList &&
-            !!this._storageService.getCurrentUser()
-                .groupList
-                .find(group => group.name === this._authService.getHemicycleGroupName().toLocaleLowerCase())
+        if (!!this.groupList &&
+            !!this.groupList.find(group => group.name === this._authService.getHemicycleGroupName().toLocaleLowerCase())
         ) {
             this._router.navigate([ this._authService.getHemicycleUrl() ]);
             return false;
@@ -33,9 +32,8 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
         return false;
     }
 
-    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        // Auth for childs
-        return true;
+    get groupList(): Group[] {
+        return this._storageService.getCurrentUser().groupList;
     }
 
 }

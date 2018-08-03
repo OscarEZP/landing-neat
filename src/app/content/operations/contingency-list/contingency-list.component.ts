@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs/Subscription';
 import {DetailsService} from '../../../details/_services/details.service';
 import {Contingency} from '../../../shared/_models/contingency/contingency';
@@ -21,6 +20,14 @@ import {SearchContingency} from '../../../shared/_models/contingency/searchConti
 import {PaginatorObjectService} from '../../_services/paginator-object.service';
 import {Layout, LayoutService} from '../../../layout/_services/layout.service';
 import {ContingencyFormComponent} from '../create-contingency/create-contingency.component';
+import {
+    EditFieldComponent, EditFieldDataInterface,
+    EditFieldTranslationInterface
+} from '../edit-field/edit-field.component';
+import {Reason} from '../../../shared/_models/common/reason';
+import {Audit} from '../../../shared/_models/common/audit';
+import {StorageService} from '../../../shared/_services/storage.service';
+import {TranslationService} from '../../../shared/_services/translation.service';
 
 @Component({
     selector: 'lsl-contingency-list',
@@ -33,6 +40,14 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     @ViewChild('contPaginator') public paginator: MatPaginator;
 
+    private static EDIT_REASON_CONTINGENCY_ENDPOINT = 'editReasonContingency';
+    private static DEFAULT_ERROR_MESSAGE = 'ERRORS.DEFAULT';
+    private static SUCCESS_MESSAGE = 'FORM.MESSAGES.SAVE_SUCCESS';
+    private static REASON_PLACEHOLDER = 'OPERATIONS.CONTINGENCY_FORM.REASON_PLACEHOLDER';
+    private static EDIT_FORM_TITLE = 'FORM.EDIT_FORM_TITLE';
+    private static REASON_ATTRIBUTE = 'reason';
+    private static REASON_FIELD_TYPE = 'textarea';
+
     private _messageSubscriptions: Subscription;
     private _reloadSubscription: Subscription;
     private _contingenciesSubscription: Subscription;
@@ -40,24 +55,30 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
     private _timerSubscription: Subscription;
     private _routingSubscription: Subscription;
     private _intervalRefreshSubscription: Subscription;
+    private _paginatorSubscription: Subscription;
+    private _editReasonSub: Subscription;
+
     private _currentUTCTime: number;
     private _selectedContingency: Contingency;
     private _selectedContingencyPivot: Contingency;
     private _intervalToRefresh: number;
-    private _paginatorSubscription: Subscription;
+    private _editFieldTranslation: EditFieldTranslationInterface;
+    private _toEdit: number;
 
-    constructor(private _messageData: DataService,
-                private _dialogService: DialogService,
-                private _route: ActivatedRoute,
-                private _detailsService: DetailsService,
-                private _historicalSearchService: HistoricalSearchService,
-                private _contingencyService: ContingencyService,
-                private _translate: TranslateService,
-                private _apiRestService: ApiRestService,
-                private _layoutService: LayoutService) {
-        this._translate.setDefaultLang('en');
-        this.selectedContingency = Contingency.getInstance();
-        this.selectedContingencyPivot = Contingency.getInstance();
+    constructor(
+        private _messageData: DataService,
+        private _dialogService: DialogService,
+        private _route: ActivatedRoute,
+        private _detailsService: DetailsService,
+        private _historicalSearchService: HistoricalSearchService,
+        private _contingencyService: ContingencyService,
+        private _apiRestService: ApiRestService,
+        private _layoutService: LayoutService,
+        private _storageService: StorageService,
+        private _translationService: TranslationService
+    ) {
+        this._selectedContingency = Contingency.getInstance();
+        this._selectedContingencyPivot = Contingency.getInstance();
         this._intervalToRefresh = 0;
         this.layout = {
             disableAddButton: false,
@@ -67,6 +88,9 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             loading: false,
             formComponent: ContingencyFormComponent
         };
+        this._editReasonSub = new Subscription();
+        this._editFieldTranslation = { field: {value: ''}, placeholder: '' };
+        this._toEdit = null;
     }
 
     ngOnInit() {
@@ -77,6 +101,12 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.contingencyService.clearList();
         this.paginatorSubscription = this.getPaginationSubscription();
         this.intervalRefreshSubscription = this.getIntervalToRefresh().add(() => this.getContingencies());
+        this._translationService
+            .translate([ContingencyListComponent.REASON_PLACEHOLDER, ContingencyListComponent.EDIT_FORM_TITLE])
+            .then(v => {
+                this.editFieldTranslation.placeholder = v[ContingencyListComponent.REASON_PLACEHOLDER];
+                this.editFieldTranslation.field = {value: v[ContingencyListComponent.REASON_PLACEHOLDER]};
+            });
     }
 
     /**
@@ -107,9 +137,14 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         if (this.paginatorSubscription) {
             this.paginatorSubscription.unsubscribe();
         }
+        this.editReasonSub.unsubscribe();
         this._layoutService.reset();
     }
 
+    /**
+     * Subscription for set the paginator object
+     * @returns {Subscription}
+     */
     private getPaginationSubscription(): Subscription {
         return this.paginator.page.subscribe((page) => {
             this.paginatorObject.pageSize = page.pageSize;
@@ -159,6 +194,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         this.selectedContingencyPivot = contingency;
     }
 
+    /**
+     * Open dialog for close contingency
+     * @param contingency
+     */
     public openCloseContingency(contingency: any) {
         this._dialogService.openDialog(CloseContingencyComponent, {
             data: contingency,
@@ -169,6 +208,58 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Get data interface for Edit Field Component
+     * @param {string} content
+     * @returns {EditFieldDataInterface}
+     */
+    private getDataInterface(contingency: Contingency): EditFieldDataInterface {
+        return {
+            content: contingency.reason,
+            type: ContingencyListComponent.REASON_FIELD_TYPE,
+            attribute: ContingencyListComponent.REASON_ATTRIBUTE,
+            translation: this.editFieldTranslation,
+            title: contingency.aircraft.tail.concat(' / ').concat(contingency.aircraft.fleet)
+        };
+    }
+
+    /**
+     * Open a modal for edit a contingency reason field
+     * @param {Contingency} contingency
+     */
+    public editReason(contingency: Contingency): void {
+        const dataInterface = this.getDataInterface(contingency);
+        const ref = this._dialogService.openDialog(EditFieldComponent, {
+            data: dataInterface,
+            width: '400px',
+            height: '350px',
+            hasBackdrop: true
+        }).componentInstance;
+        this.editReasonSub = ref.submit.subscribe(
+            description => this.postEditReason(this.getReasonSignature(contingency.id, description), dataInterface),
+                err => console.error(err)
+        );
+    }
+
+    /**
+     * Get signature for edit reason
+     * @param {number} id
+     * @param {string} description
+     * @returns {Reason}
+     */
+    private getReasonSignature(id: number, description: string): Reason {
+        const reason = Reason.getInstance();
+        reason.description = description;
+        reason.id = id;
+        reason.audit = Audit.getInstance();
+        reason.audit.username = this.username;
+        return reason;
+    }
+
+    /**
+     * Open a modal for create a meeting
+     * @param {Contingency} contingency
+     */
     public openMeeting(contingency: Contingency) {
         this._dialogService.openDialog(MeetingComponent, {
             data: contingency,
@@ -179,6 +270,28 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Promise for edit reason
+     * @param {Reason} reason
+     * @param {EditFieldDataInterface} dataInterface
+     * @returns {Promise<void>}
+     */
+    private postEditReason(reason: Reason, dataInterface: EditFieldDataInterface): Promise<void> {
+        return this._apiRestService
+            .add(ContingencyListComponent.EDIT_REASON_CONTINGENCY_ENDPOINT, reason)
+            .toPromise()
+            .then(() => {
+                this._translationService.translateAndShow(ContingencyListComponent.SUCCESS_MESSAGE, 2500, {value: dataInterface.translation.field.value.toLowerCase()});
+                this._dialogService.closeAllDialogs();
+                this._messageData.stringMessage('reload');
+            })
+            .catch(() => this._translationService.translateAndShow(ContingencyListComponent.DEFAULT_ERROR_MESSAGE));
+    }
+
+    /**
+     * Reload list if the message is 'reload'
+     * @param message
+     */
     public reloadList(message) {
         if (message === 'reload') {
             this.getContingencies();
@@ -208,6 +321,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Subscription for reload list
+     * @returns {Subscription}
+     */
     private subscribeTimer(): Subscription {
         if (this.timerSubscription) {
             this.timerSubscription.unsubscribe();
@@ -217,6 +334,10 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Subscription for get an interval for refresh data
+     * @returns {Subscription}
+     */
     private getIntervalToRefresh(): Subscription {
         this.contingencyService.loading = true;
 
@@ -370,5 +491,34 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
 
     set paginatorSubscription(value: Subscription) {
         this._paginatorSubscription = value;
+    }
+
+    get editReasonSub(): Subscription {
+        return this._editReasonSub;
+    }
+
+    set editReasonSub(value: Subscription) {
+        this._editReasonSub = value;
+    }
+
+    get username(): string {
+        return this._storageService.getCurrentUser().username;
+    }
+
+
+    get editFieldTranslation(): EditFieldTranslationInterface {
+        return this._editFieldTranslation;
+    }
+
+    set editFieldTranslation(value: EditFieldTranslationInterface) {
+        this._editFieldTranslation = value;
+    }
+
+    get toEdit(): number {
+        return this._toEdit;
+    }
+
+    set toEdit(value: number) {
+        this._toEdit = value;
     }
 }
