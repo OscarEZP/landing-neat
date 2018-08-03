@@ -97,6 +97,10 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _formSubs: Subscription;
     private _groupTypesSubs: Subscription;
 
+    private _contingencyType: string;
+    private _failureType: string;
+    private _aogStatus: string;
+
     constructor(private _dialogService: DialogService,
                 private _fb: FormBuilder,
                 private _datetimeService: DatetimeService,
@@ -140,6 +144,10 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._safetyCheckSubs = new Subscription();
         this._clockSubs = new Subscription();
         this._formSubs = new Subscription();
+
+        this._contingencyType = '';
+        this._failureType = '';
+        this._aogStatus = '';
     }
 
     ngOnInit() {
@@ -857,5 +865,29 @@ export class AogFormComponent implements OnInit, OnDestroy {
 
     set hourAbbreviation(value: string) {
         this._hourAbbreviation = value;
+    }
+
+    get contingencyType(): string {
+        return this._contingencyType;
+    }
+
+    set contingencyType(value: string) {
+        this._contingencyType = value;
+    }
+
+    get failureType(): string {
+        return this._failureType;
+    }
+
+    set failureType(value: string) {
+        this._failureType = value;
+    }
+
+    get aogStatus(): string {
+        return this._aogStatus;
+    }
+
+    set aogStatus(value: string) {
+        this._aogStatus = value;
     }
 }

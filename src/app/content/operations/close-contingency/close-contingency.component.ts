@@ -66,6 +66,11 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
     private _groupTypesSub: Subscription;
     private _aogFormSub: Subscription;
 
+    private _closeType: string;
+    private _contingencyType: string;
+    private _failureType: string;
+    private _aogStatus: string;
+
     constructor(
         private _dialogService: DialogService,
         private _storageService: StorageService,
@@ -95,6 +100,11 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
         this._typeCloseList = new GroupTypes();
         this._aog = Aog.getInstance();
         this._aogTypeCode = 'AOG';
+
+        this._closeType = '';
+        this._contingencyType = '';
+        this._failureType = '';
+        this._aogStatus = '';
     }
 
     ngOnInit() {
@@ -458,5 +468,37 @@ export class CloseContingencyComponent implements OnInit, OnDestroy {
 
     set aogFormSub(value: Subscription) {
         this._aogFormSub = value;
+    }
+
+    get closeType(): string {
+        return this._closeType;
+    }
+
+    set closeType(value: string) {
+        this._closeType = value;
+    }
+
+    get contingencyType(): string {
+        return this._contingencyType;
+    }
+
+    set contingencyType(value: string) {
+        this._contingencyType = value;
+    }
+
+    get failureType(): string {
+        return this._failureType;
+    }
+
+    set failureType(value: string) {
+        this._failureType = value;
+    }
+
+    get aogStatus(): string {
+        return this._aogStatus;
+    }
+
+    set aogStatus(value: string) {
+        this._aogStatus = value;
     }
 }

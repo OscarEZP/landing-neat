@@ -76,7 +76,7 @@ export class CloseAogComponent implements OnInit {
         }
     }
 
-    public submitForm(value: any) {
+    public submitForm() {
         if (this.closeAogForm.valid) {
             this.closeAog.observation = this.closeAogForm.controls['observation'].value;
             this.validations.isSending = true;
