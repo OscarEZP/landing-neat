@@ -37,7 +37,7 @@ export class AogService {
     }
 
     /**
-     * Get total record for pagination
+     * Get total Aog records for pagination
      * @param {AogSearch} search
      * @returns {Observable<any>}
      */
