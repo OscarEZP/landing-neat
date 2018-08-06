@@ -198,7 +198,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * @param {FormGroup} formGroup
      * @returns {Aog}
      */
-    private getAogFromForm(aog: Aog, formGroup: FormGroup): Aog {
+    public getAogFromForm(aog: Aog, formGroup: FormGroup): Aog {
         const controls = formGroup.controls;
         aog.station = controls.station.value;
         aog.safety = this.isSafety ? controls.safetyEventCode.value : '';
@@ -433,8 +433,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
      *Complete Aircraft information (fleet|operator|
      * @param {string} tail
      */
-    private completeAircraft(tail: string): void {
-        const aircraft = this.aircraftList.find(a => a.tail === 'tail');
+    public completeAircraft(tail: string): void {
+        const aircraft = this.aircraftList.find(a => a.tail === tail);
         if (aircraft) {
             this.aog.tail = aircraft.tail;
             this.aog.fleet = aircraft.fleet;

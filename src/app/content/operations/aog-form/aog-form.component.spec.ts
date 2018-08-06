@@ -24,7 +24,9 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {AogService} from '../../_services/aog.service';
-import {Aog} from '../../../shared/_models/aog/aog';
+import {Aircraft} from '../../../shared/_models/aircraft';
+import {TimeInstant} from '../../../shared/_models/timeInstant';
+import {Types} from '../../../shared/_models/configuration/types';
 
 jest.mock('../../../shared/_services/datetime.service');
 jest.mock('../../../shared/_services/apiRest.service');
@@ -148,55 +150,16 @@ describe('AOG form test', () => {
         });
     });
 
-    // it('On select aircraft should complete tail, fleet & operator', () => {
-    //     aogFormComponent.aircraftList = [new Aircraft('TAIL1', 'FLEET1', 'OPERATOR1' )];
-    //     aogFormComponent.operatorList = [new Types('OPERATOR1', 'OPERATOR', TimeInstant.getInstance())];
-    //     aogFormComponent.onSelectAircraft('TAIL1');
-    //     expect(aogFormComponent.aog.tail).toEqual('TAIL1');
-    //     expect(aogFormComponent.aog.fleet).toEqual('FLEET1');
-    //     expect(aogFormComponent.aog.operator).toEqual('OPERATOR1');
-    // });
-
-    describe('Should submit form data', () => {
-
-        fixture = TestBed.createComponent(AogFormComponent);
-        const aogFormSubmitComponent = fixture.componentInstance;
-
-        const aogForm = new FormGroup({
-            'station': new FormControl('STATION'),
-            'safetyEventCode': new FormControl('SAFETY_EVENT_CODE'),
-            'barcode': new FormControl('BARCODE'),
-            'aogType': new FormControl('AOGTYPE'),
-            'failure': new FormControl('FAILURE'),
-            'observation': new FormControl('OBSERVATION'),
-            'reason': new FormControl('REASON'),
-            'duration': new FormControl('DURATION'),
-            'tipology': new FormControl('TIPOLOGY'),
-            'operator': new FormControl('OPERATOR'),
-            'fleet': new FormControl('FLEET'),
-            'tail': new FormControl('TAIL')
-        });
-        aogFormSubmitComponent.isSafety = true;
-        aogFormSubmitComponent.aogForm = aogForm;
-        aogFormSubmitComponent.aog = new Aog();
-
-        it('Aog should be full filled', () => {
-            aogFormSubmitComponent.submitForm();
-            console.log(aogFormSubmitComponent.contingency);
-
-            expect(aogFormSubmitComponent.aog.station).toEqual('STATION');
-            expect(aogFormSubmitComponent.aog.safety).toEqual('SAFETY_EVENT_CODE');
-            expect(aogFormSubmitComponent.aog.barcode).toEqual('BARCODE');
-            expect(aogFormSubmitComponent.aog.maintenance).toEqual('AOGTYPE');
-            expect(aogFormSubmitComponent.aog.failure).toEqual('FAILURE');
-            expect(aogFormSubmitComponent.aog.observation).toEqual('OBSERVATION');
-            expect(aogFormSubmitComponent.aog.reason).toEqual('REASON');
-            expect(aogFormSubmitComponent.aog.durationAog).toEqual('DURATION');
-            expect(aogFormSubmitComponent.aog.code).toEqual('TIPOLOGY');
-        });
+    it('On select aircraft should complete tail, fleet & operator', () => {
+        aogFormComponent.aircraftList = [new Aircraft('TAIL1', 'FLEET1', 'OPERATOR1' )];
+        aogFormComponent.operatorList = [new Types('OPERATOR1', 'OPERATOR', TimeInstant.getInstance())];
+        aogFormComponent.completeAircraft('TAIL1');
+        expect(aogFormComponent.aog.tail).toEqual('TAIL1');
+        expect(aogFormComponent.aog.fleet).toEqual('FLEET1');
+        expect(aogFormComponent.aog.operator).toEqual('OPERATOR1');
+        aogFormComponent.aircraftList = [];
+        aogFormComponent.operatorList = [];
     });
-
-
 
     it('Contingency data should be full filled after ACCEPT', () => {
         const MockMatSnackBarRef = {

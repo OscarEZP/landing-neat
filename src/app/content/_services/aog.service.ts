@@ -43,11 +43,11 @@ export class AogService {
     }
 
     /**
-     *
+     * If there is an AOG with the same tail, will return false
      * @param {string} tail
      * @returns {Promise<boolean>}
      */
-    public validateTail(tail: string): Promise<Aog[]> {
+    public validateTail(tail: string): Promise<boolean> {
         const search: AogSearch = AogSearch.getInstance();
         search.isClose = false;
         search.tails = [tail];
