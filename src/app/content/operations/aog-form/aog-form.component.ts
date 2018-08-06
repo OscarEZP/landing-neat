@@ -222,7 +222,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * @param {string} observation
      * @returns {Close}
      */
-    private getContingencyWithClose(id: number, username: string, observation: string): Close {
+    private getCloseForContingency(id: number, username: string, observation: string): Close {
         const close = new Close();
         close.id = id;
         close.username = username;
@@ -271,7 +271,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
         if (this.aogForm.valid) {
             this.aog = this.getAogFromForm(this.aog, this.aogForm);
             if (this.contingency) {
-                this.contingency.close = this.getContingencyWithClose(this.contingency.id, this.aog.audit.username, this.aogForm.controls.closeObservation.value);
+                this.contingency.close = this.getCloseForContingency(this.contingency.id, this.aog.audit.username, this.aogForm.controls.closeObservation.value);
                 this.postCloseContingency(this.contingency.close, this.aog);
             } else {
                 this.postAog(this.aog);
