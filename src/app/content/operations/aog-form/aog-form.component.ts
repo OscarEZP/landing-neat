@@ -121,7 +121,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
             'tail': [this.aog.tail, Validators.required, this.tailDomainValidator.bind(this)],
             'fleet': [this.aog.fleet, Validators.required],
             'operator': [this.aog.operator, Validators.required, this.operatorDomainValidator.bind(this)],
-            'station': [this.aog.station, Validators.required],
+            'station': [this.aog.station, [Validators.required, Validators.maxLength(3)]],
             'safety': [!!this.aog.safety, Validators.required],
             'barcode': [this.aog.barcode, [Validators.pattern('^([a-zA-Z0-9])+'), Validators.maxLength(80)]],
             'safetyEventCode': [this.aog.safety, this.safetyEventValidator.bind(this)],
@@ -500,6 +500,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
                         'tipology': this.aog.code,
                         'closeObservation': ''
                     });
+                    this.aogForm.controls['closeObservation'].setValidators(Validators.required);
                 } else {
                     this.aogForm.get('operator').setValue(null);
                     this.aogForm.get('fleet').setValue(null);

@@ -75,6 +75,7 @@
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
                     <mat-form-field fxFlex="25">
                         <input required id="in-aog-form-backup-station"
+                               maxlength="3"
                                #searchStation type="text"
                                placeholder="{{ 'AOG.AOG_FORM.STATION' | translate }}" matInput
                                [formControl]="aogForm.controls['station']" [matAutocomplete]="stationString">
