@@ -14,6 +14,7 @@ import {Observable} from 'rxjs/Observable';
 import {AogFormComponent} from '../aog-form/aog-form.component';
 import {Count} from '../../../shared/_models/common/count';
 import {RecoveryPlanViewComponent} from './recovery-plan/recovery-plan-view/recovery-plan-view.component';
+import {tap} from 'rxjs/operators';
 
 @Component({
     selector: 'lsl-aog-list',
