@@ -107,7 +107,7 @@ export class ContingencyService {
             );
     }
 
-    public validateTail(tail: string): Promise<boolean> {
+    public validateTail(tail: string): Promise<Contingency[]> {
         const search: SearchContingency = SearchContingency.getInstance();
         search.isClose = false;
         search.tails = [tail];
