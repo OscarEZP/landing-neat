@@ -44,11 +44,11 @@ describe('Contingency List Test', () => {
     const MockConfigRefresh = {
         'groupName' : 'CONTINGENCY_UPDATE_INTERVAL',
         'types' : [ {
-            'code' : '130',
-            'description' : 'Period of time (seconds) to refresh contingency list view',
-            'updateDate' : {
-                'label' : '2018-01-24T15:55:56.549Z',
-                'epochTime' : 1516809356549
+            'code': '130',
+            'description': 'Period of time (seconds) to refresh contingency list view',
+            'updateDate': {
+                'label': '2018-01-24T15:55:56.549Z',
+                'epochTime': 1516809356549
             }
         } ]
     };

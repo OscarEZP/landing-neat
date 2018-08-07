@@ -71,7 +71,7 @@ import {EditFieldComponent} from './edit-field/edit-field.component';
         MeetingComponent,
         ResolvePendingComponent,
         EditFieldComponent,
-        CloseAogComponent
+        CloseAogComponent,
         RecoveryPlanViewComponent
     ]
 })
