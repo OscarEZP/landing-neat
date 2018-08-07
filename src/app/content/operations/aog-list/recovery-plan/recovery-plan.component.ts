@@ -1,18 +1,18 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {Aog} from '../../../../../shared/_models/aog/aog';
+import {Aog} from '../../../../shared/_models/aog/aog';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 
 @Component({
-  selector: 'lsl-recovery-plan-view',
-  templateUrl: './recovery-plan-view.component.html',
-  styleUrls: ['./recovery-plan-view.component.css']
+  selector: 'lsl-recovery-plan',
+  templateUrl: './recovery-plan.component.html',
+  styleUrls: ['./recovery-plan.component.css']
 })
-export class RecoveryPlanViewComponent implements OnInit {
+export class RecoveryPlanComponent implements OnInit {
 
     private _aogData: Aog;
 
     constructor(@Inject(MAT_DIALOG_DATA) private matDialogData: Aog,
-                private _dialogRef: MatDialogRef<RecoveryPlanViewComponent>) {
+                private _dialogRef: MatDialogRef<RecoveryPlanComponent>) {
         this._aogData = matDialogData;
     }
 

@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RecoveryStagesComponent} from './recovery-stages/recovery-stages.component';
-import {RecoveryPlanViewComponent} from './recovery-plan-view/recovery-plan-view.component';
+import {RecoveryPlanComponent} from './recovery-plan.component';
 import {SharedModule} from '../../../../shared/shared.module';
 import {RecoveryRealPlanComponent} from './recovery-real-plan/recovery-real-plan.component';
 import {KonvaModule} from 'ng2-konva';
@@ -14,7 +14,7 @@ import {KonvaModule} from 'ng2-konva';
     ],
     declarations: [
         RecoveryStagesComponent,
-        RecoveryPlanViewComponent,
+        RecoveryPlanComponent,
         RecoveryRealPlanComponent
     ]
 })

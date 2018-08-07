@@ -24,7 +24,7 @@ import {ResolvePendingComponent} from './resolve-pending/resolve-pending.compone
 import {AogListComponent} from './aog-list/aog-list.component';
 import {AogFormComponent} from './aog-form/aog-form.component';
 import {RecoveryPlanModule} from './aog-list/recovery-plan/recovery-plan.module';
-import {RecoveryPlanViewComponent} from './aog-list/recovery-plan/recovery-plan-view/recovery-plan-view.component';
+import {RecoveryPlanComponent} from './aog-list/recovery-plan/recovery-plan.component';
 import {AogService} from '../_services/aog.service';
 import {CloseAogComponent} from './close-aog/close-aog.component';
 import {EditFieldComponent} from './edit-field/edit-field.component';
@@ -72,7 +72,7 @@ import {EditFieldComponent} from './edit-field/edit-field.component';
         ResolvePendingComponent,
         EditFieldComponent,
         CloseAogComponent,
-        RecoveryPlanViewComponent
+        RecoveryPlanComponent
     ]
 })
 

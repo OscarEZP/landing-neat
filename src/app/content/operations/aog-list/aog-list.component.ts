@@ -12,7 +12,7 @@ import {DataService} from '../../../shared/_services/data.service';
 import {Observable} from 'rxjs/Observable';
 import {AogFormComponent} from '../aog-form/aog-form.component';
 import {Count} from '../../../shared/_models/common/count';
-import {RecoveryPlanViewComponent} from './recovery-plan/recovery-plan-view/recovery-plan-view.component';
+import {RecoveryPlanComponent} from './recovery-plan/recovery-plan.component';
 import {tap} from 'rxjs/operators';
 import {AogService} from '../../_services/aog.service';
 import {DialogService} from '../../_services/dialog.service';
@@ -320,7 +320,7 @@ export class AogListComponent implements OnInit, OnDestroy {
     }
 
     public openRecoveryPlan(selectedAog: Aog): void {
-        this._dialogService.openDialog(RecoveryPlanViewComponent, {
+        this._dialogService.openDialog(RecoveryPlanComponent, {
             maxWidth: '100vw',
             width: '100%',
             height: '100%',

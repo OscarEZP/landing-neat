@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RecoveryPlanViewComponent } from './recovery-plan-view.component';
+import { RecoveryPlanComponent } from './recovery-plan.component';
 
-describe('RecoveryPlanViewComponent', () => {
-  let component: RecoveryPlanViewComponent;
-  let fixture: ComponentFixture<RecoveryPlanViewComponent>;
+describe('RecoveryPlanComponent', () => {
+  let component: RecoveryPlanComponent;
+  let fixture: ComponentFixture<RecoveryPlanComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RecoveryPlanViewComponent ]
+      declarations: [ RecoveryPlanComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RecoveryPlanViewComponent);
+    fixture = TestBed.createComponent(RecoveryPlanComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
