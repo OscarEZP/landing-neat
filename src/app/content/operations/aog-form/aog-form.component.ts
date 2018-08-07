@@ -26,6 +26,7 @@ import {MatSnackBarRef} from '@angular/material/snack-bar/typings/snack-bar-ref'
 import {TranslationService} from '../../../shared/_services/translation.service';
 import {AogService} from '../../_services/aog.service';
 import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
+import {Close} from '../../../shared/_models/contingency/close';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -94,7 +95,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _safetyEventSubs: Subscription;
     private _safetyCheckSubs: Subscription;
     private _clockSubs: Subscription;
-    private _formSubs: Subscription;
     private _groupTypesSubs: Subscription;
 
     private _contingencyType: string;
@@ -121,7 +121,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
             'tail': [this.aog.tail, Validators.required, this.tailDomainValidator.bind(this)],
             'fleet': [this.aog.fleet, Validators.required],
             'operator': [this.aog.operator, Validators.required, this.operatorDomainValidator.bind(this)],
-            'station': [this.aog.station, Validators.required],
+            'station': [this.aog.station, [Validators.required, Validators.maxLength(3)]],
             'safety': [!!this.aog.safety, Validators.required],
             'barcode': [this.aog.barcode, [Validators.pattern('^([a-zA-Z0-9])+'), Validators.maxLength(80)]],
             'safetyEventCode': [this.aog.safety, this.safetyEventValidator.bind(this)],
@@ -143,7 +143,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._datetimeSubs = new Subscription();
         this._safetyCheckSubs = new Subscription();
         this._clockSubs = new Subscription();
-        this._formSubs = new Subscription();
 
         this._contingencyType = '';
         this._failureType = '';
@@ -161,7 +160,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.timerSubs = this.getTimerSubs();
         this.safetyCheckSubs = this.getSafetyCheckSubs();
         this.clockSubs = this.getClockSubscription();
-        this.formSubs = this.getDataAOGFormSubs();
         this.username = this._storageService.getCurrentUser().username;
 
         this._translationService.translate(AogFormComponent.MINUTE_ABBREVIATION).then(res => this.minuteAbbreviation = res);
@@ -180,7 +178,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.datetimeSubs.unsubscribe();
         this.safetyCheckSubs.unsubscribe();
         this.clockSubs.unsubscribe();
-        this.formSubs.unsubscribe();
     }
 
     /**
@@ -196,27 +193,42 @@ export class AogFormComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Subscription to get data from AOG form
-     * @returns {Subscription}
+     * Get Aog from Aog Form
+     * @param {Aog} aog
+     * @param {FormGroup} formGroup
+     * @returns {Aog}
      */
-    public getDataAOGFormSubs(): Subscription {
-        return this.aogForm.valueChanges.subscribe(v => {
-            this.aog.station = v.station;
-            this.aog.safety = this.isSafety ? v.safetyEventCode : '';
-            this.aog.barcode = v.barcode;
-            this.aog.maintenance = v.aogType;
-            this.aog.failure = v.failure;
-            this.aog.observation = v.observation;
-            this.aog.reason = v.reason;
-            this.aog.durationAog = v.duration;
-            this.aog.code = v.tipology;
-            if (this.contingency) {
-                this.contingency.close.id = this.contingency.id;
-                this.contingency.close.username = this.aog.audit.username;
-                this.contingency.close.type = AogFormComponent.AOG_TYPE;
-                this.contingency.close.observation = v.closeObservation;
-            }
-        });
+    public getAogFromForm(aog: Aog, formGroup: FormGroup): Aog {
+        const controls = formGroup.controls;
+        aog.station = controls.station.value;
+        aog.safety = this.isSafety ? controls.safetyEventCode.value : '';
+        aog.barcode = controls.barcode.value;
+        aog.maintenance = controls.aogType.value;
+        aog.failure = controls.failure.value;
+        aog.observation = controls.observation.value;
+        aog.reason = controls.reason.value;
+        aog.durationAog = controls.duration.value;
+        aog.code = controls.tipology.value;
+        aog.fleet = controls.fleet.value;
+        aog.operator = controls.operator.value;
+        aog.tail = controls.tail.value;
+        return aog;
+    }
+
+    /**
+     * Get a close signature were there is a contingency related
+     * @param {number} id
+     * @param {string} username
+     * @param {string} observation
+     * @returns {Close}
+     */
+    private getCloseForContingency(id: number, username: string, observation: string): Close {
+        const close = new Close();
+        close.id = id;
+        close.username = username;
+        close.type = AogFormComponent.AOG_TYPE;
+        close.observation = observation;
+        return close;
     }
 
     /**
@@ -257,10 +269,12 @@ export class AogFormComponent implements OnInit, OnDestroy {
      */
     public submitForm(): void {
         if (this.aogForm.valid) {
+            this.aog = this.getAogFromForm(this.aog, this.aogForm);
             if (this.contingency) {
-                this.postCloseContingency();
+                this.contingency.close = this.getCloseForContingency(this.contingency.id, this.aog.audit.username, this.aogForm.controls.closeObservation.value);
+                this.postCloseContingency(this.contingency.close, this.aog);
             } else {
-                this.postAog();
+                this.postAog(this.aog);
             }
         } else {
             this._translationService.translateAndShow(AogFormComponent.VALIDATION_ERROR_MESSAGE);
@@ -271,9 +285,9 @@ export class AogFormComponent implements OnInit, OnDestroy {
      * Promise to send data
      * @returns {Promise<void>}
      */
-    private postAog(): Promise<void> {
+    private postAog(aog: Aog): Promise<void> {
         return this._apiRestService
-            .search(AogFormComponent.AOG_ENDPOINT, this.aog)
+            .search(AogFormComponent.AOG_ENDPOINT, aog)
             .toPromise()
             .then(() => {
                 this._translationService.translateAndShow(AogFormComponent.AOG_SUCCESS_MESSAGE);
@@ -406,43 +420,40 @@ export class AogFormComponent implements OnInit, OnDestroy {
                         if (this.contingency) {
                             this.showContingencyConfirm();
                         }
-                    }).catch(err => this._translationService.translateAndShow(AogFormComponent.ERRORS_DEFAULT));
+                    }).catch(() => this._translationService.translateAndShow(AogFormComponent.ERRORS_DEFAULT));
                 } else {
                     this.aogForm.get('operator').setValue(null);
                     this.aogForm.get('fleet').setValue(null);
                     this._translationService.translateAndShow(AogFormComponent.VALIDATION_TAIL_AOG_ERROR_MESSAGE, 2500, {value: tail});
                 }
-            }).catch(err => this._translationService.translateAndShow(AogFormComponent.ERRORS_DEFAULT));
+            }).catch(() => this._translationService.translateAndShow(AogFormComponent.ERRORS_DEFAULT));
     }
 
     /**
      *Complete Aircraft information (fleet|operator|
      * @param {string} tail
      */
-    private completeAircraft(tail: string): void {
-        this.aircraftList
-            .filter(a => a.tail === tail)
-            .forEach(a => {
-                this.aog.tail = a.tail;
-                this.aog.fleet = a.fleet;
-                this.aog.operator = a.operator;
-            });
-
+    public completeAircraft(tail: string): void {
+        const aircraft = this.aircraftList.find(a => a.tail === tail);
+        if (aircraft) {
+            this.aog.tail = aircraft.tail;
+            this.aog.fleet = aircraft.fleet;
+            this.aog.operator = aircraft.operator;
+        }
         this.aogForm.get('operator').setValue(this.aog.operator);
         this.aogForm.get('operator').updateValueAndValidity();
         this.aogForm.get('fleet').setValue(this.aog.fleet);
         this.aogForm.get('fleet').updateValueAndValidity();
-
     }
 
     /**
      * Promise to close a current contingency with the same barcode as the new AOG
      * @returns {Promise<void>}
      */
-    private postCloseContingency(): Promise<void> {
-        return this._contingencyService.closeContingency(this.contingency.close)
+    private postCloseContingency(close: Close, aog: Aog): Promise<void> {
+        return this._contingencyService.closeContingency(close)
             .toPromise()
-            .then(() => this.postAog())
+            .then(() => this.postAog(aog))
             .catch(() => this._translationService.translateAndShow(AogFormComponent.CLOSE_CONTINGENCY_ERROR_MESSAGE));
     }
 
@@ -473,7 +484,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
             .toPromise()
             .then(() => {
                 if (ref.instance.response === CancelComponent.ACCEPT) {
-
                     this.aogForm.setValue({
                         'tail': this.contingency.aircraft.tail,
                         'fleet': this.contingency.aircraft.fleet,
@@ -495,6 +505,7 @@ export class AogFormComponent implements OnInit, OnDestroy {
                     this.aogForm.get('operator').setValue(null);
                     this.aogForm.get('fleet').setValue(null);
                     this.contingency = null;
+                    this.aogForm.controls['closeObservation'].clearValidators();
                 }
             });
     }
@@ -587,6 +598,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Get a label with hours and minutes abbreviation
+     * @param {number} duration
+     * @returns {string}
+     */
     public getDurationLabel(duration: number): string {
         const minToHour = 60;
         const durationToHours = duration / minToHour;
@@ -833,14 +849,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
 
     set clockSubs(value: Subscription) {
         this._clockSubs = value;
-    }
-
-    get formSubs(): Subscription {
-        return this._formSubs;
-    }
-
-    set formSubs(value: Subscription) {
-        this._formSubs = value;
     }
 
     get groupTypesSubs(): Subscription {

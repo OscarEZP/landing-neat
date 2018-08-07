@@ -15,7 +15,7 @@ import {ContingencyService} from '../../_services/contingency.service';
 import {LogService} from '../../_services/log.service';
 import {TranslationService} from '../../../shared/_services/translation.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {MatSnackBarRef} from '@angular/material';
 import {CancelComponent} from '../cancel/cancel.component';
@@ -24,6 +24,9 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {AogService} from '../../_services/aog.service';
+import {Aircraft} from '../../../shared/_models/aircraft';
+import {TimeInstant} from '../../../shared/_models/timeInstant';
+import {Types} from '../../../shared/_models/configuration/types';
 
 jest.mock('../../../shared/_services/datetime.service');
 jest.mock('../../../shared/_services/apiRest.service');
@@ -147,38 +150,15 @@ describe('AOG form test', () => {
         });
     });
 
-    // it('On select aircraft should complete tail, fleet & operator', () => {
-    //     aogFormComponent.aircraftList = [new Aircraft('TAIL1', 'FLEET1', 'OPERATOR1' )];
-    //     aogFormComponent.operatorList = [new Types('OPERATOR1', 'OPERATOR', TimeInstant.getInstance())];
-    //     aogFormComponent.onSelectAircraft('TAIL1');
-    //     expect(aogFormComponent.aog.tail).toEqual('TAIL1');
-    //     expect(aogFormComponent.aog.fleet).toEqual('FLEET1');
-    //     expect(aogFormComponent.aog.operator).toEqual('OPERATOR1');
-    // });
-
-    it('AOG should be filled after adding information', () => {
-        const sub = aogFormComponent.getDataAOGFormSubs();
-        aogFormComponent.aogForm.controls['station'].setValue('STATION');
-        aogFormComponent.isSafety = true;
-        aogFormComponent.aogForm.controls['safetyEventCode'].setValue('SAFETY_EVENT_CODE');
-        aogFormComponent.aogForm.controls['barcode'].setValue('BARCODE');
-        aogFormComponent.aogForm.controls['aogType'].setValue('AOGTYPE');
-        aogFormComponent.aogForm.controls['failure'].setValue('FAILURE');
-        aogFormComponent.aogForm.controls['observation'].setValue('OBSERVATION');
-        aogFormComponent.aogForm.controls['reason'].setValue('REASON');
-        aogFormComponent.aogForm.controls['duration'].setValue('DURATION');
-        aogFormComponent.aogForm.controls['tipology'].setValue('TIPOLOGY');
-
-        expect(aogFormComponent.aog.station).toEqual('STATION');
-        expect(aogFormComponent.aog.safety).toEqual('SAFETY_EVENT_CODE');
-        expect(aogFormComponent.aog.barcode).toEqual('BARCODE');
-        expect(aogFormComponent.aog.maintenance).toEqual('AOGTYPE');
-        expect(aogFormComponent.aog.failure).toEqual('FAILURE');
-        expect(aogFormComponent.aog.observation).toEqual('OBSERVATION');
-        expect(aogFormComponent.aog.reason).toEqual('REASON');
-        expect(aogFormComponent.aog.durationAog).toEqual('DURATION');
-        expect(aogFormComponent.aog.code).toEqual('TIPOLOGY');
-        sub.unsubscribe();
+    it('On select aircraft should complete tail, fleet & operator', () => {
+        aogFormComponent.aircraftList = [new Aircraft('TAIL1', 'FLEET1', 'OPERATOR1' )];
+        aogFormComponent.operatorList = [new Types('OPERATOR1', 'OPERATOR', TimeInstant.getInstance())];
+        aogFormComponent.completeAircraft('TAIL1');
+        expect(aogFormComponent.aog.tail).toEqual('TAIL1');
+        expect(aogFormComponent.aog.fleet).toEqual('FLEET1');
+        expect(aogFormComponent.aog.operator).toEqual('OPERATOR1');
+        aogFormComponent.aircraftList = [];
+        aogFormComponent.operatorList = [];
     });
 
     it('Contingency data should be full filled after ACCEPT', () => {

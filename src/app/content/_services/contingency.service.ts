@@ -12,7 +12,6 @@ import {SearchContingency} from '../../shared/_models/contingency/searchContinge
 @Injectable()
 export class ContingencyService {
 
-
     private static AIRCRAFT_SEARCH_ENDPOINT = 'aircraftsSearch';
     private static CLOSE_ENDPOINT = 'close';
     private static CONTINGENCY_SEARCH_ENDPOINT = 'contingencySearch';
@@ -135,7 +134,7 @@ export class ContingencyService {
 
     /** Log a HeroService message with the MessageService */
     private log(message: string) {
-        this.logService.add('HeroService: ' + message);
+        this.logService.add('Contingency Service: ' + message);
     }
 
     get contingencyList(): Contingency[] {

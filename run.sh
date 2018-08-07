@@ -62,8 +62,8 @@ elif [[ $OPTION = "5" ]] ;then
 elif [[ $OPTION = "6" ]] ;then
   clear
   echo "Running CONTAINER..."
-  docker build -t moc-web-interactive ./
-  docker run -v $(pwd)/../../:/var/www/html/ -it moc-web-interactive /bin/bash
+  docker build -t moc-web-interactive cd $DOCKER_DIR/$DEV_DIR
+  docker run -v $(pwd):/var/www/html/ -it moc-web-interactive /bin/bash
 else
   clear
   echo "Bye."
