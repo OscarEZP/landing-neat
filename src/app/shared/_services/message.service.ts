@@ -23,7 +23,8 @@ export class MessageService {
             this._matSnackBar.open(message, '', <MatSnackBarConfig>{
                 duration: time,
                 verticalPosition: 'top',
-                horizontalPosition: 'center'
+                horizontalPosition: 'center',
+                panelClass: ['center']
             }).afterDismissed().subscribe(() => {
                 this.active = false;
             });

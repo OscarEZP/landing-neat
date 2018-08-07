@@ -57,7 +57,12 @@
             <div fxFlex="8" fxLayoutAlign="start center" (click)="openDetails(contingency, 'follow-up')" *ngIf="contingency.isBackup">{{ contingency.backup.location }}</div>
 
             <!-- REASON -->
-            <div fxFlex="28" fxLayoutAlign="start center" class="description" (click)="openDetails(contingency, 'follow-up')">{{(contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}</div>
+            <div fxFlex="28" fxLayoutGap="5px" (mouseout)="toEdit = null" (mouseover)="toEdit = contingency.id" fxLayoutAlign="start center" class="description" (click)="editReason(contingency)">
+                <span fxFlex="90">{{(contingency.reason.length > 65) ? (contingency.reason | slice:0:65) + '...' : contingency.reason }}</span>
+                <span fxFlex="10" [hidden]="toEdit !== contingency.id">
+                    <mat-icon >edit</mat-icon>
+                </span>
+            </div>
 
             <!-- STATUS -->
             <div fxFlex="7" fxLayoutAlign="start center">

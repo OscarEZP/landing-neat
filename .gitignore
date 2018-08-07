@@ -12,3 +12,5 @@ coverage
 documentation
 package-lock.json
 test-report.xml
+.scannerwork
+dist

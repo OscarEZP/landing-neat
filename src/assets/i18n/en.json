@@ -17,6 +17,8 @@
       "AOG_CREATION": "AOG Creation",
       "AOG_INFORMATION": "AOG Information",
       "AOG_TYPE": "AOG Type",
+      "CLOSE_FAILURE_MESSAGE": "Ooops, Something went wrong",
+      "CLOSE_SUCCESSFULLY_MESSAGE": "AOG has been closed successfully",
       "BARCODE": "Barcode",
       "CLOSE_OBSERVATION": "Observations for the AOG declaration",
       "DURATION": "Duration",
@@ -64,6 +66,12 @@
     "TO_FIND_YOUR_CODE": "to find your verification code and enter it here",
     "USERNAME": "Username"
   },
+  "TAIL": {
+    "ERROR": {
+      "AOG_ACTIVE": "There's an active AOG for the same tail {{value}}",
+      "CONTINGENCY_ACTIVE": "There's an active Contingency for the same tail {{value}}"
+    }
+  },
   "BUTTONS": {
     "ADD": "ADD",
     "CANCEL": "CANCEL",
@@ -75,6 +83,7 @@
     "APPLY": "APPLY",
     "SUB_MENUS": {
       "CLOSE_CONTINGENCY": "Close Contingency",
+      "CLOSE_AOG": "Close AOG",
       "MEETING": "Meeting",
       "FOLLOW_UP": "Follow up",
       "PENDING": "Pending",
@@ -99,10 +108,17 @@
     "AUTHORITIES_WITHOUT_CONF": "Authorities without configuration. Ask your system administrator."
   },
   "FORM": {
+    "EDIT_FORM_TITLE": "Edit {{value}}",
     "HOUR_ABBREVIATION": "h",
     "HOUR": "hour",
     "HOURS": "hours",
     "IS_REQUIRED": "{{value}} is required",
+    "ERRORS": {
+      "SUBMIT_FAIL": "There's a problem saving the {{value}}, please try again"
+    },
+    "MESSAGES": {
+      "SAVE_SUCCESS": "The {{value}} was saved"
+    },
     "MINUTE_ABBREVIATION": "m",
     "MINUTES": "minutes",
     "REQUIRE_FIELDS": "All fields with (*) are required"
@@ -233,7 +249,12 @@
       "OBS_REQUIRED": "Observation is required",
       "OPERATOR": "Operator:",
       "RELEASED": "Released to service",
-      "TITLE": "Close Contingency"
+      "TITLE": "Close Contingency",
+      "AOG_CLOSE": "Close AOG",
+      "AOG_INFO": "AOG Info",
+      "AOG_BARCODE": "Barcode: ",
+      "AOG_REASON": "Reason: ",
+      "AOG_PLACEHOLDER_COMMENT": "Write your comment"
     },
     "CONTINGENCIES_WITH_PENDINGS": "Contingencies with pendings",
     "CLOSED_CONTINGENCY": "Closed contingency",

@@ -24,7 +24,7 @@ export const environment = {
         contingencySearch: ':9002/api/v1/contingencies/_search',
         contingencySearchCount: ':9002/api/v1/contingencies/_search/count',
         dateTime: ':9001/api/security/currentdatetime',
-        editReasonAircraftOnGround: ':9016/api/aircraft-on-ground/v1/aogs/_reason',
+        editReasonAircraftOnGround: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_reason',
         editReasonContingency: ':9002/api/v1/contingencies/_reason',
         flights: ':9005/api/v1/configurations/flights/_search',
         followUp: ':9002/api/v1/contingencies/status/_followUp',
@@ -56,6 +56,7 @@ export const environment = {
         technicalDefaultConfig: ':9015/api/v1/management/default-tech-analysis',
         technicalNotConfiguredAuthoritySearch: ':9015/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: ':9015/api/v1/management/tech-station/_search',
-        types: ':9005/api/v1/configurations/types'
+        types: ':9005/api/v1/configurations/types',
+        closeAog: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_close'
     }
 };

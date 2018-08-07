@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {HistoricalSearchService} from '../_services/historical-search.service';
 import {RoutingService} from '../../shared/_services/routing.service';
