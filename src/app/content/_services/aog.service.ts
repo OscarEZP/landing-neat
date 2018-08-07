@@ -47,7 +47,7 @@ export class AogService {
      * @param {string} tail
      * @returns {Promise<boolean>}
      */
-    public validateTail(tail: string): Promise<boolean> {
+    public validateTail(tail: string): Promise<any> {
         const search: AogSearch = AogSearch.getInstance();
         search.isClose = false;
         search.tails = [tail];
