@@ -8,6 +8,7 @@ export const environment = {
     },
     paths: {
         aircraftOnGround: '/api/aircraft-on-ground/v1/aircraft-on-ground',
+        aircraftOnGroundFollowUpSearch: '/api/aircraft-on-ground/v1/aircraft-on-ground/follow-up/_search',
         aircraftOnGroundSearch: '/api/aircraft-on-ground/v1/aircraft-on-ground/_search',
         aircraftOnGroundSearchCount: '/api/aircraft-on-ground/v1/aircraft-on-ground/_search/_count',
         aircrafts: '/api/v1/configurations/aircrafts',
