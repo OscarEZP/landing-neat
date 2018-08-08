@@ -97,12 +97,16 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
         this.dummyCollection.stageList.forEach((value, index) => {
             const lineName: string = 'line_' + index;
             const circleName: string = 'circle_' + index;
+            const labelLineName: string = 'labelLine_' + index;
+            const labelTextName: string = 'labelText_' + index;
             const localStagesObjects = stageObjects;
             const canvasWidth = this.activeViewInPixels;
             let initPosition = 0;
 
             stageObjects[lineName] = ShapeDraw.drawLines(value, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
             stageObjects[circleName] = ShapeDraw.drawCircle(value, index, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels, true, false, this.stagesObjects);
+            stageObjects[labelTextName] = ShapeDraw.drawLabelText(value, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+            stageObjects[labelLineName] = ShapeDraw.drawLabelLine(value, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
 
             stageObjects[circleName].on('mouseover', function() {
                 document.body.style.cursor = 'pointer';
@@ -146,6 +150,8 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
                 stage.draw();
             });
 
+            layer.add(stageObjects[labelTextName]);
+            layer.add(stageObjects[labelLineName]);
             layer.add(stageObjects[lineName]);
             layer.add(stageObjects[circleName]);
         });

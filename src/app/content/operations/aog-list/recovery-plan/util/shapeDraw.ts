@@ -61,19 +61,19 @@ export class ShapeDraw {
 
     public static drawLabelText(item: Stage, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Text {
         return new Konva.Text({
-            x: TimeConverterService.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels),
-            y: 10,
-            text: ShapeDraw[item.group_id],
-            fontSize: 10,
+            x: TimeConverterService.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels) + 15,
+            y: 2,
+            text: item.group_id,
+            fontSize: 12,
             fontFamily: 'Calibri',
             fill: 'black'
         });
     }
 
     public static drawLabelLine(item: Stage, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Line {
-        const xPos = TimeConverterService.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels);
+        const xPos = TimeConverterService.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels) + 9;
         return new Konva.Line({
-            points: [xPos, 10, xPos, 30],
+            points: [xPos, 4, xPos, 30],
             stroke: 'black',
             strokeWidth: 2,
             lineJoin: 'round',
