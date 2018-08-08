@@ -1,19 +1,36 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as Konva from 'konva';
-import {Shape} from 'konva';
-import {RecoveryPlanStages} from '../../../../../shared/_models/aog/RecoveryPlanStages';
 import {Stage} from '../../../../../shared/_models/aog/Stage';
 import * as moment from 'moment';
-import {MatDialog} from '@angular/material';
+import {MatMenuTrigger} from '@angular/material';
+import {Subscription} from 'rxjs/Subscription';
+import {Observable} from 'rxjs/Observable';
+import {Vector2d} from 'konva';
+
+export interface StageInterface {
+    line: Konva.Line;
+    circle: Konva.Circle;
+    stage: Stage;
+}
+
+export interface StyleInterface {
+    top: string;
+    left: string;
+    position: string;
+}
 
 @Component({
     selector: 'lsl-recovery-stages',
     templateUrl: './recovery-stages.component.html',
-    styleUrls: ['./recovery-stages.component.css']
+    styleUrls: ['./recovery-stages.component.scss']
 })
-export class RecoveryStagesComponent implements OnInit, AfterViewInit {
+export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChild('stages') public stages: ElementRef;
+    @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+
+    private _stagesSub: Subscription;
+    private _menuStyle: StyleInterface;
 
     private static ACC = '#4CAF5D';
     private static ACC_PROJ = '#C6E2C7';
@@ -35,53 +52,61 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
     private _referenceFrameTime: number;
     private _referenceFramePixels: number;
     private _relativeZeroPoint: number;
-    private _stagesObjects: {[line: string]: Konva.Line | Konva.Circle | Shape};
+    private _stagesObjects: StageInterface[];
 
-    private _dummyCollection: RecoveryPlanStages;
-
-    constructor(private _dialog: MatDialog) {
+    constructor() {
         this._canvasWidth = 1357;
         this._canvasHeight = 100;
         this._lastValidPosition = 0;
         this._referenceFrameTime = 24;
         this._referenceFramePixels = 100;
         this._relativeZeroPoint = 0;
-        this._stagesObjects = {};
+        this._stagesObjects = [];
+        this._menuStyle = { top: '-60px', left: '', position: 'absolute'};
+        this._stagesSub = new Subscription();
     }
 
     ngOnInit() {
-        this.dummyCollection = new RecoveryPlanStages([
-            // new Stage(0, 0, 'ACC', 1533290400, 1533297600),
+        this.stagesSub = this.getStagesSub();
+        this.canvasWidth = this.stages.nativeElement.parentNode.parentNode.offsetWidth;
+        this.referenceFramePixels = Math.round((this.referenceFrameTime * 3600) / this.canvasWidth);
+        this.relativeZeroPoint = this.setRelativeZeroPoint(this.stageList[0].start);
+    }
+
+    ngOnDestroy() {
+        this.stagesSub.unsubscribe();
+    }
+
+    ngAfterViewInit() {
+        const stage = new Konva.Stage({
+            container: 'container',
+            width: this.canvasWidth,
+            height: this.canvasHeight
+        });
+        const layer = new Konva.Layer();
+        this.drawBaseLine(layer);
+        this.drawGroups(layer, stage);
+        stage.add(layer);
+    }
+
+    // TO-DO: Implement service
+    get stages$(): Observable<Stage[]> {
+        return Observable.of([
             new Stage(0, 0, 'ACC', 1533277260, 1533297600),
             new Stage(0, 0, 'EVA', 1533297600, 1533304800),
             new Stage(0, 0, 'SUP', 1533304800, 1533312000),
             new Stage(0, 0, 'EXE', 1533312000, 1533326400),
             new Stage(0, 0, 'ACC', 1533326400, 1533333600)
         ]);
-
-        this.canvasWidth = this.stages.nativeElement.parentNode.parentNode.offsetWidth;
-        this.referenceFramePixels = Math.round((this.referenceFrameTime * 3600) / this.canvasWidth);
-
-        this.relativeZeroPoint = this.setRelativeZeroPoint(this.dummyCollection.stageList[0].start);
     }
 
-    ngAfterViewInit() {
-
-        this.drawStages();
-    }
-
-    private drawStages() {
-
-        this.lastValidPosition = 0;
-
-        const stage = new Konva.Stage({
-            container: 'container',
-            width: this.canvasWidth,
-            height: this.canvasHeight
+    private getStagesSub(): Subscription {
+        return this.stages$.subscribe(res => {
+            this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
         });
+    }
 
-        const layer = new Konva.Layer();
-
+    private drawBaseLine(layer: Konva.Layer) {
         const line = new Konva.Line({
             points: [0, 25, this.canvasWidth, 25],
             stroke: 'gray',
@@ -89,82 +114,78 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
             lineCap: 'round',
             lineJoin: 'round'
         });
-
         layer.add(line);
-
-        this.dummyCollection.stageList.forEach((value, index) => {
-            const lineName: string = 'line_' + index;
-            const circleName: string = 'circle_' + index;
-            const collectionLength: number = this.dummyCollection.stageList.length;
-            const canvasWidth = this.canvasWidth;
-            const localStagesObjects = this.stagesObjects;
-            let initPosition = 0;
-            const dialog = this._dialog;
-
-            this.stagesObjects[lineName] = this.drawLines(RecoveryStagesComponent[value.group_id], value.start, value.end, index + 1 === collectionLength);
-            this.stagesObjects[circleName] = this.drawCircle(RecoveryStagesComponent[value.group_id], value.start, value.end, index, index + 1 === collectionLength);
-
-            this.stagesObjects[circleName].on('mouseover', function() {
-                document.body.style.cursor = 'pointer';
-            });
-
-            this.stagesObjects[circleName].on('mouseout', function() {
-                document.body.style.cursor = 'default';
-            });
-
-            this.stagesObjects[circleName].on('dblclick', function() {
-                // sipablo works here!
-            });
-
-            this.stagesObjects[circleName].on('dragstart', function() {
-                this.moveToTop();
-                initPosition = localStagesObjects[circleName].getAbsolutePosition().x;
-                layer.draw();
-            });
-
-            this.stagesObjects[circleName].on('dragmove', function() {
-                document.body.style.cursor = 'pointer';
-                for (let i = 0; i < collectionLength; i++) {
-                    // @ts-ignore
-                    localStagesObjects['line_' + i].points([localStagesObjects['circle_' + i].getAbsolutePosition().x, 25, canvasWidth, 25]);
-                }
-
-                stage.draw();
-            });
-
-            this.stagesObjects[circleName].on('dragend', function() {
-                const diff = localStagesObjects[circleName].getAbsolutePosition().x - initPosition;
-                for (let i = 0; i < collectionLength; i++) {
-                    if (i > index) {
-                        // @ts-ignore
-                        localStagesObjects['line_' + i].points([localStagesObjects['circle_' + i].getAbsolutePosition().x + diff, 25, canvasWidth, 25]);
-                        localStagesObjects['circle_' + i].x(localStagesObjects['circle_' + i].getAbsolutePosition().x + diff);
-                    }
-                }
-                document.body.style.cursor = 'default';
-
-                stage.draw();
-            });
-
-            layer.add(this.stagesObjects[lineName]);
-            layer.add(this.stagesObjects[circleName]);
-        });
-
-        stage.add(layer);
-
     }
 
-    private drawCircle(stageType: string, startTime: number, endTime: number, itemPosition: number, isLastItem: boolean): Shape {
+    private drawGroups(layer: Konva.Layer, stage: Konva.Stage) {
+        this.stagesObjects.forEach((value, index) => {
+            let initPosition = 0;
+            const interfaceStage = value.stage;
+            const isLastItem = index + 1 === this.stagesObjects.length;
+            this.lastValidPosition = 0;
+            value.line = this.drawLines(RecoveryStagesComponent[interfaceStage.group_id], interfaceStage.start, interfaceStage.end, isLastItem);
+            value.circle = this.drawCircle(RecoveryStagesComponent[interfaceStage.group_id], interfaceStage.start, index);
+            value.circle.dragBoundFunc(pos => this.dragBound(value, index, pos, isLastItem));
+            value.circle.on('mouseover', () => document.body.style.cursor = 'pointer');
+            value.circle.on('mouseout', () => document.body.style.cursor = 'default');
+            value.circle.on('dblclick', () => this.triggerMenu(value.stage));
+            value.circle.on('dragstart', () => {
+                value.circle.moveToTop();
+                initPosition = value.circle.getAbsolutePosition().x;
+                layer.draw();
+            });
+            value.circle.on('dragmove', () => {
+                document.body.style.cursor = 'pointer';
+                this.stagesObjects.forEach(v => v.line.points([v.circle.getAbsolutePosition().x, 25, this.canvasWidth, 25]));
+                stage.draw();
+            });
+            value.circle.on('dragend', () => {
+                this.resizeLines(value.circle.getAbsolutePosition().x, index, initPosition);
+                document.body.style.cursor = 'default';
+                stage.draw();
+            });
+            layer.add(value.line);
+            layer.add(value.circle);
+        });
+    }
+
+    private resizeLines(circlePosX: number, index: number, initPosition: number) {
+        const diff = circlePosX - initPosition;
+        this.stagesObjects
+            .filter((v, i) => i > index)
+            .forEach(v => {
+                v.line.points([v.circle.getAbsolutePosition().x + diff, 25, this.canvasWidth, 25]);
+                v.circle.x(v.circle.getAbsolutePosition().x + diff);
+            });
+    }
+
+    private dragBound(value: StageInterface, index: number, pos: Vector2d, isLastItem: boolean): Vector2d {
+        const endPos = isLastItem ? this.canvasWidth : this.epochTimeToPixelPosition(value.stage.end);
+        const prevCircleItemPos = this.stagesObjects[index - 1] ? this.stagesObjects[index - 1].circle.getAbsolutePosition().x : 0;
+        const nextCircleItemPos = this.stagesObjects[index + 1] ? this.stagesObjects[index + 1].circle.getAbsolutePosition().x : endPos;
+        const result = {x: 0, y: value.circle.getAbsolutePosition().y};
+        if (pos.x > (prevCircleItemPos + value.circle.radius() * 2) && (nextCircleItemPos - value.circle.radius() * 2) > pos.x) {
+            this.lastValidPosition = pos.x;
+            result.x = pos.x;
+        } else {
+            result.x = this.lastValidPosition;
+        }
+        return result;
+    }
+
+    private triggerMenu(value: any) {
+        this.trigger.openMenu();
+        const el = document.querySelector('.timeline-menu');
+        if (el) {
+            this.menuStyle.left = value.attrs.x.toString().concat('px');
+            const style = el['style'];
+            Object.keys(this.menuStyle).forEach(key => style[key] = this.menuStyle[key]);
+        }
+    }
+
+    private drawCircle(stageType: string, startTime: number, itemPosition: number): Konva.Circle {
         const stagePadding = 9;
         const startPos = this.epochTimeToPixelPosition(startTime) + stagePadding;
-        const endPos = isLastItem ? this.canvasWidth : this.epochTimeToPixelPosition(endTime);
-        let lastValidPos = this.lastValidPosition = 0;
-
-        const stagesObjects = this.stagesObjects;
-
-        console.log('start pos: ' + startPos);
-        console.log('end pos: ' + endPos);
-
         return new Konva.Circle({
             x: startPos,
             y: 25,
@@ -174,29 +195,11 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
             fill: 'white',
             stroke: stageType,
             strokeWidth: 4,
-            draggable: itemPosition !== 0,
-            dragBoundFunc: function (pos) {
-
-                const prevCircleItem = stagesObjects['circle_' + (itemPosition - 1)] !== undefined ? stagesObjects['circle_' + (itemPosition - 1)].getAbsolutePosition().x : 0;
-                const nextCircleItem = stagesObjects['circle_' + (itemPosition + 1)] !== undefined ? stagesObjects['circle_' + (itemPosition + 1)].getAbsolutePosition().x : endPos;
-
-                if (pos.x > prevCircleItem && nextCircleItem > pos.x) {
-                    lastValidPos = pos.x;
-                    return {
-                        x: pos.x,
-                        y: this.getAbsolutePosition().y
-                    };
-                } else {
-                    return {
-                        x: lastValidPos,
-                        y: this.getAbsolutePosition().y
-                    };
-                }
-            }
+            draggable: itemPosition !== 0
         });
     }
 
-    private drawLines(stageType: string, start: number, end: number, isLastItem: boolean): Shape {
+    private drawLines(stageType: string, start: number, end: number, isLastItem: boolean): Konva.Line {
         return new Konva.Line({
             points: [this.epochTimeToPixelPosition(start), 25, isLastItem ? this.canvasWidth : this.epochTimeToPixelPosition(end), 25],
             stroke: stageType,
@@ -240,12 +243,8 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
         this._lastValidPosition = value;
     }
 
-    get dummyCollection(): RecoveryPlanStages {
-        return this._dummyCollection;
-    }
-
-    set dummyCollection(value: RecoveryPlanStages) {
-        this._dummyCollection = value;
+    get stageList(): Stage[] {
+        return this._stagesObjects.map(v => v.stage);
     }
 
     get referenceFrameTime(): number {
@@ -272,11 +271,24 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
         this._relativeZeroPoint = value;
     }
 
-    get stagesObjects(): { [p: string]: Konva.Line | Konva.Circle | Konva.Shape } {
+    get stagesObjects(): StageInterface[] {
         return this._stagesObjects;
     }
 
-    set stagesObjects(value: { [p: string]: Konva.Line | Konva.Circle | Konva.Shape }) {
+    set stagesObjects(value: StageInterface[]) {
         this._stagesObjects = value;
     }
+
+    get stagesSub(): Subscription {
+        return this._stagesSub;
+    }
+
+    set stagesSub(value: Subscription) {
+        this._stagesSub = value;
+    }
+
+    get menuStyle(): StyleInterface {
+        return this._menuStyle;
+    }
+
 }
