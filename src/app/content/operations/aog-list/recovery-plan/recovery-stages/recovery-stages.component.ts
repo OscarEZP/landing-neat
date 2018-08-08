@@ -1,10 +1,12 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import * as Konva from 'konva';
 import {Shape} from 'konva';
 import {RecoveryPlanStages} from '../../../../../shared/_models/aog/RecoveryPlanStages';
 import {Stage} from '../../../../../shared/_models/aog/Stage';
-import * as moment from 'moment';
-import {MatDialog} from '@angular/material';
+import {ShapeDraw} from '../util/shapeDraw';
+import {RecoveryPlanInterface, RecoveryPlanService} from '../util/recovery-plan.service';
+import {Subscription} from 'rxjs/Subscription';
+import {TimeConverterService} from '../util/time-converter.service';
 
 @Component({
     selector: 'lsl-recovery-stages',
@@ -12,8 +14,6 @@ import {MatDialog} from '@angular/material';
     styleUrls: ['./recovery-stages.component.css']
 })
 export class RecoveryStagesComponent implements OnInit, AfterViewInit {
-
-    @ViewChild('stages') public stages: ElementRef;
 
     private static ACC = '#4CAF5D';
     private static ACC_PROJ = '#C6E2C7';
@@ -29,61 +29,60 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
     private static ETR_PROJ = '#B4D1F0';
     private static GRAY = '#CCC';
 
-    private _canvasWidth: number;
     private _canvasHeight: number;
     private _lastValidPosition: number;
-    private _referenceFrameTime: number;
-    private _referenceFramePixels: number;
-    private _relativeZeroPoint: number;
+    private _activeViewInHours: number;
+    private _activeViewInPixels: number;
+    private _absoluteStartTime: number;
     private _stagesObjects: {[line: string]: Konva.Line | Konva.Circle | Shape};
+    private _recoveryPlanSubscription: Subscription;
+    private _recoveryPlanInterface: RecoveryPlanInterface;
 
     private _dummyCollection: RecoveryPlanStages;
 
-    constructor(private _dialog: MatDialog) {
-        this._canvasWidth = 1357;
+    constructor(private _recoveryPlanService: RecoveryPlanService) {
+        this._recoveryPlanSubscription = this._recoveryPlanService.recoveryPlanBehavior$.subscribe(x => this._recoveryPlanInterface = x);
+        this._absoluteStartTime = 0;
         this._canvasHeight = 100;
         this._lastValidPosition = 0;
-        this._referenceFrameTime = 24;
-        this._referenceFramePixels = 100;
-        this._relativeZeroPoint = 0;
         this._stagesObjects = {};
     }
 
     ngOnInit() {
+        this.lastValidPosition = 0;
+        this.activeViewInHours = this._recoveryPlanInterface.activeViewInHours;
+        this.activeViewInPixels = this._recoveryPlanInterface.activeViewInPixels;
+        this.absoluteStartTime = this._recoveryPlanInterface.absoluteStartTime;
+
+        const aogCreationTime = this._recoveryPlanInterface.relativeStartTime;
+
         this.dummyCollection = new RecoveryPlanStages([
             // new Stage(0, 0, 'ACC', 1533290400, 1533297600),
-            new Stage(0, 0, 'ACC', 1533277260, 1533297600),
-            new Stage(0, 0, 'EVA', 1533297600, 1533304800),
-            new Stage(0, 0, 'SUP', 1533304800, 1533312000),
-            new Stage(0, 0, 'EXE', 1533312000, 1533326400),
-            new Stage(0, 0, 'ACC', 1533326400, 1533333600)
+            new Stage(0, 0, 'ACC', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 0), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 2)),
+            new Stage(0, 0, 'EVA', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 2), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 4)),
+            new Stage(0, 0, 'SUP', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 4), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 7)),
+            new Stage(0, 0, 'EXE', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 7), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 10)),
+            new Stage(0, 0, 'ACC', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 10), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 12))
         ]);
-
-        this.canvasWidth = this.stages.nativeElement.parentNode.parentNode.offsetWidth;
-        this.referenceFramePixels = Math.round((this.referenceFrameTime * 3600) / this.canvasWidth);
-
-        this.relativeZeroPoint = this.setRelativeZeroPoint(this.dummyCollection.stageList[0].start);
     }
 
     ngAfterViewInit() {
 
-        this.drawStages();
+        this.drawAll();
+        // this.drawStages();
     }
 
-    private drawStages() {
-
-        this.lastValidPosition = 0;
-
+    private drawAll() {
         const stage = new Konva.Stage({
             container: 'container',
-            width: this.canvasWidth,
+            width: this.activeViewInPixels,
             height: this.canvasHeight
         });
 
         const layer = new Konva.Layer();
 
         const line = new Konva.Line({
-            points: [0, 25, this.canvasWidth, 25],
+            points: [0, 25, this.activeViewInPixels, 25],
             stroke: 'gray',
             strokeWidth: 2,
             lineCap: 'round',
@@ -92,37 +91,38 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
 
         layer.add(line);
 
+        const stageObjects: {[line: string]: Konva.Line | Konva.Circle | Shape} = {};
+        const collectionLength: number = this.dummyCollection.stageList.length;
+
         this.dummyCollection.stageList.forEach((value, index) => {
             const lineName: string = 'line_' + index;
             const circleName: string = 'circle_' + index;
-            const collectionLength: number = this.dummyCollection.stageList.length;
-            const canvasWidth = this.canvasWidth;
-            const localStagesObjects = this.stagesObjects;
+            const localStagesObjects = stageObjects;
+            const canvasWidth = this.activeViewInPixels;
             let initPosition = 0;
-            const dialog = this._dialog;
 
-            this.stagesObjects[lineName] = this.drawLines(RecoveryStagesComponent[value.group_id], value.start, value.end, index + 1 === collectionLength);
-            this.stagesObjects[circleName] = this.drawCircle(RecoveryStagesComponent[value.group_id], value.start, value.end, index, index + 1 === collectionLength);
+            stageObjects[lineName] = ShapeDraw.drawLines(value, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+            stageObjects[circleName] = ShapeDraw.drawCircle(value, index, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels, true, false, this.stagesObjects);
 
-            this.stagesObjects[circleName].on('mouseover', function() {
+            stageObjects[circleName].on('mouseover', function() {
                 document.body.style.cursor = 'pointer';
             });
 
-            this.stagesObjects[circleName].on('mouseout', function() {
+            stageObjects[circleName].on('mouseout', function() {
                 document.body.style.cursor = 'default';
             });
 
-            this.stagesObjects[circleName].on('dblclick', function() {
+            stageObjects[circleName].on('dblclick', function() {
                 // sipablo works here!
             });
 
-            this.stagesObjects[circleName].on('dragstart', function() {
+            stageObjects[circleName].on('dragstart', function() {
                 this.moveToTop();
                 initPosition = localStagesObjects[circleName].getAbsolutePosition().x;
                 layer.draw();
             });
 
-            this.stagesObjects[circleName].on('dragmove', function() {
+            stageObjects[circleName].on('dragmove', function() {
                 document.body.style.cursor = 'pointer';
                 for (let i = 0; i < collectionLength; i++) {
                     // @ts-ignore
@@ -132,7 +132,7 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
                 stage.draw();
             });
 
-            this.stagesObjects[circleName].on('dragend', function() {
+            stageObjects[circleName].on('dragend', function() {
                 const diff = localStagesObjects[circleName].getAbsolutePosition().x - initPosition;
                 for (let i = 0; i < collectionLength; i++) {
                     if (i > index) {
@@ -146,82 +146,14 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
                 stage.draw();
             });
 
-            layer.add(this.stagesObjects[lineName]);
-            layer.add(this.stagesObjects[circleName]);
+            layer.add(stageObjects[lineName]);
+            layer.add(stageObjects[circleName]);
         });
 
         stage.add(layer);
 
-    }
+        stage.draw();
 
-    private drawCircle(stageType: string, startTime: number, endTime: number, itemPosition: number, isLastItem: boolean): Shape {
-        const stagePadding = 9;
-        const startPos = this.epochTimeToPixelPosition(startTime) + stagePadding;
-        const endPos = isLastItem ? this.canvasWidth : this.epochTimeToPixelPosition(endTime);
-        let lastValidPos = this.lastValidPosition = 0;
-
-        const stagesObjects = this.stagesObjects;
-
-        console.log('start pos: ' + startPos);
-        console.log('end pos: ' + endPos);
-
-        return new Konva.Circle({
-            x: startPos,
-            y: 25,
-            width: 15,
-            height: 15,
-            radius: 7,
-            fill: 'white',
-            stroke: stageType,
-            strokeWidth: 4,
-            draggable: itemPosition !== 0,
-            dragBoundFunc: function (pos) {
-
-                const prevCircleItem = stagesObjects['circle_' + (itemPosition - 1)] !== undefined ? stagesObjects['circle_' + (itemPosition - 1)].getAbsolutePosition().x : 0;
-                const nextCircleItem = stagesObjects['circle_' + (itemPosition + 1)] !== undefined ? stagesObjects['circle_' + (itemPosition + 1)].getAbsolutePosition().x : endPos;
-
-                if (pos.x > prevCircleItem && nextCircleItem > pos.x) {
-                    lastValidPos = pos.x;
-                    return {
-                        x: pos.x,
-                        y: this.getAbsolutePosition().y
-                    };
-                } else {
-                    return {
-                        x: lastValidPos,
-                        y: this.getAbsolutePosition().y
-                    };
-                }
-            }
-        });
-    }
-
-    private drawLines(stageType: string, start: number, end: number, isLastItem: boolean): Shape {
-        return new Konva.Line({
-            points: [this.epochTimeToPixelPosition(start), 25, isLastItem ? this.canvasWidth : this.epochTimeToPixelPosition(end), 25],
-            stroke: stageType,
-            strokeWidth: 2,
-            lineCap: 'round',
-            lineJoin: 'round'
-        });
-    }
-
-    private setRelativeZeroPoint(epochTime: number): number {
-        const originalTime = epochTime;
-        const minutes = moment.unix(epochTime).get('m');
-        return moment.unix(originalTime).subtract(minutes, 'minutes').unix();
-    }
-
-    private epochTimeToPixelPosition(selectedTime: number): number {
-        return Math.round((selectedTime - this.relativeZeroPoint) / this.referenceFramePixels);
-    }
-
-    get canvasWidth(): number {
-        return this._canvasWidth;
-    }
-
-    set canvasWidth(value: number) {
-        this._canvasWidth = value;
     }
 
     get canvasHeight(): number {
@@ -248,28 +180,28 @@ export class RecoveryStagesComponent implements OnInit, AfterViewInit {
         this._dummyCollection = value;
     }
 
-    get referenceFrameTime(): number {
-        return this._referenceFrameTime;
+    get activeViewInHours(): number {
+        return this._activeViewInHours;
     }
 
-    set referenceFrameTime(value: number) {
-        this._referenceFrameTime = value;
+    set activeViewInHours(value: number) {
+        this._activeViewInHours = value;
     }
 
-    get referenceFramePixels(): number {
-        return this._referenceFramePixels;
+    get activeViewInPixels(): number {
+        return this._activeViewInPixels;
     }
 
-    set referenceFramePixels(value: number) {
-        this._referenceFramePixels = value;
+    set activeViewInPixels(value: number) {
+        this._activeViewInPixels = value;
     }
 
-    get relativeZeroPoint(): number {
-        return this._relativeZeroPoint;
+    get absoluteStartTime(): number {
+        return this._absoluteStartTime;
     }
 
-    set relativeZeroPoint(value: number) {
-        this._relativeZeroPoint = value;
+    set absoluteStartTime(value: number) {
+        this._absoluteStartTime = value;
     }
 
     get stagesObjects(): { [p: string]: Konva.Line | Konva.Circle | Konva.Shape } {

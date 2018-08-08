@@ -5,6 +5,10 @@ import {RecoveryPlanViewComponent} from './recovery-plan-view/recovery-plan-view
 import {SharedModule} from '../../../../shared/shared.module';
 import {RecoveryRealPlanComponent} from './recovery-real-plan/recovery-real-plan.component';
 import {KonvaModule} from 'ng2-konva';
+import {RecoverySlotsComponent} from './recovery-slots/recovery-slots.component';
+import {TimeConverterService} from './util/time-converter.service';
+import {ShapeDraw} from './util/shapeDraw';
+import {RecoveryPlanService} from './util/recovery-plan.service';
 
 @NgModule({
     imports: [
@@ -15,7 +19,13 @@ import {KonvaModule} from 'ng2-konva';
     declarations: [
         RecoveryStagesComponent,
         RecoveryPlanViewComponent,
-        RecoveryRealPlanComponent
+        RecoveryRealPlanComponent,
+        RecoverySlotsComponent
+    ],
+    providers: [
+        TimeConverterService,
+        ShapeDraw,
+        RecoveryPlanService
     ]
 })
 export class RecoveryPlanModule {
