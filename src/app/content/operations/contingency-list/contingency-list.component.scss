@@ -1,2 +1,20 @@
 @import '../../../../assets/style/base.scss';
 
+.mat-icon {
+  color: mat-color($foreground, 'icon');
+  @include md-icon-size(16px);
+}
+
+.contingency-item {
+  > div:last-child {
+    .mat-icon {
+      @include md-icon-size(24px);
+    }
+  }
+}
+
+.description {
+  span {
+    overflow: hidden;
+  }
+}

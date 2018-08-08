@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Aog} from '../../../shared/_models/aog/aog';
-import {TranslateService} from '@ngx-translate/core';
 import {Layout, LayoutService} from '../../../layout/_services/layout.service';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -15,6 +14,17 @@ import {AogFormComponent} from '../aog-form/aog-form.component';
 import {Count} from '../../../shared/_models/common/count';
 import {RecoveryPlanViewComponent} from './recovery-plan/recovery-plan-view/recovery-plan-view.component';
 import {tap} from 'rxjs/operators';
+import {AogService} from '../../_services/aog.service';
+import {DialogService} from '../../_services/dialog.service';
+import {CloseAogComponent} from '../close-aog/close-aog.component';
+import {TranslationService} from '../../../shared/_services/translation.service';
+import {
+    EditFieldComponent, EditFieldDataInterface,
+    EditFieldTranslationInterface
+} from '../edit-field/edit-field.component';
+import {Reason} from '../../../shared/_models/common/reason';
+import {Audit} from '../../../shared/_models/common/audit';
+import {StorageService} from '../../../shared/_services/storage.service';
 
 @Component({
     selector: 'lsl-aog-list',
@@ -25,8 +35,13 @@ export class AogListComponent implements OnInit, OnDestroy {
 
     @ViewChild('contPaginator') public paginator: MatPaginator;
 
-    private static AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT = 'aircraftOnGroundSearch';
-    private static AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT = 'aircraftOnGroundSearchCount';
+    private static EDIT_REASON_AOG_ENDPOINT = 'editReasonAircraftOnGround';
+    private static DEFAULT_ERROR_MESSAGE = 'ERRORS.DEFAULT';
+    private static SUCCESS_MESSAGE = 'FORM.MESSAGES.SAVE_SUCCESS';
+    private static REASON_PLACEHOLDER = 'OPERATIONS.CONTINGENCY_FORM.REASON_PLACEHOLDER';
+    private static EDIT_FORM_TITLE = 'FORM.EDIT_FORM_TITLE';
+    private static REASON_ATTRIBUTE = 'reason';
+    private static REASON_FIELD_TYPE = 'textarea';
 
     private static CONTINGENCY_UPDATE_INTERVAL = 'CONTINGENCY_UPDATE_INTERVAL';
     private static DEFAULT_INTERVAL = 30;
@@ -42,15 +57,19 @@ export class AogListComponent implements OnInit, OnDestroy {
     private _timerSubscription: Subscription;
     private _intervalToRefresh: number;
     private _countSub: Subscription;
+    private _editReasonSub: Subscription;
+    private _editFieldTranslation: EditFieldTranslationInterface;
+    private _toEdit: number;
 
-    constructor(private _messageData: DataService,
-                private _translate: TranslateService,
-                private _apiRestService: ApiRestService,
-                private _layoutService: LayoutService,
-                private _dialog: MatDialog) {
-
-
-        this._translate.setDefaultLang('en');
+    constructor(
+        private _messageData: DataService,
+        private _translationService: TranslationService,
+        private _apiRestService: ApiRestService,
+        private _layoutService: LayoutService,
+        private _dialogService: DialogService,
+        private _storageService: StorageService,
+        private _aogService: AogService
+    ) {
         this._error = false;
         this._aogList = [];
         this.layout = {
@@ -61,6 +80,9 @@ export class AogListComponent implements OnInit, OnDestroy {
             loading: false,
             formComponent: AogFormComponent
         };
+        this._editReasonSub = new Subscription();
+        this._editFieldTranslation = {field: {value: ''}, placeholder: ''};
+        this._toEdit = null;
     }
 
     ngOnInit() {
@@ -69,6 +91,12 @@ export class AogListComponent implements OnInit, OnDestroy {
         this.reloadSubscription = this._messageData.currentStringMessage.subscribe(message => this.reloadList(message));
         this.intervalRefreshSubscription = this.getIntervalToRefresh();
         this.paginatorSubscription = this.getPaginationSubscription();
+        this._translationService
+            .translate([AogListComponent.REASON_PLACEHOLDER, AogListComponent.EDIT_FORM_TITLE])
+            .then(v => {
+                this.editFieldTranslation.placeholder = v[AogListComponent.REASON_PLACEHOLDER];
+                this.editFieldTranslation.field = {value: v[AogListComponent.REASON_PLACEHOLDER]};
+            });
     }
 
     /**
@@ -85,6 +113,7 @@ export class AogListComponent implements OnInit, OnDestroy {
         if (this.timerSubscription) {
             this.timerSubscription.unsubscribe();
         }
+        this.editReasonSub.unsubscribe();
     }
 
     /**
@@ -129,7 +158,7 @@ export class AogListComponent implements OnInit, OnDestroy {
     private getListSubscription(signature: AogSearch): Subscription {
         this.loading = true;
         this.error = false;
-        return this._apiRestService.search<Aog[]>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_ENDPOINT, signature).subscribe(
+        return this._aogService.search(signature).subscribe(
             (response) => {
                 this.subscribeTimer();
                 this.aogList = response;
@@ -153,16 +182,21 @@ export class AogListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Observable for AOG list count service
+     * @param {AogSearch} search
+     * @returns {Observable<Count>}
+     */
     private getCount$(search: AogSearch): Observable<Count> {
-        return this._apiRestService
-            .search<Count>(AogListComponent.AIRCRAFT_ON_GROUND_SEARCH_COUNT_ENDPOINT, search)
+        return this._aogService
+            .getTotalRecords(search)
             .pipe(
                 tap(response => this.paginatorObjectService.length = response.items)
             );
     }
 
     /**
-     * Subscription for get the time for reload data
+     * Subscription for get time for reload data
      * @return {Subscription}
      */
     private getIntervalToRefresh(): Subscription {
@@ -170,18 +204,18 @@ export class AogListComponent implements OnInit, OnDestroy {
         this.error = false;
         return this._apiRestService.getSingle('configTypes', AogListComponent.CONTINGENCY_UPDATE_INTERVAL)
             .subscribe(
-            rs => {
-                const res = rs as GroupTypes;
-                this.intervalToRefresh = Number(res.types[0].code ? res.types[0].code : AogListComponent.DEFAULT_INTERVAL) * 1000;
-                this.loading = false;
-                this.getList();
-            },
-            () => {
-                this.loading = false;
-                this.intervalToRefresh = AogListComponent.DEFAULT_INTERVAL * 1000;
-                this.getList();
-            }
-        );
+                rs => {
+                    const res = rs as GroupTypes;
+                    this.intervalToRefresh = Number(res.types[0].code ? res.types[0].code : AogListComponent.DEFAULT_INTERVAL) * 1000;
+                    this.loading = false;
+                    this.getList();
+                },
+                () => {
+                    this.loading = false;
+                    this.intervalToRefresh = AogListComponent.DEFAULT_INTERVAL * 1000;
+                    this.getList();
+                }
+            );
     }
 
     /**
@@ -205,8 +239,88 @@ export class AogListComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Open a modal for close AOG
+     * @param {Aog} aog
+     */
+    public openCloseAircraftOnGround(aog: Aog) {
+        this._dialogService.openDialog(CloseAogComponent, {
+            data: aog,
+            hasBackdrop: true,
+            disableClose: true,
+            height: '50%',
+            width: '500px'
+        });
+    }
+
+    /**
+     * Open a modal for edit a contingency reason field
+     * @param {Aog} aog
+     */
+    public editReason(aog: Aog): void {
+        const dataInterface = this.getDataInterface(aog);
+        const ref = this._dialogService.openDialog(EditFieldComponent, {
+            data: dataInterface,
+            width: '400px',
+            height: '350px',
+            hasBackdrop: true
+        }).componentInstance;
+        this.editReasonSub = ref.submit.subscribe(
+            description => this.postEditReason(this.getReasonSignature(aog.id, description), dataInterface),
+            err => console.error(err)
+        );
+    }
+
+    /**
+     * Get data interface for Edit Field Component
+     * @param {string} content
+     * @returns {EditFieldDataInterface}
+     */
+    private getDataInterface(aog: Aog): EditFieldDataInterface {
+        return {
+            content: aog.reason,
+            type: AogListComponent.REASON_FIELD_TYPE,
+            attribute: AogListComponent.REASON_ATTRIBUTE,
+            translation: this.editFieldTranslation,
+            title: aog.tail.concat(' / ').concat(aog.fleet)
+        };
+    }
+
+    /**
+     * Get signature for edit reason
+     * @param {number} id
+     * @param {string} description
+     * @returns {Reason}
+     */
+    private getReasonSignature(id: number, description: string): Reason {
+        const reason = Reason.getInstance();
+        reason.description = description;
+        reason.id = id;
+        reason.audit = Audit.getInstance();
+        reason.audit.username = this.username;
+        return reason;
+    }
+
+    /**
+     *
+     * @param {Reason} reason
+     * @param {EditFieldDataInterface} dataInterface
+     * @returns {Promise<void>}
+     */
+    private postEditReason(reason: Reason, dataInterface: EditFieldDataInterface): Promise<void> {
+        return this._apiRestService
+            .add(AogListComponent.EDIT_REASON_AOG_ENDPOINT, reason)
+            .toPromise()
+            .then(() => {
+                this._translationService.translateAndShow(AogListComponent.SUCCESS_MESSAGE, 2500, {value: dataInterface.translation.field.value.toLowerCase()});
+                this._dialogService.closeAllDialogs();
+                this._messageData.stringMessage('reload');
+            })
+            .catch(() => this._translationService.translateAndShow(AogListComponent.DEFAULT_ERROR_MESSAGE));
+    }
+
     public openRecoveryPlan(selectedAog: Aog): void {
-        this._dialog.open(RecoveryPlanViewComponent, {
+        this._dialogService.openDialog(RecoveryPlanViewComponent, {
             maxWidth: '100vw',
             width: '100%',
             height: '100%',
@@ -313,5 +427,33 @@ export class AogListComponent implements OnInit, OnDestroy {
 
     set countSub(value: Subscription) {
         this._countSub = value;
+    }
+
+    get editReasonSub(): Subscription {
+        return this._editReasonSub;
+    }
+
+    set editReasonSub(value: Subscription) {
+        this._editReasonSub = value;
+    }
+
+    get editFieldTranslation(): EditFieldTranslationInterface {
+        return this._editFieldTranslation;
+    }
+
+    set editFieldTranslation(value: EditFieldTranslationInterface) {
+        this._editFieldTranslation = value;
+    }
+
+    get username(): string {
+        return this._storageService.getCurrentUser().username;
+    }
+
+    get toEdit(): number {
+        return this._toEdit;
+    }
+
+    set toEdit(value: number) {
+        this._toEdit = value;
     }
 }

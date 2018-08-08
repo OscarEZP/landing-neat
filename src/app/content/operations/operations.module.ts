@@ -25,6 +25,9 @@ import {AogListComponent} from './aog-list/aog-list.component';
 import {AogFormComponent} from './aog-form/aog-form.component';
 import {RecoveryPlanModule} from './aog-list/recovery-plan/recovery-plan.module';
 import {RecoveryPlanViewComponent} from './aog-list/recovery-plan/recovery-plan-view/recovery-plan-view.component';
+import {AogService} from '../_services/aog.service';
+import {CloseAogComponent} from './close-aog/close-aog.component';
+import {EditFieldComponent} from './edit-field/edit-field.component';
 
 @NgModule({
     imports: [
@@ -46,7 +49,9 @@ import {RecoveryPlanViewComponent} from './aog-list/recovery-plan/recovery-plan-
         PendingListComponent,
         ResolvePendingComponent,
         AogListComponent,
-        AogFormComponent
+        AogFormComponent,
+        EditFieldComponent,
+        CloseAogComponent
     ],
     exports: [],
     providers: [
@@ -57,13 +62,16 @@ import {RecoveryPlanViewComponent} from './aog-list/recovery-plan/recovery-plan-
         ApiRestService,
         HistoricalSearchService,
         {provide: MAT_DATE_LOCALE, useValue: 'es-CL'},
-        DateUtil
+        DateUtil,
+        AogService
     ],
     entryComponents: [
         CancelComponent,
         CloseContingencyComponent,
         MeetingComponent,
         ResolvePendingComponent,
+        EditFieldComponent,
+        CloseAogComponent,
         RecoveryPlanViewComponent
     ]
 })

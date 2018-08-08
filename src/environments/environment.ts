@@ -8,6 +8,7 @@ export const environment = {
     },
     paths: {
         aircraftOnGround: '/api/aircraft-on-ground/v1/aircraft-on-ground',
+        aircraftOnGroundFollowUpSearch: '/api/aircraft-on-ground/v1/aircraft-on-ground/follow-up/_search',
         aircraftOnGroundSearch: '/api/aircraft-on-ground/v1/aircraft-on-ground/_search',
         aircraftOnGroundSearchCount: '/api/aircraft-on-ground/v1/aircraft-on-ground/_search/_count',
         aircrafts: '/api/v1/configurations/aircrafts',
@@ -24,7 +25,7 @@ export const environment = {
         contingencySearch: '/api/v1/contingencies/_search',
         contingencySearchCount: '/api/v1/contingencies/_search/count',
         dateTime: '/api/security/currentdatetime',
-        editReasonAircraftOnGround: '/api/aircraft-on-ground/v1/aogs/_reason',
+        editReasonAircraftOnGround: '/api/aircraft-on-ground/v1/aircraft-on-ground/_reason',
         editReasonContingency: '/api/v1/contingencies/_reason',
         flights: '/api/v1/configurations/flights/_search',
         followUp: '/api/v1/contingencies/status/_followUp',
@@ -57,5 +58,6 @@ export const environment = {
         technicalNotConfiguredAuthoritySearch: '/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: '/api/v1/management/tech-station/_search',
         types: '/api/v1/configurations/types',
+        closeAog: '/api/aircraft-on-ground/v1/aircraft-on-ground/_close'
     }
 };

@@ -40,7 +40,7 @@ export class ContingencyService {
         });
     }
 
-    public getContingencies(searchSignature: SearchContingency): Observable<Contingency[]> {
+    public search(searchSignature: SearchContingency): Observable<Contingency[]> {
         return this.apiService
             .search<Contingency[]>(ContingencyService.CONTINGENCY_SEARCH_ENDPOINT, searchSignature)
             .pipe(
@@ -105,6 +105,21 @@ export class ContingencyService {
                 }),
                 catchError(this.handleError('getContingencies'))
             );
+    }
+
+    public validateTail(tail: string): Promise<any> {
+        const search: SearchContingency = SearchContingency.getInstance();
+        search.isClose = false;
+        search.tails = [tail];
+        return this.search(search)
+            .toPromise()
+            .then((res: Contingency[]) => {
+                if (res.length > 0) {
+                    return Promise.resolve(false);
+                } else {
+                    return Promise.resolve(true);
+                }
+            });
     }
 
     public clearList(): Contingency[] {
