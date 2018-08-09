@@ -3,17 +3,11 @@ import * as Konva from 'konva';
 import {MatMenuTrigger} from '@angular/material';
 import {Stage} from '../../../../../shared/_models/aog/Stage';
 import {ShapeDraw} from '../util/shapeDraw';
-import {RecoveryPlanInterface, RecoveryPlanService} from '../util/recovery-plan.service';
+import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../util/recovery-plan.service';
 import {Subscription} from 'rxjs/Subscription';
 import {TimeConverterService} from '../util/time-converter.service';
 import {Observable} from 'rxjs/Observable';
 import {Vector2d} from 'konva';
-
-export interface StageInterface {
-    line: Konva.Line;
-    circle: Konva.Circle;
-    stage: Stage;
-}
 
 export interface StyleInterface {
     top: string;
@@ -46,7 +40,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     constructor(private _recoveryPlanService: RecoveryPlanService) {
         this._recoveryPlanSubscription = this._recoveryPlanService.recoveryPlanBehavior$.subscribe(x => this._recoveryPlanInterface = x);
         this._absoluteStartTime = 0;
-        this._canvasHeight = 100;
+        this._canvasHeight = 50;
         this._lastValidPosition = 0;
         this._stagesObjects = [];
         this._menuStyle = { top: '-60px', left: '', position: 'absolute'};
@@ -91,7 +85,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     private getStagesSub(): Subscription {
         return this.stages$.subscribe(res => {
-            this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
+            this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null, labelText: null, labelLine: null}));
         });
     }
 
@@ -115,7 +109,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
             const startPos = TimeConverterService.epochTimeToPixelPosition(value.stage.start, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
             const endPos = TimeConverterService.epochTimeToPixelPosition(value.stage.end, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
             value.circle = ShapeDraw.drawCircle(interfaceStage.groupId, startPos, index > 0);
-            value.line = ShapeDraw.drawLines(interfaceStage.groupId, startPos, endPos);
+            value.line = ShapeDraw.drawLines(interfaceStage.groupId, startPos, endPos, true);
             value.circle.dragBoundFunc(pos => this.dragBound(pos, value, index, isLastItem ? this.activeViewInPixels : endPos));
             value.circle.on('mouseover', () => document.body.style.cursor = 'pointer');
             value.circle.on('mouseout', () => document.body.style.cursor = 'default');
