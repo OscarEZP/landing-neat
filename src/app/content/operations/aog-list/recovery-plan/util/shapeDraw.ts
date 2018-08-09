@@ -24,7 +24,7 @@ export class ShapeDraw {
 
     public static drawCircle(groupId: string, startPos: number, isDraggable: boolean = true, isFilled: boolean = false): Konva.Circle {
         return new Konva.Circle({
-            x: startPos,
+            x: startPos + 8.9,
             y: 25,
             width: 15,
             height: 15,
