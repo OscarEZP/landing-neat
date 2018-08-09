@@ -1,9 +1,12 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as Konva from 'konva';
-import {Stage} from '../../../../../shared/_models/aog/Stage';
-import * as moment from 'moment';
 import {MatMenuTrigger} from '@angular/material';
+import {RecoveryPlanStages} from '../../../../../shared/_models/aog/RecoveryPlanStages';
+import {Stage} from '../../../../../shared/_models/aog/Stage';
+import {ShapeDraw} from '../util/shapeDraw';
+import {RecoveryPlanInterface, RecoveryPlanService} from '../util/recovery-plan.service';
 import {Subscription} from 'rxjs/Subscription';
+import {TimeConverterService} from '../util/time-converter.service';
 import {Observable} from 'rxjs/Observable';
 import {Vector2d} from 'konva';
 
@@ -46,21 +49,20 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     private static ETR_PROJ = '#B4D1F0';
     private static GRAY = '#CCC';
 
-    private _canvasWidth: number;
     private _canvasHeight: number;
     private _lastValidPosition: number;
-    private _referenceFrameTime: number;
-    private _referenceFramePixels: number;
-    private _relativeZeroPoint: number;
+    private _activeViewInHours: number;
+    private _activeViewInPixels: number;
+    private _absoluteStartTime: number;
     private _stagesObjects: StageInterface[];
+    private _recoveryPlanSubscription: Subscription;
+    private _recoveryPlanInterface: RecoveryPlanInterface;
 
-    constructor() {
-        this._canvasWidth = 1357;
+    constructor(private _recoveryPlanService: RecoveryPlanService) {
+        this._recoveryPlanSubscription = this._recoveryPlanService.recoveryPlanBehavior$.subscribe(x => this._recoveryPlanInterface = x);
+        this._absoluteStartTime = 0;
         this._canvasHeight = 100;
         this._lastValidPosition = 0;
-        this._referenceFrameTime = 24;
-        this._referenceFramePixels = 100;
-        this._relativeZeroPoint = 0;
         this._stagesObjects = [];
         this._menuStyle = { top: '-60px', left: '', position: 'absolute'};
         this._stagesSub = new Subscription();
@@ -68,9 +70,10 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     ngOnInit() {
         this.stagesSub = this.getStagesSub();
-        this.canvasWidth = this.stages.nativeElement.parentNode.parentNode.offsetWidth;
-        this.referenceFramePixels = Math.round((this.referenceFrameTime * 3600) / this.canvasWidth);
-        this.relativeZeroPoint = this.setRelativeZeroPoint(this.stageList[0].start);
+        this.lastValidPosition = 0;
+        this.activeViewInHours = this._recoveryPlanInterface.activeViewInHours;
+        this.activeViewInPixels = this._recoveryPlanInterface.activeViewInPixels;
+        this.absoluteStartTime = this._recoveryPlanInterface.absoluteStartTime;
     }
 
     ngOnDestroy() {
@@ -183,49 +186,95 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         }
     }
 
-    private drawCircle(stageType: string, startTime: number, itemPosition: number): Konva.Circle {
-        const stagePadding = 9;
-        const startPos = this.epochTimeToPixelPosition(startTime) + stagePadding;
-        return new Konva.Circle({
-            x: startPos,
-            y: 25,
-            width: 15,
-            height: 15,
-            radius: 7,
-            fill: 'white',
-            stroke: stageType,
-            strokeWidth: 4,
-            draggable: itemPosition !== 0
+/*    private drawAll() {
+        const stage = new Konva.Stage({
+            container: 'container',
+            width: this.activeViewInPixels,
+            height: this.canvasHeight
         });
-    }
 
-    private drawLines(stageType: string, start: number, end: number, isLastItem: boolean): Konva.Line {
-        return new Konva.Line({
-            points: [this.epochTimeToPixelPosition(start), 25, isLastItem ? this.canvasWidth : this.epochTimeToPixelPosition(end), 25],
-            stroke: stageType,
+        const layer = new Konva.Layer();
+
+        const line = new Konva.Line({
+            points: [0, 25, this.activeViewInPixels, 25],
+            stroke: 'gray',
             strokeWidth: 2,
             lineCap: 'round',
             lineJoin: 'round'
         });
-    }
 
-    private setRelativeZeroPoint(epochTime: number): number {
-        const originalTime = epochTime;
-        const minutes = moment.unix(epochTime).get('m');
-        return moment.unix(originalTime).subtract(minutes, 'minutes').unix();
-    }
+        layer.add(line);
 
-    private epochTimeToPixelPosition(selectedTime: number): number {
-        return Math.round((selectedTime - this.relativeZeroPoint) / this.referenceFramePixels);
-    }
+        const stageObjects: {[line: string]: Konva.Line | Konva.Circle | Shape} = {};
+        const collectionLength: number = this.dummyCollection.stageList.length;
 
-    get canvasWidth(): number {
-        return this._canvasWidth;
-    }
+        this.dummyCollection.stageList.forEach((value, index) => {
+            const lineName: string = 'line_' + index;
+            const circleName: string = 'circle_' + index;
+            const labelLineName: string = 'labelLine_' + index;
+            const labelTextName: string = 'labelText_' + index;
+            const localStagesObjects = stageObjects;
+            const canvasWidth = this.activeViewInPixels;
+            let initPosition = 0;
 
-    set canvasWidth(value: number) {
-        this._canvasWidth = value;
-    }
+            stageObjects[lineName] = ShapeDraw.drawLines(value, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+            stageObjects[circleName] = ShapeDraw.drawCircle(value, index, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels, true, false, this.stagesObjects);
+            stageObjects[labelTextName] = ShapeDraw.drawLabelText(value, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+            stageObjects[labelLineName] = ShapeDraw.drawLabelLine(value, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+
+            stageObjects[circleName].on('mouseover', function() {
+                document.body.style.cursor = 'pointer';
+            });
+
+            stageObjects[circleName].on('mouseout', function() {
+                document.body.style.cursor = 'default';
+            });
+
+            stageObjects[circleName].on('dblclick', function() {
+                // sipablo works here!
+            });
+
+            stageObjects[circleName].on('dragstart', function() {
+                this.moveToTop();
+                initPosition = localStagesObjects[circleName].getAbsolutePosition().x;
+                layer.draw();
+            });
+
+            stageObjects[circleName].on('dragmove', function() {
+                document.body.style.cursor = 'pointer';
+                for (let i = 0; i < collectionLength; i++) {
+                    // @ts-ignore
+                    localStagesObjects['line_' + i].points([localStagesObjects['circle_' + i].getAbsolutePosition().x, 25, canvasWidth, 25]);
+                }
+
+                stage.draw();
+            });
+
+            stageObjects[circleName].on('dragend', function() {
+                const diff = localStagesObjects[circleName].getAbsolutePosition().x - initPosition;
+                for (let i = 0; i < collectionLength; i++) {
+                    if (i > index) {
+                        // @ts-ignore
+                        localStagesObjects['line_' + i].points([localStagesObjects['circle_' + i].getAbsolutePosition().x + diff, 25, canvasWidth, 25]);
+                        localStagesObjects['circle_' + i].x(localStagesObjects['circle_' + i].getAbsolutePosition().x + diff);
+                    }
+                }
+                document.body.style.cursor = 'default';
+
+                stage.draw();
+            });
+
+            layer.add(stageObjects[labelTextName]);
+            layer.add(stageObjects[labelLineName]);
+            layer.add(stageObjects[lineName]);
+            layer.add(stageObjects[circleName]);
+        });
+
+        stage.add(layer);
+
+        stage.draw();
+
+    }*/
 
     get canvasHeight(): number {
         return this._canvasHeight;
@@ -247,28 +296,28 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         return this._stagesObjects.map(v => v.stage);
     }
 
-    get referenceFrameTime(): number {
-        return this._referenceFrameTime;
+    get activeViewInHours(): number {
+        return this._activeViewInHours;
     }
 
-    set referenceFrameTime(value: number) {
-        this._referenceFrameTime = value;
+    set activeViewInHours(value: number) {
+        this._activeViewInHours = value;
     }
 
-    get referenceFramePixels(): number {
-        return this._referenceFramePixels;
+    get activeViewInPixels(): number {
+        return this._activeViewInPixels;
     }
 
-    set referenceFramePixels(value: number) {
-        this._referenceFramePixels = value;
+    set activeViewInPixels(value: number) {
+        this._activeViewInPixels = value;
     }
 
-    get relativeZeroPoint(): number {
-        return this._relativeZeroPoint;
+    get absoluteStartTime(): number {
+        return this._absoluteStartTime;
     }
 
-    set relativeZeroPoint(value: number) {
-        this._relativeZeroPoint = value;
+    set absoluteStartTime(value: number) {
+        this._absoluteStartTime = value;
     }
 
     get stagesObjects(): StageInterface[] {
