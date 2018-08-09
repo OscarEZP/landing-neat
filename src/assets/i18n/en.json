@@ -47,6 +47,9 @@
       "STATION": "Station",
       "TECHNICAL_TYPE": "Technical Station",
       "TIPOLOGY": "Tipology"
+    },
+    "RECOVERY_PLAN" : {
+      "TITLE" : "Recovery Plan"
     }
   },
   "AUTHENTICATION": {
@@ -84,7 +87,8 @@
       "MEETING": "Meeting",
       "FOLLOW_UP": "Follow up",
       "PENDING": "Pending",
-      "DONE": "Done"
+      "DONE": "Done",
+      "OPEN_RECOVERY_PLAN" : "Show Recovery Plan"
     }
   },
   "ERRORS": {

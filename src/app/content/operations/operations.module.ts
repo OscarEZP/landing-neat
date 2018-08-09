@@ -21,10 +21,11 @@ import {SearchHistoricalComponent} from './search-historical/search-historical.c
 import {MeetingComponent} from './meeting/meeting.component';
 import {PendingListComponent} from './pending-list/pending-list.component';
 import {ResolvePendingComponent} from './resolve-pending/resolve-pending.component';
-import { AogListComponent } from './aog-list/aog-list.component';
-import { AogFormComponent } from './aog-form/aog-form.component';
+import {AogListComponent} from './aog-list/aog-list.component';
+import {AogFormComponent} from './aog-form/aog-form.component';
+import {RecoveryPlanModule} from './aog-list/recovery-plan/recovery-plan.module';
+import {RecoveryPlanComponent} from './aog-list/recovery-plan/recovery-plan.component';
 import {AogService} from '../_services/aog.service';
-
 import {CloseAogComponent} from './close-aog/close-aog.component';
 import {EditFieldComponent} from './edit-field/edit-field.component';
 
@@ -32,7 +33,8 @@ import {EditFieldComponent} from './edit-field/edit-field.component';
     imports: [
         BrowserModule,
         SharedModule,
-        RouterModule
+        RouterModule,
+        RecoveryPlanModule
     ],
     declarations: [
         OperationsComponent,
@@ -69,7 +71,8 @@ import {EditFieldComponent} from './edit-field/edit-field.component';
         MeetingComponent,
         ResolvePendingComponent,
         EditFieldComponent,
-        CloseAogComponent
+        CloseAogComponent,
+        RecoveryPlanComponent
     ]
 })
 

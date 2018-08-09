@@ -20,8 +20,8 @@ describe('Auth Service Test', () => {
     };
 
     const MockApiRestService = {
-        getAll: () => new Observable(s => {s.next([]); return s.complete();}),
-        search: () => new Observable(s => {s.next([]); return s.complete();}),
+        getAll: () => new Observable(s => {s.next([]); return s.complete(); }),
+        search: () => new Observable(s => {s.next([]); return s.complete(); }),
     };
 
     beforeEach(() => {

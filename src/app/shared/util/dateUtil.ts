@@ -91,7 +91,7 @@ export class DateUtil {
     }
 
     public static addTime(epochtime: number, time: number, unit: DurationInputArg2 = 'days'): number {
-        return parseInt(moment(epochtime).utc().add(time, unit).format('x'));
+        return parseInt(moment(epochtime).utc().add(time, unit).format('x'), 10);
     }
 
     /**

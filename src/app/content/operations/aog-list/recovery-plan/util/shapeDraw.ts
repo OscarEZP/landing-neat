@@ -1,0 +1,70 @@
+import {Injectable} from '@angular/core';
+import * as Konva from 'konva';
+import {Shape} from 'konva';
+import {TimeConverterService} from './time-converter.service';
+import {Stage} from '../../../../../shared/_models/aog/Stage';
+
+@Injectable()
+export class ShapeDraw {
+    private static ACC = '#4CAF5D';
+    private static ACC_PROJ = '#C6E2C7';
+    private static EVA = '#FFA726';
+    private static EVA_PROJ = '#F5E2C5';
+    private static SUP = '#0A85C0';
+    private static SUP_PROJ = '#B8D9E8';
+    private static EXE = '#9575CD';
+    private static EXE_PROJ = '#DDD5EA';
+    private static NI = '#FF5722';
+    private static NI_PROJ = '#FAD1C4';
+    private static ETR = '#479FFF';
+    private static ETR_PROJ = '#B4D1F0';
+    private static GRAY = '#CCC';
+
+    constructor() {}
+
+    public static drawCircle(groupId: string, startPos: number, isDraggable: boolean = true, isFilled: boolean = false): Konva.Circle {
+        return new Konva.Circle({
+            x: startPos,
+            y: 25,
+            width: 15,
+            height: 15,
+            radius: 7,
+            fill: isFilled ? ShapeDraw[groupId] : 'white',
+            stroke: ShapeDraw[groupId],
+            strokeWidth: 4,
+            draggable: isDraggable
+        });
+    }
+
+    public static drawLabelText(item: Stage, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Text {
+        return new Konva.Text({
+            x: TimeConverterService.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels) + 15,
+            y: 2,
+            text: item.groupId,
+            fontSize: 12,
+            fontFamily: 'Calibri',
+            fill: 'black'
+        });
+    }
+
+    public static drawLabelLine(item: Stage, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Line {
+        const xPos = TimeConverterService.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels) + 9;
+        return new Konva.Line({
+            points: [xPos, 4, xPos, 30],
+            stroke: 'black',
+            strokeWidth: 2,
+            lineJoin: 'round',
+            dash: [2, 2]
+        });
+    }
+
+    public static drawLines(groupId: string, startPos: number, endPos: number): Konva.Line {
+        return new Konva.Line({
+            points: [startPos, 25, endPos, 25],
+            stroke: ShapeDraw[groupId],
+            strokeWidth: 2,
+            lineCap: 'round',
+            lineJoin: 'round'
+        });
+    }
+}
