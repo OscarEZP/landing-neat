@@ -22,40 +22,17 @@ export class ShapeDraw {
 
     constructor() {}
 
-    public static drawCircle(item: Stage, itemPosition: number, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number, isDraggable: boolean, isFilled: boolean, stageObjects: {[line: string]: Konva.Line | Konva.Circle | Shape}): Konva.Circle {
-        const startPos = TimeConverterService.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels) + 9;
-        const endPos = TimeConverterService.epochTimeToPixelPosition(item.end, absoluteStartTime, activeViewInHours, activeViewInPixels);
-        let lastValidKnowPosition = 0;
-
+    public static drawCircle(groupId: string, startPos: number, isDraggable: boolean = true, isFilled: boolean = false): Konva.Circle {
         return new Konva.Circle({
             x: startPos,
             y: 25,
             width: 15,
             height: 15,
             radius: 7,
-            fill: isFilled ? ShapeDraw[item.group_id] : 'white',
-            stroke: ShapeDraw[item.group_id],
+            fill: isFilled ? ShapeDraw[groupId] : 'white',
+            stroke: ShapeDraw[groupId],
             strokeWidth: 4,
-            draggable: isDraggable && itemPosition !== 0,
-            dragBoundFunc: function (pos) {
-                if (isDraggable) {
-                    const prevCircleItem = stageObjects['circle_' + (itemPosition - 1)] !== undefined ? stageObjects['circle_' + (itemPosition - 1)].getAbsolutePosition().x : 0;
-                    const nextCircleItem = stageObjects['circle_' + (itemPosition + 1)] !== undefined ? stageObjects['circle_' + (itemPosition + 1)].getAbsolutePosition().x : endPos;
-
-                    if (pos.x > prevCircleItem && nextCircleItem > pos.x) {
-                        lastValidKnowPosition = pos.x;
-                        return {
-                            x: pos.x,
-                            y: this.getAbsolutePosition().y
-                        };
-                    } else {
-                        return {
-                            x: lastValidKnowPosition,
-                            y: this.getAbsolutePosition().y
-                        };
-                    }
-                }
-            }
+            draggable: isDraggable
         });
     }
 
@@ -63,7 +40,7 @@ export class ShapeDraw {
         return new Konva.Text({
             x: TimeConverterService.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels) + 15,
             y: 2,
-            text: item.group_id,
+            text: item.groupId,
             fontSize: 12,
             fontFamily: 'Calibri',
             fill: 'black'
@@ -81,10 +58,10 @@ export class ShapeDraw {
         });
     }
 
-    public static drawLines(item: Stage, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Shape {
+    public static drawLines(groupId: string, startPos: number, endPos: number): Konva.Line {
         return new Konva.Line({
-            points: [TimeConverterService.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels), 25, TimeConverterService.epochTimeToPixelPosition(item.end, absoluteStartTime, activeViewInHours, activeViewInPixels), 25],
-            stroke: ShapeDraw[item.group_id],
+            points: [startPos, 25, endPos, 25],
+            stroke: ShapeDraw[groupId],
             strokeWidth: 2,
             lineCap: 'round',
             lineJoin: 'round'

@@ -1,15 +1,15 @@
 export class Stage {
     private _revision: number;
-    private _id_aog: number;
-    private _group_id: string;
+    private _idAog: number;
+    private _groupId: string;
     private _start: number;
     private _end: number;
 
 
-    constructor(revision: number, id_aog: number, group_id: string, start: number, end: number) {
+    constructor(revision: number, idAog: number, groupId: string, start: number, end: number) {
         this._revision = revision;
-        this._id_aog = id_aog;
-        this._group_id = group_id;
+        this._idAog = idAog;
+        this._groupId = groupId;
         this._start = start;
         this._end = end;
     }
@@ -22,20 +22,20 @@ export class Stage {
         this._revision = value;
     }
 
-    get id_aog(): number {
-        return this._id_aog;
+    get idAog(): number {
+        return this._idAog;
     }
 
-    set id_aog(value: number) {
-        this._id_aog = value;
+    set idAog(value: number) {
+        this._idAog = value;
     }
 
-    get group_id(): string {
-        return this._group_id;
+    get groupId(): string {
+        return this._groupId;
     }
 
-    set group_id(value: string) {
-        this._group_id = value;
+    set groupId(value: string) {
+        this._groupId = value;
     }
 
     get start(): number {

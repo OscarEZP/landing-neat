@@ -7,7 +7,7 @@ export class TimeConverterService {
     constructor() {}
 
     public static absoluteStartTime(actualTime: number): number {
-        return moment(actualTime).subtract(moment.unix(actualTime).get('m'));
+        return moment(actualTime).subtract(moment.unix(actualTime).get('m')).valueOf();
     }
 
     public static epochTimeToPixelPosition(selectedTime: number, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): number {
