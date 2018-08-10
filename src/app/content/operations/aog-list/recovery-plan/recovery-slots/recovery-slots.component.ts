@@ -3,6 +3,8 @@ import {Subscription} from 'rxjs/Subscription';
 import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../util/recovery-plan.service';
 import * as Konva from 'konva';
 import {ShapeDraw} from '../util/shapeDraw';
+import {TimeConverterService} from '../util/time-converter.service';
+import moment = require('moment');
 
 @Component({
   selector: 'lsl-recovery-slots',
@@ -59,11 +61,24 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
     private drawBoxes(layer: Konva.Layer): void {
-        const hourInMs = 360000;
-        for (let i = 0; i < this.activeViewInHours; i++) {
-            const startTime = this.relativeStartTime + hourInMs * i;
+        const hourInMs = 3600000;
+        const startTime = this.absoluteStartTime;
+        let dateStartTime = startTime;
+        let accumulator = 0;
 
-            layer.add(ShapeDraw.drawTimeBox(startTime, startTime + hourInMs, true, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels));
+        for (let i = 0; i < this.activeViewInHours; i++) {
+            const calculatedStartTime = startTime + hourInMs * i;
+
+            layer.add(ShapeDraw.drawTimeBox(calculatedStartTime, calculatedStartTime + hourInMs, true, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels));
+
+            if (moment(calculatedStartTime).hour() === 0) {
+                layer.add(ShapeDraw.drawTimeBox(dateStartTime, calculatedStartTime, false, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels));
+                dateStartTime = calculatedStartTime;
+            } else if (i === this.activeViewInHours - 1) {
+                layer.add(ShapeDraw.drawTimeBox(dateStartTime, calculatedStartTime + hourInMs, false, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels));
+            }
+
+            accumulator++;
         }
     }
 

@@ -74,11 +74,11 @@ export class ShapeDraw {
 
         const timeBoxGroup = new Konva.Group({
             x: xStartPos,
-            y: 0
+            y: isHour ? 0 : 20
         });
 
         const box = ShapeDraw.drawBox(xStartPos, xEndPos);
-        const text = ShapeDraw.drawText(xStartPos, isHour);
+        const text = ShapeDraw.drawText(xStartPos, xEndPos, isHour, startTime);
 
         timeBoxGroup.add(box).add(text);
 
@@ -87,9 +87,9 @@ export class ShapeDraw {
 
     private static drawBox(startTime: number, endTime: number): Konva.Rect {
         return new Konva.Rect({
-            x: startTime,
+            x: 0,
             y: 0,
-            width: endTime,
+            width: endTime - startTime,
             height: 20,
             fill: 'white',
             stroke: 'black',
@@ -97,11 +97,11 @@ export class ShapeDraw {
         });
     }
 
-    private static drawText(startTime: number, isHour: boolean): Konva.Text {
+    private static drawText(startTime: number, endTime: number, isHour: boolean, epoch: number): Konva.Text {
         return new Konva.Text({
-            x: startTime + 5,
-            y: 10,
-            text: moment(startTime).format(isHour ? 'HH:mm' : 'DD-MMM-YYYY'),
+            x: 15,
+            y: 4,
+            text: moment(epoch).minute(0).format(isHour ? 'HH:mm' : 'DD-MMM-YYYY'),
             fontSize: 12,
             fontFamily: 'Calibri',
             fill: 'black'
