@@ -1,7 +1,7 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {Aog} from '../../../../shared/_models/aog/aog';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {RecoveryPlanService} from './util/recovery-plan.service';
+import {RecoveryPlanService} from './_services/recovery-plan.service';
 
 @Component({
   selector: 'lsl-recovery-plan',

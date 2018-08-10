@@ -1,13 +1,15 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as Konva from 'konva';
-import {MatMenuTrigger} from '@angular/material';
+import {MAT_DIALOG_DATA, MatMenuTrigger} from '@angular/material';
 import {Stage} from '../../../../../shared/_models/aog/Stage';
 import {ShapeDraw} from '../util/shapeDraw';
-import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../util/recovery-plan.service';
 import {Subscription} from 'rxjs/Subscription';
-import {TimeConverterService} from '../util/time-converter.service';
 import {Observable} from 'rxjs/Observable';
 import {Vector2d} from 'konva';
+import {DialogService} from '../../../../_services/dialog.service';
+import {AddStageFormComponent} from './add-stage-form/add-stage-form.component';
+import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../_services/recovery-plan.service';
+import {TimeConverter} from '../util/timeConverter';
 
 export interface StyleInterface {
     top: string;
@@ -22,6 +24,11 @@ export interface LayerInterface {
     circles: Konva.Layer;
 }
 
+export interface MenuInterface {
+    addGroup: boolean;
+    delGroup: boolean;
+}
+
 @Component({
     selector: 'lsl-recovery-stages',
     templateUrl: './recovery-stages.component.html',
@@ -29,10 +36,11 @@ export interface LayerInterface {
 })
 export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit {
 
+    private static ADD_STAGE_DIALOG_TAG = 'addStage';
+    private static TIMELINE_MENU_CLASS = '.timeline-menu';
+
     @ViewChild('stages') public stages: ElementRef;
     @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
-
-    private static TIMELINE_MENU_CLASS = '.timeline-menu';
 
     private _stagesSub: Subscription;
     private _menuStyle: StyleInterface;
@@ -49,10 +57,13 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     private _konvaStage: Konva.Stage;
     private _konvaLayers: LayerInterface;
 
-    private _addGroup: boolean;
-    private _removeGroup: boolean;
+    private _menuInterface: MenuInterface;
 
-    constructor(private _recoveryPlanService: RecoveryPlanService) {
+    constructor(
+        private _recoveryPlanService: RecoveryPlanService,
+        private _dialogService: DialogService,
+        @Inject(MAT_DIALOG_DATA) private _data: object
+    ) {
         this._recoveryPlanSubscription = this._recoveryPlanService.recoveryPlanBehavior$.subscribe(x => this._recoveryPlanInterface = x);
         this._absoluteStartTime = 0;
         this._canvasHeight = 50;
@@ -60,8 +71,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         this._stagesObjects = [];
         this._menuStyle = { top: '-20px', left: '', position: 'absolute'};
         this._stagesSub = new Subscription();
-        this._addGroup = true;
-        this._removeGroup = false;
+        this._menuInterface = {addGroup: true, delGroup: true };
     }
 
     ngOnInit() {
@@ -103,17 +113,17 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     get stages$(): Observable<Stage[]> {
         const aogCreationTime = this._recoveryPlanInterface.relativeStartTime;
         return Observable.of([
-            new Stage(0, 0, 'ACC', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 0), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 2)),
-            new Stage(0, 0, 'EVA', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 2), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 4)),
-            new Stage(0, 0, 'SUP', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 4), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 7)),
-            new Stage(0, 0, 'EXE', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 7), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 10)),
+            new Stage(0, 0, 'ACC', TimeConverter.temporalAddHoursToTime(aogCreationTime, 0), TimeConverter.temporalAddHoursToTime(aogCreationTime, 2)),
+            new Stage(0, 0, 'EVA', TimeConverter.temporalAddHoursToTime(aogCreationTime, 2), TimeConverter.temporalAddHoursToTime(aogCreationTime, 4)),
+            new Stage(0, 0, 'SUP', TimeConverter.temporalAddHoursToTime(aogCreationTime, 4), TimeConverter.temporalAddHoursToTime(aogCreationTime, 7)),
+            new Stage(0, 0, 'EXE', TimeConverter.temporalAddHoursToTime(aogCreationTime, 7), TimeConverter.temporalAddHoursToTime(aogCreationTime, 10)),
         ]);
     }
 
     private getStagesSub(): Subscription {
         return this.stages$.subscribe(res => {
             const end = res[res.length - 1].end;
-            res.push(new Stage(0, 0, 'GRAY', end, TimeConverterService.temporalAddHoursToTime(end, 2)));
+            res.push(new Stage(0, 0, 'GRAY', end, TimeConverter.temporalAddHoursToTime(end, 2)));
             this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
         });
     }
@@ -123,8 +133,8 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         const interfaceStage = stageInterface.stage;
         const isLastItem = index + 1 === this.stagesObjects.length;
         this.lastValidPosition = 0;
-        const startPos = TimeConverterService.epochTimeToPixelPosition(stageInterface.stage.start, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
-        const endPos = TimeConverterService.epochTimeToPixelPosition(stageInterface.stage.end, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+        const startPos = TimeConverter.epochTimeToPixelPosition(stageInterface.stage.start, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+        const endPos = TimeConverter.epochTimeToPixelPosition(stageInterface.stage.end, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
         stageInterface.line = ShapeDraw.drawLines(interfaceStage.groupId, startPos, endPos);
         stageInterface.circle = ShapeDraw.drawCircle(interfaceStage.groupId, startPos, index > 0);
         stageInterface.circle.dragBoundFunc(pos => this.dragBound(pos, stageInterface, index, isLastItem ? this.activeViewInPixels : endPos));
@@ -176,14 +186,28 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     private triggerMenu(position: number, index: number) {
         this.trigger.openMenu();
-        this.addGroup = index > 0;
-        this.removeGroup = index > 0 && index < this.stagesObjects.length - 1;
+        this.menuInterface.addGroup = index > 0;
+        this.menuInterface.delGroup = index > 0 && index < this.stagesObjects.length - 1;
         const el = document.querySelector(RecoveryStagesComponent.TIMELINE_MENU_CLASS);
         if (el) {
             this.menuStyle.left = position.toString().concat('px');
             const style = el['style'];
             Object.keys(this.menuStyle).forEach(key => style[key] = this.menuStyle[key]);
         }
+    }
+
+    public addGroup() {
+        this._dialogService.openDialog(AddStageFormComponent, {
+            data: {},
+            hasBackdrop: true,
+            disableClose: true,
+            height: '250px',
+            width: '350px'
+        }, AddStageFormComponent.ADD_STAGE_DIALOG_TAG);
+    }
+
+    public deleteGroup() {
+        console.log('del group');
     }
 
     get canvasHeight(): number {
@@ -262,19 +286,12 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         this._konvaLayers = value;
     }
 
-    get addGroup(): boolean {
-        return this._addGroup;
+    get menuInterface(): MenuInterface {
+        return this._menuInterface;
     }
 
-    set addGroup(value: boolean) {
-        this._addGroup = value;
+    set menuInterface(value: MenuInterface) {
+        this._menuInterface = value;
     }
 
-    get removeGroup(): boolean {
-        return this._removeGroup;
-    }
-
-    set removeGroup(value: boolean) {
-        this._removeGroup = value;
-    }
 }

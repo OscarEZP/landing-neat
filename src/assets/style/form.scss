@@ -3,12 +3,6 @@
 $padd-section: 25px;
 $font-size: 16px;
 
-@mixin md-icon-size($size: 24px) {
-  font-size: $size;
-  height: $size;
-  width: $size;
-}
-
 .mat-dialog-content {
   max-height: calc(100vh - 170px);
 }

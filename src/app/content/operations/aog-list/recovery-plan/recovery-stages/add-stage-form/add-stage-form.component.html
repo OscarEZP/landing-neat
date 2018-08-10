@@ -1,0 +1,25 @@
+<form id="add-stage-form" [formGroup]="addStageForm" #formAddStage="ngForm" (ngSubmit)="submitForm()">
+    <div mat-dialog-title  class="title-dialog-container" fxLayout="column">
+        <div fxLayout="row" fxFlex>
+            <span class="title-dialog" fxFlex>{{'FORM.ADD_NEW' | translate: groupLabel}}</span>
+            <button id="btn-aog-form-close-btn" type="button" class="close-btn" mat-icon-button
+                    fxFlexOffset="1">
+                <mat-icon aria-label="Close button" class="material-icons close-dialog" (click)="openCancelDialog()">close</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div mat-dialog-content  class="content-dialog-container">
+        <mat-chip-list>
+            <mat-chip>One fish</mat-chip>
+            <mat-chip>Two fish</mat-chip>
+        </mat-chip-list>
+    </div>
+    <div mat-dialog-actions fxLayoutAlign="end">
+        <button id="btn-add-stage-form-cancel" type="button" mat-button (click)="openCancelDialog()">
+            {{'BUTTONS.CANCEL'|translate}}
+        </button>
+        <button id="btn-add-stage-form-submit" type="submit" mat-button mat-raised-button color="primary">
+            {{'BUTTONS.SAVE'|translate}}
+        </button>
+    </div>
+</form>

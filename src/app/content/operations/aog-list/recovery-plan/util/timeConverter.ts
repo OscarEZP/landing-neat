@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import * as moment from 'moment';
 
 @Injectable()
-export class TimeConverterService {
+export class TimeConverter {
 
     constructor() {}
 
@@ -11,7 +11,7 @@ export class TimeConverterService {
     }
 
     public static epochTimeToPixelPosition(selectedTime: number, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): number {
-        return Math.round((selectedTime - absoluteStartTime) / TimeConverterService.referenceFramePixels(activeViewInHours, activeViewInPixels));
+        return Math.round((selectedTime - absoluteStartTime) / TimeConverter.referenceFramePixels(activeViewInHours, activeViewInPixels));
     }
 
     public static pixelToEpochtimePosition(actualPosition: number, startTime: number, referenceFrameInPixels: number): number {

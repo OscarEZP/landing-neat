@@ -6,9 +6,10 @@ import {SharedModule} from '../../../../shared/shared.module';
 import {RecoveryRealPlanComponent} from './recovery-real-plan/recovery-real-plan.component';
 import {KonvaModule} from 'ng2-konva';
 import {RecoverySlotsComponent} from './recovery-slots/recovery-slots.component';
-import {TimeConverterService} from './util/time-converter.service';
 import {ShapeDraw} from './util/shapeDraw';
-import {RecoveryPlanService} from './util/recovery-plan.service';
+import { AddStageFormComponent } from './recovery-stages/add-stage-form/add-stage-form.component';
+import {TimeConverter} from './util/timeConverter';
+import {RecoveryPlanService} from './_services/recovery-plan.service';
 
 @NgModule({
     imports: [
@@ -20,12 +21,16 @@ import {RecoveryPlanService} from './util/recovery-plan.service';
         RecoveryStagesComponent,
         RecoveryPlanComponent,
         RecoveryRealPlanComponent,
-        RecoverySlotsComponent
+        RecoverySlotsComponent,
+        AddStageFormComponent
     ],
     providers: [
-        TimeConverterService,
+        TimeConverter,
         ShapeDraw,
         RecoveryPlanService
+    ],
+    entryComponents: [
+        AddStageFormComponent
     ]
 })
 export class RecoveryPlanModule {

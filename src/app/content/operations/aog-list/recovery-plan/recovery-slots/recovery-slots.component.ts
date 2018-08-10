@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
-import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../util/recovery-plan.service';
 import * as Konva from 'konva';
 import {ShapeDraw} from '../util/shapeDraw';
 import moment = require('moment');
+import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../_services/recovery-plan.service';
 
 @Component({
   selector: 'lsl-recovery-slots',

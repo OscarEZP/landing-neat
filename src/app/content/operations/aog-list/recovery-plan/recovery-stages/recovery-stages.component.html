@@ -1,6 +1,6 @@
 <div id="container" #stages></div>
 <mat-menu class="timeline-menu" #timelineMenu="matMenu">
-    <button [disabled]="!addGroup" mat-menu-item>Add group</button>
-    <button [disabled]="!removeGroup" mat-menu-item>Remove group</button>
+    <button [disabled]="!menuInterface.addGroup" (click)="addGroup()" mat-menu-item>Add group</button>
+    <button [disabled]="!menuInterface.delGroup" (click)="deleteGroup()" mat-menu-item>Remove group</button>
 </mat-menu>
 <nav [matMenuTriggerFor]="timelineMenu"></nav>

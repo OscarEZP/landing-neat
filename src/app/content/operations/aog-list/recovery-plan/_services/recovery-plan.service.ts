@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import {TimeConverterService} from './time-converter.service';
 import * as Konva from 'konva';
 import {Stage} from '../../../../../shared/_models/aog/Stage';
+import {TimeConverter} from '../util/timeConverter';
 
 export interface RecoveryPlanInterface {
     activeViewInPixels: number;
@@ -68,6 +68,6 @@ export class RecoveryPlanService {
     }
 
     private set absoluteStartTime(value: number) {
-        this.getRecoveryPlanService().absoluteStartTime = TimeConverterService.absoluteStartTime(value);
+        this.getRecoveryPlanService().absoluteStartTime = TimeConverter.absoluteStartTime(value);
     }
 }

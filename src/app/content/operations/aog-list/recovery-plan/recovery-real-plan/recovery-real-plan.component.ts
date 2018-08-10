@@ -1,12 +1,12 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
-import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../util/recovery-plan.service';
 import * as Konva from 'konva';
-import {TimeConverterService} from '../util/time-converter.service';
 import {Stage} from '../../../../../shared/_models/aog/Stage';
 import {ShapeDraw} from '../util/shapeDraw';
 import moment = require('moment');
+import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../_services/recovery-plan.service';
+import {TimeConverter} from '../util/timeConverter';
 
 @Component({
   selector: 'lsl-recovery-real-plan',
@@ -67,11 +67,11 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     get stages$(): Observable<Stage[]> {
         const aogCreationTime = this._recoveryPlanInterface.relativeStartTime;
         return Observable.of([
-            new Stage(0, 0, 'ACC', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 0), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 2)),
-            new Stage(0, 0, 'EVA', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 2), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 4)),
-            new Stage(0, 0, 'SUP', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 4), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 7)),
-            new Stage(0, 0, 'EXE', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 7), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 10)),
-            new Stage(0, 0, 'ACC', TimeConverterService.temporalAddHoursToTime(aogCreationTime, 10), TimeConverterService.temporalAddHoursToTime(aogCreationTime, 12))
+            new Stage(0, 0, 'ACC', TimeConverter.temporalAddHoursToTime(aogCreationTime, 0), TimeConverter.temporalAddHoursToTime(aogCreationTime, 2)),
+            new Stage(0, 0, 'EVA', TimeConverter.temporalAddHoursToTime(aogCreationTime, 2), TimeConverter.temporalAddHoursToTime(aogCreationTime, 4)),
+            new Stage(0, 0, 'SUP', TimeConverter.temporalAddHoursToTime(aogCreationTime, 4), TimeConverter.temporalAddHoursToTime(aogCreationTime, 7)),
+            new Stage(0, 0, 'EXE', TimeConverter.temporalAddHoursToTime(aogCreationTime, 7), TimeConverter.temporalAddHoursToTime(aogCreationTime, 10)),
+            new Stage(0, 0, 'ACC', TimeConverter.temporalAddHoursToTime(aogCreationTime, 10), TimeConverter.temporalAddHoursToTime(aogCreationTime, 12))
         ]);
     }
 
@@ -96,8 +96,8 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         this.stagesObjects.forEach((value, index) => {
             const interfaceStage = value.stage;
             this.lastValidPosition = 0;
-            const startPos = TimeConverterService.epochTimeToPixelPosition(value.stage.start, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
-            const endPos = TimeConverterService.epochTimeToPixelPosition(value.stage.end, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+            const startPos = TimeConverter.epochTimeToPixelPosition(value.stage.start, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+            const endPos = TimeConverter.epochTimeToPixelPosition(value.stage.end, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
             value.circle = ShapeDraw.drawCircle(interfaceStage.groupId, startPos, false);
             value.line = ShapeDraw.drawLines(interfaceStage.groupId, startPos, endPos, false);
             /*value.labelLine = ShapeDraw.drawLabelLine(value.stage, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);

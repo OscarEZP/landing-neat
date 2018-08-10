@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import * as Konva from 'konva';
-import {TimeConverterService} from './time-converter.service';
 import {Stage} from '../../../../../shared/_models/aog/Stage';
 import moment = require('moment');
+import {TimeConverter} from './timeConverter';
 
 @Injectable()
 export class ShapeDraw {
@@ -38,7 +38,7 @@ export class ShapeDraw {
 
     public static drawLabelText(item: Stage, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Text {
         return new Konva.Text({
-            x: TimeConverterService.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels) + 5,
+            x: TimeConverter.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels) + 5,
             y: 2,
             text: item.groupId,
             fontSize: 12,
@@ -48,7 +48,7 @@ export class ShapeDraw {
     }
 
     public static drawLabelLine(item: Stage, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Line {
-        const xPos = TimeConverterService.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels);
+        const xPos = TimeConverter.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels);
         return new Konva.Line({
             points: [xPos, 4, xPos, 30],
             stroke: 'black',
@@ -69,8 +69,8 @@ export class ShapeDraw {
     }
 
     public static drawTimeBox(startTime: number, endTime: number, isHour: boolean, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Group {
-        const  xStartPos = TimeConverterService.epochTimeToPixelPosition(startTime, absoluteStartTime, activeViewInHours, activeViewInPixels);
-        const xEndPos = TimeConverterService.epochTimeToPixelPosition(endTime, absoluteStartTime, activeViewInHours, activeViewInPixels);
+        const  xStartPos = TimeConverter.epochTimeToPixelPosition(startTime, absoluteStartTime, activeViewInHours, activeViewInPixels);
+        const xEndPos = TimeConverter.epochTimeToPixelPosition(endTime, absoluteStartTime, activeViewInHours, activeViewInPixels);
 
         const timeBoxGroup = new Konva.Group({
             x: xStartPos,
