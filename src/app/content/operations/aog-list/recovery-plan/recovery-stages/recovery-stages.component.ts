@@ -32,6 +32,8 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     @ViewChild('stages') public stages: ElementRef;
     @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
+    private static TIMELINE_MENU_CLASS = '.timeline-menu';
+
     private _stagesSub: Subscription;
     private _menuStyle: StyleInterface;
 
@@ -56,7 +58,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         this._canvasHeight = 50;
         this._lastValidPosition = 0;
         this._stagesObjects = [];
-        this._menuStyle = { top: '-60px', left: '', position: 'absolute'};
+        this._menuStyle = { top: '-20px', left: '', position: 'absolute'};
         this._stagesSub = new Subscription();
         this._addGroup = true;
         this._removeGroup = false;
@@ -176,7 +178,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         this.trigger.openMenu();
         this.addGroup = index > 0;
         this.removeGroup = index > 0 && index < this.stagesObjects.length - 1;
-        const el = document.querySelector('.timeline-menu');
+        const el = document.querySelector(RecoveryStagesComponent.TIMELINE_MENU_CLASS);
         if (el) {
             this.menuStyle.left = position.toString().concat('px');
             const style = el['style'];

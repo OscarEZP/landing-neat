@@ -17,8 +17,8 @@ export interface StageInterface {
     line: Konva.Line;
     circle: Konva.Circle;
     stage: Stage;
-    labelText: Konva.Text;
-    labelLine: Konva.Line;
+    labelText?: Konva.Text;
+    labelLine?: Konva.Line;
 }
 
 @Injectable()

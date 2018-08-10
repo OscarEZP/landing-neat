@@ -58,7 +58,7 @@ export class ShapeDraw {
         });
     }
 
-    public static drawLines(groupId: string, startPos: number, endPos: number, isAbsolute: boolean): Konva.Line {
+    public static drawLines(groupId: string, startPos: number, endPos: number, isAbsolute: boolean = true): Konva.Line {
         return new Konva.Line({
             points: [startPos, 25, endPos, 25],
             stroke: ShapeDraw[isAbsolute ? groupId : groupId + '_PROJ'],
