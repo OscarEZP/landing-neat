@@ -3,7 +3,6 @@ import {Subscription} from 'rxjs/Subscription';
 import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../util/recovery-plan.service';
 import * as Konva from 'konva';
 import {ShapeDraw} from '../util/shapeDraw';
-import {TimeConverterService} from '../util/time-converter.service';
 import moment = require('moment');
 
 @Component({
