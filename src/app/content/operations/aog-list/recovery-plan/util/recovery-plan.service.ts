@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import {TimeConverterService} from './time-converter.service';
+import * as Konva from 'konva';
+import {Stage} from '../../../../../shared/_models/aog/Stage';
 
 export interface RecoveryPlanInterface {
     activeViewInPixels: number;
@@ -9,6 +11,14 @@ export interface RecoveryPlanInterface {
     relativeStartTime: number;
     absoluteStartTime: number;
     referenceFrameInPixels: number;
+}
+
+export interface StageInterface {
+    line: Konva.Line;
+    circle: Konva.Circle;
+    stage: Stage;
+    labelText: Konva.Text;
+    labelLine: Konva.Line;
 }
 
 @Injectable()
