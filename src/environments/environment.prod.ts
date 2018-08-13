@@ -57,6 +57,7 @@ export const environment = {
         technicalNotConfiguredAuthoritySearch: '/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: '/api/v1/management/tech-station/_search',
         types: '/api/v1/configurations/types',
-        closeAog: '/api/aircraft-on-ground/v1/aircraft-on-ground/_close'
+        closeAog: '/api/aircraft-on-ground/v1/aircraft-on-ground/_close',
+        recoveryStage: '/api/v1/management/recovery-plan/recovery-stage'
     }
 };

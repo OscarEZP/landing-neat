@@ -4,6 +4,11 @@ import {Observable} from 'rxjs/Observable';
 import * as Konva from 'konva';
 import {Stage} from '../../../../../shared/_models/aog/Stage';
 import {TimeConverter} from '../util/timeConverter';
+import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
+import {RecoveryStage} from '../../../../../shared/_models/aog/RecoveryStage';
+import {catchError, tap} from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
+import {LogService} from '../../../../_services/log.service';
 
 export interface RecoveryPlanInterface {
     activeViewInPixels: number;
@@ -24,10 +29,14 @@ export interface StageInterface {
 @Injectable()
 export class RecoveryPlanService {
 
+    private static RECOVERY_STAGE = 'recoveryStage';
+    private _apiService: ApiRestService;
     private _recoveryPlanBehavior: BehaviorSubject<RecoveryPlanInterface>;
     private _recoveryPlanBehavior$: Observable<RecoveryPlanInterface>;
 
-    constructor() {
+    constructor(private http: HttpClient,
+                private logService: LogService) {
+        this.apiService = new ApiRestService(this.http);
         this._recoveryPlanBehavior = new BehaviorSubject<RecoveryPlanInterface>(this.newRecoveryPlanService);
         this._recoveryPlanBehavior$ = this._recoveryPlanBehavior.asObservable();
     }
@@ -53,6 +62,36 @@ export class RecoveryPlanService {
         };
     }
 
+    /**
+     * Find Recovery Stage Configuration
+     * @returns {Observable<any>}
+     */
+    public findRecoveryStageConf(): Observable<any> {
+        return this.apiService
+            .getAll<RecoveryStage[]>(RecoveryPlanService.RECOVERY_STAGE)
+            .pipe(
+                tap((x: RecoveryStage[]) => {
+                    this.log('fetched recoveryStage');
+                }),
+                catchError(this.handleError('recoveryStage'))
+            );
+    }
+
+    /**
+     * Write a log if there is an error and throw an error
+     * @param {string} operation
+     * @returns {(error: any) => Observable<T>}
+     */
+    private handleError<T>(operation = 'operation') {
+        return (error: any): Observable<T> => {
+            this.log(`${operation} failed: ${error.message}`);
+            return Observable.throw(error);
+        };
+    }
+
+    private log(message: string) {
+        this.logService.add('Recovery plan Service: ' + message);
+    }
     get recoveryPlanBehavior$(): Observable<RecoveryPlanInterface> {
         return this._recoveryPlanBehavior$;
     }
@@ -80,5 +119,13 @@ export class RecoveryPlanService {
 
     private set absoluteStartTime(value: number) {
         this.getRecoveryPlanService().absoluteStartTime = TimeConverter.absoluteStartTime(value);
+    }
+
+    get apiService(): ApiRestService {
+        return this._apiService;
+    }
+
+    set apiService(value: ApiRestService) {
+        this._apiService = value;
     }
 }
