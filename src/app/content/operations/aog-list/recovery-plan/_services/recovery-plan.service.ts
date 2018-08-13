@@ -32,6 +32,17 @@ export class RecoveryPlanService {
         this._recoveryPlanBehavior$ = this._recoveryPlanBehavior.asObservable();
     }
 
+    // TO-DO: Implement service
+    get stages$(): Observable<Stage[]> {
+        const aogCreationTime = this._recoveryPlanBehavior.getValue().relativeStartTime;
+        return Observable.of([
+            new Stage(0, 0, 'ACC', TimeConverter.temporalAddHoursToTime(aogCreationTime, 0), TimeConverter.temporalAddHoursToTime(aogCreationTime, 2)),
+            new Stage(0, 0, 'EVA', TimeConverter.temporalAddHoursToTime(aogCreationTime, 2), TimeConverter.temporalAddHoursToTime(aogCreationTime, 4)),
+            new Stage(0, 0, 'SUP', TimeConverter.temporalAddHoursToTime(aogCreationTime, 4), TimeConverter.temporalAddHoursToTime(aogCreationTime, 7)),
+            new Stage(0, 0, 'EXE', TimeConverter.temporalAddHoursToTime(aogCreationTime, 7), TimeConverter.temporalAddHoursToTime(aogCreationTime, 10)),
+        ]);
+    }
+
     private get newRecoveryPlanService(): RecoveryPlanInterface {
         return {
             activeViewInPixels: 0,

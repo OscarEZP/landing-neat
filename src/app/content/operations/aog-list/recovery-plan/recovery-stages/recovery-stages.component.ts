@@ -4,7 +4,6 @@ import {MAT_DIALOG_DATA, MatMenuTrigger} from '@angular/material';
 import {Stage} from '../../../../../shared/_models/aog/Stage';
 import {ShapeDraw} from '../util/shapeDraw';
 import {Subscription} from 'rxjs/Subscription';
-import {Observable} from 'rxjs/Observable';
 import {Vector2d} from 'konva';
 import {DialogService} from '../../../../_services/dialog.service';
 import {AddStageFormComponent} from './add-stage-form/add-stage-form.component';
@@ -36,7 +35,6 @@ export interface MenuInterface {
 })
 export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit {
 
-    private static ADD_STAGE_DIALOG_TAG = 'addStage';
     private static TIMELINE_MENU_CLASS = '.timeline-menu';
 
     @ViewChild('stages') public stages: ElementRef;
@@ -47,9 +45,6 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     private _canvasHeight: number;
     private _lastValidPosition: number;
-    private _activeViewInHours: number;
-    private _activeViewInPixels: number;
-    private _absoluteStartTime: number;
     private _stagesObjects: StageInterface[];
     private _recoveryPlanSubscription: Subscription;
     private _recoveryPlanInterface: RecoveryPlanInterface;
@@ -65,7 +60,6 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         @Inject(MAT_DIALOG_DATA) private _data: object
     ) {
         this._recoveryPlanSubscription = this._recoveryPlanService.recoveryPlanBehavior$.subscribe(x => this._recoveryPlanInterface = x);
-        this._absoluteStartTime = 0;
         this._canvasHeight = 50;
         this._lastValidPosition = 0;
         this._stagesObjects = [];
@@ -77,9 +71,6 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     ngOnInit() {
         this.stagesSub = this.getStagesSub();
         this.lastValidPosition = 0;
-        this.activeViewInHours = this._recoveryPlanInterface.activeViewInHours;
-        this.activeViewInPixels = this._recoveryPlanInterface.activeViewInPixels;
-        this.absoluteStartTime = this._recoveryPlanInterface.absoluteStartTime;
         this.konvaStage = new Konva.Stage({
             container: 'container',
             width: this.activeViewInPixels,
@@ -109,19 +100,8 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         Object.keys(this.konvaLayers).forEach(key => this.konvaStage.add(this.konvaLayers[key]));
     }
 
-    // TO-DO: Implement service
-    get stages$(): Observable<Stage[]> {
-        const aogCreationTime = this._recoveryPlanInterface.relativeStartTime;
-        return Observable.of([
-            new Stage(0, 0, 'ACC', TimeConverter.temporalAddHoursToTime(aogCreationTime, 0), TimeConverter.temporalAddHoursToTime(aogCreationTime, 2)),
-            new Stage(0, 0, 'EVA', TimeConverter.temporalAddHoursToTime(aogCreationTime, 2), TimeConverter.temporalAddHoursToTime(aogCreationTime, 4)),
-            new Stage(0, 0, 'SUP', TimeConverter.temporalAddHoursToTime(aogCreationTime, 4), TimeConverter.temporalAddHoursToTime(aogCreationTime, 7)),
-            new Stage(0, 0, 'EXE', TimeConverter.temporalAddHoursToTime(aogCreationTime, 7), TimeConverter.temporalAddHoursToTime(aogCreationTime, 10)),
-        ]);
-    }
-
     private getStagesSub(): Subscription {
-        return this.stages$.subscribe(res => {
+        return this._recoveryPlanService.stages$.subscribe(res => {
             const end = res[res.length - 1].end;
             res.push(new Stage(0, 0, 'GRAY', end, TimeConverter.temporalAddHoursToTime(end, 2)));
             this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
@@ -227,27 +207,15 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     get activeViewInHours(): number {
-        return this._activeViewInHours;
-    }
-
-    set activeViewInHours(value: number) {
-        this._activeViewInHours = value;
+        return this._recoveryPlanInterface.activeViewInHours;
     }
 
     get activeViewInPixels(): number {
-        return this._activeViewInPixels;
-    }
-
-    set activeViewInPixels(value: number) {
-        this._activeViewInPixels = value;
+        return this._recoveryPlanInterface.activeViewInPixels;
     }
 
     get absoluteStartTime(): number {
-        return this._absoluteStartTime;
-    }
-
-    set absoluteStartTime(value: number) {
-        this._absoluteStartTime = value;
+        return this._recoveryPlanInterface.absoluteStartTime;
     }
 
     get stagesObjects(): StageInterface[] {

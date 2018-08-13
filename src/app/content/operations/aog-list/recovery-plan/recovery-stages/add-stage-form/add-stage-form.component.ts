@@ -5,6 +5,9 @@ import {CancelComponent} from '../../../../cancel/cancel.component';
 import {MessageService} from '../../../../../../shared/_services/message.service';
 import {DialogService} from '../../../../../_services/dialog.service';
 import {RecoveryPlanService} from '../../_services/recovery-plan.service';
+import {Observable} from 'rxjs/Observable';
+import {TimeConverter} from '../../util/timeConverter';
+import {Stage} from '../../../../../../shared/_models/aog/Stage';
 
 @Component({
     selector: 'lsl-add-stage-form',
@@ -54,7 +57,6 @@ export class AddStageFormComponent implements OnInit {
                 .catch(err => console.error(err));
         }
     }
-
 
     get addStageForm(): FormGroup {
         return this._addStageForm;
