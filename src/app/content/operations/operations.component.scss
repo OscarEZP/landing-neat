@@ -6,15 +6,16 @@ $tabs-height: 54px;
   width: 100%;
 
   > div {
-    background-color: mat-color($custom, 'background-grey');
+
+    border-bottom: thin solid mat-color($foreground, divider);
     min-height: 60px;
   }
 
   #historical-search {
+
     font-family: 'Noto Sans', 'Arial', sans-serif;
     display: inline-block;
     @include generate-font-size(-5);
-    background-color: mat-color($custom, 'background-grey');
     width: 100%;
     margin: 10px 0 0 0;
     strong {
@@ -24,9 +25,9 @@ $tabs-height: 54px;
   }
 
   nav {
-    border-bottom: thin solid mat-color($foreground, divider);
+
     box-sizing: border-box;
-    padding: 30px 20px 0;
+    padding: 37px 20px 0;
     height: $tabs-height;
     width: 100%;
     display: inline-block;
