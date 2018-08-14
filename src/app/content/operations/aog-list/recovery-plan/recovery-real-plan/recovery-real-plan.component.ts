@@ -1,13 +1,13 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import * as Konva from 'konva';
 import {Stage} from '../../../../../shared/_models/aog/Stage';
 import {ShapeDraw} from '../util/shapeDraw';
 import moment = require('moment');
 import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../_services/recovery-plan.service';
-import {TimeConverter} from '../util/timeConverter';
-import {RecoveryStage} from "../../../../../shared/_models/aog/RecoveryStage";
+import {RecoveryStage} from '../../../../../shared/_models/aog/RecoveryStage';
+import {DateRange} from '../../../../../shared/_models/common/dateRange';
+import {TimeInstant} from '../../../../../shared/_models/timeInstant';
 
 @Component({
   selector: 'lsl-recovery-real-plan',
@@ -38,7 +38,7 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
     ngOnInit() {
-        this.stagesSub = this.getStagesSub();
+        // this.stagesSub = this.getStagesSub();
         this.recoveryStagesSub = this.getRecoveryStagesConfSubscription();
         this.lastValidPosition = 0;
         this.activeViewInHours = this._recoveryPlanInterface.activeViewInHours;
@@ -58,7 +58,7 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         });
         const layer = new Konva.Layer();
         this.drawBaseLine(layer);
-        this.drawGroups(layer, stage);
+        // this.drawGroups(layer, stage);
 
         layer.add(this.getRelativeNow(this._recoveryPlanInterface.relativeStartTime));
 
@@ -67,23 +67,23 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         stage.draw();
     }
 
-    // TO-DO: Implement service
-    get stages$(): Observable<Stage[]> {
-        const aogCreationTime = this._recoveryPlanInterface.relativeStartTime;
-        return Observable.of([
-            new Stage(0, 0, 'ACC', TimeConverter.temporalAddHoursToTime(aogCreationTime, 0), TimeConverter.temporalAddHoursToTime(aogCreationTime, 2)),
-            new Stage(0, 0, 'EVA', TimeConverter.temporalAddHoursToTime(aogCreationTime, 2), TimeConverter.temporalAddHoursToTime(aogCreationTime, 4)),
-            new Stage(0, 0, 'SUP', TimeConverter.temporalAddHoursToTime(aogCreationTime, 4), TimeConverter.temporalAddHoursToTime(aogCreationTime, 7)),
-            new Stage(0, 0, 'EXE', TimeConverter.temporalAddHoursToTime(aogCreationTime, 7), TimeConverter.temporalAddHoursToTime(aogCreationTime, 10)),
-            new Stage(0, 0, 'ACC', TimeConverter.temporalAddHoursToTime(aogCreationTime, 10), TimeConverter.temporalAddHoursToTime(aogCreationTime, 12))
-        ]);
-    }
+    // // TO-DO: Implement service
+    // get stages$(): Observable<Stage[]> {
+    //     const aogCreationTime = this._recoveryPlanInterface.relativeStartTime;
+    //     return Observable.of([
+    //         new Stage(0, 0, 'ACC', TimeConverter.temporalAddHoursToTime(aogCreationTime, 0), TimeConverter.temporalAddHoursToTime(aogCreationTime, 2)),
+    //         new Stage(0, 0, 'EVA', TimeConverter.temporalAddHoursToTime(aogCreationTime, 2), TimeConverter.temporalAddHoursToTime(aogCreationTime, 4)),
+    //         new Stage(0, 0, 'SUP', TimeConverter.temporalAddHoursToTime(aogCreationTime, 4), TimeConverter.temporalAddHoursToTime(aogCreationTime, 7)),
+    //         new Stage(0, 0, 'EXE', TimeConverter.temporalAddHoursToTime(aogCreationTime, 7), TimeConverter.temporalAddHoursToTime(aogCreationTime, 10)),
+    //         new Stage(0, 0, 'ACC', TimeConverter.temporalAddHoursToTime(aogCreationTime, 10), TimeConverter.temporalAddHoursToTime(aogCreationTime, 12))
+    //     ]);
+    // }
 
-    private getStagesSub(): Subscription {
-        return this.stages$.subscribe(res => {
-            this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null, labelText: null, labelLine: null}));
-        });
-    }
+    // private getStagesSub(): Subscription {
+    //     return this.stages$.subscribe(res => {
+    //         this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null, labelText: null, labelLine: null}));
+    //     });
+    // }
 
     private drawBaseLine(layer: Konva.Layer) {
         const line = new Konva.Line({
@@ -96,22 +96,22 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         layer.add(line);
     }
 
-    private drawGroups(layer: Konva.Layer, stage: Konva.Stage) {
-        this.stagesObjects.forEach((value, index) => {
-            const interfaceStage = value.stage;
-            this.lastValidPosition = 0;
-            const startPos = TimeConverter.epochTimeToPixelPosition(value.stage.start, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
-            const endPos = TimeConverter.epochTimeToPixelPosition(value.stage.end, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
-            value.circle = ShapeDraw.drawCircle(interfaceStage.groupId, startPos, false);
-            value.line = ShapeDraw.drawLines(interfaceStage.groupId, startPos, endPos, false);
-            /*value.labelLine = ShapeDraw.drawLabelLine(value.stage, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
-            value.labelText = ShapeDraw.drawLabelText(value.stage, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
-            layer.add(value.labelLine);
-            layer.add(value.labelText);*/
-            layer.add(value.line);
-            layer.add(value.circle);
-        });
-    }
+    // private drawGroups(layer: Konva.Layer, stage: Konva.Stage) {
+    //     this.stagesObjects.forEach((value, index) => {
+    //         const interfaceStage = value.stage;
+    //         this.lastValidPosition = 0;
+    //         const startPos = TimeConverter.epochTimeToPixelPosition(value.stage.start, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+    //         const endPos = TimeConverter.epochTimeToPixelPosition(value.stage.end, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+    //         value.circle = ShapeDraw.drawCircle(interfaceStage.groupId, startPos, false);
+    //         value.line = ShapeDraw.drawLines(interfaceStage.groupId, startPos, endPos, false);
+    //         /*value.labelLine = ShapeDraw.drawLabelLine(value.stage, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+    //         value.labelText = ShapeDraw.drawLabelText(value.stage, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+    //         layer.add(value.labelLine);
+    //         layer.add(value.labelText);*/
+    //         layer.add(value.line);
+    //         layer.add(value.circle);
+    //     });
+    // }
 
     /**
      * @TODO: make it real later when implementation of services are done
@@ -121,7 +121,12 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         const nowTime = moment().hour() + ':' + moment().minute();
         const relativeNow = moment(startMoment + ' ' + nowTime).valueOf();
 
-        return ShapeDraw.drawLabelText(new Stage(0, 0, 'NOW', relativeNow, null), this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+        return ShapeDraw.drawLabelText(
+            new Stage('NOW', 1, new DateRange( new TimeInstant(relativeNow, ''), new TimeInstant(0, ''))),
+            this.absoluteStartTime,
+            this.activeViewInHours,
+            this.activeViewInPixels
+        );
     }
 
 

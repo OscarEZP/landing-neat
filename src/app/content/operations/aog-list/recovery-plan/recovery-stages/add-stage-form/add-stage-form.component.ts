@@ -7,7 +7,6 @@ import {DialogService} from '../../../../../_services/dialog.service';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import {Stage} from '../../../../../../shared/_models/aog/Stage';
 import {DurationInterface, TimeService} from '../../../../../../shared/_services/timeService';
-import {AogFormComponent} from '../../../../aog-form/aog-form.component';
 
 export interface InjectAddStageInterface {
     stagesList: Stage[];
@@ -98,7 +97,7 @@ export class AddStageFormComponent implements OnInit {
     }
 
     private get firstGroup(): string {
-        return this._data.stagesList[0] ? this._data.stagesList[0].groupId : '';
+        return this._data.stagesList[0] ? this._data.stagesList[0].code : '';
     }
 
     get addStageForm(): FormGroup {
@@ -118,7 +117,7 @@ export class AddStageFormComponent implements OnInit {
     }
 
     get groups(): string[] {
-        return this._data.stagesList.map(v => v.groupId);
+        return this._data.stagesList.map(v => v.code);
     }
 
     get stage(): Stage {

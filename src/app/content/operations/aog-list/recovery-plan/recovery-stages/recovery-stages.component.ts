@@ -104,8 +104,8 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     private getStagesSub(): Subscription {
         return this._recoveryPlanService.stages$.subscribe(res => {
             this.stagesList = res.map(v => v);
-            const end = res[res.length - 1].end;
-            res.push(new Stage(0, 0, 'GRAY', end, TimeConverter.temporalAddHoursToTime(end, 2)));
+            const endRange = res[res.length - 1].range;
+            res.push(new Stage('GRAY', 1, endRange));
             this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
         });
     }
@@ -115,10 +115,10 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         const interfaceStage = stageInterface.stage;
         const isLastItem = index + 1 === this.stagesObjects.length;
         this.lastValidPosition = 0;
-        const startPos = TimeConverter.epochTimeToPixelPosition(stageInterface.stage.start, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
-        const endPos = TimeConverter.epochTimeToPixelPosition(stageInterface.stage.end, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
-        stageInterface.line = ShapeDraw.drawLines(interfaceStage.groupId, startPos, endPos);
-        stageInterface.circle = ShapeDraw.drawCircle(interfaceStage.groupId, startPos, index > 0);
+        const startPos = TimeConverter.epochTimeToPixelPosition(stageInterface.stage.fromEpochtime, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+        const endPos = TimeConverter.epochTimeToPixelPosition(stageInterface.stage.toEpochtime, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
+        stageInterface.line = ShapeDraw.drawLines(interfaceStage.code, startPos, endPos);
+        stageInterface.circle = ShapeDraw.drawCircle(interfaceStage.code, startPos, index > 0);
         stageInterface.circle.dragBoundFunc(pos => this.dragBound(pos, stageInterface, index, isLastItem ? this.activeViewInPixels : endPos));
         stageInterface.circle.on('mouseover', () => document.body.style.cursor = 'pointer');
         stageInterface.circle.on('mouseout', () => document.body.style.cursor = 'default');

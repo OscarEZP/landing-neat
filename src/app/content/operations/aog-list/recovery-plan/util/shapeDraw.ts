@@ -38,9 +38,9 @@ export class ShapeDraw {
 
     public static drawLabelText(item: Stage, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Text {
         return new Konva.Text({
-            x: TimeConverter.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels) + 5,
+            x: TimeConverter.epochTimeToPixelPosition(item.fromEpochtime, absoluteStartTime, activeViewInHours, activeViewInPixels) + 5,
             y: 2,
-            text: item.groupId,
+            text: item.code,
             fontSize: 12,
             fontFamily: 'Calibri',
             fill: 'black'
@@ -48,7 +48,7 @@ export class ShapeDraw {
     }
 
     public static drawLabelLine(item: Stage, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Line {
-        const xPos = TimeConverter.epochTimeToPixelPosition(item.start, absoluteStartTime, activeViewInHours, activeViewInPixels);
+        const xPos = TimeConverter.epochTimeToPixelPosition(item.fromEpochtime, absoluteStartTime, activeViewInHours, activeViewInPixels);
         return new Konva.Line({
             points: [xPos, 4, xPos, 30],
             stroke: 'black',

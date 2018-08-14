@@ -22,7 +22,7 @@ export class TimeConverter {
         return Math.round((activeViewInHours * 3600000) / activeViewInPixels);
     }
 
-    public static temporalAddHoursToTime(selectedTime: number, hoursToAdd: number) {
+    public static temporalAddHoursToTime(selectedTime: number, hoursToAdd: number): number {
         return selectedTime + hoursToAdd * 3600000;
     }
 }

@@ -9,6 +9,8 @@ import {RecoveryStage} from '../../../../../shared/_models/aog/RecoveryStage';
 import {catchError, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {LogService} from '../../../../_services/log.service';
+import {DateRange} from '../../../../../shared/_models/common/dateRange';
+import {TimeInstant} from '../../../../../shared/_models/timeInstant';
 
 export interface RecoveryPlanInterface {
     activeViewInPixels: number;
@@ -29,7 +31,7 @@ export interface StageInterface {
 @Injectable()
 export class RecoveryPlanService {
 
-    private static RECOVERY_STAGE = 'recoveryStage';
+    private static RECOVERY_STAGE_ENDPOINT = 'recoveryStage';
     private _apiService: ApiRestService;
     private _recoveryPlanBehavior: BehaviorSubject<RecoveryPlanInterface>;
     private _recoveryPlanBehavior$: Observable<RecoveryPlanInterface>;
@@ -44,12 +46,19 @@ export class RecoveryPlanService {
     // TO-DO: Implement service
     get stages$(): Observable<Stage[]> {
         const aogCreationTime = this._recoveryPlanBehavior.getValue().relativeStartTime;
-        return Observable.of([
-            new Stage(0, 0, 'ACC', TimeConverter.temporalAddHoursToTime(aogCreationTime, 0), TimeConverter.temporalAddHoursToTime(aogCreationTime, 2)),
-            new Stage(0, 0, 'EVA', TimeConverter.temporalAddHoursToTime(aogCreationTime, 2), TimeConverter.temporalAddHoursToTime(aogCreationTime, 4)),
-            new Stage(0, 0, 'SUP', TimeConverter.temporalAddHoursToTime(aogCreationTime, 4), TimeConverter.temporalAddHoursToTime(aogCreationTime, 7)),
-            new Stage(0, 0, 'EXE', TimeConverter.temporalAddHoursToTime(aogCreationTime, 7), TimeConverter.temporalAddHoursToTime(aogCreationTime, 10)),
-        ]);
+        let initTime = aogCreationTime;
+        const stageList = ['ACC', 'EVA', 'SUP', 'EXE']
+            .map(v => {
+                const endTime = TimeConverter.temporalAddHoursToTime(initTime, 2);
+                const stage = new Stage(
+                    v,
+                    1,
+                    new DateRange(new TimeInstant(initTime, ''), new TimeInstant(endTime, ''))
+                );
+                initTime = endTime;
+                return stage;
+            });
+        return Observable.of(stageList);
     }
 
     private get newRecoveryPlanService(): RecoveryPlanInterface {
@@ -68,7 +77,7 @@ export class RecoveryPlanService {
      */
     public findRecoveryStageConf(): Observable<any> {
         return this.apiService
-            .getAll<RecoveryStage[]>(RecoveryPlanService.RECOVERY_STAGE)
+            .getAll<RecoveryStage[]>(RecoveryPlanService.RECOVERY_STAGE_ENDPOINT)
             .pipe(
                 tap((x: RecoveryStage[]) => {
                     this.log('fetched recoveryStage');
