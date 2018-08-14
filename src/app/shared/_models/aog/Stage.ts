@@ -1,55 +1,43 @@
+import {DateRange} from '../common/dateRange';
 export class Stage {
-    private _revision: number;
-    private _idAog: number;
-    private _groupId: string;
-    private _start: number;
-    private _end: number;
 
-    constructor(revision: number, idAog: number, groupId: string, start: number, end: number) {
-        this._revision = revision;
-        this._idAog = idAog;
-        this._groupId = groupId;
-        this._start = start;
-        this._end = end;
+    private _code: string;
+    private _serie: number; // Por ahora fijo en 1
+    private _range: DateRange;
+
+
+    constructor(code: string, serie: number, range: DateRange) {
+        this._code = code;
+        this._serie = serie;
+        this._range = range;
     }
 
-    get revision(): number {
-        return this._revision;
+    getInstance(): Stage {
+
+        return new Stage(null, null, DateRange.getInstance());
     }
 
-    set revision(value: number) {
-        this._revision = value;
+    get code(): string {
+        return this._code;
     }
 
-    get idAog(): number {
-        return this._idAog;
+    set code(value: string) {
+        this._code = value;
     }
 
-    set idAog(value: number) {
-        this._idAog = value;
+    get serie(): number {
+        return this._serie;
     }
 
-    get groupId(): string {
-        return this._groupId;
+    set serie(value: number) {
+        this._serie = value;
     }
 
-    set groupId(value: string) {
-        this._groupId = value;
+    get range(): DateRange {
+        return this._range;
     }
 
-    get start(): number {
-        return this._start;
-    }
-
-    set start(value: number) {
-        this._start = value;
-    }
-
-    get end(): number {
-        return this._end;
-    }
-
-    set end(value: number) {
-        this._end = value;
+    set range(value: DateRange) {
+        this._range = value;
     }
 }

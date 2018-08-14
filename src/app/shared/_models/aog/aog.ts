@@ -1,5 +1,6 @@
 import {StatusAog} from './statusAog';
 import {Audit} from '../common/audit';
+import {RecoveryPlan} from './RecoveryPlan';
 
 export class Aog {
     private _id: number;
@@ -14,6 +15,7 @@ export class Aog {
     private _reason: string;
     private _status: StatusAog;
     private _audit: Audit;
+    private _lastRecoveryPlan: RecoveryPlan;
 
     private constructor() {
         this._id = null;
@@ -28,6 +30,7 @@ export class Aog {
         this._reason = '';
         this._status = StatusAog.getInstance();
         this._audit = Audit.getInstance();
+        this._lastRecoveryPlan.getInstance();
     }
 
     public static getInstance() {
@@ -152,5 +155,14 @@ export class Aog {
 
     set id(value: number) {
         this._id = value;
+    }
+
+
+    get lastRecoveryPlan(): RecoveryPlan {
+        return this._lastRecoveryPlan;
+    }
+
+    set lastRecoveryPlan(value: RecoveryPlan) {
+        this._lastRecoveryPlan = value;
     }
 }

@@ -7,6 +7,7 @@ import {ShapeDraw} from '../util/shapeDraw';
 import moment = require('moment');
 import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../_services/recovery-plan.service';
 import {TimeConverter} from '../util/timeConverter';
+import {RecoveryStage} from "../../../../../shared/_models/aog/RecoveryStage";
 
 @Component({
   selector: 'lsl-recovery-real-plan',
@@ -24,6 +25,8 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     private _stagesObjects: StageInterface[];
     private _recoveryPlanSubscription: Subscription;
     private _recoveryPlanInterface: RecoveryPlanInterface;
+    private _recoveryStagesConfiguration: RecoveryStage[];
+    private _recoveryStagesSub: Subscription;
 
     constructor(private _recoveryPlanService: RecoveryPlanService) {
         this._recoveryPlanSubscription = this._recoveryPlanService.recoveryPlanBehavior$.subscribe(x => this._recoveryPlanInterface = x);
@@ -36,6 +39,7 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
 
     ngOnInit() {
         this.stagesSub = this.getStagesSub();
+        this.recoveryStagesSub = this.getRecoveryStagesConfSubscription();
         this.lastValidPosition = 0;
         this.activeViewInHours = this._recoveryPlanInterface.activeViewInHours;
         this.activeViewInPixels = this._recoveryPlanInterface.activeViewInPixels;
@@ -120,6 +124,25 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         return ShapeDraw.drawLabelText(new Stage(0, 0, 'NOW', relativeNow, null), this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
     }
 
+
+    /**
+     * Subscription for get the data list with recovery stage configuration
+     * @return {Subscription}
+     */
+    private getRecoveryStagesConfSubscription(): Subscription {
+
+        return this._recoveryPlanService.findRecoveryStageConf().subscribe(
+            (response) => {
+                console.log('response', response);
+                this.recoveryStagesConfiguration = response;
+                console.log('recoveryStagesConfiguration', this.recoveryStagesConfiguration);
+
+            },
+            () => {
+                console.log('Error load recovery stage configuration');
+            });
+    }
+
     get stagesSub(): Subscription {
         return this._stagesSub;
     }
@@ -190,5 +213,23 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
 
     set recoveryPlanInterface(value: RecoveryPlanInterface) {
         this._recoveryPlanInterface = value;
+    }
+
+
+    get recoveryStagesConfiguration(): RecoveryStage[] {
+        return this._recoveryStagesConfiguration;
+    }
+
+    set recoveryStagesConfiguration(value: RecoveryStage[]) {
+        this._recoveryStagesConfiguration = value;
+    }
+
+
+    get recoveryStagesSub(): Subscription {
+        return this._recoveryStagesSub;
+    }
+
+    set recoveryStagesSub(value: Subscription) {
+        this._recoveryStagesSub = value;
     }
 }
