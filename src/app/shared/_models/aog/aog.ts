@@ -30,7 +30,7 @@ export class Aog {
         this._reason = '';
         this._status = StatusAog.getInstance();
         this._audit = Audit.getInstance();
-        this._lastRecoveryPlan.getInstance();
+        this._lastRecoveryPlan = RecoveryPlan.getInstance();
     }
 
     public static getInstance() {
