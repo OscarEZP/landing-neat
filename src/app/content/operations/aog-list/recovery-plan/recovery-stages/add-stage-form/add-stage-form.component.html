@@ -2,17 +2,23 @@
     <div mat-dialog-title  class="title-dialog-container" fxLayout="column">
         <div fxLayout="row" fxFlex>
             <span class="title-dialog" fxFlex>{{'FORM.ADD_NEW' | translate: groupLabel}}</span>
-            <button id="btn-aog-form-close-btn" type="button" class="close-btn" mat-icon-button
-                    fxFlexOffset="1">
-                <mat-icon aria-label="Close button" class="material-icons close-dialog" (click)="openCancelDialog()">close</mat-icon>
+            <button id="btn-aog-form-close-btn" type="button" class="close-btn" mat-icon-button (click)="openCancelDialog()">
+                <mat-icon aria-label="Close button" class="material-icons close-dialog" >close</mat-icon>
             </button>
         </div>
     </div>
-    <div mat-dialog-content  class="content-dialog-container">
+    <div mat-dialog-content  class="content-dialog-container" fxLayout="column" fxLayoutGap="10px">
         <mat-chip-list>
-            <mat-chip>One fish</mat-chip>
-            <mat-chip>Two fish</mat-chip>
+            <mat-chip (click)="addStageForm.controls['type'].setValue(group)" [selected]="addStageForm.controls['type'].value === group" *ngFor="let group of groups">{{group}}</mat-chip>
         </mat-chip-list>
+        <mat-form-field>
+            <mat-select
+                    id="sel-add-stage-form-duration"
+                    placeholder="{{ 'AOG.LIST.RECOVERY_PLAN.GROUP_DURATION' | translate }}"
+                    [formControl]="addStageForm.controls['duration']">
+                <mat-option *ngFor="let interval of durationIntervals" [value]="interval.duration">{{ interval.label }}</mat-option>
+            </mat-select>
+        </mat-form-field>
     </div>
     <div mat-dialog-actions fxLayoutAlign="end">
         <button id="btn-add-stage-form-cancel" type="button" mat-button (click)="openCancelDialog()">

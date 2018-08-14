@@ -1,42 +1,61 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TranslationService, TranslationParamInterface} from '../../../../../../shared/_services/translation.service';
 import {CancelComponent} from '../../../../cancel/cancel.component';
 import {MessageService} from '../../../../../../shared/_services/message.service';
 import {DialogService} from '../../../../../_services/dialog.service';
-import {RecoveryPlanService} from '../../_services/recovery-plan.service';
-import {Observable} from 'rxjs/Observable';
-import {TimeConverter} from '../../util/timeConverter';
+import {MAT_DIALOG_DATA} from '@angular/material';
 import {Stage} from '../../../../../../shared/_models/aog/Stage';
+import {DurationInterface, TimeService} from '../../../../../../shared/_services/timeService';
+
+export interface InjectAddStageInterface {
+    stagesList: Stage[];
+}
 
 @Component({
     selector: 'lsl-add-stage-form',
     templateUrl: './add-stage-form.component.html',
-    styleUrls: ['./add-stage-form.component.scss', '../../../../../../../assets/style/modal.scss']
+    styleUrls: ['../../../../../../../assets/style/modal.scss', './add-stage-form.component.scss']
 })
 export class AddStageFormComponent implements OnInit {
 
     public static ADD_STAGE_DIALOG_TAG = 'addStage';
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
+    private static INTERVAL_DURATION = 30;
+    private static INTERVAL_LIMIT = 360;
+    private static INTERVAL_DEFAULT = 180;
 
     private _addStageForm: FormGroup;
     private _groupLabel: TranslationParamInterface;
+    private _stage: Stage;
+    private _durationIntervals: DurationInterface[];
 
     constructor(
         private _fb: FormBuilder,
         private _translationService: TranslationService,
         private _messageService: MessageService,
         private _dialogService: DialogService,
-        private _recoveryPlanService: RecoveryPlanService
+        private _timeService: TimeService,
+        @Inject(MAT_DIALOG_DATA) private _data: InjectAddStageInterface
     ) {
         this._addStageForm = _fb.group({
-            'type': ['', [Validators.required]],
-            'duration': ['', [Validators.required]]
+            'type': [this.firstGroup, [Validators.required]],
+            'duration': [AddStageFormComponent.INTERVAL_DEFAULT, [Validators.required]]
         });
+        this._durationIntervals = [];
     }
 
     ngOnInit() {
         this._translationService.translate('AOG.LIST.RECOVERY_PLAN.GROUP').then(v => this.groupLabel = {value: v});
+        this.durationIntervals = this._timeService.getDurationIntervals(AddStageFormComponent.INTERVAL_DURATION, AddStageFormComponent.INTERVAL_LIMIT);
+    }
+
+    private get firstGroup(): string {
+        return this._data.stagesList[0] ? this._data.stagesList[0].groupId : '';
+    }
+
+    submitForm() {
+        console.log(this.addStageForm);
     }
 
     /**
@@ -72,5 +91,25 @@ export class AddStageFormComponent implements OnInit {
 
     set groupLabel(value: TranslationParamInterface) {
         this._groupLabel = value;
+    }
+
+    get groups(): string[] {
+        return this._data.stagesList.map(v => v.groupId);
+    }
+
+    get stage(): Stage {
+        return this._stage;
+    }
+
+    set stage(value: Stage) {
+        this._stage = value;
+    }
+
+    get durationIntervals(): DurationInterface[] {
+        return this._durationIntervals;
+    }
+
+    set durationIntervals(value: DurationInterface[]) {
+        this._durationIntervals = value;
     }
 }

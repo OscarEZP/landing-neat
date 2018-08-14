@@ -6,7 +6,7 @@ import {ShapeDraw} from '../util/shapeDraw';
 import {Subscription} from 'rxjs/Subscription';
 import {Vector2d} from 'konva';
 import {DialogService} from '../../../../_services/dialog.service';
-import {AddStageFormComponent} from './add-stage-form/add-stage-form.component';
+import {AddStageFormComponent, InjectAddStageInterface} from './add-stage-form/add-stage-form.component';
 import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../_services/recovery-plan.service';
 import {TimeConverter} from '../util/timeConverter';
 
@@ -53,6 +53,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     private _konvaLayers: LayerInterface;
 
     private _menuInterface: MenuInterface;
+    private _stagesList: Stage[];
 
     constructor(
         private _recoveryPlanService: RecoveryPlanService,
@@ -102,6 +103,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     private getStagesSub(): Subscription {
         return this._recoveryPlanService.stages$.subscribe(res => {
+            this.stagesList = res.map(v => v);
             const end = res[res.length - 1].end;
             res.push(new Stage(0, 0, 'GRAY', end, TimeConverter.temporalAddHoursToTime(end, 2)));
             this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
@@ -177,12 +179,13 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public addGroup() {
+        const injectData: InjectAddStageInterface = { stagesList: this.stagesList };
         this._dialogService.openDialog(AddStageFormComponent, {
-            data: {},
+            data: injectData,
             hasBackdrop: true,
             disableClose: true,
-            height: '250px',
-            width: '350px'
+            height: '220px',
+            width: '400px'
         }, AddStageFormComponent.ADD_STAGE_DIALOG_TAG);
     }
 
@@ -262,4 +265,11 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         this._menuInterface = value;
     }
 
+    get stagesList(): Stage[] {
+        return this._stagesList;
+    }
+
+    set stagesList(value: Stage[]) {
+        this._stagesList = value;
+    }
 }

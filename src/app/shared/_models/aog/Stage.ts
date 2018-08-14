@@ -5,7 +5,6 @@ export class Stage {
     private _start: number;
     private _end: number;
 
-
     constructor(revision: number, idAog: number, groupId: string, start: number, end: number) {
         this._revision = revision;
         this._idAog = idAog;

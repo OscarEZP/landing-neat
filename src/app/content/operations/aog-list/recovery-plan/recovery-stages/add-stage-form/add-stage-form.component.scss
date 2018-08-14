@@ -1,3 +1,28 @@
+@import '../../../../../../../assets/style/base.scss';
+
+$font-size: 14px;
+
+#add-stage-form {
+  margin: -15px -10px;
+  overflow: hidden;
+  height: 200px;
+
+  .mat-chip {
+    cursor: pointer;
+    height: 2px;
+    border: thin solid mat-color($foreground, secondary-text);
+    color: mat-color($foreground, secondary-text);
+    @include gen-component-font-size($font-size, -3);
+  }
+
+  .mat-chip.mat-chip-selected {
+    color: mat-color($primary, default-contrast);
+  }
+
+  .mat-select {
+    @include gen-component-font-size($font-size);
+  }
+}
+
 .mat-dialog-content {
-  height: 110px;
 }

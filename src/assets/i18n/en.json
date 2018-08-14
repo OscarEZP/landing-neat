@@ -11,7 +11,8 @@
       "STATUS": "Status",
       "DURATION": "Duration",
       "RECOVERY_PLAN": {
-        "GROUP": "Group"
+        "GROUP": "Group",
+        "GROUP_DURATION": "Group Duration"
       }
     },
     "AOG_FORM": {

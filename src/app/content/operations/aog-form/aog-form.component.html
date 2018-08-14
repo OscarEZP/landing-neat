@@ -244,7 +244,7 @@
                             <mat-select
                                     id="sel-aog-form-duration"
                                     [formControl]="aogForm.controls['duration']">
-                                <mat-option *ngFor="let duration of arrDuration" [value]="duration">{{ getDurationLabel(duration) }}</mat-option>
+                                <mat-option *ngFor="let interval of durationIntervals" [value]="interval.duration">{{ interval.label }}</mat-option>
                             </mat-select>
                             <mat-error
                                     *ngIf="aogForm.controls['duration'].hasError('required') && aogForm.controls['duration'].touched">

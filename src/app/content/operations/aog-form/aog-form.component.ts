@@ -27,6 +27,7 @@ import {TranslationService} from '../../../shared/_services/translation.service'
 import {AogService} from '../../_services/aog.service';
 import {SearchContingency} from '../../../shared/_models/contingency/searchContingency';
 import {Close} from '../../../shared/_models/contingency/close';
+import {DurationInterface, TimeService} from '../../../shared/_services/timeService';
 
 @Component({
     selector: 'lsl-aog-form',
@@ -53,13 +54,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private static CONTINGENCY_MESSAGE = 'AOG.AOG_FORM.MESSAGE.CONTINGENCY_DATA';
     private static AOG_SUCCESS_MESSAGE = 'AOG.AOG_FORM.MESSAGE.SUCCESS';
 
-    private static MINUTE_ABBREVIATION = 'FORM.MINUTE_ABBREVIATION';
-    private static HOUR_ABBREVIATION = 'FORM.HOUR_ABBREVIATION';
-    private static HOUR_LABEL = 'FORM.HOUR';
-    private static HOURS_LABEL = 'FORM.HOURS';
-
-    private static DEFAULT_DURATION = 60;
     private static AOG_TYPE = 'AOG';
+    private static INTERVAL_DEFAULT = 60;
     private static INTERVAL_DURATION = 30;
     private static INTERVAL_LIMIT = 1440;
 
@@ -71,17 +67,13 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _groupTypeList: GroupTypes[];
     private _locationList: Location[];
     private _safetyEventList: Safety[];
-    private _arrDuration: Array<number>;
 
     private _alive: boolean;
     private _interval: number;
     private _timeClock: Date;
     private _isSafety: boolean;
     private _contingency: Contingency;
-    private _hourLabel: string;
-    private _hoursLabel: string;
-    private _minuteAbbreviation: string;
-    private _hourAbbreviation: string;
+    private _durationIntervals: DurationInterface[];
 
     private _locationList$: Observable<Location[]>;
     private _aircraftList$: Observable<Aircraft[]>;
@@ -101,17 +93,20 @@ export class AogFormComponent implements OnInit, OnDestroy {
     private _failureType: string;
     private _aogStatus: string;
 
-    constructor(private _dialogService: DialogService,
-                private _fb: FormBuilder,
-                private _datetimeService: DatetimeService,
-                private _apiRestService: ApiRestService,
-                private _messageService: MessageService,
-                private _clockService: ClockService,
-                private _storageService: StorageService,
-                private _messageData: DataService,
-                private _contingencyService: ContingencyService,
-                private _aogService: AogService,
-                private _translationService: TranslationService) {
+    constructor(
+        private _dialogService: DialogService,
+        private _fb: FormBuilder,
+        private _datetimeService: DatetimeService,
+        private _apiRestService: ApiRestService,
+        private _messageService: MessageService,
+        private _clockService: ClockService,
+        private _storageService: StorageService,
+        private _messageData: DataService,
+        private _contingencyService: ContingencyService,
+        private _aogService: AogService,
+        private _translationService: TranslationService,
+        private _timeService: TimeService
+    ) {
         this._utcModel = new TimeInstant(new Date().getTime(), null);
         this._alive = true;
         this._interval = 1000 * 60;
@@ -129,11 +124,10 @@ export class AogFormComponent implements OnInit, OnDestroy {
             'failure': [this.aog.failure, Validators.required],
             'observation': [this.aog.observation, [Validators.required, Validators.maxLength(400)]],
             'reason': [this.aog.reason, [Validators.required, Validators.maxLength(400)]],
-            'duration': [AogFormComponent.DEFAULT_DURATION, Validators.required],
+            'duration': [AogFormComponent.INTERVAL_DEFAULT, Validators.required],
             'tipology': [this.aog.code],
             'closeObservation': ['']
         });
-        this._arrDuration = [];
         this._groupTypesSubs = new Subscription();
         this._aircraftSubs = new Subscription();
         this._operatorSubs = new Subscription();
@@ -147,11 +141,11 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._contingencyType = '';
         this._failureType = '';
         this._aogStatus = '';
+        this._durationIntervals = [];
     }
 
     ngOnInit() {
         this.username = this._storageService.getCurrentUser().username;
-        this.arrDuration = this.getDurationIntervals();
         this.groupTypesSubs = this.getGroupTypes();
         this.aircraftSubs = this.getAircraftSubs();
         this.operatorSubs = this.getOperatorSubs();
@@ -161,11 +155,8 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.safetyCheckSubs = this.getSafetyCheckSubs();
         this.clockSubs = this.getClockSubscription();
         this.username = this._storageService.getCurrentUser().username;
+        this.durationIntervals = this._timeService.getDurationIntervals(AogFormComponent.INTERVAL_DURATION, AogFormComponent.INTERVAL_LIMIT);
 
-        this._translationService.translate(AogFormComponent.MINUTE_ABBREVIATION).then(res => this.minuteAbbreviation = res);
-        this._translationService.translate(AogFormComponent.HOUR_ABBREVIATION).then(res => this.hourAbbreviation = res);
-        this._translationService.translate(AogFormComponent.HOURS_LABEL).then(res => this.hoursLabel = res);
-        this._translationService.translate(AogFormComponent.HOUR_LABEL).then(res => this.hourLabel = res);
     }
 
     ngOnDestroy() {
@@ -178,18 +169,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.datetimeSubs.unsubscribe();
         this.safetyCheckSubs.unsubscribe();
         this.clockSubs.unsubscribe();
-    }
-
-    /**
-     * Array with 30 minutes intervals
-     * @returns {number[]}
-     */
-    public getDurationIntervals(): number[] {
-        const res = [];
-        for (let i = 1; i * AogFormComponent.INTERVAL_DURATION <= AogFormComponent.INTERVAL_LIMIT; i++) {
-            res.push(i * AogFormComponent.INTERVAL_DURATION);
-        }
-        return res;
     }
 
     /**
@@ -599,26 +578,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Get a label with hours and minutes abbreviation
-     * @param {number} duration
-     * @returns {string}
-     */
-    public getDurationLabel(duration: number): string {
-        const minToHour = 60;
-        const durationToHours = duration / minToHour;
-        const hours = Math.floor(durationToHours);
-        return durationToHours === hours ?
-            hours.toString()
-                .concat(' ')
-                .concat(hours > 1 ? this.hoursLabel : this.hourLabel) :
-            hours.toString()
-                .concat(this.hourAbbreviation)
-                .concat(' ')
-                .concat((duration - (hours * minToHour)).toString())
-                .concat(this.minuteAbbreviation);
-    }
-
-    /**
      * Set an username in the AOG instance
      * @param {string} value
      */
@@ -763,30 +722,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._contingency = value;
     }
 
-    get arrDuration(): Array<number> {
-        return this._arrDuration;
-    }
-
-    set arrDuration(value: Array<number>) {
-        this._arrDuration = value;
-    }
-
-    get hourLabel(): string {
-        return this._hourLabel;
-    }
-
-    get hoursLabel(): string {
-        return this._hoursLabel;
-    }
-
-    get minuteAbbreviation(): string {
-        return this._minuteAbbreviation;
-    }
-
-    get hourAbbreviation(): string {
-        return this._hourAbbreviation;
-    }
-
     get timerSubs(): Subscription {
         return this._timerSubs;
     }
@@ -859,22 +794,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this._groupTypesSubs = value;
     }
 
-    set hourLabel(value: string) {
-        this._hourLabel = value;
-    }
-
-    set hoursLabel(value: string) {
-        this._hoursLabel = value;
-    }
-
-    set minuteAbbreviation(value: string) {
-        this._minuteAbbreviation = value;
-    }
-
-    set hourAbbreviation(value: string) {
-        this._hourAbbreviation = value;
-    }
-
     get contingencyType(): string {
         return this._contingencyType;
     }
@@ -897,5 +816,13 @@ export class AogFormComponent implements OnInit, OnDestroy {
 
     set aogStatus(value: string) {
         this._aogStatus = value;
+    }
+
+    get durationIntervals(): DurationInterface[] {
+        return this._durationIntervals;
+    }
+
+    set durationIntervals(value: DurationInterface[]) {
+        this._durationIntervals = value;
     }
 }
