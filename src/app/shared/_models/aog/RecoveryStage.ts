@@ -19,6 +19,12 @@ export class RecoveryStage {
         this._projectedColor = projectedColor;
     }
 
+    getInstance(): RecoveryStage {
+
+        return new RecoveryStage(null, null, null, null, null, null, null);
+
+    }
+
     get seq(): number {
         return this._seq;
     }
