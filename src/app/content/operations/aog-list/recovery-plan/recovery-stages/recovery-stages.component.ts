@@ -9,6 +9,8 @@ import {DialogService} from '../../../../_services/dialog.service';
 import {AddStageFormComponent, InjectAddStageInterface} from './add-stage-form/add-stage-form.component';
 import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../_services/recovery-plan.service';
 import {TimeConverter} from '../util/timeConverter';
+import {DateRange} from '../../../../../shared/_models/common/dateRange';
+import {TimeInstant} from '../../../../../shared/_models/timeInstant';
 
 export interface StyleInterface {
     top: string;
@@ -46,7 +48,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     private _canvasHeight: number;
     private _lastValidPosition: number;
     private _stagesObjects: StageInterface[];
-    private _recoveryPlanSubscription: Subscription;
+    private _recoveryPlanSub: Subscription;
     private _recoveryPlanInterface: RecoveryPlanInterface;
 
     private _konvaStage: Konva.Stage;
@@ -60,36 +62,44 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         private _dialogService: DialogService,
         @Inject(MAT_DIALOG_DATA) private _data: object
     ) {
-        this._recoveryPlanSubscription = this._recoveryPlanService.recoveryPlanBehavior$.subscribe(x => this._recoveryPlanInterface = x);
         this._canvasHeight = 50;
         this._lastValidPosition = 0;
         this._stagesObjects = [];
         this._menuStyle = { top: '-20px', left: '', position: 'absolute'};
         this._stagesSub = new Subscription();
+        this._recoveryPlanSub = new Subscription();
         this._menuInterface = {addGroup: true, delGroup: true };
     }
 
     ngOnInit() {
         this.stagesSub = this.getStagesSub();
+        this.recoveryPlanSub = this.getRecoveryPlanSub();
         this.lastValidPosition = 0;
         this.konvaStage = new Konva.Stage({
             container: 'container',
-            width: this.activeViewInPixels,
+            width: this.recoveryPlanInterface.activeViewInPixels,
             height: this.canvasHeight
         });
     }
 
-    ngOnDestroy() {
-        this.stagesSub.unsubscribe();
+    private getRecoveryPlanSub(): Subscription {
+        return this._recoveryPlanService.recoveryPlanBehavior$.subscribe(rpInterface => {
+            this._recoveryPlanInterface = rpInterface;
+            if (rpInterface.recoveryStagesConfig.length > 0) {
+                this.initTimeline();
+            }
+        });
     }
 
-    ngAfterViewInit() {
+    private initTimeline() {
         const baseLayer = new Konva.Layer();
-        baseLayer.add(ShapeDraw.drawLines('GRAY', 0, this.activeViewInPixels));
+        baseLayer.add(ShapeDraw.drawLines('GRAY', 0, this.recoveryPlanInterface.activeViewInPixels));
         const lineLayer = new Konva.Layer();
         const circleLayer = new Konva.Layer();
+
         this.stagesObjects.forEach((value, index) => {
             const stageInterface = this.getGroupStage(value, index);
+            console.log('line', stageInterface.line);
             lineLayer.add(stageInterface.line);
             circleLayer.add(stageInterface.circle);
         });
@@ -101,11 +111,20 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         Object.keys(this.konvaLayers).forEach(key => this.konvaStage.add(this.konvaLayers[key]));
     }
 
+    ngOnDestroy() {
+        this.stagesSub.unsubscribe();
+        this.recoveryPlanSub.unsubscribe();
+    }
+
+    ngAfterViewInit() {
+
+    }
+
     private getStagesSub(): Subscription {
         return this._recoveryPlanService.stages$.subscribe(res => {
             this.stagesList = res.map(v => v);
-            const endRange = res[res.length - 1].range;
-            res.push(new Stage('GRAY', 1, endRange));
+            const endTimeInstant = new TimeInstant(res[res.length - 1].range.toEpochtime, '');
+            res.push(new Stage('GRAY', 1, new DateRange(endTimeInstant, endTimeInstant)));
             this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
         });
     }
@@ -115,11 +134,25 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         const interfaceStage = stageInterface.stage;
         const isLastItem = index + 1 === this.stagesObjects.length;
         this.lastValidPosition = 0;
-        const startPos = TimeConverter.epochTimeToPixelPosition(stageInterface.stage.fromEpochtime, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
-        const endPos = TimeConverter.epochTimeToPixelPosition(stageInterface.stage.toEpochtime, this.absoluteStartTime, this.activeViewInHours, this.activeViewInPixels);
-        stageInterface.line = ShapeDraw.drawLines(interfaceStage.code, startPos, endPos);
-        stageInterface.circle = ShapeDraw.drawCircle(interfaceStage.code, startPos, index > 0);
-        stageInterface.circle.dragBoundFunc(pos => this.dragBound(pos, stageInterface, index, isLastItem ? this.activeViewInPixels : endPos));
+        const startPos = TimeConverter.epochTimeToPixelPosition(
+            stageInterface.stage.fromEpochtime,
+            this.recoveryPlanInterface.absoluteStartTime,
+            this.recoveryPlanInterface.activeViewInHours,
+            this.recoveryPlanInterface.activeViewInPixels
+        );
+        const endPos = TimeConverter.epochTimeToPixelPosition(
+            stageInterface.stage.toEpochtime,
+            this.recoveryPlanInterface.absoluteStartTime,
+            this.recoveryPlanInterface.activeViewInHours,
+            this.recoveryPlanInterface.activeViewInPixels
+        );
+        const config = this.recoveryPlanInterface.recoveryStagesConfig.find(c => c.code === interfaceStage.code);
+        const color = config ? config.color : '#ccc';
+        console.log('config', color);
+
+        stageInterface.line = ShapeDraw.drawLines(color, startPos, endPos);
+        stageInterface.circle = ShapeDraw.drawCircle(color, startPos, index > 0);
+        stageInterface.circle.dragBoundFunc(pos => this.dragBound(pos, stageInterface, index, isLastItem ? this.recoveryPlanInterface.activeViewInPixels : endPos));
         stageInterface.circle.on('mouseover', () => document.body.style.cursor = 'pointer');
         stageInterface.circle.on('mouseout', () => document.body.style.cursor = 'default');
         stageInterface.circle.on('dblclick', () => this.triggerMenu(stageInterface.circle.getAbsolutePosition().x, index));
@@ -130,7 +163,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         });
         stageInterface.circle.on('dragmove', () => {
             document.body.style.cursor = 'pointer';
-            this.stagesObjects.forEach(v => v.line.points([v.circle.getAbsolutePosition().x, 25, this.activeViewInPixels, 25]));
+            this.stagesObjects.forEach(v => v.line.points([v.circle.getAbsolutePosition().x, 25, this.recoveryPlanInterface.activeViewInPixels, 25]));
             this.konvaLayers.circles.draw();
             this.konvaLayers.lines.draw();
         });
@@ -148,7 +181,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         this.stagesObjects
             .filter((v, i) => i > index)
             .forEach(v => {
-                v.line.points([v.circle.getAbsolutePosition().x + diff, 25, this.activeViewInPixels, 25]);
+                v.line.points([v.circle.getAbsolutePosition().x + diff, 25, this.recoveryPlanInterface.activeViewInPixels, 25]);
                 v.circle.x(v.circle.getAbsolutePosition().x + diff);
             });
     }
@@ -209,16 +242,8 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         this._lastValidPosition = value;
     }
 
-    get activeViewInHours(): number {
-        return this._recoveryPlanInterface.activeViewInHours;
-    }
-
-    get activeViewInPixels(): number {
-        return this._recoveryPlanInterface.activeViewInPixels;
-    }
-
-    get absoluteStartTime(): number {
-        return this._recoveryPlanInterface.absoluteStartTime;
+    get recoveryPlanInterface(): RecoveryPlanInterface {
+        return this._recoveryPlanInterface;
     }
 
     get stagesObjects(): StageInterface[] {
@@ -271,5 +296,13 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     set stagesList(value: Stage[]) {
         this._stagesList = value;
+    }
+
+    get recoveryPlanSub(): Subscription {
+        return this._recoveryPlanSub;
+    }
+
+    set recoveryPlanSub(value: Subscription) {
+        this._recoveryPlanSub = value;
     }
 }

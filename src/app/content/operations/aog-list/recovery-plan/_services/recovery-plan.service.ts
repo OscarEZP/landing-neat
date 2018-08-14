@@ -7,7 +7,6 @@ import {TimeConverter} from '../util/timeConverter';
 import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
 import {RecoveryStage} from '../../../../../shared/_models/aog/RecoveryStage';
 import {catchError, tap} from 'rxjs/operators';
-import {HttpClient} from '@angular/common/http';
 import {LogService} from '../../../../_services/log.service';
 import {DateRange} from '../../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../../shared/_models/timeInstant';
@@ -18,6 +17,7 @@ export interface RecoveryPlanInterface {
     relativeStartTime: number;
     absoluteStartTime: number;
     referenceFrameInPixels: number;
+    recoveryStagesConfig: RecoveryStage[];
 }
 
 export interface StageInterface {
@@ -32,13 +32,13 @@ export interface StageInterface {
 export class RecoveryPlanService {
 
     private static RECOVERY_STAGE_ENDPOINT = 'recoveryStage';
-    private _apiService: ApiRestService;
     private _recoveryPlanBehavior: BehaviorSubject<RecoveryPlanInterface>;
     private _recoveryPlanBehavior$: Observable<RecoveryPlanInterface>;
 
-    constructor(private http: HttpClient,
-                private logService: LogService) {
-        this.apiService = new ApiRestService(this.http);
+    constructor(
+        private _logService: LogService,
+        private _apiRestService: ApiRestService
+    ) {
         this._recoveryPlanBehavior = new BehaviorSubject<RecoveryPlanInterface>(this.newRecoveryPlanService);
         this._recoveryPlanBehavior$ = this._recoveryPlanBehavior.asObservable();
     }
@@ -67,7 +67,8 @@ export class RecoveryPlanService {
             activeViewInHours: 0,
             relativeStartTime: 0,
             absoluteStartTime: 0,
-            referenceFrameInPixels: 0
+            referenceFrameInPixels: 0,
+            recoveryStagesConfig: []
         };
     }
 
@@ -75,15 +76,19 @@ export class RecoveryPlanService {
      * Find Recovery Stage Configuration
      * @returns {Observable<any>}
      */
-    public findRecoveryStageConf(): Observable<any> {
-        return this.apiService
+    public getRecoveryStageConfig(): Observable<any> {
+        return this._apiRestService
             .getAll<RecoveryStage[]>(RecoveryPlanService.RECOVERY_STAGE_ENDPOINT)
             .pipe(
-                tap((x: RecoveryStage[]) => {
+                tap((res: RecoveryStage[]) => {
                     this.log('fetched recoveryStage');
                 }),
                 catchError(this.handleError('recoveryStage'))
             );
+    }
+
+    public resetService() {
+        this.recoveryPlanInterface = this.newRecoveryPlanService;
     }
 
     /**
@@ -99,7 +104,7 @@ export class RecoveryPlanService {
     }
 
     private log(message: string) {
-        this.logService.add('Recovery plan Service: ' + message);
+        this._logService.add('Recovery plan Service: ' + message);
     }
     get recoveryPlanBehavior$(): Observable<RecoveryPlanInterface> {
         return this._recoveryPlanBehavior$;
@@ -115,26 +120,28 @@ export class RecoveryPlanService {
 
     set activeViewInPixels(value: number) {
         this.getRecoveryPlanService().activeViewInPixels = value;
+        this._recoveryPlanBehavior.next(this.getRecoveryPlanService());
     }
 
     set relativeStartTime(value: number) {
         this.absoluteStartTime = value;
         this.getRecoveryPlanService().relativeStartTime = value;
+        this._recoveryPlanBehavior.next(this.getRecoveryPlanService());
     }
 
     set activeViewInHours(value: number) {
         this.getRecoveryPlanService().activeViewInHours = value;
+        this._recoveryPlanBehavior.next(this.getRecoveryPlanService());
+    }
+
+    set recoveryStagesConfig(value: RecoveryStage[]) {
+        this.getRecoveryPlanService().recoveryStagesConfig = value;
+        this._recoveryPlanBehavior.next(this.getRecoveryPlanService());
     }
 
     private set absoluteStartTime(value: number) {
         this.getRecoveryPlanService().absoluteStartTime = TimeConverter.absoluteStartTime(value);
+        this._recoveryPlanBehavior.next(this.getRecoveryPlanService());
     }
 
-    get apiService(): ApiRestService {
-        return this._apiService;
-    }
-
-    set apiService(value: ApiRestService) {
-        this._apiService = value;
-    }
 }

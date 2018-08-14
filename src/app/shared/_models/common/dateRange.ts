@@ -29,4 +29,12 @@ export class DateRange {
     set to(value: TimeInstant) {
         this._to = value;
     }
+
+    get fromEpochtime(): number {
+        return this.from.epochTime;
+    }
+
+    get toEpochtime(): number {
+        return this.to.epochTime;
+    }
 }

@@ -6,31 +6,18 @@ import {TimeConverter} from './timeConverter';
 
 @Injectable()
 export class ShapeDraw {
-    private static ACC = '#4CAF5D';
-    private static ACC_PROJ = '#C6E2C7';
-    private static EVA = '#FFA726';
-    private static EVA_PROJ = '#F5E2C5';
-    private static SUP = '#0A85C0';
-    private static SUP_PROJ = '#B8D9E8';
-    private static EXE = '#9575CD';
-    private static EXE_PROJ = '#DDD5EA';
-    private static NI = '#FF5722';
-    private static NI_PROJ = '#FAD1C4';
-    private static ETR = '#479FFF';
-    private static ETR_PROJ = '#B4D1F0';
-    private static GRAY = '#CCC';
 
     constructor() {}
 
-    public static drawCircle(groupId: string, startPos: number, isDraggable: boolean = true, isFilled: boolean = false): Konva.Circle {
+    public static drawCircle(color: string, startPos: number, isDraggable: boolean = true, isFilled: boolean = false): Konva.Circle {
         return new Konva.Circle({
             x: startPos + 8.9,
             y: 25,
             width: 15,
             height: 15,
             radius: 7,
-            fill: isFilled ? ShapeDraw[groupId] : 'white',
-            stroke: ShapeDraw[groupId],
+            fill: isFilled ? color : 'white',
+            stroke: color,
             strokeWidth: 4,
             draggable: isDraggable
         });
@@ -58,10 +45,11 @@ export class ShapeDraw {
         });
     }
 
-    public static drawLines(groupId: string, startPos: number, endPos: number, isAbsolute: boolean = true): Konva.Line {
+    public static drawLines(color: string, startPos: number, endPos: number): Konva.Line {
         return new Konva.Line({
             points: [startPos, 25, endPos, 25],
-            stroke: ShapeDraw[isAbsolute ? groupId : groupId + '_PROJ'],
+            // stroke: ShapeDraw[isAbsolute ? groupId : groupId + '_PROJ'],
+            stroke: color,
             strokeWidth: 2,
             lineCap: 'round',
             lineJoin: 'round'

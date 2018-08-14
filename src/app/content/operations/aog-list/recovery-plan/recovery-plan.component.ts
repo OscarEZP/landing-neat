@@ -1,17 +1,20 @@
-import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Aog} from '../../../../shared/_models/aog/aog';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {RecoveryPlanService} from './_services/recovery-plan.service';
+import {Subscription} from 'rxjs/Subscription';
+import {RecoveryStage} from '../../../../shared/_models/aog/RecoveryStage';
 
 @Component({
   selector: 'lsl-recovery-plan',
   templateUrl: './recovery-plan.component.html',
   styleUrls: ['./recovery-plan.component.css']
 })
-export class RecoveryPlanComponent implements OnInit {
+export class RecoveryPlanComponent implements OnInit, OnDestroy {
 
-    private _aogData: Aog;
     @ViewChild('recoveryStageContainer') private _recoveryStageContainer: ElementRef;
+    private _aogData: Aog;
+    private _recoveryStagesConfigSub: Subscription;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) private matDialogData: Aog,
@@ -22,9 +25,29 @@ export class RecoveryPlanComponent implements OnInit {
     }
 
     ngOnInit() {
-        this._recoveryPlanService.activeViewInHours = 24;
-        this._recoveryPlanService.relativeStartTime = this.aogData.audit.time.epochTime;
-        this._recoveryPlanService.activeViewInPixels = this._recoveryStageContainer.nativeElement.parentNode.offsetWidth;
+        this.activeViewInHours = 24;
+        this.relativeStartTime = this.aogData.audit.time.epochTime;
+        this.activeViewInPixels = this._recoveryStageContainer.nativeElement.parentNode.offsetWidth;
+        this.recoveryStagesSub = this.getRecoveryStagesConfSubscription();
+    }
+
+    ngOnDestroy() {
+        this.recoveryStagesSub.unsubscribe();
+    }
+
+    /**
+     * Subscription for get the data list with recovery stage configuration
+     * @return {Subscription}
+     */
+    private getRecoveryStagesConfSubscription(): Subscription {
+        return this._recoveryPlanService.getRecoveryStageConfig().subscribe(
+            (response) => {
+                console.log('conf ->', response);
+                this.recoveryStagesConfig = response;
+            },
+            () => {
+                console.error('Error loading recovery stage configuration');
+            });
     }
 
     /**
@@ -40,6 +63,30 @@ export class RecoveryPlanComponent implements OnInit {
 
     set aogData(value: Aog) {
         this._aogData = value;
+    }
+
+    get recoveryStagesSub(): Subscription {
+        return this._recoveryStagesConfigSub;
+    }
+
+    set recoveryStagesSub(value: Subscription) {
+        this._recoveryStagesConfigSub = value;
+    }
+
+    set activeViewInPixels(value: number) {
+        this._recoveryPlanService.activeViewInPixels = value;
+    }
+
+    set relativeStartTime(value: number) {
+        this._recoveryPlanService.relativeStartTime = value;
+    }
+
+    set activeViewInHours(value: number) {
+        this._recoveryPlanService.activeViewInHours = value;
+    }
+
+    set recoveryStagesConfig(value: RecoveryStage[]) {
+        this._recoveryPlanService.recoveryStagesConfig = value;
     }
 
 }

@@ -39,7 +39,6 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
 
     ngOnInit() {
         // this.stagesSub = this.getStagesSub();
-        this.recoveryStagesSub = this.getRecoveryStagesConfSubscription();
         this.lastValidPosition = 0;
         this.activeViewInHours = this._recoveryPlanInterface.activeViewInHours;
         this.activeViewInPixels = this._recoveryPlanInterface.activeViewInPixels;
@@ -130,23 +129,7 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
 
-    /**
-     * Subscription for get the data list with recovery stage configuration
-     * @return {Subscription}
-     */
-    private getRecoveryStagesConfSubscription(): Subscription {
 
-        return this._recoveryPlanService.findRecoveryStageConf().subscribe(
-            (response) => {
-                console.log('response', response);
-                this.recoveryStagesConfiguration = response;
-                console.log('recoveryStagesConfiguration', this.recoveryStagesConfiguration);
-
-            },
-            () => {
-                console.log('Error load recovery stage configuration');
-            });
-    }
 
     get stagesSub(): Subscription {
         return this._stagesSub;

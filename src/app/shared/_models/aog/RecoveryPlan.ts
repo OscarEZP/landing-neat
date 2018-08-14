@@ -21,9 +21,10 @@ export class RecoveryPlan {
         this._enable = enable;
     }
 
-    getInstance(): RecoveryPlan {
+    public static getInstance(): RecoveryPlan {
         return new RecoveryPlan(null, null, [], DateRange.getInstance(), Audit.getInstance(), null);
     }
+
     get aogSeq(): number {
         return this._aogSeq;
     }
