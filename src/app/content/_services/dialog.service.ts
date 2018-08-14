@@ -18,8 +18,11 @@ export class DialogService {
         return this.refList[alias];
     }
 
-    public findDialogById(dialogId): void {
-        this.dialog.getDialogById(dialogId);
+    public closeDialog(alias: string): void {
+        if (this.refList[alias]) {
+            this.refList[alias].close();
+            delete this.refList[alias];
+        }
     }
 
     public closeAllDialogs(): void {
@@ -30,7 +33,4 @@ export class DialogService {
         return this._refList;
     }
 
-    set refList(value: MatDialogRef<any>[]) {
-        this._refList = value;
-    }
 }

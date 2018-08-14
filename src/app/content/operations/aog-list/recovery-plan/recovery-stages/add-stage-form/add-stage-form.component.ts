@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {TranslationService, TranslationParamInterface} from '../../../../../../shared/_services/translation.service';
 import {CancelComponent} from '../../../../cancel/cancel.component';
 import {MessageService} from '../../../../../../shared/_services/message.service';
@@ -7,6 +7,7 @@ import {DialogService} from '../../../../../_services/dialog.service';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import {Stage} from '../../../../../../shared/_models/aog/Stage';
 import {DurationInterface, TimeService} from '../../../../../../shared/_services/timeService';
+import {AogFormComponent} from '../../../../aog-form/aog-form.component';
 
 export interface InjectAddStageInterface {
     stagesList: Stage[];
@@ -21,6 +22,7 @@ export class AddStageFormComponent implements OnInit {
 
     public static ADD_STAGE_DIALOG_TAG = 'addStage';
     private static CANCEL_COMPONENT_MESSAGE = 'OPERATIONS.CANCEL_COMPONENT.MESSAGE';
+    private static VALIDATION_ERROR_MESSAGE = 'OPERATIONS.VALIDATION_ERROR_MESSAGE';
     private static INTERVAL_DURATION = 30;
     private static INTERVAL_LIMIT = 360;
     private static INTERVAL_DEFAULT = 180;
@@ -38,11 +40,11 @@ export class AddStageFormComponent implements OnInit {
         private _timeService: TimeService,
         @Inject(MAT_DIALOG_DATA) private _data: InjectAddStageInterface
     ) {
-        this._addStageForm = _fb.group({
-            'type': [this.firstGroup, [Validators.required]],
-            'duration': [AddStageFormComponent.INTERVAL_DEFAULT, [Validators.required]]
-        });
         this._durationIntervals = [];
+        this._addStageForm = _fb.group({
+            'group': [this.firstGroup, [Validators.required, this.groupValidator.bind(this)]],
+            'duration': [AddStageFormComponent.INTERVAL_DEFAULT, [Validators.required, this.durationValidator.bind(this)]]
+        });
     }
 
     ngOnInit() {
@@ -50,12 +52,30 @@ export class AddStageFormComponent implements OnInit {
         this.durationIntervals = this._timeService.getDurationIntervals(AddStageFormComponent.INTERVAL_DURATION, AddStageFormComponent.INTERVAL_LIMIT);
     }
 
-    private get firstGroup(): string {
-        return this._data.stagesList[0] ? this._data.stagesList[0].groupId : '';
+    submitForm() {
+        if (this.addStageForm.valid) {
+            this._dialogService.closeDialog(AddStageFormComponent.ADD_STAGE_DIALOG_TAG);
+        } else {
+            this._translationService.translateAndShow(AddStageFormComponent.VALIDATION_ERROR_MESSAGE);
+        }
     }
 
-    submitForm() {
-        console.log(this.addStageForm);
+    /**
+     * Validator to group data
+     * @param {FormControl} control
+     * @returns {object}
+     */
+    public groupValidator(control: FormControl): object {
+        return !this.groups.find(v => v === control.value) ? {noGroup: true} : null;
+    }
+
+    /**
+     * Validator to duration data
+     * @param {FormControl} control
+     * @returns {object}
+     */
+    public durationValidator(control: FormControl): object {
+        return !this.durationIntervals.find(v => v.duration === control.value) ? {noDuration: true} : null;
     }
 
     /**
@@ -63,7 +83,7 @@ export class AddStageFormComponent implements OnInit {
      */
     public openCancelDialog(): void {
         if (this.addStageForm.pristine) {
-            this._dialogService.refList[AddStageFormComponent.ADD_STAGE_DIALOG_TAG].close();
+            this._dialogService.closeDialog(AddStageFormComponent.ADD_STAGE_DIALOG_TAG);
         } else {
             this._translationService.translate(AddStageFormComponent.CANCEL_COMPONENT_MESSAGE)
                 .then((res: string) => {
@@ -75,6 +95,10 @@ export class AddStageFormComponent implements OnInit {
                 })
                 .catch(err => console.error(err));
         }
+    }
+
+    private get firstGroup(): string {
+        return this._data.stagesList[0] ? this._data.stagesList[0].groupId : '';
     }
 
     get addStageForm(): FormGroup {

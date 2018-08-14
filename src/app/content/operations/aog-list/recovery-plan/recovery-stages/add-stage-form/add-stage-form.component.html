@@ -9,7 +9,7 @@
     </div>
     <div mat-dialog-content  class="content-dialog-container" fxLayout="column" fxLayoutGap="10px">
         <mat-chip-list>
-            <mat-chip (click)="addStageForm.controls['type'].setValue(group)" [selected]="addStageForm.controls['type'].value === group" *ngFor="let group of groups">{{group}}</mat-chip>
+            <mat-chip (click)="addStageForm.controls['group'].setValue(group)" [selected]="addStageForm.controls['group'].value === group" *ngFor="let group of groups">{{group}}</mat-chip>
         </mat-chip-list>
         <mat-form-field>
             <mat-select

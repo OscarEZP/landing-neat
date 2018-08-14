@@ -156,7 +156,6 @@ export class AogFormComponent implements OnInit, OnDestroy {
         this.clockSubs = this.getClockSubscription();
         this.username = this._storageService.getCurrentUser().username;
         this.durationIntervals = this._timeService.getDurationIntervals(AogFormComponent.INTERVAL_DURATION, AogFormComponent.INTERVAL_LIMIT);
-
     }
 
     ngOnDestroy() {
