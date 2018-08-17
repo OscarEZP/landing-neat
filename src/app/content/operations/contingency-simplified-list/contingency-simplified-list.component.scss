@@ -126,21 +126,14 @@ $contingency-header: 76px;
     background-color: #546e7a;
   }
 
-  .ni1 {
-    background-color: #ef5350;
-  }
-
-  .ni2 {
-    background-color: #fb8c00;
-  }
-
-  .ni3 {
-    background-color: #f3be17;
+  .ni {
+    background-color: mat-color($custom, ni);
   }
 
   .etr {
-    background-color: mat-color($primary, 'A700');
+    background-color: mat-color($custom, etr);
   }
+
 }
 
 .two-lines {
