@@ -58,6 +58,8 @@ export const environment = {
         technicalStationSearch: '/api/v1/management/tech-station/_search',
         types: '/api/v1/configurations/types',
         closeAog: '/api/aircraft-on-ground/v1/aircraft-on-ground/_close',
-        recoveryStage: '/api/v1/management/recovery-plan/recovery-stage'
+        recoveryStage: '/api/v1/management/recovery-plan/recovery-stage',
+        recoveryPlan: '/api/aircraft-on-ground/v1/recovery-plan/recovery-stage',
+        recoveryPlanSearch: '/api/aircraft-on-ground/v1/recovery-plan/recovery-stage/_search'
     }
 };

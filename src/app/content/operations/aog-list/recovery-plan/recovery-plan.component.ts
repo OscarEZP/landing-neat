@@ -3,7 +3,7 @@ import {Aog} from '../../../../shared/_models/aog/aog';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {RecoveryPlanService} from './_services/recovery-plan.service';
 import {Subscription} from 'rxjs/Subscription';
-import {RecoveryStage} from '../../../../shared/_models/aog/RecoveryStage';
+import {StageConfiguration} from '../../../../shared/_models/recoveryplan/StageConfiguration';
 
 @Component({
   selector: 'lsl-recovery-plan',
@@ -85,7 +85,7 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
         this._recoveryPlanService.activeViewInHours = value;
     }
 
-    set recoveryStagesConfig(value: RecoveryStage[]) {
+    set recoveryStagesConfig(value: StageConfiguration[]) {
         this._recoveryPlanService.recoveryStagesConfig = value;
     }
 
