@@ -14,8 +14,8 @@ export class TimeConverter {
         return Math.round((selectedTime - absoluteStartTime) / TimeConverter.referenceFramePixels(activeViewInHours, activeViewInPixels));
     }
 
-    public static pixelToEpochtimePosition(actualPosition: number, startTime: number, referenceFrameInPixels: number): number {
-        return Math.round(actualPosition * referenceFrameInPixels * 3600000);
+    public static pixelToEpochtimePosition(pixels: number, referenceFrameInPixels: number): number {
+        return Math.round(pixels * referenceFrameInPixels * 3600000);
     }
 
     public static referenceFramePixels(activeViewInHours: number, activeViewInPixels: number): number {

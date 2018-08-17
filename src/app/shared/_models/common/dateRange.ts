@@ -34,7 +34,15 @@ export class DateRange {
         return this.from.epochTime;
     }
 
+    set fromEpochtime(value: number) {
+        this.from.epochTime = value;
+    }
+
     get toEpochtime(): number {
         return this.to.epochTime;
+    }
+
+    set toEpochtime(value: number) {
+        this.to.epochTime = value;
     }
 }

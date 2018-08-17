@@ -41,13 +41,9 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
      */
     private getRecoveryStagesConfSubscription(): Subscription {
         return this._recoveryPlanService.getRecoveryStageConfig().subscribe(
-            (response) => {
-                console.log('conf ->', response);
-                this.recoveryStagesConfig = response;
-            },
-            () => {
-                console.error('Error loading recovery stage configuration');
-            });
+            response => this.recoveryStagesConfig = response,
+            err => console.error('Error loading recovery stage configuration', err)
+        );
     }
 
     /**

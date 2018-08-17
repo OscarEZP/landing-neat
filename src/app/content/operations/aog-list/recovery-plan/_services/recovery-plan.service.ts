@@ -35,10 +35,8 @@ export class RecoveryPlanService {
     private _recoveryPlanBehavior: BehaviorSubject<RecoveryPlanInterface>;
     private _recoveryPlanBehavior$: Observable<RecoveryPlanInterface>;
 
-    constructor(
-        private _logService: LogService,
-        private _apiRestService: ApiRestService
-    ) {
+    constructor(private _logService: LogService,
+                private _apiRestService: ApiRestService) {
         this._recoveryPlanBehavior = new BehaviorSubject<RecoveryPlanInterface>(this.newRecoveryPlanService);
         this._recoveryPlanBehavior$ = this._recoveryPlanBehavior.asObservable();
     }
@@ -106,6 +104,7 @@ export class RecoveryPlanService {
     private log(message: string) {
         this._logService.add('Recovery plan Service: ' + message);
     }
+
     get recoveryPlanBehavior$(): Observable<RecoveryPlanInterface> {
         return this._recoveryPlanBehavior$;
     }
@@ -118,30 +117,34 @@ export class RecoveryPlanService {
         return this._recoveryPlanBehavior.getValue();
     }
 
+    public emitData() {
+        this._recoveryPlanBehavior.next(this.getRecoveryPlanService());
+    }
+
     set activeViewInPixels(value: number) {
         this.getRecoveryPlanService().activeViewInPixels = value;
-        this._recoveryPlanBehavior.next(this.getRecoveryPlanService());
+        this.emitData();
     }
 
     set relativeStartTime(value: number) {
         this.absoluteStartTime = value;
         this.getRecoveryPlanService().relativeStartTime = value;
-        this._recoveryPlanBehavior.next(this.getRecoveryPlanService());
+        this.emitData();
     }
 
     set activeViewInHours(value: number) {
         this.getRecoveryPlanService().activeViewInHours = value;
-        this._recoveryPlanBehavior.next(this.getRecoveryPlanService());
+        this.emitData();
     }
 
     set recoveryStagesConfig(value: RecoveryStage[]) {
         this.getRecoveryPlanService().recoveryStagesConfig = value;
-        this._recoveryPlanBehavior.next(this.getRecoveryPlanService());
+        this.emitData();
     }
 
     private set absoluteStartTime(value: number) {
         this.getRecoveryPlanService().absoluteStartTime = TimeConverter.absoluteStartTime(value);
-        this._recoveryPlanBehavior.next(this.getRecoveryPlanService());
+        this.emitData();
     }
 
 }

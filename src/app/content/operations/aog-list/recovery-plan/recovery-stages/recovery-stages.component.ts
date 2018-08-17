@@ -56,6 +56,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     private _menuInterface: MenuInterface;
     private _stagesList: Stage[];
+    private _triggerStageInterface: StageInterface;
 
     constructor(
         private _recoveryPlanService: RecoveryPlanService,
@@ -73,33 +74,32 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     ngOnInit() {
         this.stagesSub = this.getStagesSub();
-        this.recoveryPlanSub = this.getRecoveryPlanSub();
         this.lastValidPosition = 0;
+        this.recoveryPlanSub = this.getRecoveryPlanSub();
+    }
+
+    private getRecoveryPlanSub(): Subscription {
+        return this._recoveryPlanService.recoveryPlanBehavior$
+            .filter(rpInterface => rpInterface.recoveryStagesConfig.length > 0)
+            .subscribe(rpInterface => {
+                this._recoveryPlanInterface = rpInterface;
+                this.initTimeline();
+            });
+    }
+
+    private initTimeline() {
         this.konvaStage = new Konva.Stage({
             container: 'container',
             width: this.recoveryPlanInterface.activeViewInPixels,
             height: this.canvasHeight
         });
-    }
-
-    private getRecoveryPlanSub(): Subscription {
-        return this._recoveryPlanService.recoveryPlanBehavior$.subscribe(rpInterface => {
-            this._recoveryPlanInterface = rpInterface;
-            if (rpInterface.recoveryStagesConfig.length > 0) {
-                this.initTimeline();
-            }
-        });
-    }
-
-    private initTimeline() {
         const baseLayer = new Konva.Layer();
-        baseLayer.add(ShapeDraw.drawLines('GRAY', 0, this.recoveryPlanInterface.activeViewInPixels));
+        baseLayer.add(ShapeDraw.drawLines(null, 0, this.recoveryPlanInterface.activeViewInPixels));
         const lineLayer = new Konva.Layer();
         const circleLayer = new Konva.Layer();
 
         this.stagesObjects.forEach((value, index) => {
             const stageInterface = this.getGroupStage(value, index);
-            console.log('line', stageInterface.line);
             lineLayer.add(stageInterface.line);
             circleLayer.add(stageInterface.circle);
         });
@@ -147,43 +147,43 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
             this.recoveryPlanInterface.activeViewInPixels
         );
         const config = this.recoveryPlanInterface.recoveryStagesConfig.find(c => c.code === interfaceStage.code);
-        const color = config ? config.color : '#ccc';
-        console.log('config', color);
-
+        const color = config ? config.color : null;
         stageInterface.line = ShapeDraw.drawLines(color, startPos, endPos);
         stageInterface.circle = ShapeDraw.drawCircle(color, startPos, index > 0);
         stageInterface.circle.dragBoundFunc(pos => this.dragBound(pos, stageInterface, index, isLastItem ? this.recoveryPlanInterface.activeViewInPixels : endPos));
         stageInterface.circle.on('mouseover', () => document.body.style.cursor = 'pointer');
         stageInterface.circle.on('mouseout', () => document.body.style.cursor = 'default');
-        stageInterface.circle.on('dblclick', () => this.triggerMenu(stageInterface.circle.getAbsolutePosition().x, index));
+        stageInterface.circle.on('dblclick', () => {
+            this.triggerStageInterface = stageInterface;
+            this.triggerMenu(stageInterface.circle.getAbsolutePosition().x, index);
+        });
         stageInterface.circle.on('dragstart', () => {
             initPosition = stageInterface.circle.getAbsolutePosition().x;
-            this.konvaLayers.circles.draw();
-            this.konvaLayers.lines.draw();
+            // this.konvaLayers.circles.draw();
+            // this.konvaLayers.lines.draw();
         });
         stageInterface.circle.on('dragmove', () => {
             document.body.style.cursor = 'pointer';
             this.stagesObjects.forEach(v => v.line.points([v.circle.getAbsolutePosition().x, 25, this.recoveryPlanInterface.activeViewInPixels, 25]));
-            this.konvaLayers.circles.draw();
+            // this.konvaLayers.circles.draw();
             this.konvaLayers.lines.draw();
         });
         stageInterface.circle.on('dragend', () => {
-            this.resizeLines(stageInterface.circle.getAbsolutePosition().x, index, initPosition);
+            this.updateDateRange(stageInterface.circle.getAbsolutePosition().x, index, initPosition);
             document.body.style.cursor = 'default';
-            this.konvaLayers.circles.draw();
-            this.konvaLayers.lines.draw();
+            // this.konvaLayers.circles.draw();
+            // this.konvaLayers.lines.draw();
         });
         return stageInterface;
     }
 
-    private resizeLines(circlePosX: number, index: number, initPosition: number) {
+    private updateDateRange(circlePosX: number, index: number, initPosition: number) {
         const diff = circlePosX - initPosition;
+        const pix = TimeConverter.pixelToEpochtimePosition(circlePosX, this.recoveryPlanInterface.referenceFrameInPixels);
+        console.log(this.recoveryPlanInterface);
         this.stagesObjects
-            .filter((v, i) => i > index)
-            .forEach(v => {
-                v.line.points([v.circle.getAbsolutePosition().x + diff, 25, this.recoveryPlanInterface.activeViewInPixels, 25]);
-                v.circle.x(v.circle.getAbsolutePosition().x + diff);
-            });
+            .filter((v, i) => i >= index)
+            .forEach(v => {});
     }
 
     private dragBound(pos: Vector2d, value: StageInterface, index: number, endPos: number): Vector2d {
@@ -212,18 +212,41 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public addGroup() {
-        const injectData: InjectAddStageInterface = { stagesList: this.stagesList };
-        this._dialogService.openDialog(AddStageFormComponent, {
+        const injectData: InjectAddStageInterface = { stagesList: this.stagesList, triggerStage: this.triggerStageInterface.stage};
+        const ref = this._dialogService.openDialog(AddStageFormComponent, {
             data: injectData,
             hasBackdrop: true,
             disableClose: true,
             height: '220px',
             width: '400px'
         }, AddStageFormComponent.ADD_STAGE_DIALOG_TAG);
+        ref.afterClosed()
+            .filter(() => !!ref.componentInstance.stage)
+            .subscribe(() => {
+                const index = this.stagesObjects.findIndex((stage) => stage === this.triggerStageInterface);
+                const epochDuration = ref.componentInstance.stage.toEpochtime - ref.componentInstance.stage.fromEpochtime;
+                this.stagesObjects.splice(index, 0, {stage: ref.componentInstance.stage, circle: null, line: null});
+                this.stagesObjects
+                    .filter((v, i) => i > index)
+                    .forEach(v => {
+                        const dif = v.stage.toEpochtime - v.stage.fromEpochtime;
+                        v.stage.fromEpochtime += epochDuration;
+                        v.stage.toEpochtime += dif;
+                    });
+                this.initTimeline();
+            });
     }
 
     public deleteGroup() {
-        console.log('del group');
+        const index = this.stagesObjects.findIndex((stage) => stage === this.triggerStageInterface);
+        this.stagesObjects.splice(index, 1);
+        this.stagesObjects
+            .filter((v, i) => i >= index)
+            .forEach(v => {
+                v.stage.fromEpochtime -= this.triggerStageInterface.stage.duration;
+                v.stage.toEpochtime -= v.stage.duration;
+            });
+        this.initTimeline();
     }
 
     get canvasHeight(): number {
@@ -304,5 +327,13 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     set recoveryPlanSub(value: Subscription) {
         this._recoveryPlanSub = value;
+    }
+
+    get triggerStageInterface(): StageInterface {
+        return this._triggerStageInterface;
+    }
+
+    set triggerStageInterface(value: StageInterface) {
+        this._triggerStageInterface = value;
     }
 }

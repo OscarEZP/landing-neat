@@ -41,10 +41,22 @@ export class Stage {
     }
 
     get fromEpochtime(): number {
-        return this.range.from.epochTime;
+        return this.range.fromEpochtime;
+    }
+
+    set fromEpochtime(value: number) {
+        this.range.fromEpochtime = value;
     }
 
     get toEpochtime(): number {
-        return this.range.to.epochTime;
+        return this.range.toEpochtime;
+    }
+
+    set toEpochtime(value: number) {
+        this.range.toEpochtime = value;
+    }
+
+    get duration(): number {
+        return this.toEpochtime - this.fromEpochtime;
     }
 }

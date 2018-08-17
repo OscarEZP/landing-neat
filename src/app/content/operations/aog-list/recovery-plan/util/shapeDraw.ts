@@ -7,9 +7,12 @@ import {TimeConverter} from './timeConverter';
 @Injectable()
 export class ShapeDraw {
 
+    public static DEFAULT_COLOR = '#CCC';
+
     constructor() {}
 
     public static drawCircle(color: string, startPos: number, isDraggable: boolean = true, isFilled: boolean = false): Konva.Circle {
+        color = color ? color : ShapeDraw.DEFAULT_COLOR;
         return new Konva.Circle({
             x: startPos + 8.9,
             y: 25,
@@ -46,9 +49,9 @@ export class ShapeDraw {
     }
 
     public static drawLines(color: string, startPos: number, endPos: number): Konva.Line {
+        color = color ? color : ShapeDraw.DEFAULT_COLOR;
         return new Konva.Line({
             points: [startPos, 25, endPos, 25],
-            // stroke: ShapeDraw[isAbsolute ? groupId : groupId + '_PROJ'],
             stroke: color,
             strokeWidth: 2,
             lineCap: 'round',

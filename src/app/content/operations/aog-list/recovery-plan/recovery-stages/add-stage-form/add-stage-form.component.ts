@@ -7,9 +7,12 @@ import {DialogService} from '../../../../../_services/dialog.service';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import {Stage} from '../../../../../../shared/_models/aog/Stage';
 import {DurationInterface, TimeService} from '../../../../../../shared/_services/timeService';
+import {DateRange} from '../../../../../../shared/_models/common/dateRange';
+import {TimeInstant} from '../../../../../../shared/_models/timeInstant';
 
 export interface InjectAddStageInterface {
     stagesList: Stage[];
+    triggerStage: Stage;
 }
 
 @Component({
@@ -44,6 +47,7 @@ export class AddStageFormComponent implements OnInit {
             'group': [this.firstGroup, [Validators.required, this.groupValidator.bind(this)]],
             'duration': [AddStageFormComponent.INTERVAL_DEFAULT, [Validators.required, this.durationValidator.bind(this)]]
         });
+        this._stage = null;
     }
 
     ngOnInit() {
@@ -51,8 +55,17 @@ export class AddStageFormComponent implements OnInit {
         this.durationIntervals = this._timeService.getDurationIntervals(AddStageFormComponent.INTERVAL_DURATION, AddStageFormComponent.INTERVAL_LIMIT);
     }
 
+    getStageFromForm(): Stage {
+        const dateRange = new DateRange(
+            new TimeInstant(this.triggerStage.fromEpochtime, ''),
+            new TimeInstant(this.triggerStage.fromEpochtime + (this.addStageForm.controls['duration'].value * 60 * 1000), '')
+        );
+        return new Stage(this.addStageForm.controls['group'].value, 1, dateRange);
+    }
+
     submitForm() {
         if (this.addStageForm.valid) {
+            this.stage = this.getStageFromForm();
             this._dialogService.closeDialog(AddStageFormComponent.ADD_STAGE_DIALOG_TAG);
         } else {
             this._translationService.translateAndShow(AddStageFormComponent.VALIDATION_ERROR_MESSAGE);
@@ -135,4 +148,9 @@ export class AddStageFormComponent implements OnInit {
     set durationIntervals(value: DurationInterface[]) {
         this._durationIntervals = value;
     }
+
+    get triggerStage(): Stage {
+        return this._data.triggerStage;
+    }
+
 }

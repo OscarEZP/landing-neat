@@ -11,7 +11,6 @@ export class RecoveryPlan {
     private _audit: Audit;
     private _enable: boolean; // para save siempre en true
 
-
     constructor(aogSeq: number, revision: number, stages: Stage[], range: DateRange, audit: Audit, enable: boolean) {
         this._aogSeq = aogSeq;
         this._revision = revision;
