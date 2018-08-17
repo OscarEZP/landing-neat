@@ -268,7 +268,8 @@
         "FOLLOW_UP_CLOSED_STATUS": "This contingency is already closed",
         "OBSERVATION_REQUIRED": "Observation is required",
         "OBSERVATION_TITLE": "Write your comment",
-        "TIME_AVAILABLE_WARNING": "Maximum time available:"
+        "TIME_AVAILABLE_WARNING": "Maximum time available:",
+        "FOLLOW_UP_SUCCESSFULLY": "Follow up successfully"
       }
     },
     "CONTINGENCY_FORM": {
