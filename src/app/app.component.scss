@@ -65,20 +65,12 @@
       background-color: #546e7a;
     }
 
-    .ni1 {
-      background-color: mat-color($custom, ni1);
-    }
-
-    .ni2 {
-      background-color: mat-color($custom, ni2);
-    }
-
-    .ni3 {
-      background-color: mat-color($custom, ni3);
+    .ni {
+      background-color: mat-color($custom, ni);
     }
 
     .etr {
-      background-color: mat-color($primary, A700);
+      background-color: mat-color($custom, etr);
     }
 
     .aog{
