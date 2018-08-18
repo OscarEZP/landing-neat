@@ -11,6 +11,7 @@ import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../_se
 import {TimeConverter} from '../util/timeConverter';
 import {DateRange} from '../../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../../shared/_models/timeInstant';
+import moment = require('moment');
 
 export interface StyleInterface {
     top: string;
@@ -159,31 +160,29 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         });
         stageInterface.circle.on('dragstart', () => {
             initPosition = stageInterface.circle.getAbsolutePosition().x;
-            // this.konvaLayers.circles.draw();
-            // this.konvaLayers.lines.draw();
         });
         stageInterface.circle.on('dragmove', () => {
             document.body.style.cursor = 'pointer';
             this.stagesObjects.forEach(v => v.line.points([v.circle.getAbsolutePosition().x, 25, this.recoveryPlanInterface.activeViewInPixels, 25]));
-            // this.konvaLayers.circles.draw();
             this.konvaLayers.lines.draw();
         });
         stageInterface.circle.on('dragend', () => {
-            this.updateDateRange(stageInterface.circle.getAbsolutePosition().x, index, initPosition);
+            this.updateDateRange(stageInterface.circle.getAbsolutePosition().x, initPosition, index);
+            console.log(
+                moment(stageInterface.stage.fromEpochtime).format('HH:mm') +
+                ' - ' +
+                moment(stageInterface.stage.toEpochtime).format('HH:mm')
+            );
             document.body.style.cursor = 'default';
-            // this.konvaLayers.circles.draw();
-            // this.konvaLayers.lines.draw();
         });
         return stageInterface;
     }
 
-    private updateDateRange(circlePosX: number, index: number, initPosition: number) {
+    private updateDateRange(circlePosX: number, initPosition: number, index: number) {
         const diff = circlePosX - initPosition;
-        const pix = TimeConverter.pixelToEpochtimePosition(circlePosX, this.recoveryPlanInterface.referenceFrameInPixels);
-        console.log(this.recoveryPlanInterface);
-        this.stagesObjects
-            .filter((v, i) => i >= index)
-            .forEach(v => {});
+        const ms = TimeConverter.pixelToEpochtime(diff, this.recoveryPlanInterface.hourInPixels);
+        this.stagesObjects[index].stage.fromEpochtime += ms;
+        this.stagesObjects[index - 1].stage.toEpochtime = this.stagesObjects[index].stage.fromEpochtime;
     }
 
     private dragBound(pos: Vector2d, value: StageInterface, index: number, endPos: number): Vector2d {
@@ -224,15 +223,19 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
             .filter(() => !!ref.componentInstance.stage)
             .subscribe(() => {
                 const index = this.stagesObjects.findIndex((stage) => stage === this.triggerStageInterface);
-                const epochDuration = ref.componentInstance.stage.toEpochtime - ref.componentInstance.stage.fromEpochtime;
                 this.stagesObjects.splice(index, 0, {stage: ref.componentInstance.stage, circle: null, line: null});
                 this.stagesObjects
-                    .filter((v, i) => i > index)
-                    .forEach(v => {
-                        const dif = v.stage.toEpochtime - v.stage.fromEpochtime;
-                        v.stage.fromEpochtime += epochDuration;
-                        v.stage.toEpochtime += dif;
+                    .forEach((v, i) => {
+                        if (i > index) {
+                            v.stage.fromEpochtime = this.stagesObjects[i - 1].stage.toEpochtime;
+                            v.stage.toEpochtime = this.stagesObjects[i + 1] ?
+                                this.stagesObjects[i + 1].stage.fromEpochtime + ref.componentInstance.stage.duration :
+                                v.stage.fromEpochtime
+                            ;
+                            console.log(i, v.stage.fromEpochtime, v.stage.toEpochtime, v.stage.duration);
+                        }
                     });
+                console.log(Object.keys(this.stagesObjects));
                 this.initTimeline();
             });
     }
@@ -241,10 +244,15 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         const index = this.stagesObjects.findIndex((stage) => stage === this.triggerStageInterface);
         this.stagesObjects.splice(index, 1);
         this.stagesObjects
-            .filter((v, i) => i >= index)
-            .forEach(v => {
-                v.stage.fromEpochtime -= this.triggerStageInterface.stage.duration;
-                v.stage.toEpochtime -= v.stage.duration;
+            .forEach((v, i) => {
+                if (i >= index) {
+                    v.stage.fromEpochtime = this.stagesObjects[i - 1].stage.toEpochtime;
+                    v.stage.toEpochtime = this.stagesObjects[i + 1] ?
+                        v.stage.toEpochtime - this.triggerStageInterface.stage.duration :
+                        v.stage.fromEpochtime
+                    ;
+                }
+                console.log(this.triggerStageInterface.stage.duration);
             });
         this.initTimeline();
     }

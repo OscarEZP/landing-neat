@@ -16,7 +16,7 @@ export interface RecoveryPlanInterface {
     activeViewInHours: number;
     relativeStartTime: number;
     absoluteStartTime: number;
-    referenceFrameInPixels: number;
+    hourInPixels: number;
     recoveryStagesConfig: RecoveryStage[];
 }
 
@@ -65,7 +65,7 @@ export class RecoveryPlanService {
             activeViewInHours: 0,
             relativeStartTime: 0,
             absoluteStartTime: 0,
-            referenceFrameInPixels: 0,
+            hourInPixels: 0,
             recoveryStagesConfig: []
         };
     }
@@ -144,6 +144,11 @@ export class RecoveryPlanService {
 
     private set absoluteStartTime(value: number) {
         this.getRecoveryPlanService().absoluteStartTime = TimeConverter.absoluteStartTime(value);
+        this.emitData();
+    }
+
+    set hourInPixels(value: number) {
+        this.getRecoveryPlanService().hourInPixels = Math.round(value);
         this.emitData();
     }
 
