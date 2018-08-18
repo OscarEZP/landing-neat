@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as Konva from 'konva';
 import {MAT_DIALOG_DATA, MatMenuTrigger} from '@angular/material';
-import {Stage} from '../../../../../shared/_models/recoveryplan/Stage';
 import {ShapeDraw} from '../util/shapeDraw';
 import {Subscription} from 'rxjs/Subscription';
 import {Vector2d} from 'konva';
@@ -12,6 +11,7 @@ import {TimeConverter} from '../util/timeConverter';
 import {DateRange} from '../../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../../shared/_models/timeInstant';
 import moment = require('moment');
+import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 
 export interface StyleInterface {
     top: string;

@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import * as Konva from 'konva';
-import {Stage} from '../../../../../shared/_models/recoveryplan/Stage';
 import moment = require('moment');
 import {TimeConverter} from './timeConverter';
+import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 
 @Injectable()
 export class ShapeDraw {

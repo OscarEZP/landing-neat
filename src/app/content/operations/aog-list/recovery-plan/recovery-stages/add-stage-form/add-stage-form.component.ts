@@ -5,10 +5,10 @@ import {CancelComponent} from '../../../../cancel/cancel.component';
 import {MessageService} from '../../../../../../shared/_services/message.service';
 import {DialogService} from '../../../../../_services/dialog.service';
 import {MAT_DIALOG_DATA} from '@angular/material';
-import {Stage} from '../../../../../../shared/_models/recoveryplan/Stage';
 import {DurationInterface, TimeService} from '../../../../../../shared/_services/timeService';
 import {DateRange} from '../../../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../../../shared/_models/timeInstant';
+import {Stage} from '../../../../../../shared/_models/recoveryplan/stage';
 
 export interface InjectAddStageInterface {
     stagesList: Stage[];

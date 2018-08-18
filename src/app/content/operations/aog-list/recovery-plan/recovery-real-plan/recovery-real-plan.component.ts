@@ -1,13 +1,13 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
 import * as Konva from 'konva';
-import {Stage} from '../../../../../shared/_models/recoveryplan/Stage';
 import {ShapeDraw} from '../util/shapeDraw';
 import moment = require('moment');
 import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../_services/recovery-plan.service';
-import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/StageConfiguration';
 import {DateRange} from '../../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../../shared/_models/timeInstant';
+import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
+import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
 
 @Component({
   selector: 'lsl-recovery-real-plan',

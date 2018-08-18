@@ -3,7 +3,7 @@ import {Aog} from '../../../../shared/_models/aog/aog';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {RecoveryPlanService} from './_services/recovery-plan.service';
 import {Subscription} from 'rxjs/Subscription';
-import {StageConfiguration} from '../../../../shared/_models/recoveryplan/StageConfiguration';
+import {StageConfiguration} from '../../../../shared/_models/recoveryplan/stageConfiguration';
 
 @Component({
   selector: 'lsl-recovery-plan',

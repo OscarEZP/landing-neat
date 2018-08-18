@@ -2,14 +2,14 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import * as Konva from 'konva';
-import {Stage} from '../../../../../shared/_models/recoveryplan/Stage';
 import {TimeConverter} from '../util/timeConverter';
 import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
-import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/StageConfiguration';
 import {catchError, tap} from 'rxjs/operators';
 import {LogService} from '../../../../_services/log.service';
 import {DateRange} from '../../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../../shared/_models/timeInstant';
+import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
+import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
 
 export interface RecoveryPlanInterface {
     activeViewInPixels: number;
