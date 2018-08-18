@@ -232,10 +232,8 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
                                 this.stagesObjects[i + 1].stage.fromEpochtime + ref.componentInstance.stage.duration :
                                 v.stage.fromEpochtime
                             ;
-                            console.log(i, v.stage.fromEpochtime, v.stage.toEpochtime, v.stage.duration);
                         }
                     });
-                console.log(Object.keys(this.stagesObjects));
                 this.initTimeline();
             });
     }
@@ -252,7 +250,6 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
                         v.stage.fromEpochtime
                     ;
                 }
-                console.log(this.triggerStageInterface.stage.duration);
             });
         this.initTimeline();
     }
