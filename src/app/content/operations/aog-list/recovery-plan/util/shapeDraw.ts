@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as Konva from 'konva';
-import {Stage} from '../../../../../shared/_models/aog/Stage';
+import {Stage} from '../../../../../shared/_models/recoveryplan/Stage';
 import moment = require('moment');
 import {TimeConverter} from './timeConverter';
 

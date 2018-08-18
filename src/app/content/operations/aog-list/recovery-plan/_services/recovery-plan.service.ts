@@ -2,10 +2,10 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import * as Konva from 'konva';
-import {Stage} from '../../../../../shared/_models/aog/Stage';
+import {Stage} from '../../../../../shared/_models/recoveryplan/Stage';
 import {TimeConverter} from '../util/timeConverter';
 import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
-import {RecoveryStage} from '../../../../../shared/_models/aog/RecoveryStage';
+import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/StageConfiguration';
 import {catchError, tap} from 'rxjs/operators';
 import {LogService} from '../../../../_services/log.service';
 import {DateRange} from '../../../../../shared/_models/common/dateRange';
@@ -16,8 +16,8 @@ export interface RecoveryPlanInterface {
     activeViewInHours: number;
     relativeStartTime: number;
     absoluteStartTime: number;
+    recoveryStagesConfig: StageConfiguration[];
     hourInPixels: number;
-    recoveryStagesConfig: RecoveryStage[];
 }
 
 export interface StageInterface {
@@ -76,9 +76,9 @@ export class RecoveryPlanService {
      */
     public getRecoveryStageConfig(): Observable<any> {
         return this._apiRestService
-            .getAll<RecoveryStage[]>(RecoveryPlanService.RECOVERY_STAGE_ENDPOINT)
+            .getAll<StageConfiguration[]>(RecoveryPlanService.RECOVERY_STAGE_ENDPOINT)
             .pipe(
-                tap((res: RecoveryStage[]) => {
+                tap((res: StageConfiguration[]) => {
                     this.log('fetched recoveryStage');
                 }),
                 catchError(this.handleError('recoveryStage'))
@@ -137,7 +137,7 @@ export class RecoveryPlanService {
         this.emitData();
     }
 
-    set recoveryStagesConfig(value: RecoveryStage[]) {
+    set recoveryStagesConfig(value: StageConfiguration[]) {
         this.getRecoveryPlanService().recoveryStagesConfig = value;
         this.emitData();
     }

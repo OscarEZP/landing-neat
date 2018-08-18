@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as Konva from 'konva';
 import {MAT_DIALOG_DATA, MatMenuTrigger} from '@angular/material';
-import {Stage} from '../../../../../shared/_models/aog/Stage';
+import {Stage} from '../../../../../shared/_models/recoveryplan/Stage';
 import {ShapeDraw} from '../util/shapeDraw';
 import {Subscription} from 'rxjs/Subscription';
 import {Vector2d} from 'konva';

@@ -1,11 +1,11 @@
-import {Stage} from './Stage';
+import {Stage} from './stage';
 import {DateRange} from '../common/dateRange';
 import {Audit} from '../common/audit';
 
 export class RecoveryPlan {
 
     private _aogSeq: number;
-    private _revision: number;
+    private _revision: number; // la revisón tampoco se manda, la calcula el back
     private _stages: Stage[];
     private _range: DateRange; // Solo para get, en save no se manda
     private _audit: Audit;

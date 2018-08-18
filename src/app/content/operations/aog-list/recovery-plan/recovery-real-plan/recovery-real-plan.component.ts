@@ -1,11 +1,11 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
 import * as Konva from 'konva';
-import {Stage} from '../../../../../shared/_models/aog/Stage';
+import {Stage} from '../../../../../shared/_models/recoveryplan/Stage';
 import {ShapeDraw} from '../util/shapeDraw';
 import moment = require('moment');
 import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../_services/recovery-plan.service';
-import {RecoveryStage} from '../../../../../shared/_models/aog/RecoveryStage';
+import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/StageConfiguration';
 import {DateRange} from '../../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../../shared/_models/timeInstant';
 
@@ -25,7 +25,7 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     private _stagesObjects: StageInterface[];
     private _recoveryPlanSubscription: Subscription;
     private _recoveryPlanInterface: RecoveryPlanInterface;
-    private _recoveryStagesConfiguration: RecoveryStage[];
+    private _recoveryStagesConfiguration: StageConfiguration[];
     private _recoveryStagesSub: Subscription;
 
     constructor(private _recoveryPlanService: RecoveryPlanService) {
@@ -204,11 +204,11 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
 
-    get recoveryStagesConfiguration(): RecoveryStage[] {
+    get recoveryStagesConfiguration(): StageConfiguration[] {
         return this._recoveryStagesConfiguration;
     }
 
-    set recoveryStagesConfiguration(value: RecoveryStage[]) {
+    set recoveryStagesConfiguration(value: StageConfiguration[]) {
         this._recoveryStagesConfiguration = value;
     }
 

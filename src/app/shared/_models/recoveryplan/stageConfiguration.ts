@@ -1,4 +1,4 @@
-export class RecoveryStage {
+export class StageConfiguration {
 
     private _seq: number;
     private _code: string;
@@ -19,9 +19,9 @@ export class RecoveryStage {
         this._projectedColor = projectedColor;
     }
 
-    getInstance(): RecoveryStage {
+    getInstance(): StageConfiguration {
 
-        return new RecoveryStage(null, null, null, null, null, null, null);
+        return new StageConfiguration(null, null, null, null, null, null, null);
 
     }
 
