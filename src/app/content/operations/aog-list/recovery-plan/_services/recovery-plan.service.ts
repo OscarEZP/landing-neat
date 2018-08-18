@@ -4,12 +4,14 @@ import {Observable} from 'rxjs/Observable';
 import * as Konva from 'konva';
 import {TimeConverter} from '../util/timeConverter';
 import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
-import {catchError, tap} from 'rxjs/operators';
+import {catchError, map, tap} from 'rxjs/operators';
 import {LogService} from '../../../../_services/log.service';
 import {DateRange} from '../../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../../shared/_models/timeInstant';
 import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
+import {RecoveryPlanSearch} from '../../../../../shared/_models/recoveryplan/recoveryPlanSearch';
+import {RecoveryPlan} from '../../../../../shared/_models/recoveryplan/recoveryPlan';
 
 export interface RecoveryPlanInterface {
     activeViewInPixels: number;
@@ -32,31 +34,42 @@ export interface StageInterface {
 export class RecoveryPlanService {
 
     private static RECOVERY_STAGE_ENDPOINT = 'recoveryStage';
+    private static RECOVERY_PLAN_SEARCH_ENDPOINT = 'recoveryPlanSearch';
     private _recoveryPlanBehavior: BehaviorSubject<RecoveryPlanInterface>;
     private _recoveryPlanBehavior$: Observable<RecoveryPlanInterface>;
 
-    constructor(private _logService: LogService,
-                private _apiRestService: ApiRestService) {
+    constructor(
+        private _logService: LogService,
+        private _apiRestService: ApiRestService
+    ) {
         this._recoveryPlanBehavior = new BehaviorSubject<RecoveryPlanInterface>(this.newRecoveryPlanService);
         this._recoveryPlanBehavior$ = this._recoveryPlanBehavior.asObservable();
     }
 
-    // TO-DO: Implement service
-    get stages$(): Observable<Stage[]> {
-        const aogCreationTime = this._recoveryPlanBehavior.getValue().relativeStartTime;
-        let initTime = aogCreationTime;
-        const stageList = ['ACC', 'EVA', 'SUP', 'EXE']
-            .map(v => {
-                const endTime = TimeConverter.temporalAddHoursToTime(initTime, 2);
-                const stage = new Stage(
-                    v,
-                    1,
-                    new DateRange(new TimeInstant(initTime, ''), new TimeInstant(endTime, ''))
-                );
-                initTime = endTime;
-                return stage;
-            });
-        return Observable.of(stageList);
+    getStages$(aogSearch: RecoveryPlanSearch): Observable<Stage[]> {
+        return this._apiRestService.search<RecoveryPlan[]>(RecoveryPlanService.RECOVERY_PLAN_SEARCH_ENDPOINT, aogSearch)
+            .pipe(
+                map(res => {
+                    if (res.length > 0) {
+                        return res[0].stages.map(v => Object.assign(Stage.getInstance(), v));
+                    } else {
+                        const aogCreationTime = this.getRecoveryPlanService().relativeStartTime;
+                        let initTime = aogCreationTime;
+                        const baseArr = ['ACC', 'EVA', 'SUP', 'EXE']
+                            .map(v => {
+                                const endTime = TimeConverter.temporalAddHoursToTime(initTime, 2);
+                                const stage = new Stage(
+                                    v,
+                                    1,
+                                    new DateRange(new TimeInstant(initTime, ''), new TimeInstant(endTime, ''))
+                                );
+                                initTime = endTime;
+                                return stage;
+                            });
+                        return baseArr;
+                    }
+                })
+            );
     }
 
     private get newRecoveryPlanService(): RecoveryPlanInterface {

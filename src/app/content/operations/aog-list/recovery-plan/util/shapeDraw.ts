@@ -51,9 +51,9 @@ export class ShapeDraw {
     public static drawLines(color: string, startPos: number, endPos: number): Konva.Line {
         color = color ? color : ShapeDraw.DEFAULT_COLOR;
         return new Konva.Line({
-            points: [startPos, 25, endPos, 25],
+            points: [startPos + 5, 25, endPos, 25],
             stroke: color,
-            strokeWidth: 2,
+            strokeWidth: 4,
             lineCap: 'round',
             lineJoin: 'round'
         });

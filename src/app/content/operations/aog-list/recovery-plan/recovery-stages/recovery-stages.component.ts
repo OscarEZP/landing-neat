@@ -12,6 +12,13 @@ import {DateRange} from '../../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../../shared/_models/timeInstant';
 import moment = require('moment');
 import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
+import {RecoveryPlanSearch} from '../../../../../shared/_models/recoveryplan/recoveryPlanSearch';
+import {Pagination} from '../../../../../shared/_models/common/pagination';
+import {Aog} from '../../../../../shared/_models/aog/aog';
+import {now} from 'moment';
+import {isArray} from 'util';
+import {tap} from 'rxjs/operators';
+import {Observable} from 'rxjs/Observable';
 
 export interface StyleInterface {
     top: string;
@@ -62,7 +69,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     constructor(
         private _recoveryPlanService: RecoveryPlanService,
         private _dialogService: DialogService,
-        @Inject(MAT_DIALOG_DATA) private _data: object
+        @Inject(MAT_DIALOG_DATA) private _data: Aog
     ) {
         this._canvasHeight = 50;
         this._lastValidPosition = 0;
@@ -74,9 +81,10 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     ngOnInit() {
-        this.stagesSub = this.getStagesSub();
+        this.stagesSub = this.getStages$().subscribe(() => {
+            this.recoveryPlanSub = this.getRecoveryPlanSub();
+        });
         this.lastValidPosition = 0;
-        this.recoveryPlanSub = this.getRecoveryPlanSub();
     }
 
     private getRecoveryPlanSub(): Subscription {
@@ -84,7 +92,9 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
             .filter(rpInterface => rpInterface.recoveryStagesConfig.length > 0)
             .subscribe(rpInterface => {
                 this._recoveryPlanInterface = rpInterface;
-                this.initTimeline();
+                if (!this.konvaStage) {
+                    this.initTimeline();
+                }
             });
     }
 
@@ -121,13 +131,25 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     }
 
-    private getStagesSub(): Subscription {
-        return this._recoveryPlanService.stages$.subscribe(res => {
-            this.stagesList = res.map(v => v);
-            const endTimeInstant = new TimeInstant(res[res.length - 1].range.toEpochtime, '');
-            res.push(new Stage('GRAY', 1, new DateRange(endTimeInstant, endTimeInstant)));
-            this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
-        });
+    public getRecoveryPlanSearch(): RecoveryPlanSearch {
+        const recoveryPlanSearch = RecoveryPlanSearch.getInstance();
+        recoveryPlanSearch.pagination = Pagination.getInstance();
+        recoveryPlanSearch.aogId = this.data.id;
+        recoveryPlanSearch.enable = true;
+        return recoveryPlanSearch;
+    }
+
+    private getStages$(): Observable<Stage[]> {
+        return this._recoveryPlanService.getStages$(this.getRecoveryPlanSearch())
+            .pipe(
+                tap(res => {
+                    this.stagesList = res.map(v => v);
+                    const epochTime = res[res.length - 1] ? res[res.length - 1].range.toEpochtime : now();
+                    const endTimeInstant = new TimeInstant(epochTime, '');
+                    res.push(new Stage('GRAY', 1, new DateRange(endTimeInstant, endTimeInstant)));
+                    this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
+                })
+        );
     }
 
     private getGroupStage(stageInterface: StageInterface, index: number): StageInterface {
@@ -323,7 +345,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     set stagesList(value: Stage[]) {
-        this._stagesList = value;
+        this._stagesList = isArray(value) ? value.map(v => Object.assign(Stage.getInstance(), v)) : [];
     }
 
     get recoveryPlanSub(): Subscription {
@@ -340,5 +362,9 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     set triggerStageInterface(value: StageInterface) {
         this._triggerStageInterface = value;
+    }
+
+    get data(): Aog {
+        return this._data;
     }
 }

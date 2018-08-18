@@ -12,7 +12,7 @@ export class Stage {
         this._range = range;
     }
 
-    getInstance(): Stage {
+    public static getInstance(): Stage {
         return new Stage(null, null, DateRange.getInstance());
     }
 
@@ -37,7 +37,7 @@ export class Stage {
     }
 
     set range(value: DateRange) {
-        this._range = value;
+        this._range = value ? Object.assign(DateRange.getInstance(), value) : DateRange.getInstance();
     }
 
     get fromEpochtime(): number {
