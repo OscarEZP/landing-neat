@@ -14,6 +14,7 @@ import {DataService} from '../../shared/_services/data.service';
 import {MessageService} from '../../shared/_services/message.service';
 import {StorageService} from '../../shared/_services/storage.service';
 import {DetailsService} from '../_services/details.service';
+import {TranslationService} from '../../shared/_services/translation.service';
 
 /**
  * Follow up component
@@ -29,6 +30,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     public static FOLLOW_UP_CLOSED_STATUS = 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_CLOSED_STATUS';
     public static FOLLOW_UP_LAST_STATUS = 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_LAST_STATUS';
     public static FOLLOW_UP_DISABLED = 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_DISABLED';
+    public static FOLLOW_UP_SUCCESSFULLY = 'OPERATIONS.CONTINGENCY_DETAILS.FOLLOW_UP.FOLLOW_UP_SUCCESSFULLY';
 
     @ViewChild('f') followUpFormChild;
     private _contingencySubcription: Subscription;
@@ -50,6 +52,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
     private _apiRestService: ApiRestService;
     private _delta: number;
 
+    private _follow_up_successfully: string;
     /**
      * @param {DetailsService} _detailsService - Shared service of the detail sidebar
      * @param {MessageService} _messageService - Shared service to call loading and other services
@@ -64,7 +67,8 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         private _storageService: StorageService,
         private _dataService: DataService,
-        private http: HttpClient) {
+        private http: HttpClient,
+        private _translationService: TranslationService) {
         this.followUp = Status.getInstance();
         this.followUp.username = this._storageService.getCurrentUser().userId;
         this.apiRestService = new ApiRestService(http);
@@ -98,7 +102,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
      * @return {void} nothing to return
      */
     ngOnInit() {
-
+        this._translationService.translate(FollowUpComponent.FOLLOW_UP_SUCCESSFULLY).then(res => this.follow_up_successfully = res);
         this.generateIntervalSelection();
         this._safetyEventListSubscription = this.getSafetyEventList();
         this.getStatusCodesAvailable();
@@ -351,7 +355,7 @@ export class FollowUpComponent implements OnInit, OnDestroy {
                 .subscribe(() => {
                     this._detailsService.closeSidenav();
                     this._dataService.stringMessage('reload');
-                    this._messageService.openSnackBar('created');
+                    this._messageService.openSnackBar(this.follow_up_successfully);
                     this._dataService.stringMessage('close');
                     this.validations.isSubmited = false;
                     this.validations.isSending = false;
@@ -507,4 +511,12 @@ export class FollowUpComponent implements OnInit, OnDestroy {
         this._delta = value;
     }
 
+
+    get follow_up_successfully(): string {
+        return this._follow_up_successfully;
+    }
+
+    set follow_up_successfully(value: string) {
+        this._follow_up_successfully = value;
+    }
 }

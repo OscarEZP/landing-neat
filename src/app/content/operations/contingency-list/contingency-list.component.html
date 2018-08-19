@@ -66,7 +66,8 @@
 
             <!-- STATUS -->
             <div fxFlex="7" fxLayoutAlign="start center">
-                <span (click)="openDetails(contingency, 'follow-up')" *ngIf="!historicalSearchService.active" class="badge {{ contingency.status.code | lowercase }}">{{ contingency.status.code | uppercase }}</span>
+                <span (click)="openDetails(contingency, 'follow-up')" *ngIf="!historicalSearchService.active && contingency.status.code!=='ETR'" class="badge ni">{{ contingency.status.code | uppercase }}</span>
+                <span (click)="openDetails(contingency, 'follow-up')" *ngIf="!historicalSearchService.active && contingency.status.code==='ETR'" class="badge etr">{{ contingency.status.code | uppercase }}</span>
                 <span *ngIf="historicalSearchService.active" class="badge {{ contingency.close.type | lowercase }}">{{ contingency.close.type | uppercase }}</span>
             </div>
 
@@ -118,8 +119,8 @@
                 <!-- <mat-icon class="mat-icon-adj">account_circle</mat-icon> {{ contingency.status.username | slice:0:2 | uppercase }} -->
             </div>
 
-            <div fxFlex="5" fxLayoutAlign="start center" >
-                <button id="btn-contingency-list-{{ contingency.aircraft.tail }}" mat-icon-button [matMenuTriggerFor]="menu" (click)="setSelectedContingency(contingency)">
+            <div fxFlex="5" fxLayoutAlign="end end" >
+                <button id="btn-contingency-list-{{ contingency.aircraft.tail }}" class="btn-contingency-list" mat-icon-button [matMenuTriggerFor]="menu" (click)="setSelectedContingency(contingency)">
                     <mat-icon aria-label="options">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">

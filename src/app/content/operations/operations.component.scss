@@ -1,20 +1,21 @@
 @import '../../../assets/style/base.scss';
-
+$tabs-height: 54px;
 /deep/
 #operations-container {
   color: mat-color($foreground, secondary-text);
   width: 100%;
 
   > div {
-    background-color: mat-color($custom, 'background-grey');
+
+    border-bottom: thin solid mat-color($foreground, divider);
     min-height: 60px;
   }
 
   #historical-search {
+
     font-family: 'Noto Sans', 'Arial', sans-serif;
     display: inline-block;
     @include generate-font-size(-5);
-    background-color: mat-color($custom, 'background-grey');
     width: 100%;
     margin: 10px 0 0 0;
     strong {
@@ -24,29 +25,28 @@
   }
 
   nav {
-    background-color: mat-color($custom, 'background-grey');
-    border-bottom: none;
-    padding: 13px 16px;
+
     box-sizing: border-box;
-    height: 57px;
-    display: inline-block;
-    float: left;
+    padding: 37px 20px 0;
+    height: $tabs-height;
     width: 100%;
-    min-width: 280px;
+    display: inline-block;
 
     a {
-      @include generate-font-size(-3);
+      @include generate-font-size();
       font-family: Roboto, "Noto Sans", Tahoma;
-      color: mat-color($primary);
-      padding: 10px 20px;
+      padding: 0 20px 5px;
       display: inline-block;
-      text-transform: uppercase;
+      text-transform: capitalize;
+      font-weight: bold;
+      color: mat-color($foreground, text);
+
     }
     a.active {
-      background-color: mat-color($primary);
+
+      color: mat-color($primary);
       opacity: 1;
-      color: mat-color($primary, 'default-contrast');
-      font-weight: bold;
+      border-bottom: 3px solid mat-color($primary);
     }
   }
 

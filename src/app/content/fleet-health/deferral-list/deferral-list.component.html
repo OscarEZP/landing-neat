@@ -85,7 +85,7 @@
 
                 <div fxFlex="11" fxLayoutAlign="end center" >
 
-                    <mat-icon class="chronic-icon" *ngIf="task.chronic.hasNotAnalyzedYet">chrome_reader_mode</mat-icon>
+                    <mat-icon class="chronic-icon" *ngIf="task.chronic.hasChronic">chrome_reader_mode</mat-icon>
                     <button id="btn-fleet-health-list-{{ task.barcode }}" mat-icon-button [matMenuTriggerFor]="menu">
                         <mat-icon aria-label="options">more_vert</mat-icon>
                     </button>

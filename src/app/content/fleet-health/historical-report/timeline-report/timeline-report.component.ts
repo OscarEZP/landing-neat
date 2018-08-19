@@ -29,7 +29,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private static ZOOM_MAX_MONTH = 3;
     private static ACTIVE_TASK_DAYS = 4;
     private static  RELATED_TASK_SEARCH_ENDPOINT = 'tasksFleethealthRelatedSearch';
-    private static TASK_HISTORICAL_ENDPOINT = 'taskHistorical';
+    private static RELATED_TASK_HISTORICAL_ENDPOINT = 'tasksFleethealthRelatedHistoricalSearch';
     private static TIMELINE_DATE_FORMAT = 'YYYY-MM-DD';
 
     @Output()
@@ -192,13 +192,13 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Observable for get historical reports
+     * Observable for detail Task
      * @param {string} param
      * @returns {Observable<Task[]>}
      */
     private tasksFromReport$(param: string): Observable<Task[]> {
         return this._apiRestService
-            .getSingle<Task[]>(TimelineReportComponent.TASK_HISTORICAL_ENDPOINT, param);
+            .getSingle<Task[]>(TimelineReportComponent.RELATED_TASK_HISTORICAL_ENDPOINT, param);
     }
 
     /**
@@ -240,7 +240,7 @@ export class TimelineReportComponent implements OnInit, OnDestroy {
     private getTaskHistoricalSubscription(task: Task): Subscription {
         this.loading = true;
         return this._apiRestService
-            .getSingle<Task[]>(TimelineReportComponent.TASK_HISTORICAL_ENDPOINT, task.barcode)
+            .getSingle<Task[]>(TimelineReportComponent.RELATED_TASK_HISTORICAL_ENDPOINT, task.barcode)
             .subscribe(
                 (list) => {
                     this.taskList = list;
