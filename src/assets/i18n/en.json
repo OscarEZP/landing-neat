@@ -12,7 +12,8 @@
       "DURATION": "Duration",
       "RECOVERY_PLAN": {
         "GROUP": "Group",
-        "GROUP_DURATION": "Group Duration"
+        "GROUP_DURATION": "Group Duration",
+        "VERSION": "Version"
       }
     },
     "AOG_FORM": {
@@ -78,13 +79,14 @@
   },
   "BUTTONS": {
     "ADD": "ADD",
+    "APPLY": "APPLY",
     "CANCEL": "CANCEL",
     "CHANGE": "CHANGE",
     "CLOSE": "CLOSE",
     "CREATE": "CREATE",
     "RESEND": "RESEND",
+    "RESET": "RESET",
     "SAVE": "SAVE",
-    "APPLY": "APPLY",
     "SUB_MENUS": {
       "CLOSE_CONTINGENCY": "Close Contingency",
       "CLOSE_AOG": "Close AOG",
@@ -122,6 +124,7 @@
       "SUBMIT_FAIL": "There's a problem saving the {{value}}, please try again"
     },
     "MESSAGES": {
+      "ADDED_SUCCESS": "{{value}} added successfully",
       "SAVE_SUCCESS": "The {{value}} was saved"
     },
     "MINUTE_ABBREVIATION": "m",

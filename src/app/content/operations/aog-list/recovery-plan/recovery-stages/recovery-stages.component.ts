@@ -146,7 +146,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
                     this.stagesList = res.map(v => v);
                     const epochTime = res[res.length - 1] ? res[res.length - 1].range.toEpochtime : now();
                     const endTimeInstant = new TimeInstant(epochTime, '');
-                    res.push(new Stage('GRAY', 1, new DateRange(endTimeInstant, endTimeInstant)));
+                    res.push(new Stage(RecoveryPlanService.DEFAULT_COLOR, 1, new DateRange(endTimeInstant, endTimeInstant)));
                     this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
                 })
         );
@@ -297,11 +297,11 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     get stagesObjects(): StageInterface[] {
-        return this._stagesObjects;
+        return this.recoveryPlanInterface.planStagesInterfaces;
     }
 
     set stagesObjects(value: StageInterface[]) {
-        this._stagesObjects = value;
+        this._recoveryPlanService.planStagesInterfaces = value;
     }
 
     get stagesSub(): Subscription {

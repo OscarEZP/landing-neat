@@ -20,6 +20,7 @@ export interface RecoveryPlanInterface {
     absoluteStartTime: number;
     recoveryStagesConfig: StageConfiguration[];
     hourInPixels: number;
+    planStagesInterfaces: StageInterface[];
 }
 
 export interface StageInterface {
@@ -33,7 +34,9 @@ export interface StageInterface {
 @Injectable()
 export class RecoveryPlanService {
 
+    public static DEFAULT_COLOR = 'GRAY';
     private static RECOVERY_STAGE_ENDPOINT = 'recoveryStage';
+    private static RECOVERY_PLAN_ENDPOINT = 'recoveryPlan';
     private static RECOVERY_PLAN_SEARCH_ENDPOINT = 'recoveryPlanSearch';
     private _recoveryPlanBehavior: BehaviorSubject<RecoveryPlanInterface>;
     private _recoveryPlanBehavior$: Observable<RecoveryPlanInterface>;
@@ -79,7 +82,8 @@ export class RecoveryPlanService {
             relativeStartTime: 0,
             absoluteStartTime: 0,
             hourInPixels: 0,
-            recoveryStagesConfig: []
+            recoveryStagesConfig: [],
+            planStagesInterfaces: []
         };
     }
 
@@ -91,11 +95,14 @@ export class RecoveryPlanService {
         return this._apiRestService
             .getAll<StageConfiguration[]>(RecoveryPlanService.RECOVERY_STAGE_ENDPOINT)
             .pipe(
-                tap((res: StageConfiguration[]) => {
-                    this.log('fetched recoveryStage');
-                }),
+                tap((res: StageConfiguration[]) => this.log('fetched recoveryStage')),
                 catchError(this.handleError('recoveryStage'))
             );
+    }
+
+    public saveRecovery(signature: RecoveryPlan): Promise<void> {
+        return this._apiRestService
+            .add<void>(RecoveryPlanService.RECOVERY_PLAN_ENDPOINT, signature).toPromise();
     }
 
     public resetService() {
@@ -161,7 +168,12 @@ export class RecoveryPlanService {
     }
 
     set hourInPixels(value: number) {
-        this.getRecoveryPlanService().hourInPixels = Math.round(value);
+        this.getRecoveryPlanService().hourInPixels = value;
+        this.emitData();
+    }
+
+    set planStagesInterfaces(value: StageInterface[]) {
+        this.getRecoveryPlanService().planStagesInterfaces = value;
         this.emitData();
     }
 
