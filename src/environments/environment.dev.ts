@@ -8,6 +8,7 @@ export const environment = {
     },
     paths: {
         aircraftOnGround: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground',
+        aircraftOnGroundFollowUpSearch: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/follow-up/_search',
         aircraftOnGroundSearch: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_search',
         aircraftOnGroundSearchCount: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_search/_count',
         aircrafts: ':9002/api/v1/contingencies/configurations/aircrafts',
@@ -57,6 +58,9 @@ export const environment = {
         technicalNotConfiguredAuthoritySearch: ':9015/api/v1/management/tech-station/not-configured-authority/_search',
         technicalStationSearch: ':9015/api/v1/management/tech-station/_search',
         types: ':9005/api/v1/configurations/types',
-        closeAog: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_close'
+        closeAog: ':9016/api/aircraft-on-ground/v1/aircraft-on-ground/_close',
+        recoveryStage: ':9015/api/v1/management/recovery-plan/recovery-stage',
+        recoveryPlan: ':9016/api/aircraft-on-ground/v1/recovery-plan/recovery-stage',
+        recoveryPlanSearch: ':9016/api/aircraft-on-ground/v1/recovery-plan/recovery-stage/_search'
     }
 };

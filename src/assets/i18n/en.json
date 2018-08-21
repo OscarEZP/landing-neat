@@ -9,7 +9,12 @@
       "REASON": "Reason",
       "NEXTSTEP": "Next Step",
       "STATUS": "Status",
-      "DURATION": "Duration"
+      "DURATION": "Duration",
+      "RECOVERY_PLAN": {
+        "GROUP": "Group",
+        "GROUP_DURATION": "Group Duration",
+        "VERSION": "Version"
+      }
     },
     "AOG_FORM": {
       "AC": "A / C",
@@ -47,6 +52,9 @@
       "STATION": "Station",
       "TECHNICAL_TYPE": "Technical Station",
       "TIPOLOGY": "Tipology"
+    },
+    "RECOVERY_PLAN" : {
+      "TITLE" : "Aog Recovery Plan"
     }
   },
   "AUTHENTICATION": {
@@ -71,20 +79,22 @@
   },
   "BUTTONS": {
     "ADD": "ADD",
+    "APPLY": "APPLY",
     "CANCEL": "CANCEL",
     "CHANGE": "CHANGE",
     "CLOSE": "CLOSE",
     "CREATE": "CREATE",
     "RESEND": "RESEND",
+    "RESET": "RESET",
     "SAVE": "SAVE",
-    "APPLY": "APPLY",
     "SUB_MENUS": {
       "CLOSE_CONTINGENCY": "Close Contingency",
       "CLOSE_AOG": "Close AOG",
       "MEETING": "Meeting",
       "FOLLOW_UP": "Follow up",
       "PENDING": "Pending",
-      "DONE": "Done"
+      "DONE": "Done",
+      "OPEN_RECOVERY_PLAN" : "Show Recovery Plan"
     }
   },
   "ERRORS": {
@@ -104,6 +114,7 @@
     "AUTHORITIES_WITHOUT_CONF": "Authorities without configuration. Ask your system administrator."
   },
   "FORM": {
+    "ADD_NEW": "Add new {{value}}",
     "EDIT_FORM_TITLE": "Edit {{value}}",
     "HOUR_ABBREVIATION": "h",
     "HOUR": "hour",
@@ -113,6 +124,7 @@
       "SUBMIT_FAIL": "There's a problem saving the {{value}}, please try again"
     },
     "MESSAGES": {
+      "ADDED_SUCCESS": "{{value}} added successfully",
       "SAVE_SUCCESS": "The {{value}} was saved"
     },
     "MINUTE_ABBREVIATION": "m",
