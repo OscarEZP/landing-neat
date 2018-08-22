@@ -21,7 +21,19 @@
   .close-cursor {
     cursor: default;
   }
+
   .chronic-icon{
     color: mat-color($foreground,icon);
+  }
+
+  .analyzed-by-system {
+    display: inline-block !important;
+    text-align: center;
+    margin-top: 10px;
+
+    .skywise-icon{
+      width: auto;
+      height: auto;
+    }
   }
 }

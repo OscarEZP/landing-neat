@@ -13,6 +13,7 @@
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.DEFERRAL_CLASS' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ALERT' | translate }}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.TIMELINE_STATUS' | translate }}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{ 'FLEET_HEALTH.LIST.ANALYZED_SYSTEM' | translate }}</div>
             </span>
             <div fxFlex="11">&nbsp;</div>
         </header>
@@ -81,11 +82,15 @@
                             {{ task.timelineStatus }}
                         </span>
                     </div>
+
+                    <!-- ANALYZED BY SYSTEM -->
+                    <div class="analyzed-by-system"  fxFlex="7" fxLayoutAlign="center">
+                        <img class="skywise-icon" src="../../../assets/img/skywise-icon.png" *ngIf="task.chronic.hasChronic">
+                    </div>
                 </span>
 
                 <div fxFlex="11" fxLayoutAlign="end center" >
 
-                    <mat-icon class="chronic-icon" *ngIf="task.chronic.hasChronic">chrome_reader_mode</mat-icon>
                     <button id="btn-fleet-health-list-{{ task.barcode }}" mat-icon-button [matMenuTriggerFor]="menu">
                         <mat-icon aria-label="options">more_vert</mat-icon>
                     </button>

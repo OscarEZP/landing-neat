@@ -1,25 +1,15 @@
 export class Chronic {
 
-    private _hasNotAnalyzedYet: boolean;
     private _hasChronic: boolean;
     private _description: string;
 
-    private constructor(description: string, hasChronic: boolean, hasNotAnalyzedYet: boolean) {
+    private constructor(description: string, hasChronic: boolean) {
         this._description = description;
         this._hasChronic = hasChronic;
-        this._hasNotAnalyzedYet = hasNotAnalyzedYet;
     }
 
     static getInstance(): Chronic {
-        return new Chronic(null, true, true);
-    }
-
-    get hasNotAnalyzedYet(): boolean {
-        return this._hasNotAnalyzedYet;
-    }
-
-    set hasNotAnalyzedYet(value: boolean) {
-        this._hasNotAnalyzedYet = value;
+        return new Chronic(null, true);
     }
 
     get hasChronic(): boolean {
