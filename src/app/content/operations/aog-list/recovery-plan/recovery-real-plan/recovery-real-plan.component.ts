@@ -120,11 +120,15 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         const nowTime = moment().hour() + ':' + moment().minute();
         const relativeNow = moment(startMoment + ' ' + nowTime).valueOf();
 
+        const startPos = this._recoveryPlanService.getPositionByEpochtime(relativeNow);
+
         return ShapeDraw.drawLabelText(
-            new Stage('NOW', 1, new DateRange( new TimeInstant(relativeNow, ''), new TimeInstant(0, ''))),
-            this.absoluteStartTime,
-            this.activeViewInHours,
-            this.activeViewInPixels
+            'NOW',
+            startPos
+            // new Stage('NOW', 1, new DateRange( new TimeInstant(relativeNow, ''), new TimeInstant(0, ''))),
+            // this.absoluteStartTime,
+            // this.activeViewInHours,
+            // this.activeViewInPixels
         );
     }
 

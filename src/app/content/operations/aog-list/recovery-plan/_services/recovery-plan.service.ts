@@ -35,7 +35,7 @@ export interface StageInterface {
 @Injectable()
 export class RecoveryPlanService {
 
-    public static DEFAULT_COLOR = 'GRAY';
+    public static DEFAULT_GROUP = 'GRAY';
     private static RECOVERY_STAGE_ENDPOINT = 'recoveryStage';
     private static RECOVERY_PLAN_ENDPOINT = 'recoveryPlan';
     private static RECOVERY_PLAN_SEARCH_ENDPOINT = 'recoveryPlanSearch';
@@ -53,26 +53,7 @@ export class RecoveryPlanService {
     getStages$(aogSearch: RecoveryPlanSearch): Observable<Stage[]> {
         return this._apiRestService.search<RecoveryPlan[]>(RecoveryPlanService.RECOVERY_PLAN_SEARCH_ENDPOINT, aogSearch)
             .pipe(
-                map(res => {
-                    if (res.length > 0) {
-                        return res[0].stages.map(v => Object.assign(Stage.getInstance(), v));
-                    } else {
-                        const aogCreationTime = this.getRecoveryPlanService().relativeStartTime;
-                        let initTime = aogCreationTime;
-                        const baseArr = ['ACC', 'EVA', 'SUP', 'EXE']
-                            .map(v => {
-                                const endTime = TimeConverter.temporalAddHoursToTime(initTime, 2);
-                                const stage = new Stage(
-                                    v,
-                                    1,
-                                    new DateRange(new TimeInstant(initTime, ''), new TimeInstant(endTime, ''))
-                                );
-                                initTime = endTime;
-                                return stage;
-                            });
-                        return baseArr;
-                    }
-                })
+                map(res => res.length > 0 ? res[0].stages.map(v => Object.assign(Stage.getInstance(), v)) : [])
             );
     }
 
@@ -105,6 +86,15 @@ export class RecoveryPlanService {
     public saveRecovery(signature: RecoveryPlan): Promise<void> {
         return this._apiRestService
             .add<void>(RecoveryPlanService.RECOVERY_PLAN_ENDPOINT, signature).toPromise();
+    }
+
+    public getPositionByEpochtime(epochtime: number) {
+        return TimeConverter.epochTimeToPixelPosition(
+            epochtime,
+            this.getRecoveryPlanService().absoluteStartTime,
+            this.getRecoveryPlanService().activeViewInHours,
+            this.getRecoveryPlanService().activeViewInPixels
+        );
     }
 
     public resetService() {

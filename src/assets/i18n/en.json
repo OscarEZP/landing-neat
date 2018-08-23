@@ -144,7 +144,8 @@
       "OPENING_DATE": "Opening Date",
       "TAIL_FLEET": "Tail/Fleet",
       "TIMELINE_STATUS": "Timeline Status",
-      "OPERATOR": "Operator"
+      "OPERATOR": "Operator",
+      "ANALYZED_SYSTEM": "Analyzed by System"
     },
     "REPORT": {
       "COPY_TEXT": "Copy text",
