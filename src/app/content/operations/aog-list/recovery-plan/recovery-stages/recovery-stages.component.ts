@@ -108,15 +108,21 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         baseLayer.add(ShapeDraw.drawLines(null, 0, this.recoveryPlanInterface.activeViewInPixels));
         const lineLayer = new Konva.Layer();
         const circleLayer = new Konva.Layer();
+        const labelLayer = new Konva.Layer();
 
         this.stagesObjects.forEach((value, index) => {
             const stageInterface = this.getGroupStage(value, index);
             lineLayer.add(stageInterface.line);
             circleLayer.add(stageInterface.circle);
+            if (stageInterface.labelLine && stageInterface.labelText) {
+                labelLayer.add(stageInterface.labelLine);
+                labelLayer.add(stageInterface.labelText);
+            }
         });
         this.konvaLayers = {
             base: baseLayer,
             lines: lineLayer,
+            labels: labelLayer,
             circles: circleLayer
         };
         Object.keys(this.konvaLayers).forEach(key => this.konvaStage.add(this.konvaLayers[key]));
@@ -146,7 +152,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
                     this.stagesList = res.map(v => v);
                     const epochTime = res[res.length - 1] ? res[res.length - 1].range.toEpochtime : now();
                     const endTimeInstant = new TimeInstant(epochTime, '');
-                    res.push(new Stage(RecoveryPlanService.DEFAULT_COLOR, 1, new DateRange(endTimeInstant, endTimeInstant)));
+                    res.push(new Stage(RecoveryPlanService.DEFAULT_GROUP, 1, new DateRange(endTimeInstant, endTimeInstant)));
                     this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
                 })
         );
@@ -157,22 +163,16 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         const interfaceStage = stageInterface.stage;
         const isLastItem = index + 1 === this.stagesObjects.length;
         this.lastValidPosition = 0;
-        const startPos = TimeConverter.epochTimeToPixelPosition(
-            stageInterface.stage.fromEpochtime,
-            this.recoveryPlanInterface.absoluteStartTime,
-            this.recoveryPlanInterface.activeViewInHours,
-            this.recoveryPlanInterface.activeViewInPixels
-        );
-        const endPos = TimeConverter.epochTimeToPixelPosition(
-            stageInterface.stage.toEpochtime,
-            this.recoveryPlanInterface.absoluteStartTime,
-            this.recoveryPlanInterface.activeViewInHours,
-            this.recoveryPlanInterface.activeViewInPixels
-        );
+        const startPos = this._recoveryPlanService.getPositionByEpochtime(stageInterface.stage.fromEpochtime);
+        const endPos = this._recoveryPlanService.getPositionByEpochtime(stageInterface.stage.toEpochtime);
         const config = this.recoveryPlanInterface.recoveryStagesConfig.find(c => c.code === interfaceStage.code);
         const color = config ? config.color : null;
+
         stageInterface.line = ShapeDraw.drawLines(color, startPos, endPos);
         stageInterface.circle = ShapeDraw.drawCircle(color, startPos, index > 0);
+        stageInterface.labelLine = !isLastItem ? ShapeDraw.drawLabelLine(null, startPos) : null;
+        stageInterface.labelText = !isLastItem ? ShapeDraw.drawLabelText(stageInterface.stage.code, startPos) : null;
+
         stageInterface.circle.dragBoundFunc(pos => this.dragBound(pos, stageInterface, index, isLastItem ? this.recoveryPlanInterface.activeViewInPixels : endPos));
         stageInterface.circle.on('mouseover', () => document.body.style.cursor = 'pointer');
         stageInterface.circle.on('mouseout', () => document.body.style.cursor = 'default');
@@ -182,14 +182,30 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         });
         stageInterface.circle.on('dragstart', () => {
             initPosition = stageInterface.circle.getAbsolutePosition().x;
+            if (stageInterface.labelLine && stageInterface.labelText) {
+                stageInterface.labelLine.destroy();
+                stageInterface.labelText.destroy();
+            }
+            this.konvaLayers.labels.draw();
         });
         stageInterface.circle.on('dragmove', () => {
             document.body.style.cursor = 'pointer';
-            this.stagesObjects.forEach(v => v.line.points([v.circle.getAbsolutePosition().x, 25, this.recoveryPlanInterface.activeViewInPixels, 25]));
+            this.stagesObjects
+                .forEach((v, i) => {
+                    const next = this.stagesObjects[i + 1];
+                    v.line.points([
+                        v.circle.getAbsolutePosition().x,
+                        25,
+                        next ? next.circle.getAbsolutePosition().x : v.circle.getAbsolutePosition().x,
+                        25
+                    ]);
+                });
             this.konvaLayers.lines.draw();
+            this.konvaLayers.circles.draw();
         });
         stageInterface.circle.on('dragend', () => {
             this.updateDateRange(stageInterface.circle.getAbsolutePosition().x, initPosition, index);
+            this.initTimeline();
             console.log(
                 moment(stageInterface.stage.fromEpochtime).format('HH:mm') +
                 ' - ' +
@@ -203,8 +219,19 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     private updateDateRange(circlePosX: number, initPosition: number, index: number) {
         const diff = circlePosX - initPosition;
         const ms = TimeConverter.pixelToEpochtime(diff, this.recoveryPlanInterface.hourInPixels);
-        this.stagesObjects[index].stage.fromEpochtime += ms;
-        this.stagesObjects[index - 1].stage.toEpochtime = this.stagesObjects[index].stage.fromEpochtime;
+        const stageSelected = this.stagesObjects[index];
+        stageSelected.stage.fromEpochtime += index + 1 !== this.stagesObjects.length ? ms : 0;
+        stageSelected.stage.toEpochtime += ms;
+        const indexPrev = this.stagesObjects[index - 1];
+        indexPrev.stage.toEpochtime = stageSelected.stage.fromEpochtime;
+        this.stagesObjects
+            .forEach((v, i) => {
+                if (i > index) {
+                    const prev = this.stagesObjects[i - 1];
+                    v.stage.fromEpochtime = prev.stage.toEpochtime;
+                    v.stage.toEpochtime += i + 1 !== this.stagesObjects.length ? ms : 0;
+                }
+            });
     }
 
     private dragBound(pos: Vector2d, value: StageInterface, index: number, endPos: number): Vector2d {

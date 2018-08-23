@@ -152,7 +152,7 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
 
     get planStages(): Stage[] {
         return this.recoveryPlanInterface.planStagesInterfaces
-            .filter(v => v.stage.code !== RecoveryPlanService.DEFAULT_COLOR)
+            .filter(v => v.stage.code !== RecoveryPlanService.DEFAULT_GROUP)
             .map(v => v.stage);
     }
 

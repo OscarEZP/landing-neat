@@ -33,4 +33,7 @@ export class DialogService {
         return this._refList;
     }
 
+    set refList(value: MatDialogRef<any>[]) {
+        this._refList = value;
+    }
 }

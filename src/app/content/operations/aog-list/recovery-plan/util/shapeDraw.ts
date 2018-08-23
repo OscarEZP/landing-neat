@@ -14,7 +14,7 @@ export class ShapeDraw {
     public static drawCircle(color: string, startPos: number, isDraggable: boolean = true, isFilled: boolean = false): Konva.Circle {
         color = color ? color : ShapeDraw.DEFAULT_COLOR;
         return new Konva.Circle({
-            x: startPos + 8.9,
+            x: startPos + 9,
             y: 25,
             width: 15,
             height: 15,
@@ -26,22 +26,22 @@ export class ShapeDraw {
         });
     }
 
-    public static drawLabelText(item: Stage, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Text {
+    public static drawLabelText(text: string, xPos: number): Konva.Text {
         return new Konva.Text({
-            x: TimeConverter.epochTimeToPixelPosition(item.fromEpochtime, absoluteStartTime, activeViewInHours, activeViewInPixels) + 5,
+            x: xPos + 15,
             y: 2,
-            text: item.code,
+            text: text,
             fontSize: 12,
             fontFamily: 'Calibri',
             fill: 'black'
         });
     }
 
-    public static drawLabelLine(item: Stage, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Line {
-        const xPos = TimeConverter.epochTimeToPixelPosition(item.fromEpochtime, absoluteStartTime, activeViewInHours, activeViewInPixels);
+    public static drawLabelLine(color: string, xPos: number): Konva.Line {
+        color = color ? color : ShapeDraw.DEFAULT_COLOR;
         return new Konva.Line({
-            points: [xPos, 4, xPos, 30],
-            stroke: 'black',
+            points: [xPos + 8, 4, xPos + 8, 30],
+            stroke: color,
             strokeWidth: 2,
             lineJoin: 'round',
             dash: [2, 2]
