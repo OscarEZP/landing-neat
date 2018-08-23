@@ -18,7 +18,6 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
     private _activeViewInPixels: number;
     private _absoluteStartTime: number;
     private _relativeStartTime: number;
-    private _actualScaleInHours: number;
     private _recoveryPlanSubscription: Subscription;
     private _recoveryPlanInterface: RecoveryPlanInterface;
 
@@ -34,6 +33,9 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
         this.recoveryPlanSubscription.unsubscribe();
     }
 
+    /**
+     * After the view has been initialized make a subscription to bind the recoveryPlanInterface (local variable) with the interface of the service, also initialize the draw of the canvas.
+     */
     ngAfterViewInit() {
         this.recoveryPlanSubscription = this._recoveryPlanService.recoveryPlanBehavior$.subscribe(x => {
             this.recoveryPlanInterface = x;
@@ -41,7 +43,10 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
         });
     }
 
-    private drawCanvasElements() {
+    /**
+     * Draw the canvas elements needed to add later the elements
+     */
+    private drawCanvasElements(): void {
         if (this.relativeStartTime !== 0) {
             const stage = new Konva.Stage({
                 container: 'slots-container',
@@ -57,9 +62,13 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
         }
     }
 
+    /**
+     * Method to draw the boxes (slots of time) with their corresponding values
+     * @param layer needed to reference where will be drawn.
+     */
     private drawBoxes(layer: Konva.Layer): void {
         const blockSize = this.activeViewInPixels / 24;
-        const actualScale = this.actualScaleInHours !== undefined ? this.actualScaleInHours : 24;
+        const actualScale = this.activeViewInHours !== undefined ? this.activeViewInHours : 24;
         const hourInMs = 3600000 * (actualScale / 24);
         const startTime = this.absoluteStartTime;
         let dateStartTime = startTime;
@@ -103,6 +112,7 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
 
     set activeViewInHours(value: number) {
         this._activeViewInHours = value;
+        this.drawCanvasElements();
     }
 
     get activeViewInPixels(): number {
@@ -143,15 +153,6 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
 
     set relativeStartTime(value: number) {
         this._relativeStartTime = value;
-        this.drawCanvasElements();
-    }
-
-    get actualScaleInHours(): number {
-        return this._recoveryPlanInterface.actualScaleInHours;
-    }
-
-    set actualScaleInHours(value: number) {
-        this._actualScaleInHours = value;
         this.drawCanvasElements();
     }
 }

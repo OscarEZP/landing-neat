@@ -14,7 +14,7 @@ export class ShapeDraw {
     public static drawCircle(color: string, startPos: number, isDraggable: boolean = true, isFilled: boolean = false): Konva.Circle {
         color = color ? color : ShapeDraw.DEFAULT_COLOR;
         return new Konva.Circle({
-            x: startPos + 9,
+            x: startPos,
             y: 25,
             width: 15,
             height: 15,
@@ -28,7 +28,7 @@ export class ShapeDraw {
 
     public static drawLabelText(text: string, xPos: number): Konva.Text {
         return new Konva.Text({
-            x: xPos + 15,
+            x: xPos + 6,
             y: 2,
             text: text,
             fontSize: 12,
@@ -40,7 +40,7 @@ export class ShapeDraw {
     public static drawLabelLine(color: string, xPos: number): Konva.Line {
         color = color ? color : ShapeDraw.DEFAULT_COLOR;
         return new Konva.Line({
-            points: [xPos + 8, 4, xPos + 8, 30],
+            points: [xPos, 4, xPos, 30],
             stroke: color,
             strokeWidth: 2,
             lineJoin: 'round',
@@ -51,7 +51,7 @@ export class ShapeDraw {
     public static drawLines(color: string, startPos: number, endPos: number): Konva.Line {
         color = color ? color : ShapeDraw.DEFAULT_COLOR;
         return new Konva.Line({
-            points: [startPos + 5, 25, endPos, 25],
+            points: [startPos, 25, endPos, 25],
             stroke: color,
             strokeWidth: 4,
             lineCap: 'round',

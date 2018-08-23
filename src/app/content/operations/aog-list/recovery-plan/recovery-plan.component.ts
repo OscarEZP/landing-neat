@@ -40,7 +40,6 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.activeViewInHours = 24;
-        // this.relativeStartTime = this.aogData.audit.time.epochTime;
         this.activeViewInPixels = this._recoveryStageContainer.nativeElement.parentNode.offsetWidth;
         this.recoveryStagesSub = this.getRecoveryStagesConfSubscription();
         this.hourInPixels = this._recoveryStageContainer.nativeElement.parentNode.offsetWidth / 24;

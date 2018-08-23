@@ -47,7 +47,7 @@ export class RecoveryZoomComponent implements OnInit, OnDestroy {
      */
     public zoomValueAsChanged(message: MatSliderChange): void {
         const calculatedZoomValue = Math.pow(2, (message.value / 33));
-        this._recoveryPlanService.actualScaleInHours = calculatedZoomValue * 24;
+        this._recoveryPlanService.activeViewInHours = calculatedZoomValue * 24;
     }
 
     get steps(): number {
@@ -67,7 +67,7 @@ export class RecoveryZoomComponent implements OnInit, OnDestroy {
     }
 
     get valueInHours(): number {
-        return this._recoveryPlanInterface.actualScaleInHours;
+        return this._recoveryPlanInterface.activeViewInHours;
     }
 
     get recoveryPlanSubscription(): Subscription {
