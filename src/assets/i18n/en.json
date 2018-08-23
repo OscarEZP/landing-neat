@@ -53,6 +53,14 @@
       "TECHNICAL_TYPE": "Technical Station",
       "TIPOLOGY": "Tipology"
     },
+    "AOG_DETAILS": {
+      "FOLLOW_UP": {
+        "FOLLOW_UP_DISABLED": "Sorry follow up is disabled because from creation of contingency past more than 180 minutes",
+        "FOLLOW_UP_LAST_STATUS": "Sorry is not possible to create a follow up for the current status",
+        "FOLLOW_UP_CLOSED_STATUS": "This contingency is already closed",
+        "FOLLOW_UP_SUCCESSFULLY": "Follow up successfully"
+      }
+    },
     "RECOVERY_PLAN" : {
       "TITLE" : "Aog Recovery Plan"
     }

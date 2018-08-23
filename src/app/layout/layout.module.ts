@@ -13,6 +13,7 @@ import {DetailsService} from '../details/_services/details.service';
 import {ContingencyFormComponent} from '../content/operations/create-contingency/create-contingency.component';
 import {LayoutService} from './_services/layout.service';
 import {AogFormComponent} from '../content/operations/aog-form/aog-form.component';
+import {DetailsServiceAog} from '../details/_services/details_aog.service';
 
 @NgModule({
     imports: [
@@ -36,6 +37,7 @@ import {AogFormComponent} from '../content/operations/aog-form/aog-form.componen
         SidenavService,
         StorageService,
         DetailsService,
+        DetailsServiceAog,
         LayoutService
     ],
     entryComponents: [

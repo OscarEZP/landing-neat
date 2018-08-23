@@ -86,7 +86,8 @@ export class ContingencyListComponent implements OnInit, OnDestroy {
             showRightNav: true,
             showAddButton: true,
             loading: false,
-            formComponent: ContingencyFormComponent
+            formComponent: ContingencyFormComponent,
+            toDoList: 'Contingency'
         };
         this._editReasonSub = new Subscription();
         this._editFieldTranslation = { field: {value: ''}, placeholder: '' };

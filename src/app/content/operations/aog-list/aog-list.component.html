@@ -61,6 +61,9 @@
                     <mat-icon aria-label="options">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="openDetails(aog, 'follow-up')">
+                        <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
+                    </button>
                     <button mat-menu-item (click)="openRecoveryPlan(aog)">
                         <span>{{ 'BUTTONS.SUB_MENUS.OPEN_RECOVERY_PLAN' | translate }}</span>
                     </button>
