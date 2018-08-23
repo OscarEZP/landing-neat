@@ -1,10 +1,12 @@
+<div  fxLayout="column" fxLayoutAlign="center">
+  <div class="counter-aog">
+    {{paginatorObjectService.length}}
+    <span *ngIf="paginatorObjectService.length !== 1">{{'AOG.ACTIVE_AOGS' | translate}}</span>
+    <span *ngIf="paginatorObjectService.length === 1">{{'AOG.ACTIVE_AOG' | translate }}</span>
+  </div>
+</div>
 <div id="aog-list" class="reg-list" *ngIf="aogList.length !== 0 && !error && !loading">
-    <div class="active-aogs">
-        {{paginatorObjectService.length}}
-        <span *ngIf="paginatorObjectService.length !== 1">{{'AOG.ACTIVE_AOGS' | translate}}</span>
-        <span *ngIf="paginatorObjectService.length === 1">{{'AOG.ACTIVE_AOG' | translate }}</span>
 
-    </div>
     <header fxLayout="row" fxLayoutGap="20px">
         <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.TAILFLEET' | translate}}</div>
         <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.OPERATOR' | translate}}</div>
