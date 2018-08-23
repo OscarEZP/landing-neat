@@ -21,6 +21,7 @@ export interface RecoveryPlanInterface {
     recoveryStagesConfig: StageConfiguration[];
     hourInPixels: number;
     planStagesInterfaces: StageInterface[];
+    actualScaleInHours: number;
 }
 
 export interface StageInterface {
@@ -83,7 +84,8 @@ export class RecoveryPlanService {
             absoluteStartTime: 0,
             hourInPixels: 0,
             recoveryStagesConfig: [],
-            planStagesInterfaces: []
+            planStagesInterfaces: [],
+            actualScaleInHours: 24
         };
     }
 
@@ -174,6 +176,11 @@ export class RecoveryPlanService {
 
     set planStagesInterfaces(value: StageInterface[]) {
         this.getRecoveryPlanService().planStagesInterfaces = value;
+        this.emitData();
+    }
+
+    set actualScaleInHours(value: number) {
+        this.getRecoveryPlanService().actualScaleInHours = value;
         this.emitData();
     }
 

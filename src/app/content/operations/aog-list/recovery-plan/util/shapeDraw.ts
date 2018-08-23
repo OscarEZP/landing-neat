@@ -59,17 +59,15 @@ export class ShapeDraw {
         });
     }
 
-    public static drawTimeBox(startTime: number, endTime: number, isHour: boolean, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): Konva.Group {
-        const  xStartPos = TimeConverter.epochTimeToPixelPosition(startTime, absoluteStartTime, activeViewInHours, activeViewInPixels);
-        const xEndPos = TimeConverter.epochTimeToPixelPosition(endTime, absoluteStartTime, activeViewInHours, activeViewInPixels);
+    public static drawTimeBox(startTime: number, xStartPosition: number, xEndPosition: number, isHour: boolean, isLast: boolean): Konva.Group {
 
         const timeBoxGroup = new Konva.Group({
-            x: xStartPos,
+            x: xStartPosition,
             y: isHour ? 0 : 20
         });
 
-        const box = ShapeDraw.drawBox(xStartPos, xEndPos);
-        const text = ShapeDraw.drawText(xStartPos, xEndPos, isHour, startTime);
+        const box = ShapeDraw.drawBox(xStartPosition, xEndPosition);
+        const text = ShapeDraw.drawText(xStartPosition, xEndPosition, isHour, isLast, startTime);
 
         timeBoxGroup.add(box).add(text);
 
@@ -88,11 +86,12 @@ export class ShapeDraw {
         });
     }
 
-    private static drawText(startTime: number, endTime: number, isHour: boolean, epoch: number): Konva.Text {
+    private static drawText(xStartPosition: number, xEndPosition: number, isHour: boolean, isLast: boolean, epoch: number): Konva.Text {
+
         return new Konva.Text({
-            x: 15,
+            x: isHour ? (xEndPosition - xStartPosition) * 0.3 : 15,
             y: 4,
-            text: moment(epoch).minute(0).format(isHour ? 'HH:mm' : 'DD-MMM-YYYY'),
+            text: isHour ? moment.utc(epoch).minute(0).format('HH:mm') : moment.utc(epoch).subtract(isLast ? 0 : 1, 'd').format('DD-MMM-YYYY'),
             fontSize: 12,
             fontFamily: 'Calibri',
             fill: 'black'

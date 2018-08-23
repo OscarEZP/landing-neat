@@ -10,6 +10,7 @@ import {ShapeDraw} from './util/shapeDraw';
 import { AddStageFormComponent } from './recovery-stages/add-stage-form/add-stage-form.component';
 import {TimeConverter} from './util/timeConverter';
 import {RecoveryPlanService} from './_services/recovery-plan.service';
+import { RecoveryZoomComponent } from './recovery-zoom/recovery-zoom.component';
 
 @NgModule({
     imports: [
@@ -22,7 +23,9 @@ import {RecoveryPlanService} from './_services/recovery-plan.service';
         RecoveryPlanComponent,
         RecoveryRealPlanComponent,
         RecoverySlotsComponent,
-        AddStageFormComponent
+        RecoveryZoomComponent,
+        AddStageFormComponent,
+        RecoveryZoomComponent
     ],
     providers: [
         TimeConverter,

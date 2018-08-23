@@ -146,6 +146,8 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
                     this.stagesList = res.map(v => v);
                     const epochTime = res[res.length - 1] ? res[res.length - 1].range.toEpochtime : now();
                     const endTimeInstant = new TimeInstant(epochTime, '');
+                    this._recoveryPlanService.relativeStartTime = res[0].range.fromEpochtime;
+                    console.log('hola mi valor es: ', res[0].range.fromEpochtime);
                     res.push(new Stage(RecoveryPlanService.DEFAULT_COLOR, 1, new DateRange(endTimeInstant, endTimeInstant)));
                     this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
                 })
