@@ -30,7 +30,6 @@ export class DialogService {
             matDialogInterface.matDialogRef.close();
             this.refList = this.refList.filter(ref => ref.alias !== alias);
         }
-        console.log(this.refList);
     }
 
     public closeAllDialogs(): void {
