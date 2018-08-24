@@ -44,11 +44,11 @@ describe('Contingency List Test', () => {
     const MockConfigRefresh = {
         'groupName' : 'CONTINGENCY_UPDATE_INTERVAL',
         'types' : [ {
-            'code' : '130',
-            'description' : 'Period of time (seconds) to refresh contingency list view',
-            'updateDate' : {
-                'label' : '2018-01-24T15:55:56.549Z',
-                'epochTime' : 1516809356549
+            'code': '130',
+            'description': 'Period of time (seconds) to refresh contingency list view',
+            'updateDate': {
+                'label': '2018-01-24T15:55:56.549Z',
+                'epochTime': 1516809356549
             }
         } ]
     };
@@ -77,7 +77,7 @@ describe('Contingency List Test', () => {
         loading: false
     };
 
-    const fakeGroupTypeRS = new GroupTypes(MockConfigRefresh.groupName, [new Types(MockConfigRefresh.types[0].code, MockConfigRefresh.types[0].description, new TimeInstant(MockConfigRefresh.types[0].updateDate.epochTime, MockConfigRefresh.types[0].updateDate.label))]);
+    const fakeGroupTypeRS = new GroupTypes(MockConfigRefresh.groupName, [new Types(MockConfigRefresh.types[0].code, MockConfigRefresh.types[0].description, new TimeInstant(parseInt(MockConfigRefresh.types[0].updateDate.epochTime.toString(), 0), MockConfigRefresh.types[0].updateDate.label))]);
 
     const MockApiRestService = {
         getSingle: () => Observable.of(fakeGroupTypeRS)

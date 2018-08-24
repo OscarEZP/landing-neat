@@ -5,6 +5,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { OperationsModule } from './operations/operations.module';
 import { FleetHealthModule } from './fleet-health/fleet-health.module';
 import {ManagementModule} from './management/management.module';
+import {TimeService} from '../shared/_services/timeService';
 
 
 @NgModule({
@@ -22,7 +23,7 @@ import {ManagementModule} from './management/management.module';
 
     ],
     providers: [
-
+        TimeService
     ],
     bootstrap: []
 })

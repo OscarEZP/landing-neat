@@ -32,6 +32,8 @@
     "core-js": "2.5.1",
     "font-awesome": "4.7.0",
     "intl": "1.2.5",
+    "konva": "2.2.1",
+    "ng2-konva": "6.0.0",
     "ngx-quill": "2.2.0",
     "notosans-fontface": "1.0.1",
     "roboto-fontface": "0.8.0",

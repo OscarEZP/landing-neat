@@ -4,7 +4,7 @@ import {Layout, LayoutService} from '../../../layout/_services/layout.service';
 import {ApiRestService} from '../../../shared/_services/apiRest.service';
 import {Subscription} from 'rxjs/Subscription';
 import {PaginatorObjectService} from '../../_services/paginator-object.service';
-import {MatPaginator} from '@angular/material';
+import {MatDialog, MatPaginator} from '@angular/material';
 import {Pagination} from '../../../shared/_models/common/pagination';
 import {AogSearch} from '../../../shared/_models/aog/aogSearch';
 import {GroupTypes} from '../../../shared/_models/configuration/groupTypes';
@@ -12,6 +12,7 @@ import {DataService} from '../../../shared/_services/data.service';
 import {Observable} from 'rxjs/Observable';
 import {AogFormComponent} from '../aog-form/aog-form.component';
 import {Count} from '../../../shared/_models/common/count';
+import {RecoveryPlanComponent} from './recovery-plan/recovery-plan.component';
 import {tap} from 'rxjs/operators';
 import {AogService} from '../../_services/aog.service';
 import {DialogService} from '../../_services/dialog.service';
@@ -139,7 +140,7 @@ export class AogListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Set a subscription for total amount of records and data list.
+     * Set a subscription for get total amount of records and data list.
      */
     private getList(): void {
         const signature = this.getSearchSignature();
@@ -316,6 +317,16 @@ export class AogListComponent implements OnInit, OnDestroy {
                 this._messageData.stringMessage('reload');
             })
             .catch(() => this._translationService.translateAndShow(AogListComponent.DEFAULT_ERROR_MESSAGE));
+    }
+
+    public openRecoveryPlan(selectedAog: Aog): void {
+        this._dialogService.openDialog(RecoveryPlanComponent, {
+            maxWidth: '100vw',
+            width: '100%',
+            height: '100%',
+            hasBackdrop: false,
+            data: selectedAog
+        });
     }
 
     get aogList(): Aog[] {

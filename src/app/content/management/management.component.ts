@@ -19,6 +19,10 @@ export class ManagementComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
+
+    }
+
+    ngAfterViewInit() {
         this._translate.setDefaultLang('en');
         this._translate.get('MANAGEMENT.MANAGEMENT_MODULE')
             .toPromise()
@@ -28,10 +32,6 @@ export class ManagementComponent implements OnInit, AfterViewInit {
             );
         this.showAddButton = false;
         this.showRightNav = false;
-    }
-
-    ngAfterViewInit() {
-
     }
 
     set moduleTitle(value: string) {
