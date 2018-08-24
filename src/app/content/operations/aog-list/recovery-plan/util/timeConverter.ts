@@ -7,7 +7,7 @@ export class TimeConverter {
     constructor() {}
 
     public static absoluteStartTime(actualTime: number): number {
-        return moment(actualTime).subtract(moment(actualTime).get('m')).valueOf();
+        return moment.utc(actualTime).minute(0).second(0).millisecond(0).valueOf();
     }
 
     public static epochTimeToPixelPosition(selectedTime: number, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): number {
@@ -20,9 +20,5 @@ export class TimeConverter {
 
     public static referenceFramePixels(activeViewInHours: number, activeViewInPixels: number): number {
         return Math.round((activeViewInHours * 3600000) / activeViewInPixels);
-    }
-
-    public static temporalAddHoursToTime(selectedTime: number, hoursToAdd: number): number {
-        return selectedTime + hoursToAdd * 3600000;
     }
 }
