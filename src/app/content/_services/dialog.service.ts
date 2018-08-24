@@ -2,10 +2,16 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import {MatDialogRef} from '@angular/material/dialog/typings/dialog-ref';
 
+export interface DialogInterface {
+    alias: string;
+    matDialogRef: MatDialogRef<any>;
+}
+
+
 @Injectable()
 export class DialogService {
 
-    private _refList: MatDialogRef<any>[];
+    private _refList: DialogInterface[];
 
     constructor(
         private dialog: MatDialog
@@ -14,15 +20,17 @@ export class DialogService {
     }
 
     public openDialog(dialogInstance, config, alias: string = 'active'): MatDialogRef<any> {
-        this.refList[alias] = this.dialog.open(dialogInstance, config);
-        return this.refList[alias];
+        this.refList.push({ alias: alias, matDialogRef: this.dialog.open(dialogInstance, config) });
+        return this.refList.find(v => v.alias === alias).matDialogRef;
     }
 
     public closeDialog(alias: string): void {
-        if (this.refList[alias]) {
-            this.refList[alias].close();
-            this.removeByKey(this.refList, alias);
+        const matDialogInterface = this.refList.find(v => v.alias === alias);
+        if (matDialogInterface) {
+            matDialogInterface.matDialogRef.close();
+            this.refList = this.refList.filter(ref => ref.alias !== alias);
         }
+        console.log(this.refList);
     }
 
     /**
@@ -46,11 +54,11 @@ export class DialogService {
         this.dialog.closeAll();
     }
 
-    get refList(): MatDialogRef<any>[] {
+    get refList(): DialogInterface[] {
         return this._refList;
     }
 
-    set refList(value: MatDialogRef<any>[]) {
+    set refList(value: DialogInterface[]) {
         this._refList = value;
     }
 }
