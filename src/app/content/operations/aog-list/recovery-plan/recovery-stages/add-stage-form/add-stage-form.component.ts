@@ -95,6 +95,7 @@ export class AddStageFormComponent implements OnInit {
      */
     public openCancelDialog(): void {
         if (this.addStageForm.pristine) {
+            console.log('bla');
             this._dialogService.closeDialog(AddStageFormComponent.ADD_STAGE_DIALOG_TAG);
         } else {
             this._translationService.translate(AddStageFormComponent.CANCEL_COMPONENT_MESSAGE)

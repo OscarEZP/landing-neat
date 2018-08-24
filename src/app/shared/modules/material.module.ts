@@ -18,6 +18,7 @@ import {
     MatNativeDateModule,
     MatAutocompleteModule,
     MatSlideToggleModule,
+    MatSliderModule,
     MatSnackBarModule,
     MatMenuModule,
     MatButtonToggleModule,
@@ -62,7 +63,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         MatPaginatorModule,
         MatProgressSpinnerModule,
         MatExpansionModule,
-        MatTableModule
+        MatTableModule,
+        MatSliderModule
     ],
     exports: [
         FlexLayoutModule,
@@ -95,7 +97,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         MatPaginatorModule,
         MatProgressSpinnerModule,
         MatExpansionModule,
-        MatTableModule
+        MatTableModule,
+        MatSliderModule
     ],
 
 })

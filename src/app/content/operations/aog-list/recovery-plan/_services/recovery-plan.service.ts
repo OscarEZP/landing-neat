@@ -6,8 +6,6 @@ import {TimeConverter} from '../util/timeConverter';
 import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
 import {catchError, map, tap} from 'rxjs/operators';
 import {LogService} from '../../../../_services/log.service';
-import {DateRange} from '../../../../../shared/_models/common/dateRange';
-import {TimeInstant} from '../../../../../shared/_models/timeInstant';
 import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
 import {RecoveryPlanSearch} from '../../../../../shared/_models/recoveryplan/recoveryPlanSearch';
@@ -34,7 +32,7 @@ export interface StageInterface {
 @Injectable()
 export class RecoveryPlanService {
 
-    public static DEFAULT_COLOR = 'GRAY';
+    public static DEFAULT_GROUP = 'GRAY';
     private static RECOVERY_STAGE_ENDPOINT = 'recoveryStage';
     private static RECOVERY_PLAN_ENDPOINT = 'recoveryPlan';
     private static RECOVERY_PLAN_SEARCH_ENDPOINT = 'recoveryPlanSearch';
@@ -52,29 +50,13 @@ export class RecoveryPlanService {
     getStages$(aogSearch: RecoveryPlanSearch): Observable<Stage[]> {
         return this._apiRestService.search<RecoveryPlan[]>(RecoveryPlanService.RECOVERY_PLAN_SEARCH_ENDPOINT, aogSearch)
             .pipe(
-                map(res => {
-                    if (res.length > 0) {
-                        return res[0].stages.map(v => Object.assign(Stage.getInstance(), v));
-                    } else {
-                        const aogCreationTime = this.getRecoveryPlanService().relativeStartTime;
-                        let initTime = aogCreationTime;
-                        const baseArr = ['ACC', 'EVA', 'SUP', 'EXE']
-                            .map(v => {
-                                const endTime = TimeConverter.temporalAddHoursToTime(initTime, 2);
-                                const stage = new Stage(
-                                    v,
-                                    1,
-                                    new DateRange(new TimeInstant(initTime, ''), new TimeInstant(endTime, ''))
-                                );
-                                initTime = endTime;
-                                return stage;
-                            });
-                        return baseArr;
-                    }
-                })
+                map(res => res.length > 0 ? res[0].stages.map(v => Object.assign(Stage.getInstance(), v)) : [])
             );
     }
 
+    /**
+     * Generate a new defined interface with 0 values to allow set later
+     */
     private get newRecoveryPlanService(): RecoveryPlanInterface {
         return {
             activeViewInPixels: 0,
@@ -100,13 +82,23 @@ export class RecoveryPlanService {
             );
     }
 
+    /**
+     * Save the recovery plan
+     * @param signature recoveryPlan model
+     */
     public saveRecovery(signature: RecoveryPlan): Promise<void> {
         return this._apiRestService
             .add<void>(RecoveryPlanService.RECOVERY_PLAN_ENDPOINT, signature).toPromise();
     }
 
-    public resetService() {
-        this.recoveryPlanInterface = this.newRecoveryPlanService;
+    public getPositionByEpochtime(epochtime: number) {
+        console.log('this.getRecoveryPlanService().activeViewInHours: ', this.getRecoveryPlanService().activeViewInHours);
+        return TimeConverter.epochTimeToPixelPosition(
+            epochtime,
+            this.getRecoveryPlanService().absoluteStartTime,
+            this.getRecoveryPlanService().activeViewInHours,
+            this.getRecoveryPlanService().activeViewInPixels
+        );
     }
 
     /**
@@ -129,10 +121,6 @@ export class RecoveryPlanService {
         return this._recoveryPlanBehavior$;
     }
 
-    set recoveryPlanInterface(value: RecoveryPlanInterface) {
-        this._recoveryPlanBehavior.next(value);
-    }
-
     private getRecoveryPlanService(): RecoveryPlanInterface {
         return this._recoveryPlanBehavior.getValue();
     }
@@ -147,7 +135,6 @@ export class RecoveryPlanService {
     }
 
     set relativeStartTime(value: number) {
-        this.absoluteStartTime = value;
         this.getRecoveryPlanService().relativeStartTime = value;
         this.emitData();
     }
@@ -162,7 +149,8 @@ export class RecoveryPlanService {
         this.emitData();
     }
 
-    private set absoluteStartTime(value: number) {
+    set absoluteStartTime(value: number) {
+        this.relativeStartTime = value;
         this.getRecoveryPlanService().absoluteStartTime = TimeConverter.absoluteStartTime(value);
         this.emitData();
     }
