@@ -9,6 +9,7 @@ import {Stage} from '../../../../shared/_models/recoveryplan/stage';
 import {Audit} from '../../../../shared/_models/common/audit';
 import {StorageService} from '../../../../shared/_services/storage.service';
 import {TranslationService} from '../../../../shared/_services/translation.service';
+import moment = require('moment');
 
 @Component({
   selector: 'lsl-recovery-plan',
@@ -26,6 +27,7 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
     private _recoveryPlanInterfaceSub: Subscription;
     private _recoveryPlanInterface: RecoveryPlanInterface;
     private _groupLabel: string;
+    private _utcNow: number;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) private matDialogData: Aog,
@@ -44,6 +46,8 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
         this.recoveryStagesSub = this.getRecoveryStagesConfSubscription();
         this.hourInPixels = this._recoveryStageContainer.nativeElement.parentNode.offsetWidth / 24;
         this.recoveryPlanInterfaceSub = this.getRecoveryPlanInterfaceSubscription();
+        this.utcNow = moment.utc().valueOf();
+
         this._translationService.translate(RecoveryPlanComponent.RECOVERY_PLAN_VERSION)
             .then(v => this.groupLabel = v);
     }
@@ -131,6 +135,10 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
 
     set hourInPixels(value: number) {
         this._recoveryPlanService.hourInPixels = value;
+    }
+
+    set utcNow(value: number) {
+        this._recoveryPlanService.utcNow = value;
     }
 
     get recoveryPlanInterfaceSub(): Subscription {

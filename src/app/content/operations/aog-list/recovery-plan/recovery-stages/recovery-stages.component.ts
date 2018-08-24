@@ -69,6 +69,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     private _relativeStartTime: number;
     private _activeViewInHours: number;
+    private _utcNow: number;
 
     constructor(
         private _recoveryPlanService: RecoveryPlanService,
@@ -82,19 +83,27 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         this._stagesSub = new Subscription();
         this._recoveryPlanSub = new Subscription();
         this._menuInterface = {addGroup: true, delGroup: true };
+        this._recoveryPlanInterface = null;
     }
 
     ngOnInit() {
         this.stagesSub = this.getStages$().subscribe(() => {
+
             this.recoveryPlanSub = this.getRecoveryPlanSub();
         });
         this.lastValidPosition = 0;
     }
 
+
+
     private getRecoveryPlanSub(): Subscription {
         return this._recoveryPlanService.recoveryPlanBehavior$
             .subscribe(x => {
                 this.recoveryPlanInterface = x;
+                if (!this.relativeEndTime) {
+                    const lastStageInterface = this.stagesObjects.filter((v, i) => this.stagesObjects.length === i + 1);
+                    this._recoveryPlanService.relativeEndTime = Math.max(lastStageInterface[0].stage.toEpochtime, this.utcNow) + this.recoveryPlanInterface.activeViewInHours * 3600000;
+                }
                 if (x.recoveryStagesConfig.length > 0) {
                     this.initTimeline();
                 }
@@ -102,13 +111,16 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     private initTimeline() {
+        const endTimeInPixels = TimeConverter.epochTimeToPixelPosition(this.recoveryPlanInterface.relativeEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
+
         this.konvaStage = new Konva.Stage({
             container: 'container',
-            width: this.recoveryPlanInterface.activeViewInPixels,
+            width: endTimeInPixels,
             height: this.canvasHeight
         });
         const baseLayer = new Konva.Layer();
-        baseLayer.add(ShapeDraw.drawLines(null, 0, this.recoveryPlanInterface.activeViewInPixels));
+
+        baseLayer.add(ShapeDraw.drawLines(null, 0, endTimeInPixels));
         const lineLayer = new Konva.Layer();
         const circleLayer = new Konva.Layer();
         const labelLayer = new Konva.Layer();
@@ -412,7 +424,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     get relativeStartTime(): number {
-        return this._recoveryPlanInterface.relativeStartTime;
+        return this.recoveryPlanInterface.relativeStartTime;
     }
 
     set relativeStartTime(value: number) {
@@ -421,11 +433,23 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     get activeViewInHours(): number {
-        return this._recoveryPlanInterface.activeViewInHours;
+        return this.recoveryPlanInterface.activeViewInHours;
     }
 
     set activeViewInHours(value: number) {
         this._activeViewInHours = value;
         this.initTimeline();
+    }
+
+    get utcNow(): number {
+        return this.recoveryPlanInterface.utcNow;
+    }
+
+    set utcNow(value: number) {
+        this._utcNow = value;
+    }
+
+    get relativeEndTime() {
+        return this.recoveryPlanInterface.relativeEndTime;
     }
 }

@@ -10,15 +10,18 @@ import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
 import {RecoveryPlanSearch} from '../../../../../shared/_models/recoveryplan/recoveryPlanSearch';
 import {RecoveryPlan} from '../../../../../shared/_models/recoveryplan/recoveryPlan';
+import moment = require('moment');
 
 export interface RecoveryPlanInterface {
     activeViewInPixels: number;
     activeViewInHours: number;
     relativeStartTime: number;
+    relativeEndTime: number;
     absoluteStartTime: number;
     recoveryStagesConfig: StageConfiguration[];
     hourInPixels: number;
     planStagesInterfaces: StageInterface[];
+    utcNow: number;
 }
 
 export interface StageInterface {
@@ -62,10 +65,12 @@ export class RecoveryPlanService {
             activeViewInPixels: 0,
             activeViewInHours: 0,
             relativeStartTime: 0,
+            relativeEndTime: 0,
             absoluteStartTime: 0,
             hourInPixels: 0,
             recoveryStagesConfig: [],
-            planStagesInterfaces: []
+            planStagesInterfaces: [],
+            utcNow: 0
         };
     }
 
@@ -92,7 +97,6 @@ export class RecoveryPlanService {
     }
 
     public getPositionByEpochtime(epochtime: number) {
-        console.log('this.getRecoveryPlanService().activeViewInHours: ', this.getRecoveryPlanService().activeViewInHours);
         return TimeConverter.epochTimeToPixelPosition(
             epochtime,
             this.getRecoveryPlanService().absoluteStartTime,
@@ -139,6 +143,13 @@ export class RecoveryPlanService {
         this.emitData();
     }
 
+    set relativeEndTime(value: number) {
+        console.log('relativeEndTime: ', value);
+        console.log('relativeEndTime formatted: ', moment.utc(value).format('DD/MM/YYYY HH:mm'));
+        this.getRecoveryPlanService().relativeEndTime = value;
+        this.emitData();
+    }
+
     set activeViewInHours(value: number) {
         this.getRecoveryPlanService().activeViewInHours = value;
         this.emitData();
@@ -162,6 +173,12 @@ export class RecoveryPlanService {
 
     set planStagesInterfaces(value: StageInterface[]) {
         this.getRecoveryPlanService().planStagesInterfaces = value;
+        this.emitData();
+    }
+
+    set utcNow(value: number) {
+        console.log('utc now set: ', value);
+        this.getRecoveryPlanService().utcNow = value;
         this.emitData();
     }
 
