@@ -21,8 +21,25 @@ export class DialogService {
     public closeDialog(alias: string): void {
         if (this.refList[alias]) {
             this.refList[alias].close();
-            delete this.refList[alias];
+            this.removeByKey(this.refList, alias);
         }
+    }
+
+    /**
+     * Method to remove element from the array based by his label
+     * @param array that contains the element to be removed
+     * @param params the key to search in the array
+     */
+    private removeByKey(array, params): MatDialogRef<any>[] {
+        array.some(function(item, index) {
+            if (array[index][params.key] === params.value) {
+                // found it!
+                array.splice(index, 1);
+                return true; // stops the loop
+            }
+            return false;
+        });
+        return array;
     }
 
     public closeAllDialogs(): void {

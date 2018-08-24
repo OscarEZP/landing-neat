@@ -71,7 +71,6 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
         const actualScale = this.activeViewInHours !== undefined ? this.activeViewInHours : 24;
         const hourInMs = 3600000 * (actualScale / 24);
         const startTime = this.absoluteStartTime;
-        let dateStartTime = startTime;
         let previousCalculatedStartTime = 0;
         let accumulator = 0;
         let previousSlotIndex = 0;
@@ -84,7 +83,6 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
             if (moment.utc(calculatedStartTime).hour() < previousCalculatedStartTime) {
                 layer.add(ShapeDraw.drawTimeBox(calculatedStartTime, blockSize * previousSlotIndex, blockSize * (i + 1), false, false));
                 previousSlotIndex = i;
-                dateStartTime = calculatedStartTime;
             } else if (i === this.activeViewInHours - 1) {
                 layer.add(ShapeDraw.drawTimeBox(calculatedStartTime, blockSize * previousSlotIndex, blockSize * (i + 1), false, true));
             }
