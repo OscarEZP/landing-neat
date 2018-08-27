@@ -10,6 +10,10 @@ export class TimeConverter {
         return moment.utc(actualTime).minute(0).second(0).millisecond(0).valueOf();
     }
 
+    public static absoluteEndTime(actualTime: number): number {
+        return moment.utc(actualTime).add(1, 'hour').minute(0).second(0).millisecond(0).valueOf();
+    }
+
     public static epochTimeToPixelPosition(selectedTime: number, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): number {
         return Math.round((selectedTime - absoluteStartTime) / TimeConverter.referenceFramePixels(activeViewInHours, activeViewInPixels));
     }

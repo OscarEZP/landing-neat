@@ -8,6 +8,7 @@ import {DateRange} from '../../../../../shared/_models/common/dateRange';
 import {TimeInstant} from '../../../../../shared/_models/timeInstant';
 import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
+import {TimeConverter} from '../util/timeConverter';
 
 @Component({
   selector: 'lsl-recovery-real-plan',
@@ -17,13 +18,15 @@ import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/sta
 export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewInit {
     private _stagesSub: Subscription;
 
+    private _absoluteEndTime: number;
+    private _canvasWidth: number;
     private _canvasHeight: number;
     private _lastValidPosition: number;
     private _activeViewInHours: number;
-    private _activeViewInPixels: number;
     private _absoluteStartTime: number;
     private _stagesObjects: StageInterface[];
     private _recoveryPlanSubscription: Subscription;
+    private _recoveryPlanInterfaceSub: Subscription;
     private _recoveryPlanInterface: RecoveryPlanInterface;
     private _recoveryStagesConfiguration: StageConfiguration[];
     private _recoveryStagesSub: Subscription;
@@ -40,8 +43,8 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     ngOnInit() {
         // this.stagesSub = this.getStagesSub();
         this.lastValidPosition = 0;
+        this.recoveryPlanInterfaceSub = this.getRecoveryPlanInterfaceSubscription();
         this.activeViewInHours = this._recoveryPlanInterface.activeViewInHours;
-        this.activeViewInPixels = this._recoveryPlanInterface.activeViewInPixels;
         this.absoluteStartTime = this._recoveryPlanInterface.absoluteStartTime;
     }
 
@@ -50,9 +53,14 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
     ngAfterViewInit() {
+
+    }
+
+    private drawBase(): void {
+        console.log('width: ', this.canvasWidth);
         const stage = new Konva.Stage({
             container: 'real-plan-container',
-            width: this.activeViewInPixels,
+            width: this.canvasWidth,
             height: this.canvasHeight
         });
         const layer = new Konva.Layer();
@@ -64,6 +72,18 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         stage.add(layer);
 
         stage.draw();
+    }
+
+    /**
+     * Subscription for get recovery plan service interface
+     * @return {Subscription}
+     */
+    private getRecoveryPlanInterfaceSubscription(): Subscription {
+        return this._recoveryPlanService.recoveryPlanBehavior$
+            .subscribe((v) => {
+                this.recoveryPlanInterface = v;
+                this.canvasWidth = TimeConverter.epochTimeToPixelPosition(v.absoluteEndTime, v.absoluteStartTime, v.activeViewInHours, v.activeViewInPixels);
+            });
     }
 
     // // TO-DO: Implement service
@@ -86,7 +106,7 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
 
     private drawBaseLine(layer: Konva.Layer) {
         const line = new Konva.Line({
-            points: [0, 25, this.activeViewInPixels, 25],
+            points: [0, 25, this._recoveryPlanInterface.absoluteEndTime, 25],
             stroke: 'gray',
             strokeWidth: 2,
             lineCap: 'round',
@@ -132,8 +152,13 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         );
     }
 
+    get recoveryPlanInterfaceSub(): Subscription {
+        return this._recoveryPlanInterfaceSub;
+    }
 
-
+    set recoveryPlanInterfaceSub(value: Subscription) {
+        this._recoveryPlanInterfaceSub = value;
+    }
 
     get stagesSub(): Subscription {
         return this._stagesSub;
@@ -141,6 +166,22 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
 
     set stagesSub(value: Subscription) {
         this._stagesSub = value;
+    }
+
+    get absoluteEndTime(): number {
+        return this._recoveryPlanService.absoluteEndTime;
+    }
+
+    set absoluteEndTime(value: number) {
+        this._absoluteEndTime = value;
+    }
+
+    get canvasWidth(): number {
+        return this._canvasWidth;
+    }
+
+    set canvasWidth(value: number) {
+        this._canvasWidth = value;
     }
 
     get canvasHeight(): number {
@@ -165,14 +206,6 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
 
     set activeViewInHours(value: number) {
         this._activeViewInHours = value;
-    }
-
-    get activeViewInPixels(): number {
-        return this._activeViewInPixels;
-    }
-
-    set activeViewInPixels(value: number) {
-        this._activeViewInPixels = value;
     }
 
     get absoluteStartTime(): number {

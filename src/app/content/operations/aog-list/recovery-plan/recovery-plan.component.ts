@@ -44,7 +44,7 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
         this.activeViewInHours = 24;
         this.activeViewInPixels = this._recoveryStageContainer.nativeElement.parentNode.offsetWidth;
         this.recoveryStagesSub = this.getRecoveryStagesConfSubscription();
-        this.hourInPixels = this._recoveryStageContainer.nativeElement.parentNode.offsetWidth / 24;
+        this.slotSizeInPixels = this._recoveryStageContainer.nativeElement.parentNode.offsetWidth / 24;
         this.recoveryPlanInterfaceSub = this.getRecoveryPlanInterfaceSubscription();
         this.utcNow = moment.utc().valueOf();
 
@@ -133,8 +133,8 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
         this._recoveryPlanService.recoveryStagesConfig = value;
     }
 
-    set hourInPixels(value: number) {
-        this._recoveryPlanService.hourInPixels = value;
+    set slotSizeInPixels(value: number) {
+        this._recoveryPlanService.slotSizeInPixels = value;
     }
 
     set utcNow(value: number) {

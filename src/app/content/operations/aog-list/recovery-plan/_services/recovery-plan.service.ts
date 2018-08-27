@@ -10,16 +10,30 @@ import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
 import {RecoveryPlanSearch} from '../../../../../shared/_models/recoveryplan/recoveryPlanSearch';
 import {RecoveryPlan} from '../../../../../shared/_models/recoveryplan/recoveryPlan';
-import moment = require('moment');
 
+/**
+ * Interface needed by all the components to do their work
+ * - activeViewInPixels stores the size of pixels of the container that represent the visible area available.
+ * - activeViewInHours keep the value in hours of the scale, by default starts at 24 (24, 48, 96 or 192 are the available values at the moment of write this documentation.
+ * - relativeStartTime store the value of the start time (is an epoch value) of the stage elements.
+ * - relativeEndTime store the value of the end time (is an epoch value) of the stage elements, but also could be the now() time in utc if this value in greater than the last end time.
+ * - absoluteStartTime transform the relativeStartTime reducing the minutes to 0 (zero) to grant the first element of time slots start at this value, also defines the begin of the recovery plan time.
+ * - absoluteEndTime transform the relativeEndTime reducing the minutes to 0 (zero) and adding one hour to grant the last element of time slots ends with this value, also defines the end of the recovery plan time.
+ * - recoveryStagesConfig
+ * - slotSizeInPixels stores the value in pixels of one element (slot) accordingly with the scale of the available with of the view divided by 24.
+ * - planStagesInterfaces
+ * - utcNow store the value of clock retrieved from AOG's todolist when the modal is opened
+ *
+ */
 export interface RecoveryPlanInterface {
     activeViewInPixels: number;
     activeViewInHours: number;
     relativeStartTime: number;
     relativeEndTime: number;
     absoluteStartTime: number;
+    absoluteEndTime: number;
     recoveryStagesConfig: StageConfiguration[];
-    hourInPixels: number;
+    slotSizeInPixels: number;
     planStagesInterfaces: StageInterface[];
     utcNow: number;
 }
@@ -67,7 +81,8 @@ export class RecoveryPlanService {
             relativeStartTime: 0,
             relativeEndTime: 0,
             absoluteStartTime: 0,
-            hourInPixels: 0,
+            absoluteEndTime: 0,
+            slotSizeInPixels: 0,
             recoveryStagesConfig: [],
             planStagesInterfaces: [],
             utcNow: 0
@@ -144,9 +159,8 @@ export class RecoveryPlanService {
     }
 
     set relativeEndTime(value: number) {
-        console.log('relativeEndTime: ', value);
-        console.log('relativeEndTime formatted: ', moment.utc(value).format('DD/MM/YYYY HH:mm'));
         this.getRecoveryPlanService().relativeEndTime = value;
+        this.absoluteEndTime = value;
         this.emitData();
     }
 
@@ -166,8 +180,13 @@ export class RecoveryPlanService {
         this.emitData();
     }
 
-    set hourInPixels(value: number) {
-        this.getRecoveryPlanService().hourInPixels = value;
+    set absoluteEndTime(value: number) {
+        this.getRecoveryPlanService().absoluteEndTime = TimeConverter.absoluteEndTime(value + this.getRecoveryPlanService().activeViewInHours * 3600000);
+        this.emitData();
+    }
+
+    set slotSizeInPixels(value: number) {
+        this.getRecoveryPlanService().slotSizeInPixels = value;
         this.emitData();
     }
 
@@ -177,7 +196,6 @@ export class RecoveryPlanService {
     }
 
     set utcNow(value: number) {
-        console.log('utc now set: ', value);
         this.getRecoveryPlanService().utcNow = value;
         this.emitData();
     }

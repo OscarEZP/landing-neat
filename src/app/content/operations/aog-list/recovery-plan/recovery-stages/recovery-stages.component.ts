@@ -69,6 +69,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     private _relativeStartTime: number;
     private _activeViewInHours: number;
+    private _endTimeInPixels: number;
     private _utcNow: number;
 
     constructor(
@@ -84,6 +85,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         this._recoveryPlanSub = new Subscription();
         this._menuInterface = {addGroup: true, delGroup: true };
         this._recoveryPlanInterface = null;
+        this._endTimeInPixels = 1000;
     }
 
     ngOnInit() {
@@ -102,7 +104,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
                 this.recoveryPlanInterface = x;
                 if (!this.relativeEndTime) {
                     const lastStageInterface = this.stagesObjects.filter((v, i) => this.stagesObjects.length === i + 1);
-                    this._recoveryPlanService.relativeEndTime = Math.max(lastStageInterface[0].stage.toEpochtime, this.utcNow) + this.recoveryPlanInterface.activeViewInHours * 3600000;
+                    this._recoveryPlanService.relativeEndTime = Math.max(lastStageInterface[0].stage.toEpochtime, this.utcNow);
                 }
                 if (x.recoveryStagesConfig.length > 0) {
                     this.initTimeline();
@@ -111,16 +113,16 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     private initTimeline() {
-        const endTimeInPixels = TimeConverter.epochTimeToPixelPosition(this.recoveryPlanInterface.relativeEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
+        this.endTimeInPixels = TimeConverter.epochTimeToPixelPosition(this.recoveryPlanInterface.absoluteEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
 
         this.konvaStage = new Konva.Stage({
             container: 'container',
-            width: endTimeInPixels,
+            width: this.endTimeInPixels,
             height: this.canvasHeight
         });
         const baseLayer = new Konva.Layer();
 
-        baseLayer.add(ShapeDraw.drawLines(null, 0, endTimeInPixels));
+        baseLayer.add(ShapeDraw.drawLines(null, 0, this.endTimeInPixels));
         const lineLayer = new Konva.Layer();
         const circleLayer = new Konva.Layer();
         const labelLayer = new Konva.Layer();
@@ -189,7 +191,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         stageInterface.labelLine = !isLastItem ? ShapeDraw.drawLabelLine(null, startPos) : null;
         stageInterface.labelText = !isLastItem ? ShapeDraw.drawLabelText(stageInterface.stage.code, startPos) : null;
 
-        stageInterface.circle.dragBoundFunc(pos => this.dragBound(pos, stageInterface, index, isLastItem ? this.recoveryPlanInterface.activeViewInPixels : endPos));
+        stageInterface.circle.dragBoundFunc(pos => this.dragBound(pos, stageInterface, index, isLastItem ? this.endTimeInPixels : endPos));
         stageInterface.circle.on('mouseover', () => document.body.style.cursor = 'pointer');
         stageInterface.circle.on('mouseout', () => document.body.style.cursor = 'default');
         stageInterface.circle.on('dblclick', () => {
@@ -198,6 +200,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         });
         stageInterface.circle.on('dragstart', () => {
             initPosition = stageInterface.circle.getAbsolutePosition().x;
+            console.log('my init pos: ', initPosition);
             if (stageInterface.labelLine && stageInterface.labelText) {
                 stageInterface.labelLine.destroy();
                 stageInterface.labelText.destroy();
@@ -221,12 +224,12 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         });
         stageInterface.circle.on('dragend', () => {
             this.updateDateRange(stageInterface.circle.getAbsolutePosition().x, initPosition, index);
-            this.initTimeline();
-            console.log(
+            // this.initTimeline();
+            /*console.log(
                 moment(stageInterface.stage.fromEpochtime).format('HH:mm') +
                 ' - ' +
                 moment(stageInterface.stage.toEpochtime).format('HH:mm')
-            );
+            );*/
             document.body.style.cursor = 'default';
         });
         return stageInterface;
@@ -234,7 +237,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     private updateDateRange(circlePosX: number, initPosition: number, index: number) {
         const diff = circlePosX - initPosition;
-        const ms = TimeConverter.pixelToEpochtime(diff, this.recoveryPlanInterface.hourInPixels);
+        const ms = TimeConverter.pixelToEpochtime(diff, this.recoveryPlanInterface.slotSizeInPixels);
         const stageSelected = this.stagesObjects[index];
         stageSelected.stage.fromEpochtime += index + 1 !== this.stagesObjects.length ? ms : 0;
         stageSelected.stage.toEpochtime += ms;
@@ -299,7 +302,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
                             ;
                         }
                     });
-                this.initTimeline();
+                // this.initTimeline();
             });
     }
 
@@ -316,7 +319,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
                     ;
                 }
             });
-        this.initTimeline();
+        // this.initTimeline();
     }
 
     get canvasHeight(): number {
@@ -429,7 +432,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     set relativeStartTime(value: number) {
         this._relativeStartTime = value;
-        this.initTimeline();
+        // this.initTimeline();
     }
 
     get activeViewInHours(): number {
@@ -438,7 +441,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     set activeViewInHours(value: number) {
         this._activeViewInHours = value;
-        this.initTimeline();
+        // this.initTimeline();
     }
 
     get utcNow(): number {
@@ -451,5 +454,13 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     get relativeEndTime() {
         return this.recoveryPlanInterface.relativeEndTime;
+    }
+
+    get endTimeInPixels(): number {
+        return this._endTimeInPixels;
+    }
+
+    set endTimeInPixels(value: number) {
+        this._endTimeInPixels = value;
     }
 }

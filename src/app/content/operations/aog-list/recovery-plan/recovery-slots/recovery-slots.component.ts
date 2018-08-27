@@ -49,7 +49,7 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
      * Draw the canvas elements needed to add later the elements
      */
     private drawCanvasElements(): void {
-        const endTimeInPixels = TimeConverter.epochTimeToPixelPosition(this.recoveryPlanInterface.relativeEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
+        const endTimeInPixels = TimeConverter.epochTimeToPixelPosition(this.recoveryPlanInterface.absoluteEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
 
         if (this.relativeStartTime !== 0) {
             const stage = new Konva.Stage({
@@ -71,10 +71,9 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
      * @param layer needed to reference where will be drawn.
      */
     private drawBoxes(layer: Konva.Layer): void {
-        const endTimeInPixels = TimeConverter.epochTimeToPixelPosition(this.recoveryPlanInterface.relativeEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
-        const loopTime = Math.round(endTimeInPixels / (this.activeViewInPixels / 24));
-        console.log('endTimeInPixels: ', endTimeInPixels);
-        console.log('loopTime: ', loopTime);
+        const endTimeInPixels = TimeConverter.epochTimeToPixelPosition(this.recoveryPlanInterface.absoluteEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
+
+        const loopTime = Math.round(endTimeInPixels / (this.activeViewInHours / 24));
 
         const blockSize = this.activeViewInPixels / 24;
         const actualScale = this.activeViewInHours !== undefined ? this.activeViewInHours : 24;
@@ -119,7 +118,7 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
 
     set activeViewInHours(value: number) {
         this._activeViewInHours = value;
-        this.drawCanvasElements();
+        // this.drawCanvasElements();
     }
 
     get activeViewInPixels(): number {
@@ -160,7 +159,7 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
 
     set relativeStartTime(value: number) {
         this._relativeStartTime = value;
-        this.drawCanvasElements();
+        // this.drawCanvasElements();
     }
 
     get relativeEndTime(): number {
@@ -169,6 +168,6 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
 
     set relativeEndTime(value: number) {
         this._relativeEndTime = value;
-        this.drawCanvasElements();
+        // this.drawCanvasElements();
     }
 }
