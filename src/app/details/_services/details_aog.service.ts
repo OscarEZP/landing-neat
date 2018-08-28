@@ -27,7 +27,7 @@ export class DetailsServiceAog {
         };
 
         this.selectedAog = Aog.getInstance();
-        this.activeTitle = 'Follow Up Aog';
+        this.activeTitle = 'Follow Up';
     }
 
     public activeAogChanged(aog: Aog) {
@@ -53,7 +53,7 @@ export class DetailsServiceAog {
                 this.activeTitle = 'Timeline';
                 break;
             case 'follow-up':
-                this.activeTitle = 'Follow up Aog';
+                this.activeTitle = 'Follow up';
                 break;
         }
     }

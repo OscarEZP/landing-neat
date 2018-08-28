@@ -25,7 +25,7 @@ import {
 import {Reason} from '../../../shared/_models/common/reason';
 import {Audit} from '../../../shared/_models/common/audit';
 import {StorageService} from '../../../shared/_services/storage.service';
-import {DetailsService} from '../../../details/_services/details.service';
+import {DetailsServiceAog} from '../../../details/_services/details_aog.service';
 
 @Component({
     selector: 'lsl-aog-list',
@@ -61,6 +61,8 @@ export class AogListComponent implements OnInit, OnDestroy {
     private _editReasonSub: Subscription;
     private _editFieldTranslation: EditFieldTranslationInterface;
     private _toEdit: number;
+    private _selectedAog: Aog;
+    private _selectedAogPivot: Aog;
 
     constructor(
         private _messageData: DataService,
@@ -70,7 +72,7 @@ export class AogListComponent implements OnInit, OnDestroy {
         private _dialogService: DialogService,
         private _storageService: StorageService,
         private _aogService: AogService,
-        private _detailsService: DetailsService,
+        private _detailsService: DetailsServiceAog,
     ) {
         this._error = false;
         this._aogList = [];
@@ -338,11 +340,19 @@ export class AogListComponent implements OnInit, OnDestroy {
      * @param section, #id for scrolling movement
      */
     public openDetails(aog: Aog, section: string) {
-        //this.detailsService.activeContingencyChanged(contingency);
+        this.detailsService.activeAogChanged(aog);
         this.detailsService.openDetails(section);
-       // this.setSelectedContingency(contingency);
+        this.setSelectedAog(aog);
     }
 
+    /**
+     * Method for update selected contingency and contingency pivot
+     * @param contingency
+     */
+    public setSelectedAog(aog: Aog) {
+        this.selectedAog = aog;
+        this.selectedAogPivot = aog;
+    }
     get aogList(): Aog[] {
         return this._aogList;
     }
@@ -471,8 +481,25 @@ export class AogListComponent implements OnInit, OnDestroy {
         this._toEdit = value;
     }
 
-    get detailsService(): DetailsService {
+    get detailsService(): DetailsServiceAog {
         return this._detailsService;
     }
 
+
+    get selectedAog(): Aog {
+        return this._selectedAog;
+    }
+
+    set selectedAog(value: Aog) {
+        this._selectedAog = value;
+    }
+
+
+    get selectedAogPivot(): Aog {
+        return this._selectedAogPivot;
+    }
+
+    set selectedAogPivot(value: Aog) {
+        this._selectedAogPivot = value;
+    }
 }

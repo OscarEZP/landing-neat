@@ -23,6 +23,12 @@ export class DetailsAogComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.aogSubcription = this._detailsServiceAog.selectedAogChange.subscribe(aog => this.selectedAog = aog);
+
+    this.asideVisible = this._detailsServiceAog.isOpen;
+    this.activeTitle = this._detailsServiceAog.activeTitle;
+    this.selectedAog = this._detailsServiceAog.selectedAog;
   }
 
 

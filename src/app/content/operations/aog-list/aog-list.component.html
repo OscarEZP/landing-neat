@@ -61,7 +61,7 @@
                     <mat-icon aria-label="options">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="openDetails(aog, 'follow-up')">
+                    <button mat-menu-item (click)="openDetails(aog, 'follow-up')" [disabled]="aog.status.code === 'ETR'">
                         <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
                     </button>
                     <button mat-menu-item (click)="openRecoveryPlan(aog)">
