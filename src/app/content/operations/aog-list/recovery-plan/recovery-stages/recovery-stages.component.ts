@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as Konva from 'konva';
 import {Vector2d} from 'konva';
 import {MAT_DIALOG_DATA, MatMenuTrigger} from '@angular/material';
@@ -18,7 +18,6 @@ import {now} from 'moment';
 import {isArray} from 'util';
 import {tap} from 'rxjs/operators';
 import {Observable} from 'rxjs/Observable';
-import moment = require('moment');
 
 export interface StyleInterface {
     top: string;
@@ -43,7 +42,7 @@ export interface MenuInterface {
     templateUrl: './recovery-stages.component.html',
     styleUrls: ['./recovery-stages.component.scss']
 })
-export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit {
+export class RecoveryStagesComponent implements OnInit, OnDestroy {
 
     private static TIMELINE_MENU_CLASS = '.timeline-menu';
 
@@ -96,7 +95,11 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
         this.lastValidPosition = 0;
     }
 
-
+    ngOnDestroy() {
+        this.stagesSub.unsubscribe();
+        this.recoveryPlanSub.unsubscribe();
+        this.konvaStage.destroy();
+    }
 
     private getRecoveryPlanSub(): Subscription {
         return this._recoveryPlanService.recoveryPlanBehavior$
@@ -143,15 +146,6 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
             circles: circleLayer
         };
         Object.keys(this.konvaLayers).forEach(key => this.konvaStage.add(this.konvaLayers[key]));
-    }
-
-    ngOnDestroy() {
-        this.stagesSub.unsubscribe();
-        this.recoveryPlanSub.unsubscribe();
-    }
-
-    ngAfterViewInit() {
-
     }
 
     public getRecoveryPlanSearch(): RecoveryPlanSearch {
@@ -302,7 +296,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
                             ;
                         }
                     });
-                // this.initTimeline();
+                this.konvaStage.batchDraw();
             });
     }
 
@@ -319,7 +313,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
                     ;
                 }
             });
-        // this.initTimeline();
+        this.konvaStage.batchDraw();
     }
 
     get canvasHeight(): number {
@@ -441,7 +435,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy, AfterViewInit
 
     set activeViewInHours(value: number) {
         this._activeViewInHours = value;
-        // this.initTimeline();
+        this.konvaStage.batchDraw();
     }
 
     get utcNow(): number {

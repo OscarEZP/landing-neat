@@ -10,6 +10,7 @@ import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
 import {RecoveryPlanSearch} from '../../../../../shared/_models/recoveryplan/recoveryPlanSearch';
 import {RecoveryPlan} from '../../../../../shared/_models/recoveryplan/recoveryPlan';
+import {toPromise} from 'rxjs/operator/toPromise';
 
 /**
  * Interface needed by all the components to do their work
@@ -36,6 +37,7 @@ export interface RecoveryPlanInterface {
     slotSizeInPixels: number;
     planStagesInterfaces: StageInterface[];
     utcNow: number;
+    version: number;
 }
 
 export interface StageInterface {
@@ -85,7 +87,8 @@ export class RecoveryPlanService {
             slotSizeInPixels: 0,
             recoveryStagesConfig: [],
             planStagesInterfaces: [],
-            utcNow: 0
+            utcNow: 0,
+            version: 0
         };
     }
 
@@ -197,6 +200,11 @@ export class RecoveryPlanService {
 
     set utcNow(value: number) {
         this.getRecoveryPlanService().utcNow = value;
+        this.emitData();
+    }
+
+    set version(value: number) {
+        this.getRecoveryPlanService().version = value;
         this.emitData();
     }
 

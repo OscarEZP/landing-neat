@@ -5,6 +5,7 @@ import {ShapeDraw} from '../util/shapeDraw';
 import {RecoveryPlanInterface, RecoveryPlanService} from '../_services/recovery-plan.service';
 import moment = require('moment');
 import {TimeConverter} from '../util/timeConverter';
+import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 
 @Component({
   selector: 'lsl-recovery-slots',
@@ -22,6 +23,7 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
     private _relativeEndTime: number;
     private _recoveryPlanSubscription: Subscription;
     private _recoveryPlanInterface: RecoveryPlanInterface;
+    private _slotStage: Konva.Stage;
 
     constructor(private _recoveryPlanService: RecoveryPlanService) {
         this._canvasHeight = 50;
@@ -33,6 +35,7 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
 
     ngOnDestroy() {
         this.recoveryPlanSubscription.unsubscribe();
+        this.slotStage.destroy();
     }
 
     /**
@@ -52,7 +55,7 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
         const endTimeInPixels = TimeConverter.epochTimeToPixelPosition(this.recoveryPlanInterface.absoluteEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
 
         if (this.relativeStartTime !== 0) {
-            const stage = new Konva.Stage({
+            this.slotStage = new Konva.Stage({
                 container: 'slots-container',
                 width: endTimeInPixels,
                 height: this.canvasHeight
@@ -61,8 +64,8 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
 
             this.drawBoxes(layer);
 
-            stage.add(layer);
-            stage.draw();
+            this.slotStage.add(layer);
+            this.slotStage.draw();
         }
     }
 
@@ -73,7 +76,7 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
     private drawBoxes(layer: Konva.Layer): void {
         const endTimeInPixels = TimeConverter.epochTimeToPixelPosition(this.recoveryPlanInterface.absoluteEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
 
-        const loopTime = Math.round(endTimeInPixels / (this.activeViewInHours / 24));
+        const loopTime = endTimeInPixels % this.recoveryPlanInterface.slotSizeInPixels > 0 ? Math.round(endTimeInPixels / this.recoveryPlanInterface.slotSizeInPixels) + 1 : Math.round(endTimeInPixels / this.recoveryPlanInterface.slotSizeInPixels);
 
         const blockSize = this.activeViewInPixels / 24;
         const actualScale = this.activeViewInHours !== undefined ? this.activeViewInHours : 24;
@@ -169,5 +172,13 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
     set relativeEndTime(value: number) {
         this._relativeEndTime = value;
         // this.drawCanvasElements();
+    }
+
+    get slotStage(): Konva.Stage {
+        return this._slotStage;
+    }
+
+    set slotStage(value: Konva.Stage) {
+        this._slotStage = value;
     }
 }
