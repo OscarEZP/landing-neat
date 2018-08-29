@@ -1,4 +1,4 @@
-@import '../assets/style/base.scss';
+@import 'main.scss';
 
 .dummy {
   color: red;
@@ -54,15 +54,7 @@
       overflow: hidden;
     }
 
-    .badge {
-      background-color: mat-color($foreground, secondary-text);
-      margin: 0;
-      font-size: 10px;
-      color: white;
-      padding: 2px 15px;
-      border-radius: 2px;
-      font-weight: 500;
-    }
+
 
     .badge-safety-event {
       background-color: #546e7a;
@@ -103,4 +95,17 @@
 /deep/
 .invalid {
   color: mat-color($warn);
+}
+
+/deep/
+.badge {
+  background-color: mat-color($foreground, secondary-text);
+  margin: 0;
+  font-size: 10px;
+  color: white;
+  padding: 2px 10px;
+  border-radius: 2px;
+  font-weight: 500;
+  display: inline-block;
+  width: auto;
 }

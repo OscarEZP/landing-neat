@@ -11,13 +11,14 @@ import { AddStageFormComponent } from './recovery-stages/add-stage-form/add-stag
 import {TimeConverter} from './util/timeConverter';
 import {RecoveryPlanService} from './_services/recovery-plan.service';
 import { RecoveryZoomComponent } from './recovery-zoom/recovery-zoom.component';
-import { KanbanComponent } from './kanban/kanban.component';
+import {KanbanModule} from './kanban/kanban.module';
 
 @NgModule({
     imports: [
         CommonModule,
         SharedModule,
-        KonvaModule
+        KonvaModule,
+        KanbanModule
     ],
     declarations: [
         RecoveryStagesComponent,
@@ -26,8 +27,7 @@ import { KanbanComponent } from './kanban/kanban.component';
         RecoverySlotsComponent,
         RecoveryZoomComponent,
         AddStageFormComponent,
-        RecoveryZoomComponent,
-        KanbanComponent
+        RecoveryZoomComponent
     ],
     providers: [
         TimeConverter,

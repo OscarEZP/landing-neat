@@ -7,7 +7,6 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { AppRoutingModule } from './app-routing.module';
-import {DragulaModule, DragulaService} from 'ng2-dragula';
 
 // Components
 import { AppComponent } from './app.component';
@@ -39,7 +38,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         AppRoutingModule,
         HttpClientModule,
         DetailsModule,
-        DragulaModule.forRoot(),
+        // DragulaModule.forRoot(),
         ScrollToModule.forRoot(),
         TranslateModule.forRoot({
             loader: {
@@ -55,8 +54,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     providers: [
         DatetimeService,
         DataService,
-        TranslationService,
-        DragulaService
+        TranslationService
     ],
     schemas: [],
     bootstrap: [AppComponent]

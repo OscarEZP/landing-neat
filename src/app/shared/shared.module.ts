@@ -7,6 +7,7 @@ import { CountdownComponent } from './components/countdown.component/countdown.c
 import { MaterialModule } from './modules/material.module';
 import { EssComponent } from './components/ess/ess.component';
 import { DirectivesModule } from './_directives/directives.module';
+import {DragulaModule} from 'ng2-dragula';
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import { DirectivesModule } from './_directives/directives.module';
         MaterialModule,
         PipesModule,
         TranslateModule.forRoot(),
-        DirectivesModule
+        DirectivesModule,
+        DragulaModule
     ],
     exports: [
         MaterialModule,
@@ -25,14 +27,15 @@ import { DirectivesModule } from './_directives/directives.module';
         CountdownComponent,
         TranslateModule,
         EssComponent,
-        DirectivesModule
+        DirectivesModule,
+        DragulaModule
     ],
     providers: [
         {
             provide: HTTP_INTERCEPTORS,
             useClass: CustomInterceptor,
             multi: true
-        }
+        },
     ]
 })
 

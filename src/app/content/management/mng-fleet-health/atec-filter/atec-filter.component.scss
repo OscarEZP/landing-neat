@@ -1,4 +1,4 @@
-@import '../../../../../assets/style/base.scss';
+@import 'main.scss';
 
 $mat-icon-size: 16px;
 
@@ -9,7 +9,7 @@ $mat-icon-size: 16px;
 .label-atec-filter {
   width: 183px;
   height: 23px;
-  font-family: "Noto Sans";
+  font-family: "Noto Sans", sans-serif;
   font-size: 16px;
   letter-spacing: 0.6px;
   text-align: left;
