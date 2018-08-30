@@ -10,15 +10,34 @@ import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
 import {RecoveryPlanSearch} from '../../../../../shared/_models/recoveryplan/recoveryPlanSearch';
 import {RecoveryPlan} from '../../../../../shared/_models/recoveryplan/recoveryPlan';
+import {toPromise} from 'rxjs/operator/toPromise';
 
+/**
+ * Interface needed by all the components to do their work
+ * - activeViewInPixels stores the size of pixels of the container that represent the visible area available.
+ * - activeViewInHours keep the value in hours of the scale, by default starts at 24 (24, 48, 96 or 192 are the available values at the moment of write this documentation.
+ * - relativeStartTime store the value of the start time (is an epoch value) of the stage elements.
+ * - relativeEndTime store the value of the end time (is an epoch value) of the stage elements, but also could be the now() time in utc if this value in greater than the last end time.
+ * - absoluteStartTime transform the relativeStartTime reducing the minutes to 0 (zero) to grant the first element of time slots start at this value, also defines the begin of the recovery plan time.
+ * - absoluteEndTime transform the relativeEndTime reducing the minutes to 0 (zero) and adding one hour to grant the last element of time slots ends with this value, also defines the end of the recovery plan time.
+ * - recoveryStagesConfig
+ * - slotSizeInPixels stores the value in pixels of one element (slot) accordingly with the scale of the available with of the view divided by 24.
+ * - planStagesInterfaces
+ * - utcNow store the value of clock retrieved from AOG's todolist when the modal is opened
+ *
+ */
 export interface RecoveryPlanInterface {
     activeViewInPixels: number;
     activeViewInHours: number;
     relativeStartTime: number;
+    relativeEndTime: number;
     absoluteStartTime: number;
+    absoluteEndTime: number;
     recoveryStagesConfig: StageConfiguration[];
-    hourInPixels: number;
+    slotSizeInPixels: number;
     planStagesInterfaces: StageInterface[];
+    utcNow: number;
+    version: number;
 }
 
 export interface StageInterface {
@@ -62,10 +81,14 @@ export class RecoveryPlanService {
             activeViewInPixels: 0,
             activeViewInHours: 0,
             relativeStartTime: 0,
+            relativeEndTime: 0,
             absoluteStartTime: 0,
-            hourInPixels: 0,
+            absoluteEndTime: 0,
+            slotSizeInPixels: 0,
             recoveryStagesConfig: [],
-            planStagesInterfaces: []
+            planStagesInterfaces: [],
+            utcNow: 0,
+            version: 0
         };
     }
 
@@ -92,7 +115,6 @@ export class RecoveryPlanService {
     }
 
     public getPositionByEpochtime(epochtime: number) {
-        console.log('this.getRecoveryPlanService().activeViewInHours: ', this.getRecoveryPlanService().activeViewInHours);
         return TimeConverter.epochTimeToPixelPosition(
             epochtime,
             this.getRecoveryPlanService().absoluteStartTime,
@@ -139,6 +161,12 @@ export class RecoveryPlanService {
         this.emitData();
     }
 
+    set relativeEndTime(value: number) {
+        this.getRecoveryPlanService().relativeEndTime = value;
+        this.absoluteEndTime = value;
+        this.emitData();
+    }
+
     set activeViewInHours(value: number) {
         this.getRecoveryPlanService().activeViewInHours = value;
         this.emitData();
@@ -155,13 +183,28 @@ export class RecoveryPlanService {
         this.emitData();
     }
 
-    set hourInPixels(value: number) {
-        this.getRecoveryPlanService().hourInPixels = value;
+    set absoluteEndTime(value: number) {
+        this.getRecoveryPlanService().absoluteEndTime = TimeConverter.absoluteEndTime(value + this.getRecoveryPlanService().activeViewInHours * 3600000);
+        this.emitData();
+    }
+
+    set slotSizeInPixels(value: number) {
+        this.getRecoveryPlanService().slotSizeInPixels = value;
         this.emitData();
     }
 
     set planStagesInterfaces(value: StageInterface[]) {
         this.getRecoveryPlanService().planStagesInterfaces = value;
+        this.emitData();
+    }
+
+    set utcNow(value: number) {
+        this.getRecoveryPlanService().utcNow = value;
+        this.emitData();
+    }
+
+    set version(value: number) {
+        this.getRecoveryPlanService().version = value;
         this.emitData();
     }
 

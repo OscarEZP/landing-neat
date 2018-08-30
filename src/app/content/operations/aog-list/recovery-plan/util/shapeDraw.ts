@@ -3,6 +3,7 @@ import * as Konva from 'konva';
 import moment = require('moment');
 import {TimeConverter} from './timeConverter';
 import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
+import {s} from '@angular/core/src/render3';
 
 @Injectable()
 export class ShapeDraw {
@@ -57,6 +58,38 @@ export class ShapeDraw {
             lineCap: 'round',
             lineJoin: 'round'
         });
+    }
+
+    public static drawTriangleLabel(color: string, startPos: number, textValue: string, isFilled: boolean): Konva.Group {
+
+        const triangleGroup = new Konva.Group({
+            x: 0,
+            y: 0
+        });
+
+        const triangleShape = new Konva.Line({
+            points: [startPos - 5, 15, startPos, 20, startPos + 5, 15],
+            stroke: color,
+            strokeWidth: 1,
+            closed: true,
+            fill: isFilled ? color : 'white'
+        });
+
+        const textPositionAjdusment = textValue.length > 2 ? 9 : 6;
+
+        const triangleLabel = new Konva.Text({
+            x: startPos - textPositionAjdusment,
+            y: 0,
+            text: textValue,
+            fontSize: 12,
+            fontFamily: 'Calibri',
+            fill: 'black'
+        });
+
+        triangleGroup.add(triangleShape);
+        triangleGroup.add(triangleLabel);
+
+        return triangleGroup;
     }
 
     public static drawTimeBox(startTime: number, xStartPosition: number, xEndPosition: number, isHour: boolean, isLast: boolean): Konva.Group {

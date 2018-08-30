@@ -12,13 +12,15 @@ import {TimeConverter} from './util/timeConverter';
 import {RecoveryPlanService} from './_services/recovery-plan.service';
 import { RecoveryZoomComponent } from './recovery-zoom/recovery-zoom.component';
 import {KanbanModule} from './kanban/kanban.module';
+import {ScrollbarModule} from 'ngx-scrollbar';
 
 @NgModule({
     imports: [
         CommonModule,
         SharedModule,
         KonvaModule,
-        KanbanModule
+        KanbanModule,
+        ScrollbarModule
     ],
     declarations: [
         RecoveryStagesComponent,

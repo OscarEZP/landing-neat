@@ -1,31 +1,89 @@
 <div mat-dialog-title  class="title-dialog-container" fxLayout="column">
-<div fxLayout="row" fxFlex>
-    <span class="title-dialog" fxFlex>{{'AOG.RECOVERY_PLAN.TITLE' | translate}} - {{ aogData.tail }}</span>
-    <!-- <span class="date-title-dialog">{{ utcModel.label | utcDate | date: dateFormat}} | {{ timeClock | utcDate | date: hourFormat }} {{'LAYOUT.UTC'| translate}}</span> -->
-    <button id="btn-aog-form-close-btn" type="button" class="close-btn" mat-icon-button
-            fxFlexOffset="1">
-        <mat-icon aria-label="Example icon-button" class="material-icons close-dialog" (click)="closeModal()">close</mat-icon>
-    </button>
-</div>
+    <div fxLayout="row" fxFlex>
+        <span class="title-dialog" fxFlex>{{'AOG.RECOVERY_PLAN.TITLE' | translate}} - {{ aogData.tail }}</span>
+        <!-- <span class="date-title-dialog">{{ utcModel.label | utcDate | date: dateFormat}} | {{ timeClock | utcDate | date: hourFormat }} {{'LAYOUT.UTC'| translate}}</span> -->
+        <button id="btn-aog-form-close-btn" type="button" class="close-btn" mat-icon-button
+                fxFlexOffset="1">
+            <mat-icon aria-label="Example icon-button" class="material-icons close-dialog" (click)="closeModal()">close</mat-icon>
+        </button>
+    </div>
+    <div fxLayout="row" fxFlex>
+        <div id="aog-list" class="reg-list">
+            <header fxLayout="row" fxLayoutGap="20px">
+                <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.TAILFLEET' | translate}}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.OPERATOR' | translate}}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.BARCODE' | translate}}</div>
+                <div fxFlex="28" fxLayoutAlign="start center" class="description">{{'AOG.LIST.REASON' | translate}}</div>
+                <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.NEXTSTEP' | translate}}</div>
+                <div fxFlex="15" fxLayoutAlign="start center">{{'AOG.LIST.STATUS' | translate}}</div>
+                <div fxFlex="15" fxLayoutAlign="start center">{{'AOG.LIST.DURATION' | translate}}</div>
+            </header>
+            <content>
+                <div fxLayout="row" class="contingency-item" fxLayoutGap="20px">
+                    <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                        <span>{{aogData.tail}}</span>
+                        <span>{{aogData.fleet}}</span>
+                    </div>
+                    <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+                        <span>{{aogData.operator}}</span>
+                    </div>
+                    <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">
+                        {{aogData.barcode}}
+                    </div>
+                    <div fxFlex="28" class="description" fxLayout="row" fxLayoutAlign="start center">
+                        <span fxFlex="90">{{(aogData.reason.length > 65) ? (aogData.reason | slice:0:65) + '...' : aogData.reason}}</span>
+                    </div>
+                    <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center"></div>
+                    <div fxFlex="15" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                        <div fxLayout="column" ngClass="badge aog-{{aogData.status.code.toLowerCase()}}" fxLayoutAlign="center center"
+                             class="aog-status">{{aogData.status.code}}
+                        </div>
+                        <div fxFlex="10" fxLayout="column" fxLayoutAlign="center center">
+                            <mat-icon *ngIf="aogData.safety !== null" class="aog-warn-icon">warning</mat-icon>
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="center center">
+                            <lsl-countdown [creationTime]="aogData.status.requestedInterval.dt.epochTime"
+                                           [duration]="aogData.status.requestedInterval.duration" [threshold]="5"></lsl-countdown>
+                        </div>
+                    </div>
+                    <div fxFlex="15" fxLayout="row" fxLayoutAlign="start center">
+                        <div fxLayout="column">
+                            <mat-icon class="mat-icon-adj">timer</mat-icon>
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="start center">
+                            <lsl-countdown [creationTime]="aogData.status.requestedInterval.dt.epochTime"
+                                           [duration]="aogData.status.requestedInterval.duration" [threshold]="5"></lsl-countdown>
+
+                        </div>
+                    </div>
+                </div>
+            </content>
+        </div>
+    </div>
 </div>
 
-<div mat-dialog-content class="content-dialog-container">
+<div mat-dialog-content class="content-dialog-container recovery-plan-box">
     <div class="title-dialog">
         <span>{{'AOG.AOG_FORM.AOG_INFORMATION'|translate}}</span>
     </div>
 
     <div fxLayout="column" class="sections-content">
-        <div #recoveryStageContainer>
-            <lsl-recovery-zoom></lsl-recovery-zoom>
-            <lsl-recovery-stages></lsl-recovery-stages>
-            <lsl-recovery-real-plan></lsl-recovery-real-plan>
-            <lsl-recovery-slots></lsl-recovery-slots>
+        <ng-scrollbar [trackY]="scrollInterface.verticalScrollEnabled" [trackX]="scrollInterface.horizontalScrollEnabled" [autoHide]="scrollInterface.autoHide">
+            <div #recoveryStageContainer>
+                <lsl-recovery-zoom></lsl-recovery-zoom>
+                <lsl-recovery-stages></lsl-recovery-stages>
+                <lsl-recovery-real-plan [aogId]="aogData.id"></lsl-recovery-real-plan>
+                <lsl-recovery-slots></lsl-recovery-slots>
+            </div>
+        </ng-scrollbar>
+        <div fxLayoutAlign="end">
+            <!--<button id="btn-recovery-stage-reset" type="button" mat-button>-->
+                <!--{{'BUTTONS.RESET'|translate}}-->
+            <!--</button>-->
+            <button id="btn-recovery-stage-submit" (click)="saveRecovery()" type="submit" mat-button mat-raised-button color="primary">
+                {{'BUTTONS.SAVE'|translate}}
+            </button>
         </div>
-    </div>
-    <div fxLayoutAlign="end">
-        <button id="btn-recovery-stage-submit" (click)="saveRecovery()" type="submit" mat-button mat-raised-button color="primary">
-            {{'BUTTONS.SAVE'|translate}}
-        </button>
     </div>
 </div>
 
