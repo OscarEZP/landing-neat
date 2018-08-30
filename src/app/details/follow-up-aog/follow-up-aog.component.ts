@@ -101,26 +101,22 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Private method that use generic service to get available status codes for the selected contingency,
+   * Private method that use generic service to get available status codes for the selected aog,
    * also send a message to the service that show loading bar when the method is called and close it
    * when the result is completed (no matter if success or fail).
    *
-   * @return {StatusCode[]}
+   * @return {Types[]}
    *
    * @example
    * [{
-     *  "code": "NI4",
-     *  "description": null,
-     *  "level": 4,
-     *  "isActive": "Y",
-     *  "defaultTime": 60
+     *  "code": "NI",
+     *  "description": New Information
+
      *},
    *{
      *  "code": "ETR",
-     *  "description": null,
-     *  "level": null,
-     *  "isActive": "Y",
-     *  "defaultTime": 60
+     *  "description": Extend Time Release
+
      *}]
    *
    */
@@ -147,14 +143,14 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Private service called everytime the contingency selected from list change,
-   * validate if contingency is null because when the component initialize there's no contingency yet.
+   * Private service called everytime the aog selected from list change,
+   * validate if aog is null because when the component initialize there's no aog yet.
    *
-   * If contingency is not null is assigned to a variable and the time interval is regenerated from the creation
-   * date of contingency instead of all 180 minutes, also the status codes available for the selected contingency is called.
+   * If aog is not null is assigned to a variable and the time interval is regenerated from the creation
+   * date of aog instead of all 180 minutes, also the status codes available for the selected aog is called.
    *
-   * @param {Contingency} contingency - Contingency Model
-   * @type {Contingency}
+   * @param {Aog} aog - Aog Model
+   * @type {Aog}
    *
    * @return {void} nothing to return
    */
@@ -188,10 +184,10 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
 
   /**
    * Method to generate values for combo box where the time available for the follow up is showed,
-   * in interval of 5 minutes, has an optional argument to generate the available time from the
-   * creation date of the contingency.
+   * in interval of 30 minutes, has an optional argument to generate the available time from the
+   * creation date of the aog.
    *
-   * If the equation has a value less than 0 or greater than 37 (the 180 minutes limit) the save
+   * If the equation has a value less than 0 or greater than 7 (the 180 minutes limit) the save
    * follow up button is set disabled.
    *
    * @todo
@@ -202,24 +198,24 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
    * this.generateIntervalSelection(1513900719000)
    * currentTime = 1513904314000
    *
-   * Difference between two values: 60 minutes then the array will have values from 5 to 120 minutes with intervals of 5 minutes between them.
+   * Difference between two values: 60 minutes then the array will have values from 30 to 120 minutes with intervals of 30 minutes between them.
    *
    * @return {void} nothing to return
    */
   private generateIntervalSelection(creationDate?: number): void {
     let i: number;
-    let quantity = 36;
+    let quantity = 6;
     this.apiRestService.getAll<ActualTimeModel>('dateTime')
         .subscribe(response => this.currentUTCTime = response.currentTimeLong)
         .add(() => {
           this.durations = [];
           if (creationDate) {
-            quantity = Math.ceil(((creationDate + (180 * 60000)) - this.currentUTCTime) / (60000 * 5));
+            quantity = Math.ceil(((creationDate + (180 * 60000)) - this.currentUTCTime) / (60000 * 30));
           }
 
-          if (0 < quantity && quantity < 37) {
+          if (0 < quantity && quantity < 7) {
             for (i = 0; i < quantity; i++) {
-              this.durations.push(i * 5 + 5);
+              this.durations.push(i * 30 + 30);
             }
           }
         });
@@ -281,10 +277,10 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
    * Public method called when a status code is selected in the view and select the default value of time
    * defined for the status.
    *
-   * @param {StatusCode} statusCode - String code from safety event list
+   * @param {StatusAog} statusCode - String code from safety event list
    *
    * @example
-   * this.selectActiveCode("FT3");
+   * this.selectActiveCode("ETR");
    *
    * @return {void} nothing to return
    */

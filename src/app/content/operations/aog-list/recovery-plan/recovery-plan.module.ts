@@ -11,6 +11,7 @@ import { AddStageFormComponent } from './recovery-stages/add-stage-form/add-stag
 import {TimeConverter} from './util/timeConverter';
 import {RecoveryPlanService} from './_services/recovery-plan.service';
 import { RecoveryZoomComponent } from './recovery-zoom/recovery-zoom.component';
+import { FollowUpAogModalComponent } from './follow-up-aog-modal/follow-up-aog-modal.component';
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { RecoveryZoomComponent } from './recovery-zoom/recovery-zoom.component';
         RecoverySlotsComponent,
         RecoveryZoomComponent,
         AddStageFormComponent,
-        RecoveryZoomComponent
+        RecoveryZoomComponent,
+        FollowUpAogModalComponent
     ],
     providers: [
         TimeConverter,
@@ -33,7 +35,8 @@ import { RecoveryZoomComponent } from './recovery-zoom/recovery-zoom.component';
         RecoveryPlanService
     ],
     entryComponents: [
-        AddStageFormComponent
+        AddStageFormComponent,
+        FollowUpAogModalComponent
     ]
 })
 export class RecoveryPlanModule {
