@@ -75,6 +75,9 @@ export class AogListComponent implements OnInit, OnDestroy {
         private _aogService: AogService,
         private _detailsService: DetailsServiceAog,
     ) {
+        this.selectedAog = Aog.getInstance();
+        this.selectedAogPivot = Aog.getInstance();
+
         this._error = false;
         this._aogList = [];
         this.layout = {
@@ -363,8 +366,8 @@ export class AogListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Method for update selected contingency and contingency pivot
-     * @param contingency
+     * Method for update selected contingency and aog pivot
+     * @param aog
      */
     public setSelectedAog(aog: Aog) {
         this.selectedAog = aog;

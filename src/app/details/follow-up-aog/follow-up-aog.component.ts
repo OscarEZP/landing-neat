@@ -9,7 +9,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MessageService} from '../../shared/_services/message.service';
 import {StorageService} from '../../shared/_services/storage.service';
 import {DataService} from '../../shared/_services/data.service';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {TranslationService} from '../../shared/_services/translation.service';
 import {DetailsServiceAog} from '../_services/details_aog.service';
 import {GroupTypes} from '../../shared/_models/configuration/groupTypes';
@@ -61,7 +61,7 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
               private _translationService: TranslationService) {
 
     this.followUpAog = StatusAog.getInstance();
-    this.followUpAog.audit.username = this._storageService.getCurrentUser().userId;
+    this.followUpAog.audit.username = this._storageService.getCurrentUser().username;
     this.apiRestService = new ApiRestService(http);
 
     this.currentUTCTime = 0;
@@ -300,24 +300,18 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
    */
   public submitForm(value: any) {
 
-    console.log('Submit Aog');
+
     this.validations.isSubmited = true;
 
     if (this.followUpAogForm.valid) {
       this.validations.isSending = true;
       this._dataService.stringMessage('open');
 
-      this._detailsService.closeSidenav();
-      this._dataService.stringMessage('reload');
-      this._messageService.openSnackBar(this.follow_up_successfully);
-      this._dataService.stringMessage('close');
-      this.validations.isSubmited = false;
-      this.validations.isSending = false;
-      this._followUpAogForm.reset();
+
       //const safetyCode = this.followUpForm.get('safetyEventCode').value;
 
-      /*this.apiRestService
-          .add<Status>('followUp', this.followUp, safetyCode)
+      this.apiRestService
+          .add<StatusAog>('followUpAog', this.followUpAog)
           .subscribe(() => {
             this._detailsService.closeSidenav();
             this._dataService.stringMessage('reload');
@@ -325,14 +319,14 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
             this._dataService.stringMessage('close');
             this.validations.isSubmited = false;
             this.validations.isSending = false;
-            this._followUpForm.reset();
+            this._followUpAogForm.reset();
 
           }, (err: HttpErrorResponse) => {
             this._dataService.stringMessage('close');
             this._messageService.openSnackBar(err.error.message);
             this.validations.isSubmited = false;
             this.validations.isSending = false;
-          });*/
+          });
     }
   }
 
@@ -349,6 +343,15 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
     }
 
     return null;
+  }
+
+  /**
+   * Method to call detail service and close the sidenav
+   *
+   * @return {void} nothing to return
+   */
+  public closeDetails() {
+    this._detailsService.closeSidenav();
   }
 
   get followUpAog(): StatusAog {
