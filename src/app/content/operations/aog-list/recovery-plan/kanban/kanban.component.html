@@ -6,22 +6,17 @@
         <div fxFlex="25" fxLayout="column">Done</div>
     </header>
     <div class="wrapper" fxLayout="row" fxLayoutGap="20px">
-        <div fxFlex="25" id="backlog" [(dragulaModel)]="cardsLog" fxLayout="column" class="container backlog" [dragula]="kanban">
-            <lsl-kanban-card></lsl-kanban-card>
-            <lsl-kanban-card></lsl-kanban-card>
+        <div fxFlex="25" id="backlog" fxLayout="column" class="container backlog" [dragula]="kanban">
+            <lsl-kanban-card *ngFor="let card of backlog" ></lsl-kanban-card>
         </div>
-        <div fxFlex="25" #todo id="to-do" fxLayout="column" class="container drop" [dragula]="kanban">
-            <lsl-kanban-card *ngFor="let card of cards; let i = index"  [stageCode]="'BLA' + i" [displayCard]="card" ></lsl-kanban-card>
+        <div fxFlex="25" id="to-do" fxLayout="column" class="container drop" [dragula]="kanban">
+            <lsl-kanban-card *ngFor="let card of todo" ></lsl-kanban-card>
         </div>
         <div fxFlex="25" id="doing" fxLayout="column" class="container drop" [dragula]="kanban">
-            <div [ngStyle]="{'border-color': '#9575CD'}">This is the default use case. You only need to specify the containers you want to use</div>
-            <div>More interactive use cases lie ahead</div>
-            <div>Make sure to check out the <a href="https://github.com/bevacqua/dragula#readme">documentation on GitHub!</a></div>
+            <lsl-kanban-card *ngFor="let card of doing" ></lsl-kanban-card>
         </div>
         <div fxFlex="25" id="done" fxLayout="column" class="container drop" [dragula]="kanban">
-            <div>This is the default use case. You only need to specify the containers you want to use</div>
-            <div>More interactive use cases lie ahead</div>
-            <div>Make sure to check out the <a href="https://github.com/bevacqua/dragula#readme">documentation on GitHub!</a></div>
+            <lsl-kanban-card *ngFor="let card of done" ></lsl-kanban-card>
         </div>
     </div>
 </section>
