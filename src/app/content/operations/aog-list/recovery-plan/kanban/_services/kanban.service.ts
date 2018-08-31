@@ -1,10 +1,30 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import {KanbanCardComponent} from '../kanban-card/kanban-card.component';
+
+export interface KanbanCardInterface {
+    displayCard: boolean;
+    stageCode: string;
+    activity: string;
+    unit: string;
+    isAlternative: boolean;
+    color: string;
+}
+
+export interface KanbanColInterface {
+    name: string;
+    cards: KanbanCardInterface[];
+}
+
+export interface KanbanColumnsInterface {
+    backlog: KanbanColInterface;
+    todo: KanbanColInterface;
+    doing: KanbanColInterface;
+    done: KanbanColInterface;
+}
 
 export interface KanbanInterface {
-    selectedCards: KanbanCardComponent[];
+    selectedCards: any[];
 }
 
 @Injectable()
@@ -39,7 +59,7 @@ export class RecoveryPlanService {
         this._serviceSubject.next(this.kanbanInterface);
     }
 
-    public set selectedCards(value: KanbanCardComponent[]) {
+    public set selectedCards(value: any[]) {
         this.kanbanInterface.selectedCards = value;
         this.emitData(this.kanbanInterface);
     }

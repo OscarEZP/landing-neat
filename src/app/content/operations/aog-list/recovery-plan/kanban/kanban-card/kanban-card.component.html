@@ -1,17 +1,17 @@
-<section *ngIf="displayCard" [ngStyle]="{'border-color': '#4CAF50'}" fxLayout="column" fxLayoutGap="2px">
-    <h3 fxFlex >{{stageCode}}</h3>
-    <p fxFlex >{{activity}}</p>
+<section *ngIf="kanbanCard.displayCard" [ngStyle]="{'border-color': kanbanCard.color}" fxLayout="column" fxLayoutGap="2px">
+    <h3 fxFlex >{{kanbanCard.stageCode}}</h3>
+    <p fxFlex >{{kanbanCard.activity}}</p>
     <div fxLayout="row" >
         <div fxFlex>
-            <span class="badge">{{unit}}</span>
+            <span class="badge">{{kanbanCard.unit}}</span>
         </div>
         <div fxLayout="row" fxFlexAlign="end end" >
             <span>{{'AOG.LIST.RECOVERY_PLAN.KANBAN.ALTERNATIVE' | translate}}</span>
-            <mat-slide-toggle [checked]="isAlternative"></mat-slide-toggle>
+            <mat-slide-toggle [checked]="kanbanCard.isAlternative"></mat-slide-toggle>
         </div>
     </div>
 </section>
-<div *ngIf="!displayCard">
+<div *ngIf="!kanbanCard.displayCard">
     bla!
 </div>
 
