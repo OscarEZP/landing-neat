@@ -9,6 +9,7 @@ export interface KanbanCardInterface {
     unit: string;
     isAlternative: boolean;
     color: string;
+    id: number|string;
 }
 
 export interface KanbanColInterface {
@@ -24,11 +25,11 @@ export interface KanbanColumnsInterface {
 }
 
 export interface KanbanInterface {
-    selectedCards: any[];
+    selectedCards: KanbanCardInterface[];
 }
 
 @Injectable()
-export class RecoveryPlanService {
+export class KanbanService {
 
     private _serviceSubject: BehaviorSubject<KanbanInterface>;
     private _service$: Observable<KanbanInterface>;

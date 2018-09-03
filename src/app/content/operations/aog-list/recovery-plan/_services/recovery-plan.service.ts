@@ -11,6 +11,7 @@ import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/sta
 import {RecoveryPlanSearch} from '../../../../../shared/_models/recoveryplan/recoveryPlanSearch';
 import {RecoveryPlan} from '../../../../../shared/_models/recoveryplan/recoveryPlan';
 import {toPromise} from 'rxjs/operator/toPromise';
+import {KanbanCardInterface} from '../kanban/_services/kanban.service';
 
 /**
  * Interface needed by all the components to do their work
@@ -132,6 +133,30 @@ export class RecoveryPlanService {
         return (error: any): Observable<T> => {
             this.log(`${operation} failed: ${error.message}`);
             return Observable.throw(error);
+        };
+    }
+
+    /**
+     * Observable for get activities (todo: implement service and delete mock)
+     * @returns {Observable<any>}
+     */
+    get activities$(): Observable<any> {
+        const activites = [
+            this.getMockCard('ACC'),
+            this.getMockCard('EXE')
+        ];
+        return Observable.of(activites);
+    }
+
+    private getMockCard(code: string): KanbanCardInterface {
+        return {
+            displayCard: false,
+            stageCode: code,
+            activity: '',
+            unit: 'PRO',
+            isAlternative: true,
+            color: code === 'ACC' ? '#4CAF50' : '#9575CD',
+            id: Math.random().toString(36).substring(7)
         };
     }
 

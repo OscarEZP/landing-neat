@@ -7,7 +7,7 @@
     </header>
     <div class="wrapper" fxLayout="row" fxLayoutGap="20px">
         <div fxFlex="25" id="{{backlogCol.name}}" fxLayout="column" class="container backlog" [dragula]="kanbanName">
-            <lsl-kanban-card *ngFor="let card of backlogCol.cards" data-card="{{card}}" [card]="card"></lsl-kanban-card>
+            <lsl-kanban-card id="{{card.id}}" *ngFor="let card of activities$ | async" [card]="card"></lsl-kanban-card>
         </div>
         <div fxFlex="25" id="{{todoCol.name}}" fxLayout="column" class="container drop" [dragula]="kanbanName">
             <lsl-kanban-card *ngFor="let card of todoCol.cards" [card]="card"></lsl-kanban-card>

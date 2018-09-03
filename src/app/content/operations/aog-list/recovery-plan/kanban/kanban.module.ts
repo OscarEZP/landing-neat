@@ -5,6 +5,7 @@ import {RecoveryPlanService} from '../_services/recovery-plan.service';
 import {KanbanComponent} from './kanban.component';
 import {KanbanCardComponent} from './kanban-card/kanban-card.component';
 import {DragulaService} from 'ng2-dragula';
+import {KanbanService} from './_services/kanban.service';
 
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import {DragulaService} from 'ng2-dragula';
     ],
     providers: [
         RecoveryPlanService,
-        DragulaService
+        DragulaService,
+        KanbanService
     ],
     entryComponents: [
     ]
