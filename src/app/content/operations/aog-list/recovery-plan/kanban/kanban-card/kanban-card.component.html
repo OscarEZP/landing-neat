@@ -1,4 +1,4 @@
-<section *ngIf="kanbanCard.displayCard" [ngStyle]="{'border-color': kanbanCard.color}" fxLayout="column" fxLayoutGap="2px">
+<section *ngIf="!isTemplate" [ngStyle]="{'border-color': kanbanCard.color}" fxLayout="column" fxLayoutGap="2px">
     <h3 fxFlex >{{kanbanCard.stageCode}}</h3>
     <p fxFlex >{{kanbanCard.activity}}</p>
     <div fxLayout="row" >
@@ -11,7 +11,7 @@
         </div>
     </div>
 </section>
-<div *ngIf="!kanbanCard.displayCard">
+<div *ngIf="isTemplate">
     <h3 fxFlex >{{kanbanCard.stageCode}}</h3>
 </div>
 

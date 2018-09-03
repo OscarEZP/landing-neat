@@ -140,7 +140,7 @@ export class RecoveryPlanService {
      * Observable for get activities (todo: implement service and delete mock)
      * @returns {Observable<any>}
      */
-    get activities$(): Observable<any> {
+    get activities$(): Observable<KanbanCardInterface[]> {
         const activites = [
             this.getMockCard('ACC'),
             this.getMockCard('EXE')
@@ -150,13 +150,12 @@ export class RecoveryPlanService {
 
     private getMockCard(code: string): KanbanCardInterface {
         return {
-            displayCard: false,
             stageCode: code,
             activity: '',
             unit: 'PRO',
             isAlternative: true,
             color: code === 'ACC' ? '#4CAF50' : '#9575CD',
-            id: Math.random().toString(36).substring(7)
+            id: 'mock'.concat(Math.random().toString(36).substring(7))
         };
     }
 

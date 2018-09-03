@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DragulaService} from 'ng2-dragula';
 import {Subscription} from 'rxjs/Subscription';
-import {tap} from 'rxjs/operators';
+import {filter, map, tap} from 'rxjs/operators';
 import {
     KanbanCardInterface, KanbanColInterface, KanbanColumnsInterface,
     KanbanService
@@ -19,6 +19,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
     private _dragulaDropSub: Subscription;
     private _dragulaDragSub: Subscription;
 
+    private _activities: KanbanCardInterface[];
     private _activitiesSub: Subscription;
     private _kanbanColumns: KanbanColumnsInterface;
     private _kanbanName: string;
@@ -37,54 +38,75 @@ export class KanbanComponent implements OnInit, OnDestroy {
        this._kanbanName = 'kanban';
     }
 
-    log(v) {
-        console.log(v);
-    }
-
     ngOnInit() {
-
-        this._dragulaDragSub = this._dragulaService.drop
+        this._activitiesSub = this.getActivities();
+        this._dragulaDragSub = this._dragulaService.drag
             .pipe(
                 tap(args => {
-                    console.log('Dragged!!', args[1], args[1].getAttribute('id'));
-
+                    const card = args[1];
+                    this._kanbanService.addCard(card.getAttribute('id'));
                 })
             )
             .subscribe();
-
-        // [1]: Card
-        // [2]: Target column
         this._dragulaDropSub = this._dragulaService.drop
             .pipe(
+                filter(args => !!args[2]),
                 tap(args => {
-                    console.log('Dropped!!', args[1], args[1].getAttribute('id'));
+                    const cardId = args[1] ? args[1].getAttribute('id') : null;
+                    const oldColId = args[3] ? args[3].getAttribute('id') : null;
+                    const nextCardId = args[4] ? args[4].getAttribute('id') : null;
+                    const newColId = args[2].getAttribute('id');
+
+                    const newcard: KanbanCardInterface = oldColId === this.backlog.name ?
+                        Object.assign({}, this.activities.find(v => v.id === cardId)) :
+                        this[oldColId].cards.find(v => v.id === cardId);
+
+                    if (oldColId === this.backlog.name) {
+                        const nativeSelector = '#'.concat(newColId).concat(' #' + newcard.id);
+                        const nativeElement = document.querySelector(nativeSelector);
+                        nativeElement.parentNode.removeChild(nativeElement);
+                        newcard.id = 'card'.concat(Math.random().toString(36).substring(7));
+                    }
+
+                    const nextIndex = this[newColId].cards.findIndex(v => v.id === nextCardId);
+                    if (nextIndex === -1) {
+                        this[newColId].cards.push(newcard);
+                    } else {
+                        this[newColId].cards.splice(nextIndex, 0, newcard);
+                    }
+
+                    if (newColId !== oldColId) {
+                        this[oldColId].cards = this[oldColId].cards.filter(v => v.id !== cardId);
+                    } else {
+                        this[newColId].cards.splice(this[newColId].cards.findIndex(v => v.id === newcard.id), 1);
+                    }
+                    console.log(this.todo, this.doing, this.done);
                 })
             )
             .subscribe();
-
-
 
         /**
          * Resctrict moves from and to backlog
          */
         this._dragulaService.setOptions(this.kanbanName, {
-            copy: (card, fromCol) => fromCol ? fromCol.getAttribute('id') === this.backlogCol.name : false,
+            copy: (card, fromCol) => fromCol ? fromCol.getAttribute('id') === this.backlog.name : false,
             accepts: (card, toCol, fromCol) => {
                 const fromId = fromCol.getAttribute('id');
                 const toId = toCol.getAttribute('id');
-                return !((fromId === this.backlogCol.name && toId !== this.todoCol.name) || toCol.getAttribute('id') === this.backlogCol.name);
+                return !((fromId === this.backlog.name && toId !== this.todo.name) || toCol.getAttribute('id') === this.backlog.name);
             }
         });
     }
 
-    get activities$(): Observable<KanbanCardInterface> {
-        return this._recoveryPlanService.activities$;
+    getActivities(): Subscription {
+        return this._recoveryPlanService.activities$
+            .subscribe(v => this.activities = v);
     }
 
     ngOnDestroy() {
         this._dragulaDropSub.unsubscribe();
         this._dragulaDragSub.unsubscribe();
-        // this._activitiesSub.unsubscribe();
+        this._dragulaService.destroy(this.kanbanName);
     }
 
     get kanbanName(): string {
@@ -95,22 +117,27 @@ export class KanbanComponent implements OnInit, OnDestroy {
         this._kanbanName = value;
     }
 
-    get backlogCol(): KanbanColInterface {
+    get backlog(): KanbanColInterface {
         return this._kanbanColumns.backlog;
     }
 
-    get todoCol(): KanbanColInterface {
+    get todo(): KanbanColInterface {
         return this._kanbanColumns.todo;
     }
 
-    get doingCol(): KanbanColInterface {
+    get doing(): KanbanColInterface {
         return this._kanbanColumns.doing;
     }
 
-    get doneCol(): KanbanColInterface {
+    get done(): KanbanColInterface {
         return this._kanbanColumns.done;
     }
 
+    get activities(): KanbanCardInterface[] {
+        return this._activities;
+    }
 
-
+    set activities(value: KanbanCardInterface[]) {
+        this._activities = value;
+    }
 }

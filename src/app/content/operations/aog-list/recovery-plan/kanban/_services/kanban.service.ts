@@ -3,7 +3,6 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 
 export interface KanbanCardInterface {
-    displayCard: boolean;
     stageCode: string;
     activity: string;
     unit: string;
@@ -25,7 +24,8 @@ export interface KanbanColumnsInterface {
 }
 
 export interface KanbanInterface {
-    selectedCards: KanbanCardInterface[];
+    selectedCards: string[];
+    action: 'drag'|'drop'|'none';
 }
 
 @Injectable()
@@ -44,7 +44,8 @@ export class KanbanService {
      */
     private get newKanbanInterface(): KanbanInterface {
         return {
-            selectedCards: []
+            selectedCards: [],
+            action: 'none'
         };
     }
 
@@ -63,6 +64,16 @@ export class KanbanService {
     public set selectedCards(value: any[]) {
         this.kanbanInterface.selectedCards = value;
         this.emitData(this.kanbanInterface);
+    }
+
+    public addCard(card: string): void {
+        const newCards = this.kanbanInterface.selectedCards;
+        newCards.push(card);
+        this.selectedCards = newCards;
+    }
+
+    public delCard(id: string|number): void {
+        this.selectedCards = this.kanbanInterface.selectedCards.filter(v => v !== id);
     }
 
 }
