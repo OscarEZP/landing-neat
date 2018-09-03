@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {DialogService} from '../../../../_services/dialog.service';
 import {DataService} from '../../../../../shared/_services/data.service';
 import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
@@ -23,7 +23,7 @@ import {TranslationService} from '../../../../../shared/_services/translation.se
   templateUrl: './follow-up-aog-modal.component.html',
   styleUrls: ['./follow-up-aog-modal.component.scss']
 })
-export class FollowUpAogModalComponent implements OnInit {
+export class FollowUpAogModalComponent implements OnInit, OnDestroy {
 
   public static FOLLOW_UP_CLOSED_STATUS = 'AOG.AOG_DETAILS.FOLLOW_UP.FOLLOW_UP_CLOSED_STATUS';
   public static FOLLOW_UP_LAST_STATUS = 'AOG.AOG_DETAILS.FOLLOW_UP.FOLLOW_UP_LAST_STATUS';
