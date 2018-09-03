@@ -125,7 +125,8 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
     this._configStatusAogSubscription = this.apiRestService
         .getSingle<GroupTypes>('configTypes', 'AOG_STATUS')
         .subscribe((data: GroupTypes) => {
-              this.statusCodes = data.types.sort((a, b ): number => {
+              this.statusCodes = data.types;
+              this.statusCodes.sort((a, b ): number => {
                 if (a.code > b.code) return -1;
                 if (a.code < b.code) return 1;
                 return 0;

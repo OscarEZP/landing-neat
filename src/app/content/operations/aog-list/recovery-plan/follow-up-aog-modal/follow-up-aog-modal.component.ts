@@ -123,7 +123,8 @@ export class FollowUpAogModalComponent implements OnInit {
     this._configStatusAogSubscription = this.apiRestService
         .getSingle<GroupTypes>('configTypes', 'AOG_STATUS')
         .subscribe((data: GroupTypes) => {
-              this.statusCodes = data.types.sort((a, b ): number => {
+              this.statusCodes = data.types;
+              this.statusCodes.sort((a, b ): number => {
                 if (a.code > b.code) return -1;
                 if (a.code < b.code) return 1;
                 return 0;
@@ -263,7 +264,7 @@ export class FollowUpAogModalComponent implements OnInit {
 
          this._dataService.stringMessage('reload');
          this._messageService.openSnackBar(this.follow_up_successfully);
-       //  this.validations.isSubmited = false;
+         this.validations.isSubmited = false;
          this.validations.isSending = false;
          this._dialogRef.close();
          this._followUpAogForm.reset();
@@ -271,7 +272,7 @@ export class FollowUpAogModalComponent implements OnInit {
        }, (err: HttpErrorResponse) => {
          this._dataService.stringMessage('close');
          this._messageService.openSnackBar(err.error.message);
-     //    this.validations.isSubmited = false;
+         this.validations.isSubmited = false;
          this.validations.isSending = false;
          this._dialogRef.close();
        });
