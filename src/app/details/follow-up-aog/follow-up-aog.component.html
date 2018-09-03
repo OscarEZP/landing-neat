@@ -57,9 +57,7 @@
           <span fxFlex=""> UTC</span>
         </div>
       </div>
-      <div fxLayout="row" *ngIf="delta < followUpAog.requestedInterval.duration" class="validate-warning remove-space">
-        {{ 'AOG.AOG_DETAILS.FOLLOW_UP.TIME_AVAILABLE_WARNING' | translate }} {{ delta }} {{'FORM.MINUTES' | translate }}
-      </div>
+
       <mat-form-field class="full-width">
                     <textarea matInput
                               placeholder="{{'AOG.AOG_DETAILS.FOLLOW_UP.OBSERVATION_TITLE' | translate}}"

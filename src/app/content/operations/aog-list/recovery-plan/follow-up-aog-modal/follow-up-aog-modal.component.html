@@ -63,9 +63,7 @@
       <span fxFlex=""> UTC</span>
     </div>
   </div>
-  <div fxLayout="row" *ngIf="delta < followUpAog.requestedInterval.duration" class="validate-warning remove-space">
-    {{ 'AOG.AOG_DETAILS.FOLLOW_UP.TIME_AVAILABLE_WARNING' | translate }} {{ delta }} {{'FORM.MINUTES' | translate }}
-  </div>
+
   <mat-form-field class="full-width remove-space">
                     <textarea matInput
                               placeholder="{{'AOG.AOG_DETAILS.FOLLOW_UP.OBSERVATION_TITLE' | translate}}"
@@ -79,7 +77,7 @@
     </mat-error>
   </mat-form-field>
   <div mat-dialog-actions fxLayoutAlign="end" class="remove-space">
-    <button type="button" mat-button (click)="closeDetails()" [disabled]="validations.isSending">
+    <button type="button" mat-button (click)="openCancelDialog()" [disabled]="validations.isSending">
       {{ 'BUTTONS.CANCEL' | translate }}
     </button>
     <button type="submit" mat-button mat-raised-button color="primary" [disabled]="validations.isSending">

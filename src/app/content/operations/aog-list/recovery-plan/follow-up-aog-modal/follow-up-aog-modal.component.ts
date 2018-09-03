@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {DialogService} from '../../../../_services/dialog.service';
 import {DataService} from '../../../../../shared/_services/data.service';
 import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
 import {Subscription} from 'rxjs/Subscription';
 import {Types} from '../../../../../shared/_models/configuration/types';
 import {GroupTypes} from '../../../../../shared/_models/configuration/groupTypes';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StatusAog} from '../../../../../shared/_models/aog/statusAog';
 import {StorageService} from '../../../../../shared/_services/storage.service';
@@ -15,6 +15,8 @@ import {User} from '../../../../../shared/_models/user/user';
 import {ActualTimeModel} from '../../../../../shared/_models/actualTime';
 import {DetailsServiceAog} from '../../../../../details/_services/details_aog.service';
 import {MessageService} from '../../../../../shared/_services/message.service';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {TranslationService} from '../../../../../shared/_services/translation.service';
 
 @Component({
   selector: 'lsl-follow-up-aog-modal',
@@ -53,10 +55,13 @@ export class FollowUpAogModalComponent implements OnInit {
               private _dataService: DataService,
               private http: HttpClient,
               private fb: FormBuilder,
-              private _storageService: StorageService) {
+              private _storageService: StorageService,
+              @Inject(MAT_DIALOG_DATA) private _data: Aog,
+              private _dialogRef: MatDialogRef<FollowUpAogModalComponent>,
+              private _translationService: TranslationService) {
 
     this.followUpAog = StatusAog.getInstance();
-    this.followUpAog.audit.username = this._storageService.getCurrentUser().userId;
+    this.followUpAog.audit.username = this._storageService.getCurrentUser().username;
     this.apiRestService = new ApiRestService(http);
 
     this.currentUTCTime = 0;
@@ -68,6 +73,8 @@ export class FollowUpAogModalComponent implements OnInit {
     this.statusCodes = [];
 
     this.maxChars = 400;
+    this.selectedAog = _data;
+
 
     this.followUpAogForm = fb.group({
       'observation': [this.followUpAog.observation, Validators.required],
@@ -77,6 +84,7 @@ export class FollowUpAogModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._translationService.translate(FollowUpAogModalComponent.FOLLOW_UP_SUCCESSFULLY).then(res => this.follow_up_successfully = res);
     this.generateIntervalSelection();
     this.getStatusCodesAvailable();
     this.aogSubcription = this._detailsService.selectedAogChange.subscribe(aog => this.selectedAogChanged(aog));
@@ -87,7 +95,7 @@ export class FollowUpAogModalComponent implements OnInit {
    */
   public openCancelDialog(): void {
 
-      this._dialogService.closeAllDialogs();
+    this._dialogRef.close();
     }
 
   /**
@@ -162,7 +170,7 @@ export class FollowUpAogModalComponent implements OnInit {
         .subscribe((data: ActualTimeModel) => {
               this.currentUTCTime = data.currentTimeLong;
 
-              this.setActualDelta();
+
             },
             error => () => {
               this._dataService.stringMessage('close');
@@ -173,25 +181,6 @@ export class FollowUpAogModalComponent implements OnInit {
         );
   }
 
-  /**
-   * Method to calculate the delta time remaining between the selected time in combo box and the real remaining time
-   * (180 minutes rule), set the delta to a variable and set the warning if the time selected is greater than
-   * the real remaining.
-   *
-   * @param {number} currentTimeLong
-   *
-   * @return {void} nothing to return
-   */
-  private setActualDelta(): number {
-
-    this.delta = -1;
-
-    if (this.selectedAog.audit.time.epochTime !== null) {
-      this.delta = Math.round(((this.selectedAog.audit.time.epochTime + 180 * 60 * 1000) - this.currentUTCTime) / 60000);
-    }
-
-    return this.delta;
-  }
 
   /**
    * Private service called everytime the aog selected from list change,
@@ -206,6 +195,7 @@ export class FollowUpAogModalComponent implements OnInit {
    * @return {void} nothing to return
    */
   private selectedAogChanged(aog: Aog): void {
+
     this.selectedAog = aog;
     // this.validations.isComponentDisabled = this.isComponentDisabled();
 
@@ -239,20 +229,13 @@ export class FollowUpAogModalComponent implements OnInit {
   private generateIntervalSelection(creationDate?: number): void {
     let i: number;
     let quantity = 6;
-    this.apiRestService.getAll<ActualTimeModel>('dateTime')
-        .subscribe(response => this.currentUTCTime = response.currentTimeLong)
-        .add(() => {
-          this.durations = [];
-          if (creationDate) {
-            quantity = Math.ceil(((creationDate + (180 * 60000)) - this.currentUTCTime) / (60000 * 30));
-          }
 
-          if (0 < quantity && quantity < 7) {
-            for (i = 0; i < quantity; i++) {
-              this.durations.push(i * 30 + 30);
-            }
-          }
-        });
+    this.durations = [];
+
+    for (i = 0; i < quantity; i++) {
+      this.durations.push(i * 30 + 30);
+    }
+
   }
 
   /**
@@ -264,39 +247,34 @@ export class FollowUpAogModalComponent implements OnInit {
    */
   public submitForm(value: any) {
 
-    console.log('Submit Aog');
+    this.followUpAog.aogId = this.selectedAog.id;
+    console.log('Submit Aog', this.followUpAog);
     this.validations.isSubmited = true;
 
     if (this.followUpAogForm.valid) {
       this.validations.isSending = true;
       this._dataService.stringMessage('open');
 
-      this._detailsService.closeSidenav();
-      this._dataService.stringMessage('reload');
-      this._messageService.openSnackBar(this.follow_up_successfully);
-      this._dataService.stringMessage('close');
-      this.validations.isSubmited = false;
-      this.validations.isSending = false;
-      this._followUpAogForm.reset();
-      //const safetyCode = this.followUpForm.get('safetyEventCode').value;
+      // const safetyCode = this.followUpForm.get('safetyEventCode').value;
 
-      /*this.apiRestService
-       .add<Status>('followUp', this.followUp, safetyCode)
+      this.apiRestService
+       .add<StatusAog>('followUpAog', this.followUpAog)
        .subscribe(() => {
-       this._detailsService.closeSidenav();
-       this._dataService.stringMessage('reload');
-       this._messageService.openSnackBar(this.follow_up_successfully);
-       this._dataService.stringMessage('close');
-       this.validations.isSubmited = false;
-       this.validations.isSending = false;
-       this._followUpForm.reset();
+
+         this._dataService.stringMessage('reload');
+         this._messageService.openSnackBar(this.follow_up_successfully);
+       //  this.validations.isSubmited = false;
+         this.validations.isSending = false;
+         this._dialogRef.close();
+         this._followUpAogForm.reset();
 
        }, (err: HttpErrorResponse) => {
-       this._dataService.stringMessage('close');
-       this._messageService.openSnackBar(err.error.message);
-       this.validations.isSubmited = false;
-       this.validations.isSending = false;
-       });*/
+         this._dataService.stringMessage('close');
+         this._messageService.openSnackBar(err.error.message);
+     //    this.validations.isSubmited = false;
+         this.validations.isSending = false;
+         this._dialogRef.close();
+       });
     }
   }
   get apiRestService(): ApiRestService {

@@ -1,13 +1,12 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
 import * as Konva from 'konva';
 import {ShapeDraw} from '../util/shapeDraw';
+import {RecoveryPlanInterface, RecoveryPlanService} from '../_services/recovery-plan.service';
+import {TimeConverter} from '../util/timeConverter';
+import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
+import {Status} from '../../../../../shared/_models/status';
 import moment = require('moment');
-import {RecoveryPlanInterface, RecoveryPlanService, StageInterface} from '../_services/recovery-plan.service';
-import {DateRange} from '../../../../../shared/_models/common/dateRange';
-import {TimeInstant} from '../../../../../shared/_models/timeInstant';
-import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
-import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
 
 @Component({
   selector: 'lsl-recovery-real-plan',
@@ -15,55 +14,73 @@ import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/sta
   styleUrls: ['./recovery-real-plan.component.css']
 })
 export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewInit {
-    private _stagesSub: Subscription;
 
+    @Input() aogId: number;
+    private _canvasWidth: number;
     private _canvasHeight: number;
-    private _lastValidPosition: number;
     private _activeViewInHours: number;
-    private _activeViewInPixels: number;
-    private _absoluteStartTime: number;
-    private _stagesObjects: StageInterface[];
     private _recoveryPlanSubscription: Subscription;
     private _recoveryPlanInterface: RecoveryPlanInterface;
-    private _recoveryStagesConfiguration: StageConfiguration[];
-    private _recoveryStagesSub: Subscription;
+    private _realPlanStage: Konva.Stage;
+    private _niEtrCollection: Status[];
+    private _niEtrCollectionSubscription: Subscription;
 
-    constructor(private _recoveryPlanService: RecoveryPlanService) {
-        this._recoveryPlanSubscription = this._recoveryPlanService.recoveryPlanBehavior$.subscribe(x => this._recoveryPlanInterface = x);
-        this._absoluteStartTime = 0;
+    constructor(
+        private _recoveryPlanService: RecoveryPlanService,
+        private _apiRestService: ApiRestService
+    ) {
+        this._recoveryPlanSubscription = null;
         this._canvasHeight = 50;
-        this._lastValidPosition = 0;
-        this._stagesObjects = [];
-        this._stagesSub = new Subscription();
+        this._recoveryPlanSubscription = new Subscription();
+        this._realPlanStage = null;
+        this._niEtrCollection = null;
     }
 
     ngOnInit() {
-        // this.stagesSub = this.getStagesSub();
-        this.lastValidPosition = 0;
+        this.recoveryPlanSubscription = this.getRecoveryPlanInterfaceSubscription();
         this.activeViewInHours = this._recoveryPlanInterface.activeViewInHours;
-        this.activeViewInPixels = this._recoveryPlanInterface.activeViewInPixels;
-        this.absoluteStartTime = this._recoveryPlanInterface.absoluteStartTime;
+        this.niEtrCollectionSubscription = this.searchNiEtrCollection();
     }
 
     ngOnDestroy() {
-        this.stagesSub.unsubscribe();
+        this.recoveryPlanSubscription.unsubscribe();
+        this.niEtrCollectionSubscription.unsubscribe();
+        this.realPlanStage.destroy();
     }
 
     ngAfterViewInit() {
-        const stage = new Konva.Stage({
+
+    }
+
+    private drawBase(): void {
+        this.realPlanStage = new Konva.Stage({
             container: 'real-plan-container',
-            width: this.activeViewInPixels,
+            width: this.canvasWidth,
             height: this.canvasHeight
         });
         const layer = new Konva.Layer();
         this.drawBaseLine(layer);
         // this.drawGroups(layer, stage);
 
-        layer.add(this.getRelativeNow(this._recoveryPlanInterface.relativeStartTime));
+        layer.add(this.getRelativeNow());
 
-        stage.add(layer);
+        this.realPlanStage.add(layer);
 
-        stage.draw();
+        this.realPlanStage.draw();
+    }
+
+    /**
+     * Subscription for get recovery plan service interface
+     * @return {Subscription}
+     */
+    private getRecoveryPlanInterfaceSubscription(): Subscription {
+        return this._recoveryPlanService.recoveryPlanBehavior$
+            .subscribe((v) => {
+                this.recoveryPlanInterface = v;
+                this.canvasWidth = TimeConverter.epochTimeToPixelPosition(v.absoluteEndTime, v.absoluteStartTime, v.activeViewInHours, v.activeViewInPixels);
+                // this.searchNiEtrCollection();
+                // this.drawBase();
+            });
     }
 
     // // TO-DO: Implement service
@@ -78,15 +95,9 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     //     ]);
     // }
 
-    // private getStagesSub(): Subscription {
-    //     return this.stages$.subscribe(res => {
-    //         this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null, labelText: null, labelLine: null}));
-    //     });
-    // }
-
     private drawBaseLine(layer: Konva.Layer) {
         const line = new Konva.Line({
-            points: [0, 25, this.activeViewInPixels, 25],
+            points: [0, 25, this._recoveryPlanInterface.absoluteEndTime, 25],
             stroke: 'gray',
             strokeWidth: 2,
             lineCap: 'round',
@@ -115,32 +126,66 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     /**
      * @TODO: make it real later when implementation of services are done
      */
-    private getRelativeNow(startTime: number): Konva.Text {
-        const startMoment = moment(startTime).format('YYYY-MM-DD');
-        const nowTime = moment().hour() + ':' + moment().minute();
-        const relativeNow = moment(startMoment + ' ' + nowTime).valueOf();
+    private getRelativeNow(): Konva.Text {
+        const relativeNow = moment.utc().valueOf();
 
         const startPos = this._recoveryPlanService.getPositionByEpochtime(relativeNow);
 
-        return ShapeDraw.drawLabelText(
-            'NOW',
-            startPos
-            // new Stage('NOW', 1, new DateRange( new TimeInstant(relativeNow, ''), new TimeInstant(0, ''))),
-            // this.absoluteStartTime,
-            // this.activeViewInHours,
-            // this.activeViewInPixels
-        );
+        return ShapeDraw.drawLabelText('NOW', startPos);
     }
 
-
-
-
-    get stagesSub(): Subscription {
-        return this._stagesSub;
+    private searchNiEtrCollection(): Subscription {
+        return this._apiRestService
+            .search<Status[]>('aircraftOnGroundFollowUpSearch', {'aogId': this.aogId})
+            .subscribe(rs => {
+                this.drawBase();
+                this.niEtrCollection = rs;
+                this.drawNiEtrInTimeline();
+            });
     }
 
-    set stagesSub(value: Subscription) {
-        this._stagesSub = value;
+    private drawNiEtrInTimeline(): void {
+
+        this.niEtrCollection.forEach(value => {
+            const labelLayer = new Konva.Layer();
+            const validEndTime = value.realInterval.dt.epochTime !== null ? value.realInterval.dt.epochTime : value.requestedInterval.dt.epochTime;
+            const isFilled = validEndTime < this.recoveryPlanInterface.utcNow;
+            const calculatedPosition = TimeConverter.epochTimeToPixelPosition(validEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
+
+            labelLayer.add(ShapeDraw.drawTriangleLabel(this.niEtrColor(value.code, isFilled), calculatedPosition, value.code, isFilled));
+            this.realPlanStage.add(labelLayer);
+        });
+
+        this.realPlanStage.batchDraw();
+    }
+
+    private niEtrColor(typeValue: string, isBeforeNow: boolean): string {
+        let colorValue;
+        switch (typeValue) {
+            case 'NI':
+                colorValue = isBeforeNow ? '#FF5722' : '#F6C3B3';
+                break;
+            case 'ETR':
+                colorValue = isBeforeNow ? '#479FFF' : '#BED9F6';
+                break;
+            default :
+                colorValue = isBeforeNow ? '#479FFF' : '#BED9F6';
+                break;
+        }
+
+        return colorValue;
+    }
+
+    get absoluteEndTime(): number {
+        return this.recoveryPlanInterface.absoluteEndTime;
+    }
+
+    get canvasWidth(): number {
+        return this._canvasWidth;
+    }
+
+    set canvasWidth(value: number) {
+        this._canvasWidth = value;
     }
 
     get canvasHeight(): number {
@@ -151,44 +196,12 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         this._canvasHeight = value;
     }
 
-    get lastValidPosition(): number {
-        return this._lastValidPosition;
-    }
-
-    set lastValidPosition(value: number) {
-        this._lastValidPosition = value;
-    }
-
     get activeViewInHours(): number {
         return this._activeViewInHours;
     }
 
     set activeViewInHours(value: number) {
         this._activeViewInHours = value;
-    }
-
-    get activeViewInPixels(): number {
-        return this._activeViewInPixels;
-    }
-
-    set activeViewInPixels(value: number) {
-        this._activeViewInPixels = value;
-    }
-
-    get absoluteStartTime(): number {
-        return this._absoluteStartTime;
-    }
-
-    set absoluteStartTime(value: number) {
-        this._absoluteStartTime = value;
-    }
-
-    get stagesObjects(): StageInterface[] {
-        return this._stagesObjects;
-    }
-
-    set stagesObjects(value: StageInterface[]) {
-        this._stagesObjects = value;
     }
 
     get recoveryPlanSubscription(): Subscription {
@@ -207,21 +220,27 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         this._recoveryPlanInterface = value;
     }
 
-
-    get recoveryStagesConfiguration(): StageConfiguration[] {
-        return this._recoveryStagesConfiguration;
+    get realPlanStage(): Konva.Stage {
+        return this._realPlanStage;
     }
 
-    set recoveryStagesConfiguration(value: StageConfiguration[]) {
-        this._recoveryStagesConfiguration = value;
+    set realPlanStage(value: Konva.Stage) {
+        this._realPlanStage = value;
     }
 
-
-    get recoveryStagesSub(): Subscription {
-        return this._recoveryStagesSub;
+    get niEtrCollection(): Status[] {
+        return this._niEtrCollection;
     }
 
-    set recoveryStagesSub(value: Subscription) {
-        this._recoveryStagesSub = value;
+    set niEtrCollection(value: Status[]) {
+        this._niEtrCollection = value;
+    }
+
+    get niEtrCollectionSubscription(): Subscription {
+        return this._niEtrCollectionSubscription;
+    }
+
+    set niEtrCollectionSubscription(value: Subscription) {
+        this._niEtrCollectionSubscription = value;
     }
 }

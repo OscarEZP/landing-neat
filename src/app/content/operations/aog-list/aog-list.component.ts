@@ -26,7 +26,7 @@ import {Reason} from '../../../shared/_models/common/reason';
 import {Audit} from '../../../shared/_models/common/audit';
 import {StorageService} from '../../../shared/_services/storage.service';
 import {DetailsServiceAog} from '../../../details/_services/details_aog.service';
-import {FollowUpAogModalComponent} from './recovery-plan/follow-up-aog-modal/follow-up-aog-modal.component';
+
 
 @Component({
     selector: 'lsl-aog-list',
@@ -263,19 +263,7 @@ export class AogListComponent implements OnInit, OnDestroy {
     }
 
 
-    /**
-     * Open a modal for close AOG
-     * @param {Aog} aog
-     */
-    public openFollowUpModal(aog: Aog) {
-        this._dialogService.openDialog(FollowUpAogModalComponent, {
-            data: aog,
-            hasBackdrop: true,
-            disableClose: true,
-            height: '400px',
-            width: '500px'
-        });
-    }
+
     /**
      * Open a modal for edit a contingency reason field
      * @param {Aog} aog

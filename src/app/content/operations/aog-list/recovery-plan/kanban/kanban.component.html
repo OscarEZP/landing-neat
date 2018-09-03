@@ -1,0 +1,22 @@
+<section>
+    <header fxLayout="row" fxLayoutGap="20px">
+        <div fxFlex="25" fxLayout="column">Drag and Drop Task List</div>
+        <div fxFlex="25" fxLayout="column">To Do</div>
+        <div fxFlex="25" fxLayout="column">Doing</div>
+        <div fxFlex="25" fxLayout="column">Done</div>
+    </header>
+    <div class="wrapper" fxLayout="row" fxLayoutGap="20px">
+        <div fxFlex="25" id="backlog" fxLayout="column" class="container backlog" [dragula]="kanban">
+            <lsl-kanban-card *ngFor="let card of backlog" ></lsl-kanban-card>
+        </div>
+        <div fxFlex="25" id="to-do" fxLayout="column" class="container drop" [dragula]="kanban">
+            <lsl-kanban-card *ngFor="let card of todo" ></lsl-kanban-card>
+        </div>
+        <div fxFlex="25" id="doing" fxLayout="column" class="container drop" [dragula]="kanban">
+            <lsl-kanban-card *ngFor="let card of doing" ></lsl-kanban-card>
+        </div>
+        <div fxFlex="25" id="done" fxLayout="column" class="container drop" [dragula]="kanban">
+            <lsl-kanban-card *ngFor="let card of done" ></lsl-kanban-card>
+        </div>
+    </div>
+</section>

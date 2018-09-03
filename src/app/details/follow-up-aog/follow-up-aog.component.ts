@@ -203,22 +203,16 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
    * @return {void} nothing to return
    */
   private generateIntervalSelection(creationDate?: number): void {
-    let i: number;
-    let quantity = 6;
-    this.apiRestService.getAll<ActualTimeModel>('dateTime')
-        .subscribe(response => this.currentUTCTime = response.currentTimeLong)
-        .add(() => {
-          this.durations = [];
-          if (creationDate) {
-            quantity = Math.ceil(((creationDate + (180 * 60000)) - this.currentUTCTime) / (60000 * 30));
-          }
 
-          if (0 < quantity && quantity < 7) {
-            for (i = 0; i < quantity; i++) {
-              this.durations.push(i * 30 + 30);
-            }
-          }
-        });
+    let i: number;
+    const quantity = 6;
+
+    this.durations = [];
+
+      for (i = 0; i < quantity; i++) {
+        this.durations.push(i * 30 + 30);
+      }
+
   }
 
   /**
@@ -233,7 +227,6 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
         .subscribe((data: ActualTimeModel) => {
               this.currentUTCTime = data.currentTimeLong;
 
-              this.setActualDelta();
             },
             error => () => {
               this._dataService.stringMessage('close');
@@ -244,25 +237,7 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
         );
   }
 
-  /**
-   * Method to calculate the delta time remaining between the selected time in combo box and the real remaining time
-   * (180 minutes rule), set the delta to a variable and set the warning if the time selected is greater than
-   * the real remaining.
-   *
-   * @param {number} currentTimeLong
-   *
-   * @return {void} nothing to return
-   */
-  private setActualDelta(): number {
 
-    this.delta = -1;
-
-    if (this.selectedAog.audit.time.epochTime !== null) {
-      this.delta = Math.round(((this.selectedAog.audit.time.epochTime + 180 * 60 * 1000) - this.currentUTCTime) / 60000);
-    }
-
-    return this.delta;
-  }
 
   /**
    * Private method to disable form view if any of the conditions are fulfilled
@@ -270,7 +245,7 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
    */
   private isComponentDisabled(): boolean {
     // return this.selectedAog.isClose || this.delta <= 0 || this.statusCodes.length === 0;
-    return this.delta <= 0 || this.statusCodes.length === 0;
+    return this.statusCodes.length === 0 || this.selectedAog.status.code === 'ETR';
   }
 
   /**
@@ -338,10 +313,7 @@ export class FollowUpAogComponent implements OnInit, OnDestroy {
   public disabledMensage(): string {
     if (this.selectedAog.status.code === 'ETR' || this.statusCodes.length === 0) {
       return FollowUpAogComponent.FOLLOW_UP_LAST_STATUS;
-    } else if (this.delta <= 0) {
-      return FollowUpAogComponent.FOLLOW_UP_DISABLED;
     }
-
     return null;
   }
 

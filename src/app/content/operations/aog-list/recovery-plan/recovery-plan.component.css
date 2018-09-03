@@ -1,0 +1,30 @@
+.mat-dialog-content {
+    overflow: hidden;
+}
+
+/deep/
+.ng-scrollbar-view {
+    overflow: hidden!important;
+}
+
+/deep/
+.ng-scrollbar-thumb  {
+    margin-top: 2px;
+}
+
+.title-dialog {
+    text-transform: uppercase;
+}
+
+#aog-list {
+    width: 100%;
+}
+
+.reg-list .contingency-item {
+    border-left: 1px solid rgba(202, 202, 202, 0.43);
+    border-right: 1px solid rgba(202, 202, 202, 0.43);
+}
+
+.recovery-plan-box {
+    background: #F3F3F3;
+}

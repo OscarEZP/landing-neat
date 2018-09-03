@@ -1,0 +1,17 @@
+<section *ngIf="displayCard" [ngStyle]="{'border-color': '#4CAF50'}" fxLayout="column" fxLayoutGap="2px">
+    <h3 fxFlex >{{stageCode}}</h3>
+    <p fxFlex >{{activity}}</p>
+    <div fxLayout="row" >
+        <div fxFlex>
+            <span class="badge">{{unit}}</span>
+        </div>
+        <div fxLayout="row" fxFlexAlign="end end" >
+            <span>{{'AOG.LIST.RECOVERY_PLAN.KANBAN.ALTERNATIVE' | translate}}</span>
+            <mat-slide-toggle [checked]="isAlternative"></mat-slide-toggle>
+        </div>
+    </div>
+</section>
+<div *ngIf="!displayCard">
+    bla!
+</div>
+
