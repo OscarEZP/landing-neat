@@ -90,6 +90,12 @@ export class FollowUpAogModalComponent implements OnInit {
     this.aogSubcription = this._detailsService.selectedAogChange.subscribe(aog => this.selectedAogChanged(aog));
   }
 
+  ngOnDestroy() {
+    this.aogSubcription.unsubscribe();
+    this._configStatusAogSubscription.unsubscribe();
+    //this._safetyEventListSubscription.unsubscribe();
+  }
+
   /**
    * Open a cancel message if there is a filled item
    */
