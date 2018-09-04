@@ -141,11 +141,11 @@ export class RecoveryPlanService {
      * @returns {Observable<any>}
      */
     get activities$(): Observable<KanbanCardInterface[]> {
-        const activites = [
+        const activities = [
             this.getMockCard('ACC'),
             this.getMockCard('EXE')
         ];
-        return Observable.of(activites);
+        return Observable.of(activities);
     }
 
     private getMockCard(code: string): KanbanCardInterface {
