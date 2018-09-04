@@ -1,17 +1,26 @@
-<section *ngIf="displayCard" [ngStyle]="{'border-color': '#4CAF50'}" fxLayout="column" fxLayoutGap="2px">
-    <h3 fxFlex >{{stageCode}}</h3>
-    <p fxFlex >{{activity}}</p>
+<section *ngIf="!isTemplate" [ngStyle]="{'border-color': kanbanCard.color}" fxLayout="column" fxLayoutGap="2px">
+    <div fxLayout="row">
+        <div fxFlex >
+            <h3>{{kanbanCard.stageCode}}</h3>
+        </div>
+        <div class="close-container" fxFlexAlign="end start">
+            <button (click)="deleteCard()" id="btn-kanban-card-close" class="" mat-icon-button>
+                <mat-icon aria-label="options">more_vert</mat-icon>
+            </button>
+        </div>
+    </div>
+    <p fxFlex >{{kanbanCard.activity}}</p>
     <div fxLayout="row" >
         <div fxFlex>
-            <span class="badge">{{unit}}</span>
+            <span class="badge">{{kanbanCard.unit}}</span>
         </div>
         <div fxLayout="row" fxFlexAlign="end end" >
             <span>{{'AOG.LIST.RECOVERY_PLAN.KANBAN.ALTERNATIVE' | translate}}</span>
-            <mat-slide-toggle [checked]="isAlternative"></mat-slide-toggle>
+            <mat-slide-toggle [checked]="kanbanCard.isAlternative"></mat-slide-toggle>
         </div>
     </div>
 </section>
-<div *ngIf="!displayCard">
-    bla!
+<div class="card-template" *ngIf="isTemplate">
+    <h3 fxFlex >{{kanbanCard.stageCode}}</h3>
 </div>
 

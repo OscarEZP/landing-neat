@@ -1,14 +1,35 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import {KanbanCardComponent} from '../kanban-card/kanban-card.component';
+
+export interface KanbanCardInterface {
+    stageCode: string;
+    activity: string;
+    unit: string;
+    isAlternative: boolean;
+    color: string;
+    id: number|string;
+}
+
+export interface KanbanColInterface {
+    name: string;
+    cards: KanbanCardInterface[];
+}
+
+export interface KanbanColumnsInterface {
+    backlog: KanbanColInterface;
+    todo: KanbanColInterface;
+    doing: KanbanColInterface;
+    done: KanbanColInterface;
+}
 
 export interface KanbanInterface {
-    selectedCards: KanbanCardComponent[];
+    selectedCards: string[];
+    action: 'drag'|'drop'|'none';
 }
 
 @Injectable()
-export class RecoveryPlanService {
+export class KanbanService {
 
     private _serviceSubject: BehaviorSubject<KanbanInterface>;
     private _service$: Observable<KanbanInterface>;
@@ -23,7 +44,8 @@ export class RecoveryPlanService {
      */
     private get newKanbanInterface(): KanbanInterface {
         return {
-            selectedCards: []
+            selectedCards: [],
+            action: 'none'
         };
     }
 
@@ -39,9 +61,19 @@ export class RecoveryPlanService {
         this._serviceSubject.next(this.kanbanInterface);
     }
 
-    public set selectedCards(value: KanbanCardComponent[]) {
+    public set selectedCards(value: any[]) {
         this.kanbanInterface.selectedCards = value;
         this.emitData(this.kanbanInterface);
+    }
+
+    public addCard(card: string): void {
+        const newCards = this.kanbanInterface.selectedCards;
+        newCards.push(card);
+        this.selectedCards = newCards;
+    }
+
+    public delCard(id: string|number): void {
+        this.selectedCards = this.kanbanInterface.selectedCards.filter(v => v !== id);
     }
 
 }

@@ -1,4 +1,8 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {KanbanCardInterface, KanbanInterface, KanbanService} from '../_services/kanban.service';
+import {Subscription} from 'rxjs/Subscription';
+import {Observable} from 'rxjs/Observable';
+import {filter, tap} from 'rxjs/operators';
 
 @Component({
     selector: 'lsl-kanban-card',
@@ -7,65 +11,49 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 })
 export class KanbanCardComponent implements OnInit, OnDestroy {
 
-    private _displayCard: boolean;
-    private _stageCode: string;
-    private _activity: string;
-    private _unit: string;
-    private _isAlternative: boolean;
+    @Output() onDelete: EventEmitter<boolean>;
+    @Input('isTemplate') private _isTemplate: boolean;
+    @Input('card') _kanbanCard: KanbanCardInterface;
 
-    constructor() {
-        this._stageCode = 'ACC';
-        this._activity = 'REMOCIÓN E INSTALACIÓN DE PARTES';
-        this._unit = 'PRO';
-        this._isAlternative = true;
-        this._displayCard = true;
+    private _kanbanSub: Subscription;
+
+    constructor(
+        private _kanbanService: KanbanService
+    ) {
+        this.onDelete = new EventEmitter<boolean>(false);
     }
 
     ngOnInit() {
+        this._kanbanSub = this.kanbanService$.subscribe();
+
     }
 
     ngOnDestroy() {
-
+        this._kanbanSub.unsubscribe();
     }
 
-    get stageCode(): string {
-        return this._stageCode;
+    deleteCard() {
+        this.onDelete.emit(true);
     }
 
-    set stageCode(value: string) {
-        this._stageCode = value;
+    get kanbanService$(): Observable<KanbanInterface> {
+        return this._kanbanService.service$
+            .pipe(
+                filter((v: KanbanInterface) => !!v.selectedCards.find(id => this.kanbanCard ? this.kanbanCard.id === id : false)),
+                tap((v: KanbanInterface) => {
+                })
+            );
     }
 
-
-    get activity(): string {
-        return this._activity;
+    get kanbanCard(): KanbanCardInterface {
+        return this._kanbanCard;
     }
 
-    set activity(value: string) {
-        this._activity = value;
+    set kanbanCard(value: KanbanCardInterface) {
+        this._kanbanCard = value;
     }
 
-    get unit(): string {
-        return this._unit;
-    }
-
-    set unit(value: string) {
-        this._unit = value;
-    }
-
-    get isAlternative(): boolean {
-        return this._isAlternative;
-    }
-
-    set isAlternative(value: boolean) {
-        this._isAlternative = value;
-    }
-
-    get displayCard(): boolean {
-        return this._displayCard;
-    }
-
-    set displayCard(value: boolean) {
-        this._displayCard = value;
+    get isTemplate(): boolean {
+        return this._isTemplate;
     }
 }
