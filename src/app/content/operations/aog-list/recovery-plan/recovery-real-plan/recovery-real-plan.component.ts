@@ -171,7 +171,7 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
     get absoluteEndTime(): number {
-        return this._recoveryPlanService.absoluteEndTime;
+        return this.recoveryPlanInterface.absoluteEndTime;
     }
 
     get canvasHeight(): number {

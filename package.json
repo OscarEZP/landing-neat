@@ -33,6 +33,7 @@
     "font-awesome": "4.7.0",
     "intl": "1.2.5",
     "konva": "2.2.1",
+    "ng2-dragula": "1.2.2",
     "ng2-konva": "6.0.0",
     "ngx-quill": "2.2.0",
     "ngx-scrollbar": "1.5.7",

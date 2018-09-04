@@ -11,6 +11,7 @@ import { AddStageFormComponent } from './recovery-stages/add-stage-form/add-stag
 import {TimeConverter} from './util/timeConverter';
 import {RecoveryPlanService} from './_services/recovery-plan.service';
 import { RecoveryZoomComponent } from './recovery-zoom/recovery-zoom.component';
+import {KanbanModule} from './kanban/kanban.module';
 import {ScrollbarModule} from 'ngx-scrollbar';
 
 @NgModule({
@@ -18,6 +19,7 @@ import {ScrollbarModule} from 'ngx-scrollbar';
         CommonModule,
         SharedModule,
         KonvaModule,
+        KanbanModule,
         ScrollbarModule
     ],
     declarations: [

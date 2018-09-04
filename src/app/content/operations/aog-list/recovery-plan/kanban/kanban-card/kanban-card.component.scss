@@ -1,0 +1,47 @@
+@import 'main.scss';
+$font-size: 12px;
+
+section {
+  @include gen-component-font-size($font-size);
+  cursor: grab;
+  padding: 5px;
+  margin: 0 0 10px 0;
+  background-color: mat-color($primary, default-contrast);
+  min-height: 65px;
+  overflow: hidden;
+  border-left: 7px solid #ccc;
+
+  h3 {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  p {
+    text-transform: uppercase;
+    color: mat-color($foreground, secondary-text);
+    font-weight: bold;
+  }
+  .badge {
+    background-color: mat-color($foreground, disabled);
+  }
+
+  /deep/
+  .mat-slide-toggle-bar {
+    height: 10px;
+    width: 20px;
+  }
+  /deep/
+  .mat-slide-toggle-thumb {
+    height: 15px;
+    width: 15px;
+  }
+  .mat-slide-toggle {
+    margin: -6px 5px 0 10px;
+  }
+  /deep/
+  .mat-slide-toggle-thumb-container {
+    top: -2px;
+    left: -5px;
+    cursor: pointer;
+  }
+}
+

@@ -9,7 +9,8 @@ import {environment} from '../environments/environment';
 })
 export class AppComponent {
 
-    constructor() {
+    constructor(
+    ) {
         if (environment.hotjarConfig.enabled) {
             this.initHotJar();
         }

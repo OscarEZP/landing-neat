@@ -47,7 +47,7 @@ export class RecoveryZoomComponent implements OnInit, OnDestroy {
      */
     public zoomValueAsChanged(message: MatSliderChange): void {
         const calculatedZoomValue = Math.pow(2, (message.value / 33));
-        const relativeEndTime = this._recoveryPlanService.relativeEndTime;
+        const relativeEndTime = this.recoveryPlanInterface.relativeEndTime;
         this._recoveryPlanService.activeViewInHours = calculatedZoomValue * 24;
         this._recoveryPlanService.relativeEndTime = relativeEndTime;
     }

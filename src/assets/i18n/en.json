@@ -13,6 +13,9 @@
       "RECOVERY_PLAN": {
         "GROUP": "Group",
         "GROUP_DURATION": "Group Duration",
+        "KANBAN": {
+          "ALTERNATIVE": "Alternative"
+        },
         "VERSION": "Version",
         "MODIFICATIONS": "Modifications"
       }
