@@ -211,10 +211,9 @@ export class PendingListComponent implements OnInit, OnDestroy {
     public openPending(contingency: Contingency) {
         this._dialogService.openDialog(ResolvePendingComponent, {
             data: contingency,
-            maxWidth: '50vw',
-            width: '100%',
-            height: '90%',
-            hasBackdrop: false
+            width: '500px',
+            height: '60%',
+            hasBackdrop: true
         });
     }
 
