@@ -1,0 +1,26 @@
+<section *ngIf="!isTemplate" [ngStyle]="{'border-color': kanbanCard.color}" fxLayout="column" fxLayoutGap="2px">
+    <div fxLayout="row">
+        <div fxFlex >
+            <h3>{{kanbanCard.stageCode}}</h3>
+        </div>
+        <div class="close-container" fxFlexAlign="end start">
+            <button (click)="deleteCard()" id="btn-kanban-card-close" class="" mat-icon-button>
+                <mat-icon aria-label="options">more_vert</mat-icon>
+            </button>
+        </div>
+    </div>
+    <p fxFlex >{{kanbanCard.activity}}</p>
+    <div fxLayout="row" >
+        <div fxFlex>
+            <span class="badge">{{kanbanCard.unit}}</span>
+        </div>
+        <div fxLayout="row" fxFlexAlign="end end" >
+            <span>{{'AOG.LIST.RECOVERY_PLAN.KANBAN.ALTERNATIVE' | translate}}</span>
+            <mat-slide-toggle [checked]="kanbanCard.isAlternative"></mat-slide-toggle>
+        </div>
+    </div>
+</section>
+<div class="card-template" *ngIf="isTemplate">
+    <h3 fxFlex >{{kanbanCard.stageCode}}</h3>
+</div>
+

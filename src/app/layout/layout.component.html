@@ -10,7 +10,8 @@
             <mat-sidenav-container id="nav-details-container">
                 <router-outlet></router-outlet>
                 <mat-sidenav align="end" id="details" #details mode="side">
-                    <lsl-details></lsl-details>
+                    <lsl-details-aog *ngIf="layout.toDoList === 'Aog'"></lsl-details-aog>
+                    <lsl-details *ngIf="layout.toDoList === 'Contingency'"></lsl-details>
                 </mat-sidenav>
             </mat-sidenav-container>
         </div>

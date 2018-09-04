@@ -13,7 +13,11 @@
       "RECOVERY_PLAN": {
         "GROUP": "Group",
         "GROUP_DURATION": "Group Duration",
-        "VERSION": "Version"
+        "KANBAN": {
+          "ALTERNATIVE": "Alternative"
+        },
+        "VERSION": "Version",
+        "MODIFICATIONS": "Modifications"
       }
     },
     "AOG_FORM": {
@@ -52,6 +56,18 @@
       "STATION": "Station",
       "TECHNICAL_TYPE": "Technical Station",
       "TIPOLOGY": "Tipology"
+    },
+    "AOG_DETAILS": {
+      "FOLLOW_UP": {
+        "AOG_TYPE_REQUIRED": "Aog type is required",
+        "FOLLOW_UP_DISABLED": "Sorry follow up is disabled because from creation of contingency past more than 180 minutes",
+        "FOLLOW_UP_LAST_STATUS": "Sorry is not possible to create a follow up for the current status",
+        "FOLLOW_UP_CLOSED_STATUS": "This contingency is already closed",
+        "OBSERVATION_REQUIRED": "Observation is required",
+        "OBSERVATION_TITLE": "Observations",
+        "TIME_AVAILABLE_WARNING": "Maximum time available:",
+        "FOLLOW_UP_SUCCESSFULLY": "Follow up successfully"
+      }
     },
     "RECOVERY_PLAN" : {
       "TITLE" : "Aog Recovery Plan"
