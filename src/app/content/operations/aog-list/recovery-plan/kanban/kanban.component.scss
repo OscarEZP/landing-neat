@@ -1,0 +1,33 @@
+@import 'main.scss';
+
+$container-padding: 24px;
+$font-size: 14px;
+$height-factor: 382px;
+
+section {
+  background-color: mat-color($custom, recovery-background-grey);
+  margin: 0 calc(#{$container-padding} * -1) calc(#{$container-padding} * -1);
+  padding: $container-padding;
+  height: calc(100vh - #{$height-factor});
+
+  header{
+    @include gen-component-font-size($font-size, 2);
+    margin: 0 0 10px 0;
+  }
+
+  .wrapper {
+    .container.backlog {
+      background-color: mat-color($primary, default-contrast);
+    }
+    .container {
+      padding: 10px;
+      height: calc(100vh - (#{$height-factor} + #{$container-padding}) );
+    }
+    .container.drop {
+      background-color: mat-color($background, status-bar);
+      overflow: auto;
+    }
+
+  }
+
+}

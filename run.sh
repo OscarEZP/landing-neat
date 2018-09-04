@@ -1,8 +1,8 @@
 #!/bin/bash
 PROJECT_NAME=$(basename $(pwd))
 DOCKER_DIR=docker
-DEV_FOLDER=dev
-SONAR_FOLDER=sonar
+DEV_DIR=dev
+SONAR_DIR=sonar
 
 clear
 # Options
@@ -25,7 +25,7 @@ echo
 
 if [[ $OPTION = "1" ]] ;then
   clear
-  cd $DOCKER_DIR/$DEV_FOLDER
+  cd $DOCKER_DIR/$DEV_DIR
   echo "Running DEVELOPMENT(STAGING)..."
   echo ""
   docker-compose down
@@ -33,14 +33,14 @@ if [[ $OPTION = "1" ]] ;then
   cd ../../
 elif [[ $OPTION = "2" ]] ;then
   clear
-  cd $DOCKER_DIR/$DEV_FOLDER
+  cd $DOCKER_DIR/$DEV_DIR
   echo "Running TESTS..."
   docker-compose down
   docker-compose run --service-ports --rm test
   cd ../../
 elif [[ $OPTION = "3" ]] ;then
   clear
-  cd $DOCKER_DIR/$SONAR_FOLDER
+  cd $DOCKER_DIR/$SONAR_DIR
   echo "Running SONAR..."
   docker-compose down
   docker-compose up
@@ -48,21 +48,21 @@ elif [[ $OPTION = "3" ]] ;then
   cd ../../
 elif [[ $OPTION = "4" ]] ;then
   clear
-  cd $DOCKER_DIR/$DEV_FOLDER
+  cd $DOCKER_DIR/$DEV_DIR
   echo "Running DEVELOPMENT(LOCAL)..."
   docker-compose down
   docker-compose run --service-ports --rm local
   cd ../../
 elif [[ $OPTION = "5" ]] ;then
   clear
-  cd $DOCKER_DIR/$DEV_FOLDER
+  cd $DOCKER_DIR/$DEV_DIR
   echo "Building IMAGE..."
   docker-compose build
   cd ../../
 elif [[ $OPTION = "6" ]] ;then
   clear
   echo "Running CONTAINER..."
-  docker build -t moc-web-interactive cd $DOCKER_DIR/$DEV_DIR
+  docker build -t moc-web-interactive ./$DOCKER_DIR/$DEV_DIR/
   docker run -v $(pwd):/var/www/html/ -it moc-web-interactive /bin/bash
 else
   clear

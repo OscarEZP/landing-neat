@@ -1,12 +1,13 @@
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgModule } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
-import { PipesModule } from './_pipes/pipes.module';
-import { CustomInterceptor } from './_services/apiRest.service';
-import { CountdownComponent } from './components/countdown.component/countdown.component';
-import { MaterialModule } from './modules/material.module';
-import { EssComponent } from './components/ess/ess.component';
-import { DirectivesModule } from './_directives/directives.module';
+import {DragulaModule} from 'ng2-dragula';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {NgModule} from '@angular/core';
+import {TranslateModule} from '@ngx-translate/core';
+import {PipesModule} from './_pipes/pipes.module';
+import {CustomInterceptor} from './_services/apiRest.service';
+import {CountdownComponent} from './components/countdown.component/countdown.component';
+import {MaterialModule} from './modules/material.module';
+import {EssComponent} from './components/ess/ess.component';
+import {DirectivesModule} from './_directives/directives.module';
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import { DirectivesModule } from './_directives/directives.module';
         MaterialModule,
         PipesModule,
         TranslateModule.forRoot(),
-        DirectivesModule
+        DirectivesModule,
+        DragulaModule
     ],
     exports: [
         MaterialModule,
@@ -25,14 +27,15 @@ import { DirectivesModule } from './_directives/directives.module';
         CountdownComponent,
         TranslateModule,
         EssComponent,
-        DirectivesModule
+        DirectivesModule,
+        DragulaModule
     ],
     providers: [
         {
             provide: HTTP_INTERCEPTORS,
             useClass: CustomInterceptor,
             multi: true
-        }
+        },
     ]
 })
 

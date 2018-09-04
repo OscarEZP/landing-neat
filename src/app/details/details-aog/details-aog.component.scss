@@ -1,0 +1,169 @@
+@import '../../../assets/style/main.scss';
+
+$details-with: 400px;
+$details-base-font-size: 13px;
+$details-title-font-size: 17px;
+$details-subtitle-font-size: 14px;
+$details-padd: 20px;
+
+#mat-icon{
+  color: mat-color($foreground, 'icon');
+}
+
+/deep/
+#details{
+  width: $details-with;
+  overflow: hidden;
+  box-shadow: $box-shadow;
+  font-size: $details-base-font-size;
+
+  .mat-icon.success{
+    color: mat-color($custom, 'success');
+  }
+
+  hr{
+    margin: 20px 0;
+    border-color: mat-color($foreground, 'divider');
+  }
+
+  h2{
+    font-size: $details-subtitle-font-size;
+  }
+  > * > header {
+    background-color: mat-color($primary);
+    color: mat-color($primary, 'default-contrast');
+    height: $details-header-height;
+    padding: 38px $details-padd;
+    box-sizing: border-box;
+    h1 {
+      font-size: $details-title-font-size;
+    }
+    .mat-icon {
+      font-size: $details-padd;
+    }
+    > div {
+      padding: 0 0 5px 0;
+    }
+  }
+  content{
+    overflow: auto;
+    height: calc(100vh - (#{$navbar-height} + #{$details-header-height}));
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+
+    /deep/
+    h2{
+      padding: 0 0 $details-padd 0;
+    }
+
+    .stripped{
+      font-size: $details-base-font-size;
+      > *:nth-child(2n+1){
+        background-color: mat-color($mat-grey, 50);
+      }
+    }
+
+    .table{
+      > div{
+        padding: 10px;
+        > div:first-child{
+          color: mat-color($foreground, 'secondary-text');
+        }
+      }
+    }
+
+    .mat-icon{
+      height: auto;
+      width: auto;
+      font-size: 12px;
+      float: left;
+      margin: 0 3px 0 0;
+    }
+
+    .box{
+      > *{
+        > div, header, footer{
+          padding: 20px 0;
+        }
+      }
+      hr{
+        margin: 0;
+      }
+      header, footer{
+
+      }
+
+      .icon-footer{
+        padding-top: 0;
+
+        .mat-icon{
+          font-size: 16px;
+        }
+      }
+
+      .description{
+        color: mat-color($foreground, 'secondary-text');
+        line-height: 18px;
+      }
+    }
+
+    .no-separator{
+      header{
+        padding-bottom: 0;
+      }
+      footer{
+        padding-top: 0;
+      }
+    }
+
+
+
+    /deep/
+    > * {
+      > section {
+        min-height: 500px;
+        margin: 25px 0;
+
+        section {
+          padding: 0 $details-padd;
+        }
+      }
+    }
+  }
+
+  .button-cancel{
+    color: mat-color($foreground, 'secondary-text');
+  }
+
+  .mat-raised-button{
+    margin-left: 5px;
+  }
+
+  span.tag {
+    background-color: mat-color($foreground, 'icon');
+    margin: 0 10px 0 0;
+    padding: 3px 10px;
+    color: mat-color($primary, 'default-contrast');
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 2px;
+    display: inline-block;
+  }
+  span.tag.etr{
+    background-color: mat-color($primary);
+  }
+  .load-more{
+    text-transform: uppercase;
+    a, a:active, a:hover, a:focus {
+      color: mat-color($primary);
+    }
+  }
+  .mat-input-container{
+    margin: 10px 0;
+    font-size: 13px;
+  }
+  .mat-form-field-infix{
+    width: 100%;
+  }
+}

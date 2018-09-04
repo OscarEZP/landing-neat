@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {nullSafeIsEquivalent} from "@angular/compiler/src/output/output_ast";
 
 export interface Layout {
     showAddButton: boolean;
@@ -9,6 +10,7 @@ export interface Layout {
     disableRightNav: boolean;
     loading: boolean;
     formComponent: object;
+    toDoList: string;
 }
 
 @Injectable()
@@ -28,7 +30,8 @@ export class LayoutService {
             disableAddButton: false,
             disableRightNav: false,
             loading: true,
-            formComponent: null
+            formComponent: null,
+            toDoList: null
         };
     }
 

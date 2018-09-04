@@ -1,4 +1,4 @@
-@import '../../../assets/style/base';
+@import 'main.scss';
 
 /deep/
 #details-nav{
@@ -18,7 +18,6 @@
     }
 
     .mat-icon-button.active{
-        background-color: mat-color($primary);
         background-color: map_get($mat-grey, 300);
     }
 }

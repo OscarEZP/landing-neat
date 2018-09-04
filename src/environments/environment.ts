@@ -29,6 +29,7 @@ export const environment = {
         editReasonContingency: '/api/v1/contingencies/_reason',
         flights: '/api/v1/configurations/flights/_search',
         followUp: '/api/v1/contingencies/status/_followUp',
+        followUpAog: '/api/aircraft-on-ground/v1/aircraft-on-ground/follow-up',
         forgotPassword: '/api/security/users/_forgotpassword',
         locations: '/api/v1/configurations/locations',
         login: '/api/security/users/_login',

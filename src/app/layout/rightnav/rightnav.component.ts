@@ -3,6 +3,7 @@ import { ContingencyService } from '../../content/_services/contingency.service'
 import { DetailsService } from '../../details/_services/details.service';
 import {Layout, LayoutService} from '../_services/layout.service';
 import {Subscription} from 'rxjs/Subscription';
+import {DetailsServiceAog} from '../../details/_services/details_aog.service';
 
 @Component({
     selector: 'lsl-rightnav',
@@ -17,6 +18,7 @@ export class RightnavComponent implements OnInit, OnDestroy {
 
     constructor(
         private _detailsService: DetailsService,
+        private _detailsServiceAog: DetailsServiceAog,
         private _contingencyService: ContingencyService,
         private _layoutService: LayoutService
     ) {
@@ -37,8 +39,15 @@ export class RightnavComponent implements OnInit, OnDestroy {
             .subscribe(v => this.layout = v);
     }
 
-    public openDetails(section: string = 'information') {
-        this._detailsService.openDetails(section);
+    public openDetails(section: string = 'information', toDoList: string) {
+        console.log('section', section);
+        if (toDoList === 'Aog') {
+            this._detailsServiceAog.openDetails(section);
+        }
+
+        if (toDoList === 'Contingency') {
+            this._detailsService.openDetails(section);
+        }
         return this.activeSection = section;
     }
 

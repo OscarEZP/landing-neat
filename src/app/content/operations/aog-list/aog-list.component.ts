@@ -25,6 +25,8 @@ import {
 import {Reason} from '../../../shared/_models/common/reason';
 import {Audit} from '../../../shared/_models/common/audit';
 import {StorageService} from '../../../shared/_services/storage.service';
+import {DetailsServiceAog} from '../../../details/_services/details_aog.service';
+
 
 @Component({
     selector: 'lsl-aog-list',
@@ -60,6 +62,8 @@ export class AogListComponent implements OnInit, OnDestroy {
     private _editReasonSub: Subscription;
     private _editFieldTranslation: EditFieldTranslationInterface;
     private _toEdit: number;
+    private _selectedAog: Aog;
+    private _selectedAogPivot: Aog;
 
     constructor(
         private _messageData: DataService,
@@ -68,17 +72,22 @@ export class AogListComponent implements OnInit, OnDestroy {
         private _layoutService: LayoutService,
         private _dialogService: DialogService,
         private _storageService: StorageService,
-        private _aogService: AogService
+        private _aogService: AogService,
+        private _detailsService: DetailsServiceAog,
     ) {
+        this.selectedAog = Aog.getInstance();
+        this.selectedAogPivot = Aog.getInstance();
+
         this._error = false;
         this._aogList = [];
         this.layout = {
             disableAddButton: false,
-            disableRightNav: true,
+            disableRightNav: false,
             showRightNav: true,
             showAddButton: true,
             loading: false,
-            formComponent: AogFormComponent
+            formComponent: AogFormComponent,
+            toDoList: 'Aog'
         };
         this._editReasonSub = new Subscription();
         this._editFieldTranslation = {field: {value: ''}, placeholder: ''};
@@ -249,9 +258,11 @@ export class AogListComponent implements OnInit, OnDestroy {
             hasBackdrop: true,
             disableClose: true,
             height: '50%',
-            width: '500px'
+            width: '520px'
         });
     }
+
+
 
     /**
      * Open a modal for edit a contingency reason field
@@ -270,6 +281,8 @@ export class AogListComponent implements OnInit, OnDestroy {
             err => console.error(err)
         );
     }
+
+
 
     /**
      * Get data interface for Edit Field Component
@@ -329,6 +342,25 @@ export class AogListComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Method for opening aog details component
+     * @param aog, object with aog basic information
+     * @param section, #id for scrolling movement
+     */
+    public openDetails(aog: Aog, section: string) {
+        this.detailsService.activeAogChanged(aog);
+        this.detailsService.openDetails(section);
+        this.setSelectedAog(aog);
+    }
+
+    /**
+     * Method for update selected contingency and aog pivot
+     * @param aog
+     */
+    public setSelectedAog(aog: Aog) {
+        this.selectedAog = aog;
+        this.selectedAogPivot = aog;
+    }
     get aogList(): Aog[] {
         return this._aogList;
     }
@@ -455,5 +487,27 @@ export class AogListComponent implements OnInit, OnDestroy {
 
     set toEdit(value: number) {
         this._toEdit = value;
+    }
+
+    get detailsService(): DetailsServiceAog {
+        return this._detailsService;
+    }
+
+
+    get selectedAog(): Aog {
+        return this._selectedAog;
+    }
+
+    set selectedAog(value: Aog) {
+        this._selectedAog = value;
+    }
+
+
+    get selectedAogPivot(): Aog {
+        return this._selectedAogPivot;
+    }
+
+    set selectedAogPivot(value: Aog) {
+        this._selectedAogPivot = value;
     }
 }

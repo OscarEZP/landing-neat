@@ -13,6 +13,7 @@ import {Router} from '@angular/router';
 import {AuthService} from '../auth/_services/auth.service';
 import {Layout, LayoutService} from './_services/layout.service';
 import {Routing, RoutingService} from '../shared/_services/routing.service';
+import {DetailsServiceAog} from '../details/_services/details_aog.service';
 
 @Component({
     selector: 'lsl-layout',
@@ -41,9 +42,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private _routingSubs: Subscription;
     private _routing: Routing;
 
+
     constructor(
         private _sidenavService: SidenavService,
         private _detailsService: DetailsService,
+        private _detailsServiceAog: DetailsServiceAog,
         private _messageData: DataService,
         private _messageService: MessageService,
         private _translate: TranslateService,
@@ -54,6 +57,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         private _layoutService: LayoutService,
         private _routingService: RoutingService
     ) {
+
         this._messageDataSubscription = this.getLoadingSubs();
         this._errorDataSubscription = this.getErrorSubs();
         this._layoutSubs = this.getLayoutSubs();
@@ -61,8 +65,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
+
         this.leftSidenav = this.sidenav;
         this.detailsSidenav = this.details;
+        this.detailsSidenavAog = this.details;
         this.mode = 'determinate';
         this.value = 100;
     }
@@ -176,6 +182,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this._detailsService.sidenav = value;
     }
 
+    get detailsSidenavAog(): MatSidenav {
+        return this._detailsServiceAog.sidenav;
+    }
+
+    set detailsSidenavAog(value: MatSidenav) {
+        this._detailsServiceAog.sidenav = value;
+    }
+
     get isDetailsOpen(): boolean {
         return this._detailsService.isOpen;
     }
@@ -239,4 +253,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     set routing(value: Routing) {
         this._routing = value;
     }
+
+
 }
