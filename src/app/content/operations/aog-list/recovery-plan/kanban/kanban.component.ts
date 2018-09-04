@@ -48,6 +48,8 @@ export class KanbanComponent implements OnInit, OnDestroy {
                 })
             )
             .subscribe();
+
+        // todo: desacoplar
         this._dragulaDropSub = this._dragulaService.drop
             .pipe(
                 filter(args => !!args[2]),
@@ -69,19 +71,24 @@ export class KanbanComponent implements OnInit, OnDestroy {
                     }
 
                     const nextIndex = this[newColId].cards.findIndex(v => v.id === nextCardId);
-
-                    if (nextIndex === -1) {
-                        this[newColId].cards.push(newcard);
-                    } else {
-                        this[newColId].cards.splice(nextIndex, 0, newcard);
-                    }
+                    const oldIndex = this[oldColId].cards.findIndex(v => v.id === cardId);
 
                     if (newColId !== oldColId) {
                         this[oldColId].cards = this[oldColId].cards.filter(v => v.id !== cardId);
+                        if (nextIndex === -1) {
+                            this[newColId].cards.push(newcard);
+                        } else {
+                            this[newColId].cards.splice(nextIndex, 0, newcard);
+                        }
                     } else {
-                        this[newColId].cards.splice(this[newColId].cards.filter((v, i) => i !== nextIndex - 1).findIndex(v => v.id === newcard.id), 1);
+                        if (nextIndex === -1) {
+                            this[newColId].cards.push(newcard);
+                            this[newColId].cards.splice(this[newColId].cards.findIndex(v => v.id === newcard.id), 1);
+                        } else {
+                            this[newColId].cards.splice(oldIndex, 1);
+                            this[newColId].cards.splice(nextIndex, 0, newcard);
+                        }
                     }
-
                     this.logCols();
                 })
             )
