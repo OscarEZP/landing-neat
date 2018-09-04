@@ -10,7 +10,6 @@ import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
 import {RecoveryPlanSearch} from '../../../../../shared/_models/recoveryplan/recoveryPlanSearch';
 import {RecoveryPlan} from '../../../../../shared/_models/recoveryplan/recoveryPlan';
-import {toPromise} from 'rxjs/operator/toPromise';
 import {KanbanCardInterface} from '../kanban/_services/kanban.service';
 
 /**
