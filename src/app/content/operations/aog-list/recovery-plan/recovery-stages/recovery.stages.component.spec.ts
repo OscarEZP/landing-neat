@@ -14,6 +14,7 @@ import {RecoveryPlanService} from '../_services/recovery-plan.service';
 import {DialogService} from '../../../../_services/dialog.service';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {KanbanModule} from '../kanban/kanban.module';
 
 describe('Recovery Stages Test', () => {
 
@@ -127,7 +128,9 @@ describe('Recovery Stages Test', () => {
 
     const MockStageKonva = {
         destroy: () => true,
-        batchDraw: () => true
+        batchDraw: () => true,
+        add: () => true,
+        container: () => true
     };
 
     beforeEach(() => {
@@ -137,6 +140,7 @@ describe('Recovery Stages Test', () => {
                 SharedModule,
                 KonvaModule,
                 ScrollbarModule,
+                KanbanModule,
                 BrowserAnimationsModule
             ],
             declarations: [
@@ -160,8 +164,8 @@ describe('Recovery Stages Test', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(RecoveryStagesComponent);
         recoveryStagesComponent = fixture.componentInstance;
-        /*recoveryStagesComponent.konvaStage = MockStageKonva;
-        recoveryStagesComponent.triggerStageInterface = {'stage': MockStageData};*/
+        recoveryStagesComponent.konvaStage = MockStageKonva;
+        recoveryStagesComponent.triggerStageInterface = {'stage': MockStageData};
     });
 
     afterEach(() => {
