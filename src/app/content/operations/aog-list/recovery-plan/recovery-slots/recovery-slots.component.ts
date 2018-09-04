@@ -121,7 +121,7 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
 
     set activeViewInHours(value: number) {
         this._activeViewInHours = value;
-        // this.drawCanvasElements();
+        this.drawCanvasElements();
     }
 
     get activeViewInPixels(): number {
@@ -162,7 +162,7 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
 
     set relativeStartTime(value: number) {
         this._relativeStartTime = value;
-        // this.drawCanvasElements();
+        this.drawCanvasElements();
     }
 
     get relativeEndTime(): number {
@@ -171,7 +171,7 @@ export class RecoverySlotsComponent implements OnInit, OnDestroy, AfterViewInit 
 
     set relativeEndTime(value: number) {
         this._relativeEndTime = value;
-        // this.drawCanvasElements();
+        this.drawCanvasElements();
     }
 
     get slotStage(): Konva.Stage {

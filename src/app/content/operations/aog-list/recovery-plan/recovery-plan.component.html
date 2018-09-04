@@ -63,26 +63,46 @@
 </div>
 
 <div mat-dialog-content class="content-dialog-container recovery-plan-box">
-    <div class="title-dialog">
-        <span>{{'AOG.AOG_FORM.AOG_INFORMATION'|translate}}</span>
+    <div class="title-dialog" fxLayout="row">
+        <div fxFlex="90" fxLayoutAlign="start start">{{'AOG.AOG_FORM.AOG_INFORMATION'|translate}} - {{'AOG.LIST.RECOVERY_PLAN.MODIFICATIONS' | translate }}: {{ recoveryPlanInterface.version }}</div>
+        <div fxLayoutAlign="end start">
+            <mat-icon>zoom_out</mat-icon>
+            <span id="zoom-container">
+                <lsl-recovery-zoom></lsl-recovery-zoom>
+            </span>
+            <mat-icon>zoom_in</mat-icon>
+        </div>
     </div>
 
-    <div fxLayout="column" class="sections-content">
-        <ng-scrollbar [trackY]="scrollInterface.verticalScrollEnabled" [trackX]="scrollInterface.horizontalScrollEnabled" [autoHide]="scrollInterface.autoHide">
-            <div #recoveryStageContainer>
-                <lsl-recovery-zoom></lsl-recovery-zoom>
-                <lsl-recovery-stages></lsl-recovery-stages>
-                <lsl-recovery-real-plan [aogId]="aogData.id"></lsl-recovery-real-plan>
-                <lsl-recovery-slots></lsl-recovery-slots>
+    <div fxLayout="row">
+        <div id="recovery-plan-lateral-labels" fxFlex="2">
+            <div class="rotated-label">Programmed</div>
+            <div class="rotated-label first">Real</div>
+        </div>
+
+        <div id="recovery-plan-module-container" class="sections-content" fxFlex="95">
+            <div fxLayout="row">
+                <ng-scrollbar [trackY]="scrollInterface.verticalScrollEnabled" [trackX]="scrollInterface.horizontalScrollEnabled" [autoHide]="scrollInterface.autoHide">
+                    <div #recoveryStageContainer>
+                        <div id="now-container" [ngStyle]="{'margin-left': nowPosition, 'display': nowPosition !== '0px' ? 'block' : 'none'}">
+                            <div id="now-value">{{getUtcNowFormatted()}}</div>
+                            <div id="now-line"></div>
+                        </div>
+                        <lsl-recovery-stages></lsl-recovery-stages>
+                        <lsl-recovery-real-plan [aogId]="aogData.id"></lsl-recovery-real-plan>
+                        <lsl-recovery-slots></lsl-recovery-slots>
+                    </div>
+                </ng-scrollbar>
             </div>
-        </ng-scrollbar>
-        <div fxLayoutAlign="end">
-            <!--<button id="btn-recovery-stage-reset" type="button" mat-button>-->
+
+            <div id="buttons-container" fxLayout="row-reverse">
+                <!--<button id="btn-recovery-stage-reset" type="button" mat-button>-->
                 <!--{{'BUTTONS.RESET'|translate}}-->
-            <!--</button>-->
-            <button id="btn-recovery-stage-submit" (click)="saveRecovery()" type="submit" mat-button mat-raised-button color="primary">
-                {{'BUTTONS.SAVE'|translate}}
-            </button>
+                <!--</button>-->
+                <button id="btn-recovery-stage-submit" (click)="saveRecovery()" type="submit" mat-button mat-raised-button color="primary">
+                    {{'BUTTONS.SAVE'|translate}}
+                </button>
+            </div>
         </div>
     </div>
 </div>

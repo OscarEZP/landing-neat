@@ -10,7 +10,6 @@ import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
 import {StageConfiguration} from '../../../../../shared/_models/recoveryplan/stageConfiguration';
 import {RecoveryPlanSearch} from '../../../../../shared/_models/recoveryplan/recoveryPlanSearch';
 import {RecoveryPlan} from '../../../../../shared/_models/recoveryplan/recoveryPlan';
-import {toPromise} from 'rxjs/operator/toPromise';
 
 /**
  * Interface needed by all the components to do their work
@@ -69,6 +68,7 @@ export class RecoveryPlanService {
     getStages$(aogSearch: RecoveryPlanSearch): Observable<Stage[]> {
         return this._apiRestService.search<RecoveryPlan[]>(RecoveryPlanService.RECOVERY_PLAN_SEARCH_ENDPOINT, aogSearch)
             .pipe(
+                tap(res => this.version = res[0].revision),
                 map(res => res.length > 0 ? res[0].stages.map(v => Object.assign(Stage.getInstance(), v)) : [])
             );
     }
@@ -79,7 +79,7 @@ export class RecoveryPlanService {
     private get newRecoveryPlanService(): RecoveryPlanInterface {
         return {
             activeViewInPixels: 0,
-            activeViewInHours: 0,
+            activeViewInHours: 24,
             relativeStartTime: 0,
             relativeEndTime: 0,
             absoluteStartTime: 0,

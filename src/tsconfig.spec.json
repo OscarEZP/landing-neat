@@ -6,8 +6,8 @@
     "module": "commonjs",
     "target": "es5",
     "types": [
-      "jasmine",
-      "node"
+      "node",
+      "jest"
     ],
     "allowJs": true
   },

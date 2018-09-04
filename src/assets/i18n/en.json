@@ -13,7 +13,8 @@
       "RECOVERY_PLAN": {
         "GROUP": "Group",
         "GROUP_DURATION": "Group Duration",
-        "VERSION": "Version"
+        "VERSION": "Version",
+        "MODIFICATIONS": "Modifications"
       }
     },
     "AOG_FORM": {

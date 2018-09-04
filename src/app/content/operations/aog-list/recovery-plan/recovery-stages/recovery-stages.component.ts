@@ -1,7 +1,7 @@
 import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as Konva from 'konva';
 import {Vector2d} from 'konva';
-import {MAT_DIALOG_DATA, MatMenuTrigger} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef, MatMenuTrigger} from '@angular/material';
 import {ShapeDraw} from '../util/shapeDraw';
 import {Subscription} from 'rxjs/Subscription';
 import {DialogService} from '../../../../_services/dialog.service';
@@ -55,9 +55,9 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
     private _canvasHeight: number;
     private _lastValidPosition: number;
     private _stagesObjects: StageInterface[];
-    private _recoveryPlanSub: Subscription;
     private _recoveryPlanInterface: RecoveryPlanInterface;
     private _recoveryPlanSubscription: Subscription;
+    private _recoveryPlanSub: Subscription;
 
     private _konvaStage: Konva.Stage;
     private _konvaLayers: LayerInterface;
@@ -89,7 +89,6 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.stagesSub = this.getStages$().subscribe(() => {
-
             this.recoveryPlanSub = this.getRecoveryPlanSub();
         });
         this.lastValidPosition = 0;
@@ -101,9 +100,30 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
         this.konvaStage.destroy();
     }
 
+    /**
+     * Retrieve the stages and set accordingly variables in service needed by other components
+     */
+    private getStages$(): Observable<Stage[]> {
+        return this._recoveryPlanService.getStages$(this.getRecoveryPlanSearch())
+            .pipe(
+                tap(res => {
+                    this.stagesList = res.map(v => v);
+                    const epochTime = res[res.length - 1] ? res[res.length - 1].range.toEpochtime : now();
+                    const endTimeInstant = new TimeInstant(epochTime, '');
+                    this._recoveryPlanService.absoluteStartTime = res[0].range.fromEpochtime;
+                    res.push(new Stage(RecoveryPlanService.DEFAULT_GROUP, 1, new DateRange(endTimeInstant, endTimeInstant)));
+                    this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
+                })
+            );
+    }
+
+    /**
+     * Subscribe to observable of recovery plan after the stages are retrieved on other method and set the relativeEndTime based on the last item of stages or now() (depends about which one is greater), also calls the initializer of timeline
+     */
     private getRecoveryPlanSub(): Subscription {
         return this._recoveryPlanService.recoveryPlanBehavior$
             .subscribe(x => {
+
                 this.recoveryPlanInterface = x;
                 if (!this.relativeEndTime) {
                     const lastStageInterface = this.stagesObjects.filter((v, i) => this.stagesObjects.length === i + 1);
@@ -115,11 +135,14 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
             });
     }
 
-    private initTimeline() {
+    /**
+     * Initialize the timeline adding the stage and elements on it
+     */
+    private initTimeline(): void {
         this.endTimeInPixels = TimeConverter.epochTimeToPixelPosition(this.recoveryPlanInterface.absoluteEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
 
         this.konvaStage = new Konva.Stage({
-            container: 'container',
+            container: 'programmed-plan-container',
             width: this.endTimeInPixels,
             height: this.canvasHeight
         });
@@ -148,26 +171,15 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
         Object.keys(this.konvaLayers).forEach(key => this.konvaStage.add(this.konvaLayers[key]));
     }
 
+    /**
+     * Retrieve the recovery plan search and set their attributes
+     */
     public getRecoveryPlanSearch(): RecoveryPlanSearch {
         const recoveryPlanSearch = RecoveryPlanSearch.getInstance();
         recoveryPlanSearch.pagination = Pagination.getInstance();
         recoveryPlanSearch.aogId = this.data.id;
         recoveryPlanSearch.enable = true;
         return recoveryPlanSearch;
-    }
-
-    private getStages$(): Observable<Stage[]> {
-        return this._recoveryPlanService.getStages$(this.getRecoveryPlanSearch())
-            .pipe(
-                tap(res => {
-                    this.stagesList = res.map(v => v);
-                    const epochTime = res[res.length - 1] ? res[res.length - 1].range.toEpochtime : now();
-                    const endTimeInstant = new TimeInstant(epochTime, '');
-                    this._recoveryPlanService.absoluteStartTime = res[0].range.fromEpochtime;
-                    res.push(new Stage(RecoveryPlanService.DEFAULT_GROUP, 1, new DateRange(endTimeInstant, endTimeInstant)));
-                    this.stagesObjects = res.map(v => ({stage: v, line: null, circle: null}));
-                })
-        );
     }
 
     private getGroupStage(stageInterface: StageInterface, index: number): StageInterface {
@@ -194,7 +206,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
         });
         stageInterface.circle.on('dragstart', () => {
             initPosition = stageInterface.circle.getAbsolutePosition().x;
-            console.log('my init pos: ', initPosition);
+
             if (stageInterface.labelLine && stageInterface.labelText) {
                 stageInterface.labelLine.destroy();
                 stageInterface.labelText.destroy();
@@ -218,12 +230,6 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
         });
         stageInterface.circle.on('dragend', () => {
             this.updateDateRange(stageInterface.circle.getAbsolutePosition().x, initPosition, index);
-            // this.initTimeline();
-            /*console.log(
-                moment(stageInterface.stage.fromEpochtime).format('HH:mm') +
-                ' - ' +
-                moment(stageInterface.stage.toEpochtime).format('HH:mm')
-            );*/
             document.body.style.cursor = 'default';
         });
         return stageInterface;
@@ -348,6 +354,14 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
         this._recoveryPlanSubscription = value;
     }
 
+    get recoveryPlanSub(): Subscription {
+        return this._recoveryPlanSub;
+    }
+
+    set recoveryPlanSub(value: Subscription) {
+        this._recoveryPlanSub = value;
+    }
+
     get stagesObjects(): StageInterface[] {
         return this.recoveryPlanInterface.planStagesInterfaces;
     }
@@ -398,14 +412,6 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
 
     set stagesList(value: Stage[]) {
         this._stagesList = isArray(value) ? value.map(v => Object.assign(Stage.getInstance(), v)) : [];
-    }
-
-    get recoveryPlanSub(): Subscription {
-        return this._recoveryPlanSub;
-    }
-
-    set recoveryPlanSub(value: Subscription) {
-        this._recoveryPlanSub = value;
     }
 
     get triggerStageInterface(): StageInterface {

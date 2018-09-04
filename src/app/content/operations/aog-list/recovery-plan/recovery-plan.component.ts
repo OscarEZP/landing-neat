@@ -1,4 +1,4 @@
-import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Aog} from '../../../../shared/_models/aog/aog';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {RecoveryPlanInterface, RecoveryPlanService} from './_services/recovery-plan.service';
@@ -16,9 +16,9 @@ import moment = require('moment');
 @Component({
   selector: 'lsl-recovery-plan',
   templateUrl: './recovery-plan.component.html',
-  styleUrls: ['./recovery-plan.component.css']
+  styleUrls: ['./recovery-plan.component.scss']
 })
-export class RecoveryPlanComponent implements OnInit, OnDestroy {
+export class RecoveryPlanComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private static RECOVERY_PLAN_VERSION = 'AOG.LIST.RECOVERY_PLAN.VERSION';
     private static MESSAGE_ADDED_SUCCESS = 'FORM.MESSAGES.ADDED_SUCCESS';
@@ -31,6 +31,7 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
     private _recoveryPlanInterface: RecoveryPlanInterface;
     private _groupLabel: string;
     private _scrollInterface: ScrollBarProperties;
+    private _nowPosition: string;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) private matDialogData: Aog,
@@ -41,24 +42,29 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
     ) {
         this._aogData = matDialogData;
         this._groupLabel = '';
-        this._scrollInterface = this.getScrollInterface();
+        this._recoveryStagesConfigSub = new Subscription();
+        this._recoveryPlanInterfaceSub = new Subscription();
+        this._nowPosition = '0px';
     }
 
     ngOnInit() {
-        this.activeViewInHours = 24;
+        this.scrollInterface = this.getScrollInterface();
         this.activeViewInPixels = this._recoveryStageContainer.nativeElement.parentNode.offsetWidth;
-        this.recoveryStagesSub = this.getRecoveryStagesConfSubscription();
-        this.slotSizeInPixels = this._recoveryStageContainer.nativeElement.parentNode.offsetWidth / 24;
+        this.recoveryStagesConfigSub = this.getRecoveryStagesConfSubscription();
         this.recoveryPlanInterfaceSub = this.getRecoveryPlanInterfaceSubscription();
-        this.utcNow = moment.utc().valueOf();
-
+        this.slotSizeInPixels = this._recoveryStageContainer.nativeElement.parentNode.offsetWidth / 24;
         this._translationService.translate(RecoveryPlanComponent.RECOVERY_PLAN_VERSION)
             .then(v => this.groupLabel = v);
+        this.utcNow = moment.utc().valueOf();
     }
 
     ngOnDestroy() {
-        this.recoveryStagesSub.unsubscribe();
+        this.recoveryStagesConfigSub.unsubscribe();
         this.recoveryPlanInterfaceSub.unsubscribe();
+    }
+
+    ngAfterViewInit() {
+
     }
 
     private getScrollInterface(): ScrollBarProperties {
@@ -78,11 +84,24 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
         return this._recoveryPlanService.recoveryPlanBehavior$
             .subscribe(v => {
                 this.recoveryPlanInterface = v;
-                const nowPosition = TimeConverter.epochTimeToPixelPosition(v.relativeEndTime, v.absoluteStartTime, v.activeViewInHours, v.activeViewInPixels);
-                if (nowPosition > v.activeViewInPixels / 2) {
-                    this.scrollRef.scrollXTo(nowPosition - (v.activeViewInPixels / 2) + 100, 600);
+
+                const nowPosition = this.getNowPosition(v.relativeEndTime, v.absoluteStartTime, v.activeViewInHours, v.activeViewInPixels);
+
+                if (nowPosition > v.activeViewInHours / 2) {
+                    // console.log('this.scrollRef: ', this.scrollRef);
+                    // this.scrollRef.scrollXTo(nowPosition - (v.activeViewInHours / 2) + 100, 600);
                 }
+
+                this.nowPosition = (nowPosition - 22) + 'px';
             });
+    }
+
+    private scrollToPosition(position: number, speed: number): void {
+        this.scrollRef.scrollXTo(position, speed);
+    }
+
+    private getNowPosition(relativeEndTime: number, absoluteStartTime: number, activeViewInHours: number, activeViewInPixels: number): number {
+        return TimeConverter.epochTimeToPixelPosition(relativeEndTime, absoluteStartTime, activeViewInHours, activeViewInPixels);
     }
 
     /**
@@ -112,6 +131,10 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
         return recoveryPlan;
     }
 
+    public getUtcNowFormatted() {
+        return moment.utc(this.recoveryPlanInterface.utcNow).format('HH:mm');
+    }
+
     /**
      * Closes modal when the user clicks on the "X" in the view
      */
@@ -127,11 +150,11 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
         this._aogData = value;
     }
 
-    get recoveryStagesSub(): Subscription {
+    get recoveryStagesConfigSub(): Subscription {
         return this._recoveryStagesConfigSub;
     }
 
-    set recoveryStagesSub(value: Subscription) {
+    set recoveryStagesConfigSub(value: Subscription) {
         this._recoveryStagesConfigSub = value;
     }
 
@@ -141,10 +164,6 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
 
     set relativeStartTime(value: number) {
         this._recoveryPlanService.relativeStartTime = value;
-    }
-
-    set activeViewInHours(value: number) {
-        this._recoveryPlanService.activeViewInHours = value;
     }
 
     set recoveryStagesConfig(value: StageConfiguration[]) {
@@ -199,6 +218,14 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy {
 
     set scrollInterface(value: ScrollBarProperties) {
         this._scrollInterface = value;
+    }
+
+    get nowPosition(): string {
+        return this._nowPosition;
+    }
+
+    set nowPosition(value: string) {
+        this._nowPosition = value;
     }
 }
 
