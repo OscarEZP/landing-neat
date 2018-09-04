@@ -123,7 +123,6 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
     private getRecoveryPlanSub(): Subscription {
         return this._recoveryPlanService.recoveryPlanBehavior$
             .subscribe(x => {
-
                 this.recoveryPlanInterface = x;
                 if (!this.relativeEndTime) {
                     const lastStageInterface = this.stagesObjects.filter((v, i) => this.stagesObjects.length === i + 1);

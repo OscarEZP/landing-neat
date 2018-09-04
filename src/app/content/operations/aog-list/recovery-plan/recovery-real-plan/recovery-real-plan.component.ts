@@ -6,7 +6,6 @@ import {RecoveryPlanInterface, RecoveryPlanService} from '../_services/recovery-
 import {TimeConverter} from '../util/timeConverter';
 import {ApiRestService} from '../../../../../shared/_services/apiRest.service';
 import {Status} from '../../../../../shared/_models/status';
-import moment = require('moment');
 
 @Component({
   selector: 'lsl-recovery-real-plan',
@@ -28,7 +27,6 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         private _recoveryPlanService: RecoveryPlanService,
         private _apiRestService: ApiRestService
     ) {
-        this._recoveryPlanSubscription = null;
         this._canvasHeight = 50;
         this._recoveryPlanSubscription = new Subscription();
         this._realPlanStage = null;
@@ -108,18 +106,6 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     //     });
     // }
 
-    private searchNiEtrCollection(): Subscription {
-        return this._apiRestService
-            .search<Status[]>('aircraftOnGroundFollowUpSearch', {'aogId': this.aogId})
-            .subscribe(rs => {
-                if (this.niEtrCollection == null) {
-                    this.niEtrCollection = rs;
-
-                    this.drawNiEtrInTimeline();
-                }
-            });
-    }
-
     private drawCanvasElements(): void {
         const endTimeInPixels = TimeConverter.epochTimeToPixelPosition(this.recoveryPlanInterface.absoluteEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
 
@@ -139,18 +125,33 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
         }
     }
 
+    private searchNiEtrCollection(): Subscription {
+        return this._apiRestService
+            .search<Status[]>('aircraftOnGroundFollowUpSearch', {'aogId': this.aogId})
+            .subscribe(rs => {
+                if (this.niEtrCollection == null) {
+                    this.niEtrCollection = rs;
+
+                    this.drawNiEtrInTimeline();
+                }
+            });
+    }
+
     private drawNiEtrInTimeline(): void {
-        this.niEtrCollection.forEach(value => {
-            const layer = this.createLayer();
-            const validEndTime = value.realInterval.dt.epochTime !== null ? value.realInterval.dt.epochTime : value.requestedInterval.dt.epochTime;
-            const isFilled = validEndTime < this.recoveryPlanInterface.utcNow;
-            const calculatedPosition = TimeConverter.epochTimeToPixelPosition(validEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
+        if (this.realPlanStage !== null) {
+            this.niEtrCollection.forEach(value => {
+                const layer = this.createLayer();
+                const validEndTime = value.realInterval.dt.epochTime !== null ? value.realInterval.dt.epochTime : value.requestedInterval.dt.epochTime;
+                const isFilled = validEndTime < this.recoveryPlanInterface.utcNow;
+                const calculatedPosition = TimeConverter.epochTimeToPixelPosition(validEndTime, this.recoveryPlanInterface.absoluteStartTime, this.recoveryPlanInterface.activeViewInHours, this.recoveryPlanInterface.activeViewInPixels);
 
-            layer.add(ShapeDraw.drawTriangleLabel(this.niEtrColor(value.code, isFilled), calculatedPosition, value.code, isFilled));
-            this.realPlanStage.add(layer);
-        });
+                layer.add(ShapeDraw.drawTriangleLabel(this.niEtrColor(value.code, isFilled), calculatedPosition, value.code, isFilled));
 
-        this.realPlanStage.batchDraw();
+                this.realPlanStage.add(layer);
+            });
+
+            this.realPlanStage.draw();
+        }
     }
 
     private niEtrColor(typeValue: string, isBeforeNow: boolean): string {
@@ -183,15 +184,13 @@ export class RecoveryRealPlanComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
     get activeViewInHours(): number {
-        return this._recoveryPlanInterface.activeViewInHours;
+        return this.recoveryPlanInterface.activeViewInHours;
     }
 
     set activeViewInHours(value: number) {
         this._activeViewInHours = value;
         this.drawCanvasElements();
-        if (this.niEtrCollection !== null) {
-            this.drawNiEtrInTimeline();
-        }
+        this.searchNiEtrCollection();
     }
 
     get recoveryPlanSubscription(): Subscription {

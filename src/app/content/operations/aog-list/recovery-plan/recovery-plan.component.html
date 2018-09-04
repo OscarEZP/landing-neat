@@ -80,7 +80,7 @@
             <div class="rotated-label first">Real</div>
         </div>
 
-        <div id="recovery-plan-module-container" class="sections-content" fxFlex="95">
+        <div id="recovery-plan-module-container" class="sections-content" fxFlex="98">
             <div fxLayout="row">
                 <ng-scrollbar [trackY]="scrollInterface.verticalScrollEnabled" [trackX]="scrollInterface.horizontalScrollEnabled" [autoHide]="scrollInterface.autoHide">
                     <div #recoveryStageContainer>
@@ -93,6 +93,18 @@
                         <lsl-recovery-slots></lsl-recovery-slots>
                     </div>
                 </ng-scrollbar>
+
+                <div fxLayoutAlign="end end">
+                    <button id="btn-aog" class="btn-aog-list" mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon aria-label="options">more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="openFollowUpModal(aogData)" [disabled]="aogData.status.code === 'ETR'">
+                            <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
+                        </button>
+
+                    </mat-menu>
+                </div>
             </div>
 
             <div id="buttons-container" fxLayout="row-reverse">
