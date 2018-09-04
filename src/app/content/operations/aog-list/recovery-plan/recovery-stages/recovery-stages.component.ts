@@ -230,6 +230,8 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
         stageInterface.circle.on('dragend', () => {
             this.updateDateRange(stageInterface.circle.getAbsolutePosition().x, initPosition, index);
             document.body.style.cursor = 'default';
+            this.initTimeline();
+
         });
         return stageInterface;
     }
