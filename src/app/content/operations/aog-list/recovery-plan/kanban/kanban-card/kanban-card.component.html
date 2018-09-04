@@ -1,5 +1,14 @@
 <section *ngIf="!isTemplate" [ngStyle]="{'border-color': kanbanCard.color}" fxLayout="column" fxLayoutGap="2px">
-    <h3 fxFlex >{{kanbanCard.stageCode}}</h3>
+    <div fxLayout="row">
+        <div fxFlex >
+            <h3>{{kanbanCard.stageCode}}</h3>
+        </div>
+        <div class="close-container" fxFlexAlign="end start">
+            <button (click)="deleteCard()" id="btn-kanban-card-close" class="" mat-icon-button>
+                <mat-icon aria-label="options">more_vert</mat-icon>
+            </button>
+        </div>
+    </div>
     <p fxFlex >{{kanbanCard.activity}}</p>
     <div fxLayout="row" >
         <div fxFlex>

@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {KanbanCardInterface, KanbanInterface, KanbanService} from '../_services/kanban.service';
 import {Subscription} from 'rxjs/Subscription';
 import {Observable} from 'rxjs/Observable';
@@ -11,6 +11,7 @@ import {filter, tap} from 'rxjs/operators';
 })
 export class KanbanCardComponent implements OnInit, OnDestroy {
 
+    @Output() onDelete: EventEmitter<boolean>;
     @Input('isTemplate') private _isTemplate: boolean;
     @Input('card') _kanbanCard: KanbanCardInterface;
 
@@ -19,6 +20,7 @@ export class KanbanCardComponent implements OnInit, OnDestroy {
     constructor(
         private _kanbanService: KanbanService
     ) {
+        this.onDelete = new EventEmitter<boolean>(false);
     }
 
     ngOnInit() {
@@ -28,6 +30,10 @@ export class KanbanCardComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this._kanbanSub.unsubscribe();
+    }
+
+    deleteCard() {
+        this.onDelete.emit(true);
     }
 
     get kanbanService$(): Observable<KanbanInterface> {

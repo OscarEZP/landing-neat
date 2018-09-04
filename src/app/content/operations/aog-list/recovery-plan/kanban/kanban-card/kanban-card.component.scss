@@ -43,5 +43,19 @@ section {
     left: -5px;
     cursor: pointer;
   }
+
+  .close-container {
+    margin: -17px 0 0 0;
+  }
+
+  #btn-kanban-card-close {
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+    .mat-icon{
+      @include md-icon-size(16px)
+    }
+  }
 }
 

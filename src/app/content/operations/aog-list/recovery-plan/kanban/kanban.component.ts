@@ -69,6 +69,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
                     }
 
                     const nextIndex = this[newColId].cards.findIndex(v => v.id === nextCardId);
+
                     if (nextIndex === -1) {
                         this[newColId].cards.push(newcard);
                     } else {
@@ -78,9 +79,10 @@ export class KanbanComponent implements OnInit, OnDestroy {
                     if (newColId !== oldColId) {
                         this[oldColId].cards = this[oldColId].cards.filter(v => v.id !== cardId);
                     } else {
-                        this[newColId].cards.splice(this[newColId].cards.findIndex(v => v.id === newcard.id), 1);
+                        this[newColId].cards.splice(this[newColId].cards.filter((v, i) => i !== nextIndex - 1).findIndex(v => v.id === newcard.id), 1);
                     }
-                    console.log(this.todo, this.doing, this.done);
+
+                    this.logCols();
                 })
             )
             .subscribe();
@@ -98,9 +100,18 @@ export class KanbanComponent implements OnInit, OnDestroy {
         });
     }
 
+    private logCols() {
+        console.log(this.todo, this.doing, this.done);
+    }
+
     getActivities(): Subscription {
         return this._recoveryPlanService.activities$
             .subscribe(v => this.activities = v);
+    }
+
+    deleteCard(idCard: string, idCol: string) {
+        this[idCol].cards = this[idCol].cards.filter(v => v.id !== idCard);
+        this.logCols();
     }
 
     ngOnDestroy() {
