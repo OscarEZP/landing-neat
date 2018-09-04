@@ -12,6 +12,8 @@ import {TranslationService} from '../../../../shared/_services/translation.servi
 import {ScrollbarComponent} from 'ngx-scrollbar';
 import {TimeConverter} from './util/timeConverter';
 import moment = require('moment');
+import {FollowUpAogModalComponent} from './follow-up-aog-modal/follow-up-aog-modal.component';
+import {DialogService} from '../../../_services/dialog.service';
 
 @Component({
   selector: 'lsl-recovery-plan',
@@ -38,7 +40,8 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy, AfterViewInit {
         private _dialogRef: MatDialogRef<RecoveryPlanComponent>,
         private _recoveryPlanService: RecoveryPlanService,
         private _storageService: StorageService,
-        private _translationService: TranslationService
+        private _translationService: TranslationService,
+        private _dialogService: DialogService
     ) {
         this._aogData = matDialogData;
         this._groupLabel = '';
@@ -135,6 +138,20 @@ export class RecoveryPlanComponent implements OnInit, OnDestroy, AfterViewInit {
         return moment.utc(this.recoveryPlanInterface.utcNow).format('HH:mm');
     }
 
+    /**
+     * Open a modal for close AOG
+     * @param {Aog} aog
+     */
+    public openFollowUpModal(aog: Aog) {
+        console.log('aog', aog);
+        this._dialogService.openDialog(FollowUpAogModalComponent, {
+            data: aog,
+            hasBackdrop: true,
+            disableClose: true,
+            height: '400px',
+            width: '500px'
+        });
+    }
     /**
      * Closes modal when the user clicks on the "X" in the view
      */

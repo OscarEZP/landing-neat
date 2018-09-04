@@ -57,7 +57,8 @@ export class PendingListComponent implements OnInit, OnDestroy {
             showRightNav: true,
             showAddButton: true,
             loading: false,
-            formComponent: ContingencyFormComponent
+            formComponent: ContingencyFormComponent,
+            toDoList: 'Contingency'
         };
     }
 

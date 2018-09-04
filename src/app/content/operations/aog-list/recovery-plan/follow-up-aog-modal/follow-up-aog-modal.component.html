@@ -1,0 +1,87 @@
+<form [formGroup]="followUpAogForm" #formFol="ngForm" (ngSubmit)="submitForm()">
+  <div mat-dialog-title class="title-dialog-container" fxLayout="column">
+    <div fxLayout="row" fxFlex>
+      <span class="title-dialog" fxFlex>Follow Up</span>
+      <button id="btn-aog-form-follow-up-btn" type="button" class="close-btn" mat-icon-button
+              fxFlexOffset="1">
+        <mat-icon aria-label="Close button" class="material-icons close-dialog" (click)="openCancelDialog()">close
+        </mat-icon>
+      </button>
+    </div>
+  </div>
+  <div fxLayout="row" class="remove-space">
+    <mat-button-toggle-group #group="matButtonToggleGroup" [formControl]="followUpAogForm.controls['code']">
+      <ng-container *ngFor="let codes of statusCodes">
+        <mat-button-toggle class="button-item" [value]="codes.code"  (click)="selectActiveCode(codes)">
+          {{ codes.code }}
+        </mat-button-toggle>
+      </ng-container>
+    </mat-button-toggle-group>
+  </div>
+  <div fxLayout="row" class="remove-space">
+    <mat-error *ngIf="validations.isSubmited && followUpAogForm.controls['code'].untouched">{{ 'AOG.AOG_DETAILS.FOLLOW_UP.AOG_TYPE_REQUIRED' | translate }}</mat-error>
+  </div>
+  <!-- <div fxLayout="column" class="safety-container remove-space" *ngIf="selectedContingency.safetyEvent.code === null">
+       <div fxLayout="column" fxLayoutGap="15px">
+         <mat-checkbox labelPosition="after" fxFlex="20" [formControl]="followUpForm.controls['safety']" [(ngModel)]="followUpForm.controls['safety'].value" (click)="onSelectOptional(!followUpForm.controls['safety'].value)">
+           {{ 'TITLES.SAFETY_EVENTS' | translate }}
+         </mat-checkbox>
+       </div>
+       <div fxLayout="column" class="remove-space" *ngIf="followUpForm.controls['safety'].value">
+         <div fxLayout="row">
+           <mat-form-field fxFlex="70">
+             <mat-select
+                     placeholder="{{ 'OPERATIONS.CONTINGENCY_FORM.TECHNICAL_TYPE_PLACEHOLDER' | translate }}"
+                     [formControl]="followUpForm.controls['safetyEventCode']" >
+               <mat-option *ngFor="let safety of safetyEventList" [value]="safety.code">{{
+                 safety.description }}
+               </mat-option>
+             </mat-select>
+           </mat-form-field>
+         </div>
+         <span class="alert-warning">{{'OPERATIONS.CONTINGENCY_FORM.SAFETY_MESSAGE'|translate}}</span>
+       </div>
+     </div>
+-->
+  <div fxLayout="row" class="remove-space">
+    <aside fxFlex="40" id="interval-select">
+      <mat-form-field>
+        <mat-select placeholder="Interval" [formControl]="followUpAogForm.controls['duration']" [(ngModel)]="followUpAog.requestedInterval.duration">
+          <mat-option *ngFor="let min of durations" (click)="getCurrentTime()" [value]="min">{{ min }} {{'FORM.MINUTES' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </aside>
+    <div fxFlexOffset="5" fxFlex="60" fxLayoutAlign="center center">
+      <div fxLayout="row" fxFlex="60">
+        <mat-icon>today</mat-icon>
+        <span fxLayoutAlign="center center">{{ currentUTCTime | date : 'dd.MMM.yyyy'}}</span>
+      </div>
+      <div fxLayout="row" fxFlex="40" fxFlexOffset="5">
+        <mat-icon>access_time</mat-icon>
+        <span fxLayoutAlign="center center">{{ currentUTCTime + (followUpAogForm.controls['duration'].value * 60000) | date : 'HH:mm' : '+0'}}</span>
+      </div>
+      <span fxFlex=""> UTC</span>
+    </div>
+  </div>
+
+  <mat-form-field class="full-width remove-space">
+                    <textarea matInput
+                              placeholder="{{'AOG.AOG_DETAILS.FOLLOW_UP.OBSERVATION_TITLE' | translate}}"
+                              [formControl]="followUpAogForm.controls['observation']" [(ngModel)]="followUpAog.observation"
+                              maxlength="{{maxChars}}" #obs>
+
+                    </textarea>
+    <mat-hint align="end">{{obs.value.length}} {{'OPERATIONS.MEETING_FORM.TO' | translate}} {{maxChars}}</mat-hint>
+    <mat-error *ngIf="followUpAogForm.controls['observation'].hasError('required') && followUpAogForm.controls['observation'].touched">
+      {{ 'AOG.AOG_DETAILS.FOLLOW_UP.OBSERVATION_REQUIRED' | translate }}
+    </mat-error>
+  </mat-form-field>
+  <div mat-dialog-actions fxLayoutAlign="end" class="remove-space">
+    <button type="button" mat-button (click)="openCancelDialog()" [disabled]="validations.isSending">
+      {{ 'BUTTONS.CANCEL' | translate }}
+    </button>
+    <button type="submit" mat-button mat-raised-button color="primary" [disabled]="validations.isSending">
+      {{ 'BUTTONS.SAVE' | translate }}
+    </button>
+  </div>
+</form>

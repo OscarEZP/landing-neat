@@ -18,15 +18,15 @@
         <div fxFlex="11">&nbsp;</div>
     </header>
     <content>
-        <div fxLayout="row" *ngFor="let aog of aogList" class="contingency-item" fxLayoutGap="20px">
-            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+        <div fxLayout="row" [class.active]="aog.id === selectedAog.id" *ngFor="let aog of aogList" class="contingency-item" fxLayoutGap="20px" >
+            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center" (click)="openDetails(aog, 'follow-up')">
                 <span>{{aog.tail}}</span>
                 <span>{{aog.fleet}}</span>
             </div>
-            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center">
+            <div fxFlex="7" fxLayout="column" fxLayoutAlign="center" (click)="openDetails(aog, 'follow-up')">
                 <span>{{aog.operator}}</span>
             </div>
-            <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center">
+            <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center" (click)="openDetails(aog, 'follow-up')">
                 {{aog.barcode}}
             </div>
             <div fxFlex="28" (mouseout)="toEdit = null"  (mouseover)="toEdit = aog.id" class="description" fxLayout="row" fxLayoutAlign="start center" (click)="editReason(aog)">
@@ -35,8 +35,8 @@
                     <mat-icon>edit</mat-icon>
                 </span>
             </div>
-            <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center"></div>
-            <div fxFlex="15" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+            <div fxFlex="7" fxLayout="row" fxLayoutAlign="start center" (click)="openDetails(aog, 'follow-up')"></div>
+            <div fxFlex="15" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" (click)="openDetails(aog, 'follow-up')">
                 <div fxLayout="column" ngClass="badge aog-{{aog.status.code.toLowerCase()}}" fxLayoutAlign="center center"
                      class="aog-status">{{aog.status.code}}
                 </div>
@@ -48,7 +48,7 @@
                                    [duration]="aog.status.requestedInterval.duration" [threshold]="5"></lsl-countdown>
                 </div>
             </div>
-            <div fxFlex="15" fxLayout="row" fxLayoutAlign="start center">
+            <div fxFlex="15" fxLayout="row" fxLayoutAlign="start center" (click)="openDetails(aog, 'follow-up')">
                 <div fxLayout="column">
                     <mat-icon class="mat-icon-adj">timer</mat-icon>
                 </div>
@@ -63,6 +63,9 @@
                     <mat-icon aria-label="options">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="openDetails(aog, 'follow-up')" [disabled]="aog.status.code === 'ETR'">
+                        <span>{{ 'BUTTONS.SUB_MENUS.FOLLOW_UP' | translate }}</span>
+                    </button>
                     <button mat-menu-item (click)="openRecoveryPlan(aog)">
                         <span>{{ 'BUTTONS.SUB_MENUS.OPEN_RECOVERY_PLAN' | translate }}</span>
                     </button>
