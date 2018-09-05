@@ -303,7 +303,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
                             ;
                         }
                     });
-                this.konvaStage.batchDraw();
+                this.initTimeline();
             });
     }
 
@@ -320,7 +320,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
                     ;
                 }
             });
-        this.konvaStage.batchDraw();
+        this.initTimeline();
     }
 
     get canvasHeight(): number {
