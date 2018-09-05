@@ -93,6 +93,10 @@ export class RecoveryPlanService {
         };
     }
 
+    public getViewRatio(ref: number = 24) {
+        return Math.round(this.getRecoveryPlanService().activeViewInHours / ref);
+    }
+
     /**
      * Find Recovery Stage Configuration
      * @returns {Observable<any>}
