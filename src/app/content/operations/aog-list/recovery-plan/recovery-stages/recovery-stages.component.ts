@@ -238,7 +238,8 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
 
     private updateDateRange(circlePosX: number, initPosition: number, index: number) {
         const diff = circlePosX - initPosition;
-        const ms = TimeConverter.pixelToEpochtime(diff, this.recoveryPlanInterface.slotSizeInPixels);
+        const ms = TimeConverter.pixelToEpochtime(diff, this.recoveryPlanInterface.slotSizeInPixels) * this._recoveryPlanService.getViewRatio();
+
         const stageSelected = this.stagesObjects[index];
         stageSelected.stage.fromEpochtime += index + 1 !== this.stagesObjects.length ? ms : 0;
         stageSelected.stage.toEpochtime += ms;
