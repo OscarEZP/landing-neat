@@ -4,33 +4,6 @@
 #aog-list {
   margin-top: 15px;
 
-  .mat-icon {
-    color: mat-color($foreground, 'icon');
-    @include md-icon-size(16px);
-  }
-
-  .aog-status {
-    width: 44px;
-    height: 16px;
-    border-radius: 2px;
-   }
-  .aog-etr {
-    background-color: mat-color($mat-palette-custom, tl-aog-etr);
-    color: mat-color($primary, default-contrast);
-  }
-
-  .aog-ni{
-    background-color: mat-color($mat-palette-custom, tl-aog-ni);
-    color: mat-color($primary, default-contrast);
-  }
-
-  .aog-warn-icon {
-    width: 13.9px;
-    height: 12px;
-    color: mat-color($warn);
-    font-size: 16px;
-    margin: -5px 0 0 0;
-  }
   .active-aogs {
     width: 126px;
     height: 28px;
@@ -41,25 +14,52 @@
     font-stretch: normal;
     line-height: 1.65;
     letter-spacing: normal;
-    color: #000000;
   }
   .description {
     span {
       overflow: hidden;
     }
   }
-  .contingency-item {
-    > div {
-      overflow: hidden;
+
+}
+
+.contingency-item {
+  > div {
+    overflow: hidden;
+
+    .aog-status {
+      width: 44px;
+      height: 16px;
+      border-radius: 2px;
+    }
+    .aog-etr {
+      background-color: mat-color($mat-palette-custom, tl-aog-etr);
+      color: mat-color($primary, default-contrast);
     }
 
-    > div:last-child {
-      .mat-icon {
-        @include md-icon-size(24px);
-      }
+    .aog-ni{
+      background-color: mat-color($mat-palette-custom, tl-aog-ni);
+      color: mat-color($primary, default-contrast);
+    }
+
+    .aog-warn-icon {
+      width: 13.9px;
+      height: 12px;
+      color: mat-color($warn);
+      font-size: 16px;
+      margin: -5px 0 0 0;
+    }
+
+  }
+
+  > div:last-child {
+    .mat-icon {
+      @include md-icon-size(24px);
     }
   }
 }
+
+
 
 /deep/
 .loader-container{
