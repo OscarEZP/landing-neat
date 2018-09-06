@@ -182,10 +182,8 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
     }
 
     private getGroupStage(stageInterface: StageInterface, index: number): StageInterface {
-        let initPosition = 0;
         const interfaceStage = stageInterface.stage;
         const isLastItem = index + 1 === this.stagesObjects.length;
-        this.lastValidPosition = 0;
         const startPos = this._recoveryPlanService.getPositionByEpochtime(stageInterface.stage.fromEpochtime);
         const endPos = this._recoveryPlanService.getPositionByEpochtime(stageInterface.stage.toEpochtime);
         const config = this.recoveryPlanInterface.recoveryStagesConfig.find(c => c.code === interfaceStage.code);
@@ -195,8 +193,14 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
         stageInterface.circle = ShapeDraw.drawCircle(color, startPos, index > 0);
         stageInterface.labelLine = !isLastItem ? ShapeDraw.drawLabelLine(null, startPos) : null;
         stageInterface.labelText = !isLastItem ? ShapeDraw.drawLabelText(stageInterface.stage.code, startPos) : null;
-
+        this.lastValidPosition = 0;
         stageInterface.circle.dragBoundFunc(pos => this.dragBound(pos, stageInterface, index, isLastItem ? this.endTimeInPixels : endPos));
+        stageInterface.circle = this.setCircleEvents(stageInterface, index);
+        return stageInterface;
+    }
+
+    private setCircleEvents(stageInterface: StageInterface, index): Konva.Circle {
+        let initPosition = 0;
         stageInterface.circle.on('mouseover', () => document.body.style.cursor = 'pointer');
         stageInterface.circle.on('mouseout', () => document.body.style.cursor = 'default');
         stageInterface.circle.on('dblclick', () => {
@@ -205,7 +209,6 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
         });
         stageInterface.circle.on('dragstart', () => {
             initPosition = stageInterface.circle.getAbsolutePosition().x;
-
             if (stageInterface.labelLine && stageInterface.labelText) {
                 stageInterface.labelLine.destroy();
                 stageInterface.labelText.destroy();
@@ -214,26 +217,28 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
         });
         stageInterface.circle.on('dragmove', () => {
             document.body.style.cursor = 'pointer';
-            this.stagesObjects
-                .forEach((v, i) => {
-                    const next = this.stagesObjects[i + 1];
-                    v.line.points([
-                        v.circle.getAbsolutePosition().x,
-                        25,
-                        next ? next.circle.getAbsolutePosition().x : v.circle.getAbsolutePosition().x,
-                        25
-                    ]);
-                });
-            this.konvaLayers.lines.draw();
-            this.konvaLayers.circles.draw();
+            this.updateLines();
         });
         stageInterface.circle.on('dragend', () => {
             this.updateDateRange(stageInterface.circle.getAbsolutePosition().x, initPosition, index);
             document.body.style.cursor = 'default';
             this.initTimeline();
-
         });
-        return stageInterface;
+        return stageInterface.circle;
+    }
+
+    private updateLines() {
+        this.stagesObjects
+            .forEach((v, i) => {
+                const next = this.stagesObjects[i + 1];
+                v.line.points([
+                    v.circle.getAbsolutePosition().x,
+                    25,
+                    next ? next.circle.getAbsolutePosition().x : v.circle.getAbsolutePosition().x,
+                    25
+                ]);
+            });
+        this.konvaLayers.lines.draw();
     }
 
     private updateDateRange(circlePosX: number, initPosition: number, index: number) {
@@ -262,7 +267,7 @@ export class RecoveryStagesComponent implements OnInit, OnDestroy {
             this.lastValidPosition = pos.x;
             result.x = pos.x;
         } else {
-            result.x = this.lastValidPosition;
+            result.x = this.lastValidPosition ? this.lastValidPosition : pos.x;
         }
         return result;
     }
