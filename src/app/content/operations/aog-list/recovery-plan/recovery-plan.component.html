@@ -8,7 +8,7 @@
         </button>
     </div>
     <div fxLayout="row" fxFlex>
-        <div id="aog-list" class="reg-list">
+        <div class="reg-list">
             <header fxLayout="row" fxLayoutGap="20px">
                 <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.TAILFLEET' | translate}}</div>
                 <div fxFlex="7" fxLayoutAlign="start center">{{'AOG.LIST.OPERATOR' | translate}}</div>
@@ -75,7 +75,7 @@
     </div>
 
     <div fxLayout="row">
-        <div id="recovery-plan-lateral-labels" fxFlex="2">
+        <div id="recovery-plan-lateral-labels" fxFlex="30px">
             <div class="rotated-label">Programmed</div>
             <div class="rotated-label first">Real</div>
         </div>
@@ -94,7 +94,7 @@
                     </div>
                 </ng-scrollbar>
 
-                <div fxLayoutAlign="end end">
+                <div id="menu-container">
                     <button id="btn-aog" class="btn-aog-list" mat-icon-button [matMenuTriggerFor]="menu">
                         <mat-icon aria-label="options">more_vert</mat-icon>
                     </button>

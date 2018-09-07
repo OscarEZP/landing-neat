@@ -1,9 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as Konva from 'konva';
 import moment = require('moment');
-import {TimeConverter} from './timeConverter';
-import {Stage} from '../../../../../shared/_models/recoveryplan/stage';
-import {s} from '@angular/core/src/render3';
 
 @Injectable()
 export class ShapeDraw {
@@ -19,7 +16,7 @@ export class ShapeDraw {
             y: 25,
             width: 15,
             height: 15,
-            radius: 7,
+            radius: 7.5,
             fill: isFilled ? color : 'white',
             stroke: color,
             strokeWidth: 4,

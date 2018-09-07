@@ -1,89 +1,100 @@
+@import 'main.scss';
+
 .mat-dialog-content {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 /deep/
 .ng-scrollbar-view {
-    overflow: hidden!important;
+  overflow: hidden !important;
 }
 
 /deep/
-.ng-scrollbar-thumb  {
-    margin-top: 2px;
+.ng-scrollbar-thumb {
+  margin-top: 2px;
 }
 
 .title-dialog {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 #aog-list {
-    width: 100%;
+  width: 100%;
 }
 
-.reg-list .contingency-item {
-    border-left: 1px solid rgba(202, 202, 202, 0.43);
-    border-right: 1px solid rgba(202, 202, 202, 0.43);
+.reg-list {
+  .contingency-item {
+    border: thin solid mat-color($foreground, divider);
+    border-top: none;
+  }
 }
 
 .recovery-plan-box {
-    background: #F3F3F3;
-    padding: 25px;
+  background-color: mat-color($custom, recovery-background-grey);
+  padding: 25px;
 }
 
 #recovery-plan-module-container {
-    border: solid 1px #BCBCBC;
-    padding: 0 20px 15px 1px;
-    background: #FFF;
+  border: solid 1px mat-color($foreground, divider);
+  border-left: none;
+  padding: 0 20px 20px 15px;
+  background: mat-color($primary, default-contrast);
+  position: relative;
 }
 
 #recovery-plan-lateral-labels {
-    margin-right: 0;
-    background: #E3E3E3;
-    border-top: solid 1px #BCBCBC;
-    border-left: solid 1px #BCBCBC;
-    border-bottom: solid 1px #BCBCBC;
+  margin-right: 0;
+  background: mat-color($foreground, divider);
+  border: thin solid mat-color($foreground, divider);
 
-    .rotated-label {
-        color: #4B4B4B;
-        font-size: 10px;
-        font-weight: bold;
-        transform: rotate(270deg) translate(-163%, -170%);
-        transform-origin: 100% 0;
-    }
+  .rotated-label {
+    color: #4B4B4B;
+    font-size: 10px;
+    font-weight: bold;
+    transform: rotate(270deg) translate(-45px, -20px);
+    transform-origin: 100% 0;
+  }
 
-    .first {
-        transform: rotate(270deg) translate(-246%, -170%);
-    }
+  .first {
+    transform: rotate(270deg) translate(-68px, -20px)
+  }
 }
 
 #buttons-container {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 #zoom-container {
-    margin-top: -12px;
+  margin-top: -12px;
 }
 
 #now-container {
-    width: 40px;
-    height: 100px;
-    float: left;
-    margin-top: -15px;
-    text-align: center;
+  width: 40px;
+  height: 100px;
+  float: left;
+  margin-top: -15px;
+  text-align: center;
 }
 
 #now-value {
-    background: #FFF;
-    border: solid 1px #BCBCBC;
-    border-radius: 5px;
-    color: #3c3c3c;
-    padding: 2px 6px;
-    font-size: 10px;
+  background: mat-color($primary, default-contrast);
+  border: solid 1px mat-color($foreground, divider);
+  border-radius: 5px;
+  color: #3c3c3c;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: bold;
 }
 
 #now-line {
-    width: 1px;
-    height: 100%;
-    margin: 0 50%;
-    border-right: solid 1px #919191;
+  width: 1px;
+  height: 100%;
+  margin: 0 50%;
+  border-right: solid 1px mat-color($foreground, secondary-text);
+}
+
+#menu-container {
+  position: absolute;
+  right: 4px;
+  top: 75px;
 }

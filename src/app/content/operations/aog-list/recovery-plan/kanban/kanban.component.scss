@@ -7,7 +7,7 @@ $height-factor: 382px;
 section {
   background-color: mat-color($custom, recovery-background-grey);
   margin: 0 calc(#{$container-padding} * -1) calc(#{$container-padding} * -1);
-  padding: $container-padding;
+  padding: 0 $container-padding $container-padding;
   height: calc(100vh - #{$height-factor});
 
   header{

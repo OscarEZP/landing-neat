@@ -18,7 +18,7 @@ import {DialogService} from '../../../_services/dialog.service';
 @Component({
   selector: 'lsl-recovery-plan',
   templateUrl: './recovery-plan.component.html',
-  styleUrls: ['./recovery-plan.component.scss']
+  styleUrls: ['./recovery-plan.component.scss', '../aog-list.component.scss']
 })
 export class RecoveryPlanComponent implements OnInit, OnDestroy, AfterViewInit {
 
